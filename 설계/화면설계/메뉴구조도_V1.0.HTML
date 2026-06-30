@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 회계/세무 서비스 메뉴구조도 V1.0</title>
+<style>
+:root{
+  --ink:#1c2333; --sub:#5b6478; --line:#d8dde8; --bg:#f4f6fa; --card:#fff;
+  --accent:#2554c7; --accent-bg:#eaf0fd; --op:#6d28d9; --op-bg:#f3e8ff;
+  --tn:#0f766e; --tn-bg:#cdf3ee; --warn:#b45309; --warn-bg:#fef3c7;
+  --danger:#b91c1c; --danger-bg:#fee2e2; --ok:#15803d; --ok-bg:#dcfce7;
+  --muted-bg:#eef1f6; --dark:#16213e;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;color:var(--ink);background:var(--bg);font-size:14px;line-height:1.62}
+main{max-width:1360px;margin:0 auto;padding:28px 32px 72px}
+.doc-header{background:linear-gradient(135deg,#1c2333,#2554c7);color:#fff;border-radius:12px;padding:24px 30px;margin-bottom:24px}
+.doc-header h1{margin:0 0 6px;font-size:24px;letter-spacing:0}
+.doc-header p{margin:3px 0;color:#d8e2fb;font-size:13px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px 28px;margin-bottom:22px}
+h2{font-size:18px;margin:0 0 14px;padding-bottom:9px;border-bottom:2px solid var(--accent);color:var(--dark)}
+h3{font-size:15px;margin:20px 0 8px;color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:10px 0 14px;font-size:12.5px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--muted-bg);font-size:12.1px;white-space:nowrap}
+td.c,th.c{text-align:center}
+code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Consolas,'D2Coding',monospace;font-size:12px;color:#33415e}
+.badge{display:inline-block;border-radius:9px;padding:0 8px;font-size:10.6px;font-weight:700;white-space:nowrap;vertical-align:middle}
+.b-blue{background:var(--accent-bg);color:var(--accent)}
+.b-purple{background:var(--op-bg);color:var(--op)}
+.b-green{background:var(--ok-bg);color:var(--ok)}
+.b-amber{background:var(--warn-bg);color:var(--warn)}
+.b-red{background:var(--danger-bg);color:var(--danger)}
+.b-gray{background:var(--muted-bg);color:var(--sub)}
+.b-teal{background:var(--tn-bg);color:var(--tn)}
+.sid{display:inline-block;background:#1c2333;color:#fff;border-radius:4px;padding:0 7px;font-size:10.8px;font-family:Consolas,monospace;vertical-align:middle}
+.note{background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:0 6px 6px 0;padding:9px 14px;font-size:12.7px;margin:10px 0}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.4px;background:var(--muted-bg);border-radius:8px;padding:10px 16px;margin:8px 0 16px}
+.legend b{color:#33415e}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 14px}
+.search{border:1px solid var(--line);border-radius:6px;padding:8px 11px;min-width:320px;font-size:13px}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+.chan{border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.chan-head{padding:10px 16px;font-weight:700;font-size:14.4px;color:#fff;display:flex;align-items:center;gap:10px}
+.chan-head small{font-weight:400;opacity:.9;font-size:11.5px}
+.chan.op .chan-head{background:linear-gradient(120deg,#3b1d77,#7c3aed)}
+.chan.tn .chan-head{background:linear-gradient(120deg,#0f3d42,#0f766e)}
+.chan.co .chan-head{background:linear-gradient(120deg,#243047,#48566f)}
+.chan-body{padding:14px 18px 16px}
+ul.tree,ul.tree ul{list-style:none;margin:0;padding-left:23px;position:relative}
+ul.tree{padding-left:5px}
+ul.tree ul::before{content:"";position:absolute;left:7px;top:0;bottom:12px;border-left:2px solid #c4cdde}
+ul.tree li{position:relative;padding:3px 0 3px 2px}
+ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13px;border-top:2px solid #c4cdde}
+.n1{font-weight:700;font-size:13.4px;color:#16213e;background:var(--muted-bg);border:1px solid var(--line);border-radius:6px;padding:3px 11px;display:inline-block}
+.chan.op .n1{background:var(--op-bg);border-color:#ddc8f8}
+.chan.tn .n1{background:var(--tn-bg);border-color:#a8e4dc}
+.chan.co .n1{background:#e5e7eb;border-color:#cbd5e1}
+.n2{font-size:12.8px;color:#1c2333}
+.n3{font-size:12.1px;color:var(--sub)}
+.tab-line{color:#6f7b90;font-size:11.7px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fbfcff}
+.card h3{margin-top:0}
+.hidden{display:none!important}
+@media(max-width:1180px){.cols{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.search{min-width:240px;width:100%}}
+@media print{
+  body{background:#fff}
+  main{max-width:none;padding:10px}
+  section{break-inside:avoid;border:none;padding:14px 0}
+  .chan{break-inside:avoid}
+  .toolbar{display:none}
+}
+</style>
+</head>
+<body>
+<main>
+
+<div class="doc-header">
+  <h1>BK 회계/세무 서비스 메뉴구조도 V1.0</h1>
+  <p>기준 문서: <b>bk_설계서_v1.0.md</b> · 참고자료: <b>참고자료/메뉴구조도_v0.1.html</b></p>
+  <p>작성일: 2026-06-30 · 산출물 위치: <b>설계/화면설계/메뉴구조도_V1.0.HTML</b></p>
+  <p>목적: 설계서 v1.0의 플랫폼, 기초, 전표, 보조부, Smart A 182개 기능 화면, 세무/결산/자금/고급회계, 운영·보안·API·배치·부록 내용을 모두 수용할 수 있는 메뉴 구조를 정의한다.</p>
+</div>
+
+<section>
+<h2>1. 표기 범례</h2>
+<div class="legend">
+  <span><span class="sid">BF-09</span> <b>기초/기준정보 화면</b></span>
+  <span><span class="sid">JV-01</span> <b>전표 입력 화면</b></span>
+  <span><span class="sid">AUX-02</span> <b>보조부/보조원장</b></span>
+  <span><span class="sid">SA-VAT</span> <b>Smart A 기능 화면군</b></span>
+  <span><span class="badge b-red">Step-up</span> 재인증 필요</span>
+  <span><span class="badge b-amber">관리자</span> 관리자/권한자 전용</span>
+  <span><span class="badge b-purple">기장</span> 기장 모드 영향</span>
+  <span><span class="badge b-teal">선택</span> 기능 플래그·업종·Phase별 노출</span>
+  <span class="tab-line">회색 들여쓰기: 화면 내 탭/하위 기능 또는 설계 추적 항목</span>
+</div>
+<div class="note">메뉴는 제품 화면 기준으로 재구성했다. 설계서의 기술 장(데이터 모델, API, 배치, 검증, 보안, 운영)과 부록은 사용자 메뉴가 아니라 운영/관리/설계 추적 메뉴로 연결한다.</div>
+</section>
+
+<section>
+<h2>2. 메뉴 구조도</h2>
+<div class="toolbar">
+  <input id="menuSearch" class="search" type="search" placeholder="메뉴명, 화면 ID, 설계 절 번호 검색">
+  <span class="badge b-gray">검색어를 입력하면 해당 항목만 표시</span>
+</div>
+<div class="cols" id="menuTree">
+
+<div class="chan op">
+  <div class="chan-head">운영 콘솔 <small>관리회사·운영자·기장 담당</small></div>
+  <div class="chan-body">
+  <ul class="tree">
+    <li><span class="n1">OP-00 이용회사 선택</span> <span class="sid">BF-00</span>
+      <ul><li class="tab-line">회사 검색 · 접근 모드 선택 · AdminAccessSession 시작 · VIEW/SUPPORT/BOOKKEEPING/BREAK_GLASS</li></ul>
+    </li>
+    <li><span class="n1">OP-01 운영 대시보드</span>
+      <ul><li class="tab-line">테넌트 현황 · 구독 상태 · 배치/수집 상태 · SLO · 보안 이벤트 · 미결 기장 작업</li></ul>
+    </li>
+    <li><span class="n1">OP-02 관리회사·조직</span> <span class="sid">BF-01</span>
+      <ul><li class="tab-line">OperatorOrg · 조직 트리 · 담당 테넌트 배정 · 운영 콘솔 IP 허용목록</li></ul>
+    </li>
+    <li><span class="n1">OP-03 이용회사/테넌트</span> <span class="sid">BF-02</span>
+      <ul>
+        <li><span class="n2">테넌트 기본정보</span> <span class="n3">회사명·사업자번호·회계기준·온보딩·상태</span></li>
+        <li><span class="n2">인프라/격리</span> <span class="n3">SHARED/SCHEMA/DEDICATED · RLS · 티어 전환</span></li>
+        <li><span class="n2">쿼터/스냅샷/비동기 잡</span> <span class="n3">QuotaProfile · TenantSnapshot · AsyncReportJob</span></li>
+      </ul>
+    </li>
+    <li><span class="n1">OP-04 구독·요금·사용량</span> <span class="sid">BF-10</span>
+      <ul><li class="tab-line">BillingPlan · ServiceSubscription · UsageMeter · Invoice · Payment · DunningCase</li></ul>
+    </li>
+    <li><span class="n1">OP-05 공통 표준 카탈로그</span> <span class="sid">BF-08</span>
+      <ul><li class="tab-line">STD_ACCOUNT · STD_VAT · STD_ROLE · STD_APPROVAL · STD_FORM · STD_REPORT_PACKAGE · 버전/배포/롤백</li></ul>
+    </li>
+    <li><span class="n1">OP-06 사용자·인증·권한</span> <span class="sid">BF-04</span> <span class="sid">BF-05</span> <span class="sid">BF-07</span> <span class="sid">BF-12</span>
+      <ul>
+        <li><span class="n2">사용자 관리</span> <span class="n3">OPERATOR/TENANT/EXTERNAL_PARTNER · MFA · SSO · 세션/로그인 이력</span></li>
+        <li><span class="n2">인증 정책</span> <span class="n3">전역/테넌트 정책 · MFA · Step-up · SSO · IP 정책</span></li>
+        <li><span class="n2">역할·가드레일·결재선</span> <span class="n3">Permission · Role · RoleAssignment · SOD · PolicyException</span></li>
+        <li><span class="n2">메뉴·권한 관리</span> <span class="n3">Menu · MenuVersion · RoleMenuPermission · MenuActionGrant</span></li>
+      </ul>
+    </li>
+    <li><span class="n1">OP-07 접근 거버넌스</span> <span class="sid">BF-06</span> <span class="badge b-red">Step-up</span>
+      <ul><li class="tab-line">AdminAccessSession/Log · 개인정보 접근 로그 · BreakGlassConsent/Request · SessionRecording · 사후검토</li></ul>
+    </li>
+    <li><span class="n1">OP-08 기장 워크벤치</span> <span class="sid">BF-03</span> <span class="badge b-purple">기장</span>
+      <ul>
+        <li><span class="n2">기장 모드 설정</span> <span class="n3">OPERATOR_LED · TENANT_LED · HYBRID · 전환 요청/동의/예약</span></li>
+        <li><span class="n2">담당 회사 보드</span> <span class="n3">기장 담당자 배정 · BOOKKEEPING 컨텍스트 진입 · 활동 요약</span></li>
+        <li><span class="n2">보고패키지/미결 큐</span> <span class="n3">월별 보고패키지 조립 · Open Items · 고객 확인 요청</span></li>
+      </ul>
+    </li>
+    <li><span class="n1">OP-09 운영·배치·연계 모니터링</span>
+      <ul><li class="tab-line">외부 연계 볼트 · 자료수집 ETL · 배치/스케줄 · DLQ · 관측성 · SLO · 장애 대응 · DR</li></ul>
+    </li>
+    <li><span class="n1">OP-10 보안·감사 운영</span>
+      <ul><li class="tab-line">KMS · 키 회전 · 취약점 관리 · DLP · 대량 행위 통제 · 침해사고 대응 · 감사로그 해시체인</li></ul>
+    </li>
+    <li><span class="n1">OP-11 AI·규칙 운영</span> <span class="badge b-green">AI</span>
+      <ul><li class="tab-line">이상거래 탐지 규칙 · 모델/룰 버전 · 챗봇 가드레일 · QueryTool 허용 목록</li></ul>
+    </li>
+  </ul>
+  </div>
+</div>
+
+<div class="chan tn">
+  <div class="chan-head">회사 작업공간 <small>이용회사·기장 업무 화면</small></div>
+  <div class="chan-body">
+  <ul class="tree">
+    <li><span class="n1">TN-00 회사 대시보드</span>
+      <ul><li class="tab-line">신고 기한 · 미결 전표 · 마감 상태 · 질의/확인 대기 · 이상 알림 · 구독/권한 안내</li></ul>
+    </li>
+    <li><span class="n1">TN-01 회사 설정·기초</span> <span class="sid">BF-03</span> <span class="sid">BF-09</span> <span class="sid">BF-11</span>
+      <ul>
+        <li><span class="n2">기장 방식</span> <span class="n3">BookkeepingConfig · 확인 의무 · 신고 승인 정책</span></li>
+        <li><span class="n2">차원/관리항목</span> <span class="n3">사업장 · 코스트센터 · 부서 · 프로젝트 · 현장 · 사원 · DimensionConfig · 소수점 설정</span></li>
+        <li><span class="n2">알림 설정</span> <span class="n3">NotificationPolicy · Template · Schedule · Webhook</span></li>
+      </ul>
+    </li>
+    <li><span class="n1">TN-02 기초정보관리</span> <span class="sid">SA-BAS</span>
+      <ul><li class="tab-line">회사등록 · 권한설정 · 환경설정 · 부서/사원/거래처/계정과목/현장/프로젝트/차량/외주처 · 마감후이월</li></ul>
+    </li>
+    <li><span class="n1">TN-03 전기이월·개시잔액</span> <span class="sid">SA-OPN</span>
+      <ul><li class="tab-line">전기분 재무상태표/손익계산서/원가명세서/현금흐름표 · 거래처/부서/사원/프로젝트/현장 초기이월</li></ul>
+    </li>
+    <li><span class="n1">TN-04 전표 입력·결재</span> <span class="sid">JV-01</span> <span class="sid">SA-JNL</span>
+      <ul>
+        <li><span class="n2">일반전표입력</span> <span class="sid">JV-01</span> <span class="sid">SA-JNL-01</span> <span class="n3">대체·입금·출금·결차·결대 통합</span></li>
+        <li><span class="n2">현금 간편입력 모드</span> <span class="sid">JV-02</span> <span class="sid">JV-03</span> <span class="n3">현금 차변/대변 고정 모드</span></li>
+        <li><span class="n2">매입매출전표입력</span> <span class="sid">JV-04</span> <span class="sid">JV-05</span> <span class="sid">SA-JNL-02</span> <span class="n3">상단 세무헤더 + 하단 분개라인 2계층</span></li>
+        <li><span class="n2">전표 도구</span> <span class="sid">JV-06</span> <span class="n3">복사·반복·템플릿·역분개</span></li>
+        <li><span class="n2">전표 검색/수정/삭제</span> <span class="sid">JV-07</span> <span class="n3">POSTED는 역분개만 허용</span></li>
+        <li><span class="n2">다건·일괄 입력</span> <span class="sid">JV-08</span> <span class="n3">외부자료 업로드·행별 검증·전체 미리보기</span></li>
+        <li><span class="n2">전표 결재함</span> <span class="sid">TN-06</span> <span class="n3">결재요청·승인·반려·SOD</span></li>
+      </ul>
+    </li>
+    <li><span class="n1">TN-05 보조부·관리항목</span> <span class="sid">AUX</span> <span class="sid">WJV</span>
+      <ul>
+        <li><span class="n2">관리항목 입력/통합 관리</span> <span class="sid">WJV-02</span> <span class="sid">WJV-07</span></li>
+        <li><span class="n2">거래처·어음·예금·카드</span> <span class="sid">AUX-01</span> <span class="sid">AUX-02</span> <span class="sid">AUX-03</span> <span class="sid">AUX-04</span></li>
+        <li><span class="n2">가지급금·부가세·현금·재고·고정자산</span> <span class="sid">AUX-05</span> <span class="sid">AUX-06</span> <span class="sid">AUX-07</span> <span class="sid">AUX-08</span> <span class="sid">AUX-09</span></li>
+        <li><span class="n2">부가세 부속서류 반영</span> <span class="sid">WJV-03</span> <span class="n3">의제매입세액 · 재활용폐자원</span></li>
+        <li><span class="n2">자금 관리항목</span> <span class="sid">WJV-04</span> <span class="sid">WJV-05</span> <span class="sid">WJV-06</span> <span class="n3">받을어음·지급어음·차입금</span></li>
+      </ul>
+    </li>
+    <li><span class="n1">TN-06 자동전표·증빙</span> <span class="sid">SA-ATX</span> <span class="sid">TN-08</span>
+      <ul><li class="tab-line">수집정보등록 · 전자세금계산서/계산서 · 신용카드 · 현금영수증 · 통장 · 자료수집현황 · 전표전송현황 · 검증/사이트비교 · ScrappingBoard</li></ul>
+    </li>
+    <li><span class="n1">TN-07 장부·원장·보조장부</span> <span class="sid">TN-07</span> <span class="sid">SA-LDG</span>
+      <ul><li class="tab-line">전표출력 · 분개장 · 일/월계표 · 총계정원장 · 현금출납장 · 계정별/거래처원장 · 매입매출장 · 차원별 원가/손익/잔액명세</li></ul>
+    </li>
+    <li><span class="n1">TN-08 마감·결산·재무제표</span> <span class="sid">TN-09</span> <span class="sid">TN-10</span> <span class="sid">SA-CLS</span>
+      <ul>
+        <li><span class="n2">마감 관리</span> <span class="badge b-red">Step-up</span> <span class="n3">가마감·본마감·마감해제·체크리스트</span></li>
+        <li><span class="n2">재무제표/결산장부</span> <span class="n3">시산표 · 재무상태표 · 손익계산서 · 제조원가명세서 · 현금흐름표 · 부속명세서</span></li>
+        <li><span class="n2">보고패키지·명세서·스케줄</span> <span class="n3">월별 보고패키지 · 계정별 명세서/tie-out · 경과/충당/리스 스케줄</span></li>
+      </ul>
+    </li>
+    <li><span class="n1">TN-09 부가세·신고서류</span> <span class="sid">SA-VAT</span>
+      <ul><li class="tab-line">부가가치세신고서 · MRI 검증 · 세금계산서/계산서합계표 · 신용카드/현금영수증 · 업종별 첨부 · 영세율/수출 · 기타 신고서류 50종</li></ul>
+    </li>
+    <li><span class="n1">TN-10 세무·고정자산·차량</span> <span class="sid">SA-FA</span> <span class="sid">AUX-09</span>
+      <ul><li class="tab-line">법인세/세무조정 · 원천세/지급명세서 · 고정자산등록/상각/관리대장 · 업무용승용차 · 월별 법인세 추정·선납세금</li></ul>
+    </li>
+    <li><span class="n1">TN-11 자금·예산·어음</span> <span class="sid">SA-FND</span> <span class="sid">SA-DEP</span> <span class="sid">SA-BIL</span>
+      <ul><li class="tab-line">일일자금 · 자금계획 · 예산입력/예실 · 예적금/차입금 · 받을/지급어음 · 당좌수표 · 주간 자금마감</li></ul>
+    </li>
+    <li><span class="n1">TN-12 외화·관계사·관리회계</span> <span class="badge b-teal">선택</span>
+      <ul><li class="tab-line">다중 회계기준 · 이중통화 환산 · 외화평가 · 관계사 대사 · Cost-plus · 예산 대비 실적 · 그룹 연결보고 Export</li></ul>
+    </li>
+    <li><span class="n1">TN-13 원가·재고·제조</span> <span class="badge b-teal">Phase/업종</span>
+      <ul><li class="tab-line">재고자산 수불부 · 제조원가명세 · 원가요소 배부 · 현장/프로젝트/부서 원가손익 · 재고 tie-out</li></ul>
+    </li>
+    <li><span class="n1">TN-14 협업·AI</span> <span class="badge b-green">AI</span>
+      <ul><li class="tab-line">Open Items/질의 · 고객 확인(Ack) · 이상거래 탐지 · AI 조회 챗봇 · 알림/커뮤니케이션</li></ul>
+    </li>
+    <li><span class="n1">TN-15 데이터관리·이관</span> <span class="sid">SA-DAT</span>
+      <ul><li class="tab-line">삭제전표복구 · 데이터백업/복구 · Smart A 내보내기/올리기 · 전체/월별/분기별 이관 · 기수변경 · 데이터 보존/파기</li></ul>
+    </li>
+  </ul>
+  </div>
+</div>
+
+<div class="chan co">
+  <div class="chan-head">공통·기술·설계 추적 <small>전 채널 공통/운영 지원</small></div>
+  <div class="chan-body">
+  <ul class="tree">
+    <li><span class="n1">CO-01 로그인·내 계정</span>
+      <ul><li class="tab-line">비밀번호 · MFA · 패스키 · SSO · 세션 · 신뢰 장치 · 로그인 이력</li></ul>
+    </li>
+    <li><span class="n1">CO-02 알림·커뮤니케이션</span>
+      <ul><li class="tab-line">알림함 · 수신 정책 · 템플릿 · D-N 스케줄 · 웹훅 · 미결항목 알림</li></ul>
+    </li>
+    <li><span class="n1">CO-03 API·서비스 계약</span>
+      <ul><li class="tab-line">내부 서비스 · API 공통 계약 · 멱등키 · 오류 응답 · 권한 미들웨어 · 대량 리포트 비동기 API</li></ul>
+    </li>
+    <li><span class="n1">CO-04 검증·오류 처리</span>
+      <ul><li class="tab-line">차대 불일치 · 마감 잠금 · SOD · DIMENSION_REQUIRED · AUX_REQUIRED · NUMBERING_CONFLICT · POSTED_IMMUTABLE</li></ul>
+    </li>
+    <li><span class="n1">CO-05 데이터 모델·상태값</span>
+      <ul><li class="tab-line">테넌트 격리 · 공통 감사 필드 · 신규/확장 엔티티 · 상태값 · FK/복합키 · append-only 이력</li></ul>
+    </li>
+    <li><span class="n1">CO-06 배치·스케줄</span>
+      <ul><li class="tab-line">자료수집 · 신고기한 알림 · 외화평가 · 스케줄 안분 · 보고패키지 생성 · 예실/그룹보고 · 보존/파기</li></ul>
+    </li>
+    <li><span class="n1">CO-07 보안·개인정보</span>
+      <ul><li class="tab-line">KMS · 암호화/마스킹 · 개인정보 접근로그 · DLP · 취약점 · 침해사고 대응 · 컴플라이언스</li></ul>
+    </li>
+    <li><span class="n1">CO-08 시스템 운영·인프라</span>
+      <ul><li class="tab-line">환경 분리 · CI/CD · 관측성 · SLO · 장애 대응 · DR · 콜드 스토리지 아카이빙</li></ul>
+    </li>
+    <li><span class="n1">CO-09 산출물·보고서</span>
+      <ul><li class="tab-line">월별 보고패키지 · 재무제표 · 신고서 · 계정별 명세 · 그룹보고 · 데이터 내보내기 · 출력물</li></ul>
+    </li>
+    <li><span class="n1">CO-10 설계서 부록 추적</span>
+      <ul>
+        <li><span class="n2">부록 B~E</span> <span class="n3">운영 모델 · 기능 모듈 상세 · 기장 방식 · 실무 산출물 역분석</span></li>
+        <li><span class="n2">부록 F~G</span> <span class="n3">기초/기준정보 화면설계 · 전표/보조부 화면설계</span></li>
+        <li><span class="n2">부록 H~L</span> <span class="n3">회의자료 · SaaS 개발 주의사항 · 추가 검토 · 기초 보강 · 주요기능 설명</span></li>
+        <li><span class="n2">일반전표입력 통합본</span> <span class="sid">WJV-01~07</span> <span class="n3">원문 화면 목차와 전표 도메인 정합 보강</span></li>
+      </ul>
+    </li>
+  </ul>
+  </div>
+</div>
+
+</div>
+</section>
+
+<section>
+<h2>3. Smart A 기능 화면군 반영</h2>
+<table>
+  <tr><th>화면군</th><th>ID 범위</th><th>메뉴 수</th><th>BK 메뉴 위치</th><th>반영 내용</th></tr>
+  <tr><td>기초정보관리</td><td><code>SA-BAS-01~14</code></td><td>14</td><td>TN-02, OP-06</td><td>회사등록, 권한설정, 환경설정, 부서/사원/거래처/COA/현장/프로젝트/차량/외주처, 마감후이월</td></tr>
+  <tr><td>전기이월·전기현장</td><td><code>SA-OPN-01~19</code></td><td>19</td><td>TN-03, TN-08</td><td>전기분 재무제표, 원가/프로젝트/현장/거래처 초기이월, 중도시산표</td></tr>
+  <tr><td>전표관리</td><td><code>SA-JNL-01~04</code></td><td>4</td><td>TN-04</td><td>일반전표, 매입매출전표, 정기청구, 물류전표처리</td></tr>
+  <tr><td>자동전표처리</td><td><code>SA-ATX-01~10</code></td><td>10</td><td>TN-06</td><td>전자세금계산서, 카드, 현금영수증, 통장, 스크래핑, 검증, 전표전송</td></tr>
+  <tr><td>주요·보조장부</td><td><code>SA-LDG-01~29</code></td><td>29</td><td>TN-07, TN-05</td><td>분개장, 원장, 현금출납장, 매입매출장, 보조장부, 차원별 원가/손익/잔액명세</td></tr>
+  <tr><td>결산·재무제표·결산장부</td><td><code>SA-CLS-01~21</code></td><td>21</td><td>TN-08</td><td>결산자료, 시산표, 재무제표, 제조원가명세, 현금흐름표, 부속명세, 경비 증명서류</td></tr>
+  <tr><td>부가가치세·신고서류</td><td><code>SA-VAT-01~50</code></td><td>50</td><td>TN-09</td><td>부가세신고서, MRI 검증, 합계표, 신용카드/현금영수증, 업종별/영세율/기타 첨부서류</td></tr>
+  <tr><td>고정자산</td><td><code>SA-FA-01~07</code></td><td>7</td><td>TN-10</td><td>고정자산등록, 상각계산, 자산관리대장, 현장/프로젝트/부서 자산명세</td></tr>
+  <tr><td>자금·예산관리</td><td><code>SA-FND-01~14</code></td><td>14</td><td>TN-11, TN-12</td><td>일일자금, 자금계획, 예산입력, 예산 실적현황, 추정예산</td></tr>
+  <tr><td>예적금·차입금</td><td><code>SA-DEP-01~03</code></td><td>3</td><td>TN-11, AUX-03</td><td>예적금현황, 차입금 스케줄, 차입금현황</td></tr>
+  <tr><td>어음·당좌관리</td><td><code>SA-BIL-01~04</code></td><td>4</td><td>TN-11, AUX-02</td><td>받을어음, 지급어음, 어음집계표, 당좌수표현황</td></tr>
+  <tr><td>데이터관리</td><td><code>SA-DAT-01~07</code></td><td>7</td><td>TN-15, OP-03</td><td>삭제전표복구, 백업/복구, Smart A 내보내기/올리기, 기수변경</td></tr>
+  <tr><th>합계</th><th>-</th><th>182</th><th>-</th><th>설계서 25장 전체 기능 화면을 메뉴 구조에 반영</th></tr>
+</table>
+</section>
+
+<section>
+<h2>4. 설계서 전체 커버리지</h2>
+<table>
+  <tr><th>설계서 영역</th><th>주요 내용</th><th>메뉴 반영 위치</th></tr>
+  <tr><td>0장</td><td>확정 원칙, 화면설계 반영 매트릭스, 회의 반영, 매입매출전표 반영</td><td>전체 메뉴 원칙, TN-04, TN-05, OP-06</td></tr>
+  <tr><td>1~10장</td><td>시스템 개요, 멀티테넌시, 인증, 권한, 접근거버넌스, 표준, 구독, 연계, 차원, 영향관리</td><td>OP-00~11, TN-01, CO-01~08</td></tr>
+  <tr><td>11장</td><td>전표, 장부, 결산, 세무, 다중 기준, AI, 마감, 원천세, 자금, 증빙, 보고패키지, 고급 회계</td><td>TN-04~14, OP-08, CO-09</td></tr>
+  <tr><td>12~18장</td><td>데이터 모델, 서비스/API, 배치, 검증/오류, 보안, 알림/협업</td><td>CO-03~07, CO-09, TN-14</td></tr>
+  <tr><td>19~24장</td><td>운영/인프라, 보안 강화, 기장 방식, 구현 우선순위, 잔여 확인사항, 산출물 연결</td><td>OP-08~10, CO-08~10</td></tr>
+  <tr><td>25장</td><td>Smart A 기준 화면 182개 재설계</td><td>TN-02~15, Smart A 기능 화면군 표</td></tr>
+  <tr><td>부록 B~E</td><td>서비스형 운영 모델, 기능 모듈 상세, 기장 방식, 실무 산출물 역분석</td><td>OP-08, TN-08~14, CO-10</td></tr>
+  <tr><td>부록 F</td><td>기초·기준정보 화면설계 요약</td><td>OP-00~08, TN-01~02, CO-10</td></tr>
+  <tr><td>부록 G</td><td>전표·보조부 화면설계 요약</td><td>TN-04~07, TN-11, CO-10</td></tr>
+  <tr><td>부록 H~L</td><td>회의자료, SaaS 개발 주의사항, 추가 검토, 기초 보강, 주요기능 설명</td><td>CO-04~10, 관련 업무 메뉴 전체</td></tr>
+  <tr><td>일반전표입력 통합본</td><td>WJV-01~07, 일반전표입력 화면, 관리항목, 자금, 체크리스트, 도메인 정합 보강</td><td>TN-04, TN-05, TN-06, CO-10</td></tr>
+</table>
+</section>
+
+<section>
+<h2>5. 역할별 기본 접근 매트릭스</h2>
+<table>
+  <tr>
+    <th>메뉴 영역</th>
+    <th class="c">운영 관리자</th>
+    <th class="c">기장 담당</th>
+    <th class="c">회사 관리자</th>
+    <th class="c">회계 담당</th>
+    <th class="c">세무 담당</th>
+    <th class="c">결재/감사</th>
+    <th class="c">외부 파트너</th>
+  </tr>
+  <tr><td>OP-00~03 운영·테넌트</td><td class="c">○</td><td class="c">△ 담당 회사</td><td class="c">-</td><td class="c">-</td><td class="c">-</td><td class="c">△ 감사</td><td class="c">△ 수임 회사</td></tr>
+  <tr><td>OP-04~07 구독·표준·권한·접근</td><td class="c">○</td><td class="c">△ 조회</td><td class="c">-</td><td class="c">-</td><td class="c">-</td><td class="c">△ 감사</td><td class="c">-</td></tr>
+  <tr><td>OP-08 기장 워크벤치</td><td class="c">△ 관리</td><td class="c">○</td><td class="c">-</td><td class="c">-</td><td class="c">-</td><td class="c">△ 검토</td><td class="c">-</td></tr>
+  <tr><td>TN-01~03 설정·기초·이월</td><td class="c">△ 대행</td><td class="c">△ 담당 회사</td><td class="c">○</td><td class="c">△</td><td class="c">△</td><td class="c">△ 조회</td><td class="c">△ 범위 내</td></tr>
+  <tr><td>TN-04 전표 입력·결재</td><td class="c">△ 대행</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">△</td><td class="c">△ 승인</td><td class="c">△ 허용 태그</td></tr>
+  <tr><td>TN-05~07 보조부·증빙·원장</td><td class="c">△ 대행</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">○</td><td class="c">△ 조회</td><td class="c">△ 허용 태그</td></tr>
+  <tr><td>TN-08 마감·결산·보고패키지</td><td class="c">△ 대행</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">△</td><td class="c">○ 승인/감사</td><td class="c">△ 조회</td></tr>
+  <tr><td>TN-09~10 신고·세무·고정자산</td><td class="c">△ 대행</td><td class="c">△ 담당 회사</td><td class="c">○</td><td class="c">△</td><td class="c">○</td><td class="c">△ 승인</td><td class="c">△ 수임 범위</td></tr>
+  <tr><td>TN-11~13 자금·고급회계·원가</td><td class="c">△ 대행</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">△</td><td class="c">△ 조회</td><td class="c">-</td></tr>
+  <tr><td>TN-14 협업·AI</td><td class="c">△</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">○</td><td class="c">△ 조회</td><td class="c">△ 허용 범위</td></tr>
+  <tr><td>TN-15 데이터관리·이관</td><td class="c">△ 승인</td><td class="c">△ 담당 회사</td><td class="c">○ 관리자</td><td class="c">-</td><td class="c">-</td><td class="c">△ 감사</td><td class="c">-</td></tr>
+  <tr><td>CO-01~10 공통·기술·추적</td><td class="c">○</td><td class="c">△</td><td class="c">△</td><td class="c">△</td><td class="c">△</td><td class="c">△</td><td class="c">△</td></tr>
+</table>
+<div class="note">○ 전체, △ 범위 제한, - 미노출. 실제 노출은 `RoleMenuPermission`, `MenuActionGrant`, 데이터 범위, 민감정보 권한, 기장 모드, 구독/기능 플래그를 결합해 결정한다.</div>
+</section>
+
+<section>
+<h2>6. 메뉴 운영 규칙</h2>
+<ul>
+  <li><b>미노출 원칙</b>: 권한 없는 메뉴는 비활성이 아니라 미노출한다. 요금제/기능 플래그 미포함 기능은 정책에 따라 업그레이드 안내로 노출할 수 있다.</li>
+  <li><b>기장 모드</b>: `TENANT_LED`는 이용회사 입력 중심, `OPERATOR_LED`는 운영자 기장 워크벤치와 회사 확인 화면 중심, `HYBRID`는 분담 규칙에 따라 입력/검토 권한을 나눈다.</li>
+  <li><b>마감 상태</b>: 메뉴는 유지하되 마감 기간 데이터의 신규/수정/삭제/기표 행위는 `CLOSING_LOCKED`로 차단한다.</li>
+  <li><b>상태 불변성</b>: `POSTED`, `CLOSED`, `LOCKED` 전표는 직접 수정/삭제하지 않고 역분개, 조정전표, 복구/이관 전용 메뉴로 처리한다.</li>
+  <li><b>기능 플래그</b>: 외화, 관계사, Cost-plus, 예산, 그룹보고, 제조원가/재고, XBRL, 다중 회계기준은 구독/업종/기능 플래그와 연동한다.</li>
+  <li><b>감사 추적</b>: 권한, 메뉴, 기장 모드, 접근 세션, 전표, 증빙, 데이터 이관, 신고 전송은 append-only 이력과 사유를 남긴다.</li>
+</ul>
+</section>
+
+</main>
+<script>
+const searchInput = document.getElementById('menuSearch');
+if(searchInput){
+  searchInput.addEventListener('input', () => {
+    const keyword = searchInput.value.trim().toLowerCase();
+    document.querySelectorAll('#menuTree li').forEach(li => {
+      li.classList.remove('hidden');
+      if(!keyword) return;
+      const text = li.textContent.toLowerCase();
+      const match = text.includes(keyword);
+      li.classList.toggle('hidden', !match && !Array.from(li.querySelectorAll('li')).some(child => child.textContent.toLowerCase().includes(keyword)));
+    });
+  });
+}
+</script>
+</body>
+</html>
