@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 회계/세무 서비스 4단 세부 메뉴구조</title>
+<style>
+:root{
+  --ink:#1c2333; --sub:#5b6478; --line:#d8dde8; --bg:#f4f6fa; --card:#fff;
+  --accent:#2554c7; --accent-bg:#eaf0fd; --op:#6d28d9; --op-bg:#f3e8ff;
+  --tn:#0f766e; --tn-bg:#cdf3ee; --warn:#b45309; --warn-bg:#fef3c7;
+  --danger:#b91c1c; --danger-bg:#fee2e2; --ok:#15803d; --ok-bg:#dcfce7;
+  --muted-bg:#eef1f6; --dark:#16213e;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;color:var(--ink);background:var(--bg);font-size:13px;line-height:1.55}
+main{max-width:1680px;margin:0 auto;padding:28px 30px 72px}
+.doc-header{background:linear-gradient(135deg,#1c2333,#2554c7);color:#fff;border-radius:12px;padding:24px 30px;margin-bottom:22px}
+.doc-header h1{margin:0 0 6px;font-size:24px;letter-spacing:0}
+.doc-header p{margin:3px 0;color:#d8e2fb;font-size:13px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:20px}
+h2{font-size:18px;margin:0 0 14px;padding-bottom:9px;border-bottom:2px solid var(--accent);color:var(--dark)}
+h3{font-size:15px;margin:18px 0 8px;color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
+th,td{border:1px solid var(--line);padding:6px 7px;text-align:left;vertical-align:top;word-break:keep-all;overflow-wrap:anywhere}
+th{background:var(--muted-bg);font-size:11.5px;white-space:nowrap;position:sticky;top:0;z-index:1}
+tbody tr:nth-child(even){background:#fbfcff}
+tbody tr:hover{background:#f7fbff}
+td[rowspan]{background:#fff;font-weight:700}
+.level0{font-weight:700;color:#fff;background:#33415e!important;text-align:center}
+.level1{font-weight:700;color:var(--dark);background:#f8faff}
+.level2{font-weight:700;color:#33415e;background:#fbfcff}
+.level3{color:var(--ink)}
+.path{font-size:11px;color:var(--sub);margin-top:3px}
+.grid-wrap{max-height:760px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:10px 0 16px}
+.metric{border:1px solid var(--line);border-radius:8px;background:#fbfcff;padding:12px 14px}
+.metric b{display:block;font-size:20px;color:var(--accent);margin-bottom:2px}
+.metric span{font-size:12px;color:var(--sub)}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 14px}
+.search,.select{border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:#fff;font-size:13px}
+.search{min-width:340px}
+code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Consolas,'D2Coding',monospace;font-size:11.5px;color:#33415e}
+.badge{display:inline-block;border-radius:9px;padding:0 8px;font-size:10.4px;font-weight:700;white-space:nowrap;vertical-align:middle}
+.b-blue{background:var(--accent-bg);color:var(--accent)}
+.b-purple{background:var(--op-bg);color:var(--op)}
+.b-green{background:var(--ok-bg);color:var(--ok)}
+.b-amber{background:var(--warn-bg);color:var(--warn)}
+.b-red{background:var(--danger-bg);color:var(--danger)}
+.b-gray{background:var(--muted-bg);color:var(--sub)}
+.b-teal{background:var(--tn-bg);color:var(--tn)}
+.sid{display:inline-block;background:#1c2333;color:#fff;border-radius:4px;padding:0 7px;font-size:10.6px;font-family:Consolas,monospace;vertical-align:middle}
+.note{background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:0 6px 6px 0;padding:9px 14px;font-size:12.5px;margin:10px 0}
+.toc{display:flex;gap:10px;flex-wrap:wrap}
+.toc a{color:var(--accent);text-decoration:none;border:1px solid #bfd0f5;background:var(--accent-bg);border-radius:6px;padding:6px 10px;font-size:12px}
+.op-title{border-left:5px solid var(--op);padding-left:10px}
+.tn-title{border-left:5px solid var(--tn);padding-left:10px}
+.c{text-align:center}
+.w-no{width:44px}.w-channel{width:92px}.w-code{width:86px}.w-menu{width:116px}.w-sub{width:150px}.w-id{width:118px}.w-purpose{width:240px}.w-data{width:210px}.w-rule{width:190px}.w-source{width:96px}
+@media(max-width:1100px){main{padding:18px 14px}.summary{grid-template-columns:1fr 1fr}.search{min-width:220px;width:100%}.grid-wrap{max-height:none}}
+@media print{body{background:#fff}main{max-width:none;padding:8px}section{break-inside:avoid;border:none}.toolbar,.toc{display:none}.grid-wrap{max-height:none;overflow:visible}th{position:static}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="doc-header">
+  <h1>BK 회계/세무 서비스 4단 세부 메뉴구조</h1>
+  <p>기준 문서: <b>bk_설계서_v1.0.md</b> · 참조 화면: <b>설계/화면설계/메뉴구조도_V1.0.HTML</b></p>
+  <p>작성일: 2026-06-30 · 파일명: <b>설계/화면설계/메뉴구조.html</b></p>
+  <p>운영콘솔과 업무화면을 분리하고, 각 메뉴를 구분 → 상위 메뉴 → 하위 메뉴 → 세부 메뉴/화면의 4단 구조로 상세화했다. 업무화면에는 SA 기준 182개 세부 기능 화면을 개별 행으로 포함한다.</p>
+</div>
+
+<section>
+<h2>1. 구성 기준</h2>
+<div class="toc">
+  <a href="#op">운영콘솔 그리드</a>
+  <a href="#tn">업무화면 그리드</a>
+  <a href="#rules">공통 운영 규칙</a>
+</div>
+<div class="summary">
+  <div class="metric"><b id="opCount">0</b><span>운영콘솔 메뉴 행</span></div>
+  <div class="metric"><b id="tnCount">0</b><span>업무화면 메뉴 행</span></div>
+  <div class="metric"><b id="saCount">182</b><span>SA 세부 기능 화면</span></div>
+  <div class="metric"><b>4</b><span>메뉴 단계: 구분 / 상위 / 하위 / 세부</span></div>
+</div>
+<div class="note">컬럼은 메뉴코드, 1단계 구분, 2단계 상위 메뉴, 3단계 하위 메뉴, 4단계 세부 메뉴/화면, 화면 ID, 업무 목적, 주요 데이터/엔티티, 권한/통제, 노출조건, 설계 근거 순서다. 같은 구분·상위·하위 메뉴는 행 병합으로 묶어 4단 구조가 바로 보이게 구성했다.</div>
+</section>
+
+<section id="op">
+<h2 class="op-title">2. 운영콘솔 4단 메뉴 그리드</h2>
+<div class="toolbar">
+  <input id="opSearch" class="search" type="search" placeholder="운영콘솔 메뉴 검색">
+  <select id="opFilter" class="select">
+    <option value="">전체 운영콘솔 메뉴</option>
+    <option value="테넌트">테넌트/인프라</option>
+    <option value="권한">사용자/권한</option>
+    <option value="기장">기장/워크벤치</option>
+    <option value="보안">보안/감사</option>
+    <option value="운영">운영/모니터링</option>
+  </select>
+</div>
+<div class="grid-wrap">
+<table>
+  <thead>
+    <tr>
+      <th class="w-no">No</th>
+      <th class="w-code">메뉴코드</th>
+      <th class="w-channel">1단계 구분</th>
+      <th class="w-menu">2단계 상위 메뉴</th>
+      <th class="w-sub">3단계 하위 메뉴</th>
+      <th class="w-sub">4단계 세부 메뉴/화면</th>
+      <th class="w-id">화면 ID</th>
+      <th class="w-purpose">업무 목적</th>
+      <th class="w-data">주요 데이터/엔티티</th>
+      <th class="w-rule">권한/통제</th>
+      <th class="w-rule">노출조건/비고</th>
+      <th class="w-source">근거</th>
+    </tr>
+  </thead>
+  <tbody id="opBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="tn">
+<h2 class="tn-title">3. 업무화면 4단 메뉴 그리드</h2>
+<div class="toolbar">
+  <input id="tnSearch" class="search" type="search" placeholder="업무화면 메뉴, SA/JV/AUX/BF/WJV ID 검색">
+  <select id="tnFilter" class="select">
+    <option value="">전체 업무화면 메뉴</option>
+    <option value="기초">기초/기준정보</option>
+    <option value="전표">전표/자동전표</option>
+    <option value="장부">장부/보조부</option>
+    <option value="결산">결산/보고</option>
+    <option value="세무">세무/신고</option>
+    <option value="자금">자금/예산</option>
+    <option value="데이터">데이터관리/이관</option>
+  </select>
+</div>
+<div class="grid-wrap">
+<table>
+  <thead>
+    <tr>
+      <th class="w-no">No</th>
+      <th class="w-code">메뉴코드</th>
+      <th class="w-channel">1단계 구분</th>
+      <th class="w-menu">2단계 상위 메뉴</th>
+      <th class="w-sub">3단계 하위 메뉴</th>
+      <th class="w-sub">4단계 세부 메뉴/화면</th>
+      <th class="w-id">화면 ID</th>
+      <th class="w-purpose">업무 목적</th>
+      <th class="w-data">주요 데이터/엔티티</th>
+      <th class="w-rule">권한/통제</th>
+      <th class="w-rule">노출조건/비고</th>
+      <th class="w-source">근거</th>
+    </tr>
+  </thead>
+  <tbody id="tnBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="rules">
+<h2>4. 공통 운영 규칙</h2>
+<table>
+  <tr><th>규칙</th><th>적용 메뉴</th><th>처리 기준</th></tr>
+  <tr><td>권한 없는 메뉴 미노출</td><td>전체</td><td>메뉴 노출은 `RoleMenuPermission`, 버튼/행위는 `MenuActionGrant`, 데이터 범위는 Role의 `dataScope`와 가드레일로 평가한다.</td></tr>
+  <tr><td>기장 모드 연동</td><td>OP-08, TN 전표/마감/신고/보고</td><td>`TENANT_LED`, `OPERATOR_LED`, `HYBRID`에 따라 입력·검토·승인·확인(Ack) 행위를 분리한다.</td></tr>
+  <tr><td>Step-up 인증</td><td>권한 변경, 신고 전송, 마감해제, 긴급대행, 대량 다운로드</td><td>재인증 결과와 사유를 세션 및 감사 로그에 기록한다.</td></tr>
+  <tr><td>마감 잠금</td><td>전표, 보조부, 신고, 결산</td><td>마감 기간 신규/수정/삭제는 `CLOSING_LOCKED`로 차단한다. 정정은 역분개 또는 조정전표로 처리한다.</td></tr>
+  <tr><td>기표 후 불변성</td><td>전표·원장·보조부</td><td>`POSTED`, `CLOSED`, `LOCKED` 전표는 직접 수정/삭제 금지. 역분개, 삭제전표복구, 데이터관리 메뉴로만 처리한다.</td></tr>
+  <tr><td>기능 플래그</td><td>외화, 관계사, 예산, 그룹보고, 제조원가/재고, XBRL</td><td>구독, 업종, Phase, 회사 설정에 따라 메뉴를 노출하거나 업그레이드 안내로 표시한다.</td></tr>
+  <tr><td>감사 추적</td><td>전체 중요 메뉴</td><td>전표, 신고, 권한, 접근, 기장모드, 메뉴버전, 데이터 이관은 append-only 이력과 변경 사유를 남긴다.</td></tr>
+</table>
+</section>
+
+</main>
+
+<script>
+const opRows = [
+  ['OP-00','이용회사 선택','회사 검색','담당/수임 회사 선택','BF-00','운영자 또는 외부 파트너가 작업 대상 이용회사를 선택하고 테넌트 컨텍스트를 시작한다.','OperatorTenantLink, ExternalPartnerProfile, Tenant','운영자/외부 파트너, 담당·수임 범위 필터','로그인 직후 또는 GNB 회사 전환 시 사용','F.5.1'],
+  ['OP-00','이용회사 선택','접근 모드','VIEW/SUPPORT_SESSION/BOOKKEEPING/BREAK_GLASS','BF-00, BF-06','회사 진입 전 접근 목적과 사유를 확정한다.','AdminAccessSession, BreakGlassRequest','BOOKKEEPING/BREAK_GLASS는 Step-up','BREAK_GLASS는 사전동의·승인·녹화 필요','5장, F.4.1'],
+  ['OP-01','운영 대시보드','현황 위젯','테넌트·구독·수집·배치·SLO','-','운영 상태와 장애/보안/기장 미결 작업을 한 화면에서 감시한다.','Tenant, ServiceSubscription, AsyncReportJob, SLOEvent','운영 관리자/감사자는 조회, 담당자는 담당 범위','운영 콘솔 기본 첫 화면','19장'],
+  ['OP-02','관리회사·조직','기본정보','관리회사 본체','BF-01','관리회사 법인/조직의 기본 설정을 관리한다.','OperatorOrg','운영 관리자 전용','전역 화면, 테넌트 선택 불필요','F.5.2'],
+  ['OP-02','관리회사·조직','조직 트리','본부·팀·책임자·상위조직','BF-01','운영조직 계층과 담당 조직을 관리한다.','OperatorOrgUnit','조직 코드 유일, 순환참조 차단','조직 변경은 감사 로그 기록','F.5.2'],
+  ['OP-02','관리회사·조직','담당 테넌트','담당 회사 배정/종료','BF-01','관리회사와 이용회사 간 담당 관계를 관리한다.','OperatorTenantLink','활성 담당 관계 중복 차단','기장 워크벤치와 회사 선택 범위에 영향','F.5.2'],
+  ['OP-02','관리회사·조직','IP 허용목록','운영 콘솔 접근 제한','BF-01','운영 콘솔 접근 가능 IP/CIDR을 관리한다.','OperatorOrg.ipAllowlist','CIDR 형식 검증, 자기 잠금 경고','변경 사유 필수','F.5.2, 20.3'],
+  ['OP-03','이용회사/테넌트','기본정보','회사·사업자·회계기준·상태','BF-02','테넌트 기본정보와 온보딩 상태를 관리한다.','Tenant','사업자번호 활성 중복 차단','구독 상태와 테넌트 상태 연동','F.5.3'],
+  ['OP-03','이용회사/테넌트','인프라/격리','SHARED/SCHEMA/DEDICATED, RLS','BF-02','테넌트 데이터 격리 티어와 RLS 적용 상태를 관리한다.','TenantInfra','SHARED는 RLS 강제','티어 전환 중 쓰기 제한','2장, F.5.3'],
+  ['OP-03','이용회사/테넌트','티어 전환','스냅샷·이관·검증·안정화','BF-02','격리 티어 전환 절차를 관리한다.','TenantSnapshot, TenantInfra.migrationState','PRE_TIER_CHANGE 스냅샷 필수','STABLE→MIGRATING→VERIFYING→STABLE','2.1.1, F.7'],
+  ['OP-03','이용회사/테넌트','쿼터/사용한도','사용자·저장공간·API·잡 한도','BF-02','요금제별 리소스 한도를 설정하고 초과 상태를 제어한다.','QuotaProfile','한도 초과 시 신규 생성 차단 또는 유예','구독·요금제 변경과 동기화','F.5.3'],
+  ['OP-03','이용회사/테넌트','스냅샷/복원','마감·신고·전환 전 백업','BF-02','테넌트 시점 백업과 복원을 관리한다.','TenantSnapshot','복원은 승인·감사 필수','WORM 보관, 만료 관리','F.5.3'],
+  ['OP-03','이용회사/테넌트','비동기 잡','리포트·배치·DLQ','BF-02','대용량 작업의 진행상태와 결과 링크를 관리한다.','AsyncReportJob','멱등키 중복 차단, 서명 만료 링크','실패 재시도·DLQ','F.5.3'],
+  ['OP-04','구독·요금','요금제','플랜·티어·쿼터','BF-10','판매 요금제와 쿼터 프로파일을 관리한다.','BillingPlan, QuotaProfile','운영 관리자 전용','테넌트 인프라 티어와 연결','F.5.11'],
+  ['OP-04','구독·요금','구독','체험·활성·연체·유예·해지','BF-10','테넌트의 구독 상태와 데이터 보존 상태를 관리한다.','ServiceSubscription','상태머신만 허용','상태가 기능/입력 메뉴에 영향','7장, F.5.11'],
+  ['OP-04','구독·요금','청구/결제/독촉','Invoice, Payment, Dunning','BF-10','청구서, 결제, 미납 독촉을 관리한다.','Invoice, Payment, DunningCase','결제수단 평문 대행 입력 금지','PG/토큰 참조만 저장','F.7'],
+  ['OP-05','공통 표준','표준 카탈로그','STD_ACCOUNT/STD_VAT/STD_ROLE 등','BF-08','전역 표준 정의와 소관을 관리한다.','GlobalStandard, StandardItem','표준 소관자/운영 관리자','전역 표준은 테넌트가 약화 불가','6장, F.5.9'],
+  ['OP-05','공통 표준','버전·배포','DRAFT/PUBLISHED/DEPRECATED/RETIRED','BF-08','표준 버전과 배포/롤백을 관리한다.','StandardVersion, StandardRollbackLog','발행 권한자 전용','배포 모드 MANDATORY/RECOMMENDED/OPTIONAL','F.5.9'],
+  ['OP-05','공통 표준','테넌트 채택/확장','ADOPTED/OVERRIDDEN/ROLLED_BACK','BF-08','테넌트별 표준 채택, 오버라이드, 롤백 상태를 관리한다.','TenantStandardAdoption, TenantStandardExtension','회사 관리자 또는 운영자','허용 범위 내 ADD/OVERRIDE/DISABLE','F.5.9'],
+  ['OP-06','사용자·인증·권한','사용자 관리','사용자·계정상태·MFA·SSO','BF-04','운영자/테넌트/외부 파트너 사용자를 관리한다.','User, AccountStatus, MfaDevice, SsoIdentity','관리자 전용, 그룹별 소속 필수','비밀번호 평문 저장 금지','F.5.5'],
+  ['OP-06','사용자·인증·권한','인증 정책','MFA·Step-up·세션·SSO·IP','BF-05','전역/테넌트 보안 정책을 관리한다.','AuthPolicy','보안 관리자 전용','테넌트 정책은 전역 하한 약화 불가','F.5.6'],
+  ['OP-06','사용자·인증·권한','역할/가드레일','Role, RoleAssignment, SOD','BF-07','역할과 행위권한, 데이터범위, 민감정보권한을 관리한다.','Permission, Role, RoleAssignment, PolicyGuardrail','SOD 충돌 차단, 예외는 승인 필요','표준 Role 가져오기/확장 가능','F.5.8'],
+  ['OP-06','사용자·인증·권한','메뉴·권한 관리','메뉴 마스터/버전/역할 매핑','BF-12','메뉴 노출, 진입, 버튼 권한을 역할별로 관리한다.','Menu, MenuVersion, RoleMenuPermission, MenuActionGrant','명시적 거부가 허용보다 우선','메뉴 삭제 금지, 비활성/버전 보존','F.5.13'],
+  ['OP-07','접근 거버넌스','접근 세션','운영자 테넌트 접근 기록','BF-06','운영자의 테넌트 접근 근거와 세션을 추적한다.','AdminAccessSession, AdminAccessLog','운영/감사 권한, Step-up','모든 접근 로그 append-only','5장, F.5.7'],
+  ['OP-07','접근 거버넌스','개인정보 접근','평문 조회·대량 다운로드','BF-06','개인정보 접근을 별도 이중 기록한다.','PersonalDataAccessLog','Step-up, 사유 필수','대량 다운로드는 승인 워크플로우','F.8'],
+  ['OP-07','접근 거버넌스','긴급대행','Break-glass 승인·녹화·검토','BF-06','긴급 운영 개입을 사전동의와 사후검토로 통제한다.','BreakGlassConsent, BreakGlassRequest, SessionRecording','2인 승인, 녹화, 사후검토','승인 범위·시간 내 메뉴만 활성','5.3, F.5.7'],
+  ['OP-08','기장 워크벤치','기장 모드 설정','OPERATOR_LED/TENANT_LED/HYBRID','BF-03','기장 수행 주체와 확인 의무를 설정한다.','BookkeepingConfig','양측 동의, Step-up','효력일은 마감완료 익월 1일, 소급 금지','21장, F.5.4'],
+  ['OP-08','기장 워크벤치','기장 담당 배정','BK_PREPARER/BK_REVIEWER/BK_MANAGER','BF-07','운영자 기장 담당자를 회사별로 배정한다.','BookkeepingAssignment','작성자와 검토자 겸직 금지','배정 기간 외 행위 차단','4.5, F.5.8'],
+  ['OP-08','기장 워크벤치','담당 회사 보드','전표·마감·신고·보고패키지 작업 진입','BF-00, TN 업무화면','담당 회사 업무를 BOOKKEEPING 컨텍스트로 처리한다.','AdminAccessSession, BookkeepingAssignment','담당 회사만 접근','전 화면에 기장 모드/접근 모드 표식','21.5'],
+  ['OP-08','기장 워크벤치','보고패키지/미결 큐','보고패키지 조립·Open Items·Ack','TN-14, TN-08','위탁기장 산출물 생성과 고객 확인을 관리한다.','ReportPackage, OpenItem, QueryThread','기장 담당/관리자','OPERATOR_LED/HYBRID 회사 중심','11.13, 18.3'],
+  ['OP-09','운영·배치·연계','연계 볼트','외부 인증정보·시크릿','CO-07','외부 수집/신고 연계 인증정보를 보관한다.','ExternalCredentialVault','KMS 암호화, 평문 노출 제한','테넌트별 볼트 분리','8장'],
+  ['OP-09','운영·배치·연계','자료수집 ETL','스크래핑·정규화·스테이징','SA-ATX, CO-06','전자세금계산서, 카드, 통장 등 외부자료를 수집한다.','CollectionJob, StagingTable','운영 모니터링/재처리 권한','비동기 큐, DLQ 관리','8.4, 14장'],
+  ['OP-09','운영·배치·연계','관측성/SLO','로그·메트릭·트레이스·장애','CO-08','서비스 운영상태와 장애 대응을 관리한다.','SLOEvent, Incident, DeployLog','운영/감사 권한','장애 대응·DR 절차 연계','19장'],
+  ['OP-10','보안·감사','키 관리','KMS·키 회전·암호화 정책','CO-07','암호화 키와 회전 이력을 관리한다.','KmsKey, KeyRotationLog','보안 관리자 전용','법정/내부 보안 기준 준수','20.1'],
+  ['OP-10','보안·감사','취약점/DLP','취약점 SLA·대량 행위 통제','CO-07','취약점, 데이터 유출, 대량 다운로드를 통제한다.','VulnerabilityFinding, DlpEvent','보안/감사 권한','대량 행위는 승인·Step-up','20.2~20.4'],
+  ['OP-10','보안·감사','감사로그','변경이력·해시체인','CO-05','감사 로그 무결성을 검증하고 조회한다.','DataChangeLog, AuditHashChain','감사자 조회, 변경 불가','append-only, 물리 삭제 금지','12.3, 17장'],
+  ['OP-11','AI·규칙 운영','이상거래 탐지','룰/모델/임계치/검토 큐','TN-14','이상 전표/거래 탐지 규칙과 모델을 운영한다.','AnomalyRule, AnomalyFinding','AI 운영자/감사자','휴먼인더루프 검토 필수','11.7'],
+  ['OP-11','AI·규칙 운영','AI 조회 챗봇','가드레일·허용 쿼리·감사','TN-14','자연어 조회 기능의 데이터 접근 범위를 통제한다.','ChatGuardrailPolicy, QueryToolLog','읽기 전용, 권한 범위 강제','응답 데이터 서버 필터링','11.8']
+];
+
+const tnCoreRows = [
+  ['TN-00','회사 대시보드','현황','신고기한·미결전표·마감상태','-','이용회사 업무 시작 화면과 주요 알림 허브다.','Tenant, ClosingStatus, OpenItem, Alert','소속 사용자 권한 범위','위젯은 Role 데이터 범위에 따라 필터','1장, 18장'],
+  ['TN-01','회사 설정·기초','기장 방식','기장 모드·확인의무·전환 요청','BF-03','회사별 기장 수행 주체와 신고 승인 책임을 설정한다.','BookkeepingConfig, ModeChangeRequest','회사 관리자/운영자, Step-up','OPERATOR_LED/HYBRID에 따라 메뉴 가변','21장, F.5.4'],
+  ['TN-01','회사 설정·기초','차원/관리항목','사업장·코스트센터·부서·프로젝트·현장·사원','BF-09','전표와 원장 분석에 쓰는 관리차원 마스터를 관리한다.','Dimension, BusinessPlace, CostCenter, Department, Project, Site, Employee','회사 관리자/운영자','사업장 기본 필수, 나머지는 회사 설정으로 강화','9장, F.5.10'],
+  ['TN-01','회사 설정·기초','차원 사용정책/소수점','DimensionConfig, TenantAccountingConfig','BF-09','차원 필수/기본값/조합 검증과 금액·수량·환율 자릿수를 관리한다.','DimensionConfig, TenantAccountingConfig','회사 관리자','전표 저장 검증에 즉시 영향','9.3, F.7'],
+  ['TN-01','회사 설정·기초','알림 설정','수신정책·템플릿·D-N·웹훅','BF-11','법정 기한, 인증서, 어음, 마감 알림을 설정한다.','NotificationPolicy, NotificationTemplate, WebhookEndpoint','회사 관리자/사용자','법정/보안 통지는 수신 거부 불가','18장, F.5.12'],
+  ['TN-02','기초정보관리','BK 기준정보','회사/권한/환경/거래처/COA/차원','BF-01~12, SA-BAS','기초·마스터 정보를 등록하고 SA 기초 기능을 BK 모델로 흡수한다.','Tenant, Partner, COA, Dimension, Menu, Role','회사 관리자/회계 관리자','SA-BAS 14개 화면 세부 행 별도 포함','25.1, F절'],
+  ['TN-03','전기이월·개시잔액','초기이월','재무제표·거래처·부서·프로젝트·현장 이월','SA-OPN','전임 장부나 전기 잔액을 BK 기초잔액으로 적재한다.','OpeningBalance, FiscalPeriod, Dimension','회계 관리자/기장 담당','차액 검증 통과 후 정상 기장 개시','25.2~25.3'],
+  ['TN-04','전표 입력·결재','일반전표입력','대체·입금·출금·결차·결대 통합','JV-01, SA-JNL-01, WJV-01','일반 거래를 하나의 전표 입력 화면에서 처리한다.','journal_header, journal_line','회계담당/기장담당, 마감기간 차단','입금/출금 별도 메뉴 없음, 현금 위치로 판정','11.1, 25.4.1, G.5.1'],
+  ['TN-04','전표 입력·결재','현금 간편입력','현금 차변/대변 고정 모드','JV-02, JV-03','현금 입출금 단순 거래를 빠르게 입력한다.','journal_line','회계담당/기장담당','현금만 허용, 채권채무/부가세 계정은 대체전표 유도','G.5.2'],
+  ['TN-04','전표 입력·결재','매입매출전표입력','상단 세무헤더 + 하단 분개라인','JV-04, JV-05, SA-JNL-02, WPV-01','부가세 신고자료와 재무회계 분개를 동시에 생성한다.','journal_tax_line, journal_line, tax_type_master','회계/세무담당','과세유형이 신고서식 라우팅의 단일 진실원','25.4.2, G.5.3~G.5.4'],
+  ['TN-04','전표 입력·결재','전표 도구','복사·반복·템플릿·역분개','JV-06','반복 입력과 기표 후 정정을 지원한다.','JournalTemplate, ReversalJournal','회계담당/결재권자','POSTED 전표는 역분개로만 정정','G.5.5'],
+  ['TN-04','전표 입력·결재','전표 검색/수정/삭제','상태별 조회·수정·역분개','JV-07','전표 상태별 조회와 정정 흐름을 제공한다.','journal_header, journal_history','권한/상태별 제한','POSTED/CLOSED/LOCKED 직접 수정 금지','G.5.6'],
+  ['TN-04','전표 입력·결재','다건·일괄 입력','엑셀/CSV 업로드·행별 검증','JV-08','외부 기장자료를 대량 업로드하고 전표로 생성한다.','ImportBatch, journal_line','회계담당/기장담당','오류행 인라인 수정 후 재검증','G.5.7'],
+  ['TN-04','전표 입력·결재','전표 결재함','승인·반려·기표','TN-06','작성 전표를 검토하고 결재/기표한다.','ApprovalRule, ApprovalStep, journal_history','작성자와 승인자 동일 금지','SOD_VIOLATION 차단','4장, G.8.3'],
+  ['TN-05','보조부·관리항목','관리항목 입력','전표 라인 보조항목 입력','WJV-02','전표 라인의 차원, 거래처, 자금, 차량, 카드 등 관리항목을 입력한다.','journal_line_aux, DimensionConfig','라인 입력 권한','필수 관리항목 누락 시 AUX_REQUIRED 차단','G.6, 부록 일반전표'],
+  ['TN-05','보조부·관리항목','관리항목 통합 관리','차원/보조부 마스터 관리','WJV-07','입력 중 필요한 관리항목 마스터를 추가/수정한다.','Dimension, Partner, Note, BankAccount, Card','회사 관리자/회계 관리자','계정별 노출/필수 규칙과 연결','부록 일반전표'],
+  ['TN-05','보조부·관리항목','거래처별 보조부','채권·채무·외화·aging','AUX-01','거래처별 채권채무 잔액과 반제 관계를 관리한다.','partner, journal_line_aux','회계/세무/기장 담당','잔액만·연체만·미반제만 조회','G.6'],
+  ['TN-05','보조부·관리항목','어음 보조부','받을/지급어음·할인·부도·타임라인','AUX-02, WJV-04, WJV-05','어음번호 기준 만기와 상태 이력을 추적한다.','note, note_history','회계/기장 담당','할인 자동분개, 원전표-증빙-후속전표 연결','G.6'],
+  ['TN-05','보조부·관리항목','부가세 부속서류 반영','의제매입세액·재활용폐자원','WJV-03','일반전표 입력 중 부가세 부속서류 반영 대상 라인을 식별하고 신고자료와 연결한다.','vat_attachment, purchase_ledger_line, journal_line_aux','세무/회계 담당','과세유형·계정·증빙 유형 조건 충족 시 노출','부록 일반전표 5.1'],
+  ['TN-05','보조부·관리항목','차입금 입력','차입처·약정·이자·상환 스케줄','WJV-06','차입금 보조부를 등록하고 원금/이자/상환 전표와 연결한다.','loan, loan_schedule, journal_line_aux','회계/자금 담당','계정과목이 차입금 관리대상일 때 필수 입력','부록 일반전표 6.4'],
+  ['TN-05','보조부·관리항목','예금/카드 보조부','계좌 대사·카드 공제판정','AUX-03, AUX-04','은행/카드 수신내역과 전표 후보를 관리한다.','bank_account, card, card_txn','회계/기장 담당','카드 MCC·공제세액 보존','G.6'],
+  ['TN-05','보조부·관리항목','가지급금·부가세·현금','정산·신고집계·시재','AUX-05, AUX-06, AUX-07','특수 보조부와 현금출납을 관리한다.','advance, purchase_ledger_line, journal_line','회계/세무 담당','부가세는 프로젝트·부서·사업장 필터 제공','G.6'],
+  ['TN-05','보조부·관리항목','재고/고정자산 보조부','수불·취득·상각 기준','AUX-08, AUX-09','재고수불과 고정자산대장을 관리한다.','stock_move, fixed_asset','회계/자산 담당','AUX-08은 Phase 2 이관','G.6'],
+  ['TN-06','자동전표·증빙','증빙함','파일·세금계산서·카드·어음 증빙 매칭','TN-08','증빙을 수집하고 전표 라인과 매칭한다.','evidence, evidence_match','회계/세무/기장 담당','평문/민감정보는 마스킹·재인증','11.12, G.4'],
+  ['TN-06','자동전표·증빙','자동전표 수집','전자세금계산서·카드·현금영수증·통장','SA-ATX','외부자료를 수집해 전표 후보로 전송한다.','CollectionJob, StagingEvidence, AutoJournalCandidate','회계/기장 담당','중복방지·전표전송현황·자동전표검증','25.5'],
+  ['TN-07','장부·원장·보조장부','주요장부','분개장·원장·시산표·매입매출장','SA-LDG-01~09','전표와 원장을 조회/출력한다.','journal_header, journal_line, ledger_view','조회 권한/데이터 범위','POSTED 기준 집계','25.6'],
+  ['TN-07','장부·원장·보조장부','보조장부','공사/외주/차량/차원별 원가·손익','SA-LDG-10~29','세부 보조원장과 차원별 손익/원가를 조회한다.','journal_line_aux, Dimension, CostAllocation','조회 권한/차원 범위','관리차원별 필터','25.7~25.8'],
+  ['TN-08','마감·결산·재무제표','마감 관리','가마감·본마감·마감해제·체크리스트','TN-09','기간별 입력 잠금과 마감 체크리스트를 관리한다.','ClosingPeriod, ClosingChecklist','마감 권한자, Step-up','미tie-out/미결항목/원가계산 게이트','11.9'],
+  ['TN-08','마감·결산·재무제표','결산/재무제표','결산자료·시산표·재무제표','SA-CLS-01~14','결산 입력과 재무제표 산출물을 생성한다.','closing_entry, financial_statement','회계/결산 담당','결차/결대 구분 반영','25.9'],
+  ['TN-08','마감·결산·재무제표','결산장부/증명서류','영수증·송금·지출증명·기간별 손익','SA-CLS-15~21','결산 부속장부와 증명 서류를 생성한다.','supporting_schedule, evidence_summary','회계/세무 담당','증빙 누락 검증과 연결','25.10'],
+  ['TN-08','마감·결산·재무제표','보고패키지·tie-out·스케줄','월별 보고패키지·계정별 명세·리스','-','월말 보고 산출물과 잔액 소명, 기간배분 스케줄을 관리한다.','ReportPackage, AccountSchedule, LeaseContract','회계/기장/결재자','마감 게이트와 고객 Ack 연결','11.13~11.15'],
+  ['TN-09','부가세·신고서류','부가세 주요신고','신고서·MRI·합계표·전자신고','SA-VAT-01~08','부가세 신고서와 주요 합계표를 작성/검증/전송한다.','vat_return, tax_invoice_summary','세무 담당, 신고 전송 Step-up','사업장/사업자단위 신고','25.11'],
+  ['TN-09','부가세·신고서류','업종별/첨부/영세율/기타','부가세 첨부서류 42종','SA-VAT-09~50','업종별, 영세율, 수출, 기타 신고 부속서류를 관리한다.','vat_attachment, evidence','세무 담당','과세유형·계정·적요 기반 라우팅','25.12~25.15'],
+  ['TN-10','세무·고정자산·차량','원천세·법인세·세무조정','신고·추정세액·선납세금','-','세무 신고와 월별 법인세 추정/선납세금을 관리한다.','TaxProvision, PrepaidTax, filing_status','세무 담당, 신고 Step-up','법정 신고기한 알림과 연결','11.5, 11.5 확장'],
+  ['TN-10','세무·고정자산·차량','고정자산','등록·상각·관리대장·자산명세','SA-FA, AUX-09','고정자산 취득, 상각, 배부 기준을 관리한다.','fixed_asset, depreciation_schedule','자산/회계 담당','전표 취득 라인과 연결','25.16, G.6'],
+  ['TN-11','자금·예산·어음','자금관리','일일자금·자금계획·입출금·자금일월보','SA-FND-01~06','자금 흐름과 계획을 관리한다.','cash_plan, bank_txn, fund_schedule','회계/자금 담당','은행거래 대사와 연결','25.17'],
+  ['TN-11','자금·예산·어음','예산관리','예산입력·예실·추정예산','SA-FND-07~14','예산과 실적을 월별/분기별로 비교한다.','Budget, BudgetActual','관리회계 담당','부서/코스트센터 차원 사용','11.19, 25.17'],
+  ['TN-11','자금·예산·어음','예적금·차입금','예적금현황·차입금스케줄','SA-DEP','예금과 차입금 잔액 및 일정을 관리한다.','bank_account, borrowing_schedule','자금/회계 담당','AUX-03 예금 보조부와 연결','25.18'],
+  ['TN-11','자금·예산·어음','어음·당좌','받을/지급어음·어음집계·수표','SA-BIL, AUX-02','어음과 당좌수표 상태를 관리한다.','note, checkbook, note_history','자금/회계 담당','만기/할인/부도 타임라인','25.19, G.6'],
+  ['TN-12','외화·관계사·관리회계','외화 평가','환율·월말환산·외환손익','-','외화 채권채무와 월말 환산을 처리한다.','FxRate, FxRevaluation','회계/기장 담당','feature.fxRevaluation','11.16'],
+  ['TN-12','외화·관계사·관리회계','관계사 거래·대사','IC 마스터·잔액·연결제거 기초','-','관계사 거래와 상호잔액을 대사한다.','RelatedParty, IntercompanyBalance','회계/관리회계 담당','feature.intercompany','11.17'],
+  ['TN-12','외화·관계사·관리회계','Cost-plus·차이분석','원가가산 수익·Invoice vs PL','-','원가가산 수익과 청구/손익 차이를 분석한다.','CostPlusRule, InvoicePLDiff','관리회계 담당','feature.costPlus','11.18'],
+  ['TN-12','외화·관계사·관리회계','그룹 연결보고','HFM/Weblink Export·계정매핑','-','그룹 보고 패키지와 연결보고 파일을 생성한다.','GroupReportMapping, GroupExport','관리자/회계 담당','feature.groupReporting','11.20'],
+  ['TN-13','원가·재고·제조','제조원가·재고수불','재고수불·원가계산·제조원가명세','AUX-08, SA-CLS-05','재고와 원가요소 배부, 제조원가명세를 관리한다.','stock_move, CostAllocationRule, CostStatement','제조/원가 담당','제조/유통 업종, Phase 2 항목 포함','11.21'],
+  ['TN-14','협업·AI','미결항목/질의','Open Items·고객 확인·증빙요청','-','마감/보고 전 미결 질의와 고객 확인을 관리한다.','OpenItem, QueryThread, Ack','회사/기장 담당','OPERATOR_LED/HYBRID 협업 강화','18.3'],
+  ['TN-14','협업·AI','이상거래 탐지','이상 알림 검토함','-','AI/룰 기반 이상 전표 후보를 검토한다.','AnomalyFinding, ReviewDecision','회계/결재/감사','휴먼인더루프 필수','11.7'],
+  ['TN-14','협업·AI','AI 조회 챗봇','자연어 조회·읽기전용','-','권한 범위 내 회계 데이터를 자연어로 조회한다.','ChatSession, QueryToolLog','읽기 전용, 데이터 범위 강제','응답은 서버 권한 필터 적용','11.8'],
+  ['TN-15','데이터관리·이관','삭제전표복구','삭제 전표 조회·복구','SA-DAT-01','삭제 전표를 검토 후 복구한다.','DeletedJournal, journal_history','관리자/회계 권한','복구 시 재채번, 자동전표 일부 제외','25.20.1'],
+  ['TN-15','데이터관리·이관','백업/복구·SA 이관','기수별/월별/분기별 내보내기·올리기','SA-DAT-02~06','레거시 SA와 BK 간 데이터를 이관한다.','MigrationJob, BackupFile, ImportMapping','회사 관리자/서비스 관리자','사업자번호·기수 검증, 작업 이력 감사','25.20.2~25.20.6'],
+  ['TN-15','데이터관리·이관','기수변경','회계기수 메타데이터 정정','SA-DAT-07','잘못 선택한 기수를 단일 기수 조건에서 정정한다.','FiscalPeriod, TenantMetadata','관리자, 수동 검토 가능','2개 이상 기수 데이터 존재 시 자동 변경 불가','25.20.7']
+];
+
+const saRaw = `
+SA-BAS-01|회사등록|25.1.1
+SA-BAS-02|권한설정|25.1.2
+SA-BAS-03|환경설정|25.1.3
+SA-BAS-04|부서등록(회계)|25.1.4
+SA-BAS-05|사원등록(회계)|25.1.5
+SA-BAS-06|거래처등록|25.1.6
+SA-BAS-07|계정과목 및 적요등록(회계)|25.1.7
+SA-BAS-08|현장등록(회계)|25.1.8
+SA-BAS-09|프로젝트등록(회계)|25.1.9
+SA-BAS-10|업무용승용차 등록|25.1.10
+SA-BAS-11|외주처등록|25.1.11
+SA-BAS-12|거래처DM인쇄|25.1.12
+SA-BAS-13|거래처등코드변환|25.1.13
+SA-BAS-14|마감후이월(회계)|25.1.14
+SA-OPN-01|전기분재무상태표|25.2.1
+SA-OPN-02|전기분손익계산서|25.2.2
+SA-OPN-03|전기분원가명세서|25.2.3
+SA-OPN-04|전기분이익잉여금처분계산서|25.2.4
+SA-OPN-05|전기분자본변동표|25.2.5
+SA-OPN-06|전기분현금흐름표|25.2.6
+SA-OPN-07|거래처별초기이월|25.2.7
+SA-OPN-08|부서/사원별초기이월|25.2.8
+SA-OPN-09|전기 기간별손익계산서|25.3.1
+SA-OPN-10|전기 기간별원가계산서(원가명세서)|25.3.2
+SA-OPN-11|전기 프로젝트손익현황|25.3.3
+SA-OPN-12|전기 프로젝트원가현황|25.3.4
+SA-OPN-13|프로젝트초기이월|25.3.5
+SA-OPN-14|전기 중단사업손익계산서|25.3.6
+SA-OPN-15|전기 중단사업원가명세서|25.3.7
+SA-OPN-16|중도시산표|25.3.8
+SA-OPN-17|미완성공사초기이월|25.3.9
+SA-OPN-18|외주처별초기이월|25.3.10
+SA-OPN-19|현장별/거래처별초기이월|25.3.11
+SA-JNL-01|일반전표입력|25.4.1
+SA-JNL-02|매입매출전표입력|25.4.2
+SA-JNL-03|정기청구입력|25.4.3
+SA-JNL-04|물류전표처리|25.4.4
+SA-ATX-01|수집정보등록|25.5.1
+SA-ATX-02|전자세금계산서|25.5.2
+SA-ATX-03|전자계산서|25.5.3
+SA-ATX-04|신용카드|25.5.4
+SA-ATX-05|현금영수증|25.5.5
+SA-ATX-06|통장|25.5.6
+SA-ATX-07|자료수집현황|25.5.7
+SA-ATX-08|전표전송현황|25.5.8
+SA-ATX-09|국세청자료검증 및 사이트비교|25.5.9
+SA-ATX-10|ScrappingBoard|25.5.10
+SA-LDG-01|전표출력|25.6.1
+SA-LDG-02|분개장|25.6.2
+SA-LDG-03|일/월계표|25.6.3
+SA-LDG-04|총계정원장|25.6.4
+SA-LDG-05|현금출납장|25.6.5
+SA-LDG-06|계정별원장|25.6.6
+SA-LDG-07|거래처원장|25.6.7
+SA-LDG-08|총괄원장|25.6.8
+SA-LDG-09|매입매출장|25.6.9
+SA-LDG-10|총계정관리원장|25.7.1
+SA-LDG-11|세금/계산서 발급 및 수취현황|25.7.2
+SA-LDG-12|신용카드매출전표 발행현황|25.7.3
+SA-LDG-13|적요별원장|25.7.4
+SA-LDG-14|전도금원장|25.7.5
+SA-LDG-15|공사대장|25.7.6
+SA-LDG-16|외주대장|25.7.7
+SA-LDG-17|운행기록부(업무용승용차)|25.7.8
+SA-LDG-18|차량비용현황(업무용승용차)|25.7.9
+SA-LDG-19|현장/프로젝트/부서 원가안분|25.8.1
+SA-LDG-20|현장/프로젝트/부서 원가현황|25.8.2
+SA-LDG-21|현장/프로젝트/부서 손익안분|25.8.3
+SA-LDG-22|현장/프로젝트/부서 손익현황|25.8.4
+SA-LDG-23|현장/프로젝트/부서 원가손익|25.8.5
+SA-LDG-24|현장별 공사원가집계표|25.8.6
+SA-LDG-25|현장별 공사비용현황|25.8.7
+SA-LDG-26|현장별 잔액명세서|25.8.8
+SA-LDG-27|현장/프로젝트/부서 거래처원장|25.8.9
+SA-LDG-28|프로젝트 누적손익현황|25.8.10
+SA-LDG-29|프로젝트 누적원가현황|25.8.11
+SA-CLS-01|결산자료입력|25.9.1
+SA-CLS-02|합계잔액시산표|25.9.2
+SA-CLS-03|재무상태표|25.9.3
+SA-CLS-04|손익계산서|25.9.4
+SA-CLS-05|제조원가명세서|25.9.5
+SA-CLS-06|이익잉여금처분계산서|25.9.6
+SA-CLS-07|자본변동표|25.9.7
+SA-CLS-08|현금흐름표|25.9.8
+SA-CLS-09|결산부속명세서|25.9.9
+SA-CLS-10|현금및예금잔액검토|25.9.10
+SA-CLS-11|신용카드 및 상품권 등 사용내역 검토서식|25.9.11
+SA-CLS-12|AI 합계잔액시산표|25.9.12
+SA-CLS-13|재무제표 일괄출력|25.9.13
+SA-CLS-14|경영정보(안정성·수익성·활동성 분석)|25.9.14
+SA-CLS-15|영수증수취명세서|25.10.1
+SA-CLS-16|경비등의송금명세서|25.10.2
+SA-CLS-17|지출증명서류합계표|25.10.3
+SA-CLS-18|기간별손익계산서|25.10.4
+SA-CLS-19|기간별원가명세서|25.10.5
+SA-CLS-20|중단사업손익계산서|25.10.6
+SA-CLS-21|중단사업원가명세서|25.10.7
+SA-VAT-01|부가가치세신고서|25.11.1
+SA-VAT-02|세무리스크 자동검증(부가가치세 MRI)|25.11.2
+SA-VAT-03|세금계산서합계표|25.11.3
+SA-VAT-04|신용카드매출전표등 수령명세서|25.11.4
+SA-VAT-05|신용카드매출전표 발행집계표|25.11.5
+SA-VAT-06|계산서합계표|25.11.6
+SA-VAT-07|부가가치세 전자신고|25.11.7
+SA-VAT-08|부가가치세 납부서|25.11.8
+SA-VAT-09|부동산임대공급가액명세서|25.12.1
+SA-VAT-10|건물관리명세서|25.12.2
+SA-VAT-11|의제매입세액공제신고서|25.12.3
+SA-VAT-12|재활용폐자원세액공제신고서|25.12.4
+SA-VAT-13|구리스크랩등 매입세액공제신고서|25.12.5
+SA-VAT-14|현금매출명세서|25.12.6
+SA-VAT-15|동물진료용역매출명세서|25.12.7
+SA-VAT-16|면세유류공급명세서(갑)|25.12.8
+SA-VAT-17|월별판매액합계표|25.12.9
+SA-VAT-18|농어업기자재 부가세환급신청|25.12.10
+SA-VAT-19|전자화폐결제명세서|25.12.11
+SA-VAT-20|전자신고세액공제신청서|25.12.12
+SA-VAT-21|입국경로 설치된 보세판매장 공급실적명세서|25.12.13
+SA-VAT-22|공제받지못할매입세액명세서|25.13.1
+SA-VAT-23|건물등감가상각자산취득명세서|25.13.2
+SA-VAT-24|대손세액공제신고서|25.13.3
+SA-VAT-25|사업장별 부가세 납부/환급 신고명세|25.13.4
+SA-VAT-26|사업자단위과세 사업장별 부가세|25.13.5
+SA-VAT-27|과표수정 및 추가납부계산서(부가세)|25.13.6
+SA-VAT-28|과표 및 세액 경정청구서(부가세)|25.13.7
+SA-VAT-29|수출실적명세서|25.14.1
+SA-VAT-30|영세율첨부서류제출명세서|25.14.2
+SA-VAT-31|내국신용장/구매확인서 전자발급|25.14.3
+SA-VAT-32|외화획득명세서|25.14.4
+SA-VAT-33|관세환급금등명세서|25.14.5
+SA-VAT-34|외국인관광객 면세판매 및 환급명세서|25.14.6
+SA-VAT-35|외국인관광객 미용성형 의료용역 환급실적명세서|25.14.7
+SA-VAT-36|외국인관광객 숙박용역 환급실적명세서|25.14.8
+SA-VAT-37|외국인관광객 즉시환급 물품판매실적명세서|25.14.9
+SA-VAT-38|외국인물품(외교관면세) 판매기록표|25.14.10
+SA-VAT-39|재화·용역 공급기록표|25.14.11
+SA-VAT-40|공급가액확정명세서|25.14.12
+SA-VAT-41|선박에 의한 운송용역 공급가액일람표|25.14.13
+SA-VAT-42|외항선박등에 제공한 재화·용역 일람표|25.14.14
+SA-VAT-43|영세율매출명세서|25.14.15
+SA-VAT-44|일반/간이과세 전환 시 재고품등 신고|25.15.1
+SA-VAT-45|과세사업전환 감가상각자산 신고서|25.15.2
+SA-VAT-46|매입자발행세금계산서합계표|25.15.3
+SA-VAT-47|과세유흥장소 과표신고서(신)|25.15.4
+SA-VAT-48|사업용계좌 개설신고서|25.15.5
+SA-VAT-49|납부서 작성(전세목)|25.15.6
+SA-VAT-50|사업양도신고서|25.15.7
+SA-FA-01|고정자산등록|25.16.1
+SA-FA-02|미상각분 감가상각계산|25.16.2
+SA-FA-03|양도자산 감가상각계산|25.16.3
+SA-FA-04|원가경비별 감가상각명세서|25.16.4
+SA-FA-05|고정자산관리대장|25.16.5
+SA-FA-06|현장 / 프로젝트 / 부서 자산명세서|25.16.6
+SA-FA-07|월별 감가상각비 계상|25.16.7
+SA-FND-01|일일자금명세/경리일보|25.17.1
+SA-FND-02|자금계획입력|25.17.2
+SA-FND-03|일일자금현황|25.17.3
+SA-FND-04|자금일월보|25.17.4
+SA-FND-05|자금입출금내역|25.17.5
+SA-FND-06|자금계획서|25.17.6
+SA-FND-07|예산입력|25.17.7
+SA-FND-08|당기예산 월별 실적현황|25.17.8
+SA-FND-09|당기예산 분기/반기 실적현황|25.17.9
+SA-FND-10|전기실행액입력|25.17.10
+SA-FND-11|전기예산 월별 실적현황|25.17.11
+SA-FND-12|전기예산 분기/반기 실적현황|25.17.12
+SA-FND-13|차기예산입력|25.17.13
+SA-FND-14|추정예산|25.17.14
+SA-DEP-01|예적금현황|25.18.1
+SA-DEP-02|차입금스케줄관리|25.18.2
+SA-DEP-03|차입금현황|25.18.3
+SA-BIL-01|받을어음현황|25.19.1
+SA-BIL-02|지급어음현황|25.19.2
+SA-BIL-03|어음집계표|25.19.3
+SA-BIL-04|당좌수표현황|25.19.4
+SA-DAT-01|삭제전표복구|25.20.1
+SA-DAT-02|데이터백업 / 데이터복구(기수별)|25.20.2
+SA-DAT-03|SA로 보낼 데이터 만들기(기수별)|25.20.3
+SA-DAT-04|SA로 보낼 데이터 만들기(월별/분기별)|25.20.4
+SA-DAT-05|SA 데이터올리기(전체기수)|25.20.5
+SA-DAT-06|SA 데이터올리기(월별/분기별)|25.20.6
+SA-DAT-07|기수변경|25.20.7`;
+
+const saMeta = {
+  'SA-BAS': ['TN-02','기초정보관리','SA 기초정보','회사·권한·환경·마스터 기준정보를 BK 기준정보 모델로 관리한다.','Tenant, Partner, COA, Dimension, Role, Menu','회사 관리자/회계 관리자','회사 설정·마스터 관리 권한 필요','25.1'],
+  'SA-OPN': ['TN-03','전기이월·개시잔액','전기이월','전기 재무제표와 거래처·차원별 초기이월을 등록한다.','OpeningBalance, FiscalPeriod, Dimension','회계 관리자/기장 담당','차액 검증 통과 후 개시','25.2~25.3'],
+  'SA-JNL': ['TN-04','전표 입력·결재','전표관리','일반·매입매출·정기·물류 전표 입력을 처리한다.','journal_header, journal_line, journal_tax_line','회계담당/기장담당','마감기간·상태·권한 검증','25.4'],
+  'SA-ATX': ['TN-06','자동전표·증빙','자동전표처리','외부 자료를 수집·검증하고 전표 후보로 전송한다.','CollectionJob, Evidence, AutoJournalCandidate','회계/기장 담당','중복방지·검증·전송현황 관리','25.5'],
+  'SA-LDG': ['TN-07','장부·원장·보조장부','주요·보조장부','전표 기반 주요 원장과 보조장부를 조회/출력한다.','LedgerView, journal_line_aux, Dimension','조회 권한/데이터 범위','POSTED 기준 집계','25.6~25.8'],
+  'SA-CLS': ['TN-08','마감·결산·재무제표','결산·재무제표','결산 입력, 재무제표, 결산장부, 부속명세를 생성한다.','ClosingEntry, FinancialStatement, SupportingSchedule','결산/회계 담당','마감 체크리스트와 결재 연동','25.9~25.10'],
+  'SA-VAT': ['TN-09','부가세·신고서류','부가가치세·신고서류','부가세 신고서와 주요/업종별/영세율/기타 첨부서류를 작성한다.','VatReturn, VatAttachment, TaxInvoiceSummary','세무 담당, 신고 Step-up','과세유형·증빙·계정 라우팅','25.11~25.15'],
+  'SA-FA': ['TN-10','세무·고정자산·차량','고정자산','고정자산 등록, 상각, 자산명세를 관리한다.','fixed_asset, depreciation_schedule','자산/회계 담당','취득 전표·상각 전표 연동','25.16'],
+  'SA-FND': ['TN-11','자금·예산·어음','자금·예산관리','자금 계획, 입출금, 예산 및 예실을 관리한다.','cash_plan, Budget, BudgetActual','자금/회계/관리회계 담당','부서·코스트센터 차원 연계','25.17'],
+  'SA-DEP': ['TN-11','자금·예산·어음','예적금·차입금','예적금과 차입금 잔액 및 스케줄을 관리한다.','bank_account, borrowing_schedule','자금/회계 담당','예금 보조부와 연결','25.18'],
+  'SA-BIL': ['TN-11','자금·예산·어음','어음·당좌관리','받을/지급어음과 당좌수표를 관리한다.','note, note_history, checkbook','자금/회계 담당','어음 타임라인과 만기 관리','25.19'],
+  'SA-DAT': ['TN-15','데이터관리·이관','데이터관리','삭제전표복구, 백업/복구, SA 이관, 기수변경을 처리한다.','MigrationJob, BackupFile, DeletedJournal, FiscalPeriod','회사 관리자/서비스 관리자','사업자번호·기수·기간 검증','25.20']
+};
+
+function saPrefix(id){
+  return id.split('-').slice(0,2).join('-');
+}
+
+function buildSaRows(){
+  return saRaw.trim().split('\n').map(line => {
+    const [id,name,source] = line.split('|');
+    const meta = saMeta[saPrefix(id)];
+    return [meta[0], meta[1], meta[2], name, id, meta[3], meta[4], meta[5], meta[6], source];
+  });
+}
+
+const topMenuNames = {
+  'OP-00':'운영 진입',
+  'OP-01':'운영 현황',
+  'OP-02':'관리회사·조직',
+  'OP-03':'이용회사/테넌트',
+  'OP-04':'구독·요금·사용량',
+  'OP-05':'공통 표준 카탈로그',
+  'OP-06':'사용자·인증·권한',
+  'OP-07':'접근 거버넌스',
+  'OP-08':'기장 워크벤치',
+  'OP-09':'운영·배치·연계 모니터링',
+  'OP-10':'보안·감사 운영',
+  'OP-11':'AI·규칙 운영',
+  'TN-00':'홈·현황',
+  'TN-01':'회사 설정·기초',
+  'TN-02':'기초정보관리',
+  'TN-03':'전기이월·개시잔액',
+  'TN-04':'전표 입력·결재',
+  'TN-05':'보조부·관리항목',
+  'TN-06':'자동전표·증빙',
+  'TN-07':'장부·원장·보조장부',
+  'TN-08':'마감·결산·재무제표',
+  'TN-09':'부가세·신고서류',
+  'TN-10':'세무·고정자산·차량',
+  'TN-11':'자금·예산·어음',
+  'TN-12':'외화·관계사·관리회계',
+  'TN-13':'원가·재고·제조',
+  'TN-14':'협업·AI',
+  'TN-15':'데이터관리·이관'
+};
+
+const menuOrder = Object.fromEntries(Object.keys(topMenuNames).map((code, index) => [code, index]));
+
+function normalizeRows(rows){
+  return rows.map(row => {
+    const next = [...row];
+    if(topMenuNames[next[0]]) next[1] = topMenuNames[next[0]];
+    return next;
+  });
+}
+
+function sortRowsByMenu(rows){
+  return rows
+    .map((row, index) => ({row, index}))
+    .sort((a, b) => {
+      const orderA = menuOrder[a.row[0]] ?? 9999;
+      const orderB = menuOrder[b.row[0]] ?? 9999;
+      return orderA - orderB || a.index - b.index;
+    })
+    .map(item => item.row);
+}
+
+function makeRowSpans(rows, keyFn){
+  const spans = new Map();
+  let start = 0;
+  while(start < rows.length){
+    const key = keyFn(rows[start]);
+    let end = start + 1;
+    while(end < rows.length && keyFn(rows[end]) === key) end += 1;
+    spans.set(start, end - start);
+    for(let i = start + 1; i < end; i += 1) spans.set(i, 0);
+    start = end;
+  }
+  return spans;
+}
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function renderRows(tbodyId, rows, searchId, filterId, countId, channelLabel){
+  const tbody = document.getElementById(tbodyId);
+  const search = document.getElementById(searchId);
+  const filter = document.getElementById(filterId);
+  const preparedRows = sortRowsByMenu(normalizeRows(rows)).map(row => [channelLabel, ...row]);
+  function draw(){
+    const keyword = (search?.value || '').trim().toLowerCase();
+    const category = filter?.value || '';
+    const filtered = preparedRows.filter(row => {
+      const text = row.join(' ').toLowerCase();
+      return (!keyword || text.includes(keyword)) && (!category || text.includes(category.toLowerCase()));
+    });
+    const channelSpans = makeRowSpans(filtered, row => row[0]);
+    const topSpans = makeRowSpans(filtered, row => `${row[0]}|${row[1]}|${row[2]}`);
+    const subSpans = makeRowSpans(filtered, row => `${row[0]}|${row[1]}|${row[2]}|${row[3]}`);
+    tbody.innerHTML = filtered.map((row, index) => `
+      <tr>
+        <td class="c">${index + 1}</td>
+        ${topSpans.get(index) ? `<td rowspan="${topSpans.get(index)}"><code>${escapeHtml(row[1])}</code></td>` : ''}
+        ${channelSpans.get(index) ? `<td rowspan="${channelSpans.get(index)}" class="level0">${escapeHtml(row[0])}</td>` : ''}
+        ${topSpans.get(index) ? `<td rowspan="${topSpans.get(index)}" class="level1">${escapeHtml(row[2])}<div class="path">${escapeHtml(row[1])}</div></td>` : ''}
+        ${subSpans.get(index) ? `<td rowspan="${subSpans.get(index)}" class="level2">${escapeHtml(row[3])}</td>` : ''}
+        <td class="level3">${escapeHtml(row[4])}</td>
+        <td><span class="sid">${escapeHtml(row[5])}</span></td>
+        <td>${escapeHtml(row[6])}</td>
+        <td>${escapeHtml(row[7])}</td>
+        <td>${escapeHtml(row[8])}</td>
+        <td>${escapeHtml(row[9])}</td>
+        <td>${escapeHtml(row[10])}</td>
+      </tr>
+    `).join('');
+    if(countId) document.getElementById(countId).textContent = preparedRows.length.toLocaleString('ko-KR');
+  }
+  search?.addEventListener('input', draw);
+  filter?.addEventListener('change', draw);
+  draw();
+}
+
+const tnRows = [...tnCoreRows, ...buildSaRows()];
+renderRows('opBody', opRows, 'opSearch', 'opFilter', 'opCount', '운영콘솔');
+renderRows('tnBody', tnRows, 'tnSearch', 'tnFilter', 'tnCount', '업무화면');
+document.getElementById('saCount').textContent = buildSaRows().length.toLocaleString('ko-KR');
+</script>
+</body>
+</html>
