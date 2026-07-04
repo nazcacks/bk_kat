@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 페이즈01 화면설계 — 기초정보·조직·표준 설정 (EY 레이아웃)</title>
+<style>
+:root{
+  --ey-yellow:#FFE600; --ey-dark:#2E2E38; --ey-darker:#1A1A24; --ey-gray:#747480;
+  --ey-light:#F6F6FA; --ey-border:#E1E1E6; --ey-text:#2E2E38; --ey-red:#E0362C;
+  --ey-green:#168736; --ey-blue:#188CE5; --ey-link:#155CB4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ey-text);background:var(--ey-light);font-size:13.5px;line-height:1.55}
+/* ===== 상단바 ===== */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;background:var(--ey-darker);color:#fff;height:54px;padding:0 16px;border-bottom:1px solid #000}
+.ey-logo{display:flex;align-items:center;gap:10px;min-width:210px}
+.ey-mark{position:relative;width:40px;height:40px;background:#000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px}
+.ey-mark .beam{position:absolute;top:4px;left:4px;width:0;height:0;border-left:32px solid transparent;border-bottom:9px solid var(--ey-yellow);transform:skewX(-18deg)}
+.ey-mark .ey{font-weight:800;font-size:19px;color:#fff;line-height:1}
+.ey-tag{font-size:10.5px;line-height:1.25;color:#d9d9e0;font-weight:600}
+.company-select{display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.company-select .code{color:#b9b9c2}
+.global-search{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;color:#8a8a94;font-size:12.5px}
+.top-utils{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12.5px;white-space:nowrap}
+.top-utils .util{display:flex;align-items:center;gap:5px;cursor:pointer;color:#e8e8ee}
+.top-utils .fav .ico{color:var(--ey-yellow)}
+.top-utils .avatar{width:26px;height:26px;border-radius:50%;background:#fff;color:var(--ey-darker);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+/* ===== 레이아웃 ===== */
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:216px;background:var(--ey-dark);color:#d7d7de;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow:hidden}
+.sidebar .menu-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #3d3d47;color:#fff;font-weight:700;font-size:13px}
+.sidebar nav{flex:1;overflow:hidden;padding:4px 0 8px}
+.mgroup{margin-top:5px}
+.mgroup>.gtitle{display:flex;align-items:center;gap:8px;padding:5px 16px;font-weight:700;font-size:12.5px;color:var(--ey-yellow);cursor:pointer}
+.mgroup>.gtitle .bar{width:3px;height:14px;background:var(--ey-yellow);border-radius:2px}
+.mgroup.plain>.gtitle{color:#fff}
+.mgroup.plain>.gtitle .bar{background:#6a6a75}
+.mitem{display:block;padding:4px 16px 4px 34px;font-size:12.5px;color:#c9c9d2;cursor:pointer;border-left:3px solid transparent;text-decoration:none}
+.mitem:hover{background:#3a3a45;color:#fff}
+.mitem.active{background:var(--ey-yellow);color:#1a1a24;font-weight:700;border-left-color:#c9b400}
+.mitem .mid{float:right;font-size:10px;color:#8a8a94;margin-top:2px}
+.mitem.active .mid{color:#55550a}
+.sidebar .foot{padding:8px 16px;border-top:1px solid #3d3d47;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sidebar .foot .ey-mark{width:30px;height:30px}
+.sidebar .foot .ey-mark .beam{border-left-width:24px;border-bottom-width:7px;top:3px;left:3px}
+.sidebar .foot .ey-mark .ey{font-size:14px}
+.sidebar .foot .txt{font-size:10px;color:#b9b9c2;line-height:1.3;font-weight:600}
+/* ===== 콘텐츠 ===== */
+.content{flex:1;padding:18px 22px 60px;max-width:calc(100% - 216px)}
+.section{display:none}
+.section.visible{display:block}
+.page-title{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.page-title h1{font-size:20px;font-weight:800}
+.page-title .chip-id{background:var(--ey-dark);color:var(--ey-yellow);font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700}
+.crumb{font-size:11.5px;color:var(--ey-gray);margin-bottom:12px}
+.src{font-size:11.5px;color:var(--ey-gray);background:#EFEFF4;border-left:3px solid var(--ey-yellow);padding:8px 12px;border-radius:0 4px 4px 0;margin:10px 0 16px}
+.src b{color:var(--ey-text)}
+h2.sec{font-size:15.5px;font-weight:800;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+h3.sub{font-size:13.5px;font-weight:700;margin:16px 0 8px;padding-left:8px;border-left:3px solid var(--ey-yellow)}
+table.spec{width:100%;border-collapse:collapse;margin:8px 0 16px;background:#fff;font-size:12.5px}
+table.spec th{background:var(--ey-dark);color:#fff;padding:6px 10px;text-align:left;font-weight:600;border:1px solid #45454f;font-size:12px}
+table.spec td{padding:5px 10px;border:1px solid var(--ey-border);vertical-align:top}
+table.spec tr:nth-child(even) td{background:#FAFAFD}
+table.spec td.c,table.spec th.c{text-align:center}
+code{background:#EFEFF4;border:1px solid var(--ey-border);border-radius:3px;padding:0 4px;font-family:Consolas,monospace;font-size:12px;color:#7A2E8D}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin:0 2px;vertical-align:1px}
+.b-block{background:#FBE9E7;color:var(--ey-red);border:1px solid #F5C6C0}
+.b-warn{background:#FFF8DC;color:#8a6d00;border:1px solid #EFE0A0}
+.b-ok{background:#E8F5E9;color:var(--ey-green);border:1px solid #BFE3C6}
+.b-new{background:var(--ey-yellow);color:#1a1a24;border:1px solid #d9c400}
+.b-ref{background:#EAF2FB;color:var(--ey-link);border:1px solid #C5DCF5}
+.b-gray{background:#EFEFF4;color:#5a5a66;border:1px solid #d9d9e0}
+/* ===== 목업 공통 ===== */
+.mock{background:#fff;border:1px solid var(--ey-border);border-radius:6px;box-shadow:0 1px 4px rgba(30,30,40,.08);margin:12px 0 20px;overflow:hidden}
+.mock .mock-cap{background:#EFEFF4;border-bottom:1px solid var(--ey-border);padding:5px 12px;font-size:11px;color:var(--ey-gray);font-weight:600}
+.screen-details{margin:2px 0 30px}
+.screen-details .sd-title{font-size:14px;font-weight:800;margin:8px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+.screen-desc-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 14px}
+.screen-desc-item{background:#fff;border:1px solid var(--ey-border);border-left:3px solid var(--ey-yellow);border-radius:0 5px 5px 0;padding:8px 10px;font-size:11.8px;min-height:62px}
+.screen-desc-item .desc-label{display:block;font-weight:800;color:var(--ey-dark);margin-bottom:3px}
+.screen-desc-item .desc-body{color:#4b4b55}
+/* 타이틀바 (EY 다크) */
+.titlebar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--ey-darker);border-bottom:2px solid var(--ey-yellow)}
+.titlebar .tb-crumb{font-size:12px;color:#b9b9c2;font-weight:600}
+.titlebar .tb-sep{color:#6a6a75;font-weight:700}
+.titlebar .tb-title{font-size:15px;font-weight:800;color:#fff}
+.titlebar .tb-star{color:var(--ey-yellow);font-size:14px;cursor:pointer}
+.titlebar .tb-id{background:var(--ey-yellow);color:#1a1a24;font-size:10.5px;padding:2px 8px;border-radius:3px;font-weight:700}
+.titlebar .tb-right{margin-left:auto;font-size:11px;color:#c9c9d2}
+/* 조회조건 바 */
+.qbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#fff;flex-wrap:wrap;font-size:12px}
+.qbar .qlabel{font-size:11px;color:var(--ey-gray);font-weight:700}
+.qbar .seg{display:inline-flex;border:1px solid #c9c9d2;border-radius:4px;overflow:hidden}
+.qbar .seg span{padding:3px 10px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;color:#5a5a66}
+.qbar .seg span.on{background:var(--ey-dark);color:var(--ey-yellow)}
+.qbar .qv{display:inline-flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:3px 8px;background:#fff;font-size:12px}
+.qbar .qv.off{background:#F3F3F7;color:#9a9aa4}
+.qbar .navbtn{border:1px solid #c9c9d2;background:#fff;border-radius:3px;padding:2px 7px;font-size:11px;cursor:pointer;font-weight:700}
+.qbar .qright{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+/* 액션바 (우측 정렬) */
+.actionbar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap}
+.abtn{border:1px solid #c9c9d2;background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.abtn.dark{background:var(--ey-dark);color:#fff;border-color:var(--ey-dark)}
+.abtn.red{background:var(--ey-red);color:#fff;border-color:var(--ey-red)}
+.abtn.yellow{background:var(--ey-yellow);color:#1a1a24;border-color:#d9c400;font-weight:700}
+.abtn.ghost{background:#fff}
+.ab-right{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+/* 탭 */
+.tabbar{display:flex;gap:2px;padding:8px 12px 0;background:#FCFCFE;border-bottom:1px solid var(--ey-border)}
+.tab{padding:6px 16px;border:1px solid var(--ey-border);border-bottom:none;border-radius:6px 6px 0 0;background:#EFEFF4;font-size:12px;font-weight:600;color:#5a5a66;cursor:pointer}
+.tab.on{background:#fff;color:var(--ey-text);font-weight:700;border-color:#b9b9c2;border-bottom:2px solid #fff;margin-bottom:-1px}
+.tab .tno{color:#9a9aa4;font-size:10.5px}
+/* 폼 */
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;padding:12px}
+.formgrid.c3{grid-template-columns:repeat(3,1fr)}
+.ff{display:flex;flex-direction:column;gap:2px}
+.ff label{font-size:11px;color:var(--ey-gray);font-weight:600}
+.ff .fv{display:flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:4px 8px;background:#fff;font-size:12.5px;min-height:28px}
+.ff .fv.ro{background:#F3F3F7;color:#5a5a66}
+.ff .fv .lens{margin-left:auto;color:#9a9aa4;font-size:11px;cursor:pointer}
+.ff.wide{grid-column:span 2}
+.ff.full{grid-column:span 4}
+.formgrid.c3 .ff.full{grid-column:span 3}
+/* 기능바/토글 */
+.fnbar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--ey-border);border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap;font-size:12px}
+.chip{border:1px solid #c9c9d2;background:#fff;border-radius:14px;padding:3px 12px;font-size:11.5px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--ey-dark);color:var(--ey-yellow);border-color:var(--ey-dark)}
+/* 그리드 */
+table.grid{width:100%;border-collapse:collapse;font-size:12px;background:#fff}
+table.grid th{background:#F3F3F7;border:1px solid var(--ey-border);padding:5px 6px;font-weight:700;color:#44444e;white-space:nowrap}
+table.grid td{border:1px solid var(--ey-border);padding:4px 6px;white-space:nowrap}
+table.grid td .lens{float:right;color:#9a9aa4;margin-left:8px;cursor:pointer}
+table.grid td.num{text-align:right;font-family:Consolas,monospace}
+table.grid td.c{text-align:center}
+table.grid tr.sel td{background:#FFFBE0}
+table.grid tr.empty td{color:#c9c9d2;height:26px}
+table.grid .red{color:var(--ey-red);font-weight:700}
+table.grid .blue{color:var(--ey-blue)}
+.statusbar{display:flex;align-items:center;gap:16px;background:var(--ey-darker);color:#e8e8ee;padding:7px 12px;font-size:11.5px}
+.statusbar .okmsg{color:#7ADB8F;font-weight:700}
+.statusbar .warnmsg{color:#FFD666;font-weight:700}
+.statusbar .cnt{margin-left:auto;color:#b9b9c2}
+/* 좌우 배치 + 패널 */
+.mock-flex{display:flex;gap:0}
+.mock-main{flex:1;min-width:0}
+.lpane{width:280px;flex-shrink:0;border-right:1px solid var(--ey-border);background:#FCFCFE;display:flex;flex-direction:column}
+.lpane .lp-t{background:#F3F3F7;padding:6px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rpanel{width:250px;flex-shrink:0;border-left:1px solid var(--ey-border);background:#FCFCFE;padding:10px;display:flex;flex-direction:column;gap:12px}
+.rp-box{border:1px solid var(--ey-border);border-radius:5px;background:#fff}
+.rp-box .rp-t{background:#F3F3F7;padding:5px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rp-box .rp-b{padding:8px 10px;font-size:11.5px}
+.rp-box .kv{display:flex;justify-content:space-between;margin:3px 0;gap:8px}
+.rp-box .kv .k{color:var(--ey-gray);white-space:nowrap}
+.rp-box .kv .v{font-weight:600;text-align:right}
+/* 트리 */
+.tree{padding:8px 6px;font-size:12px;overflow:auto;max-height:430px}
+.tree .tnode{padding:2px 8px;cursor:pointer;border-radius:3px;white-space:nowrap}
+.tree .tnode:hover{background:#EFEFF4}
+.tree .tnode.on{background:var(--ey-yellow);font-weight:700}
+.tree .lv1{font-weight:700}
+.tree .lv2{padding-left:22px}
+.tree .lv3{padding-left:40px;color:#44444e}
+.tree .cnt{color:#9a9aa4;font-size:10.5px}
+.tree .red{color:var(--ey-red)}
+/* 체크/토글 표기 */
+.ck{font-family:Consolas;font-weight:700}
+.note{font-size:11.5px;color:var(--ey-gray);margin:6px 0 14px;padding-left:2px}
+.kbd{display:inline-block;border:1px solid #b9b9c2;border-bottom-width:2px;border-radius:3px;background:#fff;padding:0 5px;font-size:11px;font-family:Consolas,monospace;font-weight:700;color:#44444e}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 16px}
+.flow .st{background:#fff;border:1.5px solid var(--ey-dark);border-radius:4px;padding:4px 10px;font-size:11.5px;font-weight:700}
+.flow .st.hl{background:var(--ey-yellow);border-color:#c9b400}
+.flow .st.end{background:var(--ey-dark);color:#fff}
+.flow .ar{color:#9a9aa4;font-weight:700}
+/* 모달 목업 */
+.modal{max-width:560px;margin:10px auto;border:2px solid var(--ey-dark);border-radius:6px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.modal .m-t{background:var(--ey-darker);color:#fff;padding:8px 12px;font-weight:700;font-size:12.5px;display:flex}
+.modal .m-t .x{margin-left:auto;color:#c9c9d2;cursor:pointer}
+.modal .m-b{padding:12px}
+.modal .m-f{padding:8px 12px;border-top:1px solid var(--ey-border);display:flex;justify-content:flex-end;gap:6px}
+.footer{background:var(--ey-darker);color:#b9b9c2;padding:14px 22px;font-size:11px;display:flex;align-items:center;gap:14px}
+.footer .beamline{width:70px;height:8px;background:var(--ey-yellow);transform:skewX(-30deg)}
+@media(max-width:1100px){.formgrid{grid-template-columns:repeat(2,1fr)}.ff.full{grid-column:span 2}.screen-desc-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ===================== 상단바 ===================== -->
+<header class="topbar">
+  <div class="ey-logo">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="ey-tag">Shape the future<br>with confidence</div>
+  </div>
+  <div class="company-select"><span class="code">1000</span> <b>EY Korea Co., Ltd.</b> <span>▾</span></div>
+  <div class="global-search">🔍 메뉴, 기능, 코드 검색 (Ctrl + K)</div>
+  <div class="top-utils">
+    <div class="util">🔔 공지사항</div>
+    <div class="util fav"><span class="ico">★</span> 즐겨찾기</div>
+    <div class="util">? 도움말</div>
+    <div class="util"><span class="avatar">홍</span> 홍길동 대리 ▾</div>
+    <div class="util">▦</div>
+  </div>
+</header>
+
+<div class="layout">
+<!-- ===================== 좌측 메뉴 (페이즈01 기초정보) ===================== -->
+<aside class="sidebar">
+  <div class="menu-head">☰ Menu — 기준정보 (P01)</div>
+  <nav>
+    <a class="mitem active" data-sec="home" style="padding-left:16px;font-weight:700">🏠 페이즈 개요</a>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>회사·환경</div>
+      <a class="mitem" data-sec="bas01">회사등록 <span class="mid">BAS-01</span></a>
+      <a class="mitem" data-sec="bas02">권한설정 <span class="mid">BAS-02</span></a>
+      <a class="mitem" data-sec="bas03">환경설정 <span class="mid">BAS-03</span></a>
+      <a class="mitem" data-sec="bas14">마감후이월 <span class="mid">BAS-14</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>조직·거래처</div>
+      <a class="mitem" data-sec="bas04">부서등록 <span class="mid">BAS-04</span></a>
+      <a class="mitem" data-sec="bas05">사원등록 <span class="mid">BAS-05</span></a>
+      <a class="mitem" data-sec="bas06">거래처등록 <span class="mid">BAS-06</span></a>
+      <a class="mitem" data-sec="bas13">거래처등코드변환 <span class="mid">BAS-13</span></a>
+      <a class="mitem" data-sec="bas12">거래처DM인쇄 <span class="mid">2차</span></a>
+    </div>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>계정과목 (MVP)</div>
+      <a class="mitem" data-sec="bas07">계정과목·적요등록 <span class="mid">WJV-08</span></a>
+      <a class="mitem" data-sec="wjv09">외국 법인/계정 <span class="mid">WJV-09</span></a>
+      <a class="mitem" data-sec="r18a">계정 구조설계 <span class="mid">R18★</span></a>
+      <a class="mitem" data-sec="r18b">FS·세무신고 매핑 <span class="mid">R18★</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>현장·프로젝트·차량</div>
+      <a class="mitem" data-sec="bas08">현장등록 <span class="mid">BAS-08</span></a>
+      <a class="mitem" data-sec="bas09">프로젝트등록 <span class="mid">BAS-09</span></a>
+      <a class="mitem" data-sec="bas10">업무용승용차 <span class="mid">BAS-10</span></a>
+      <a class="mitem" data-sec="bas11">외주처등록 <span class="mid">2차</span></a>
+    </div>
+  </nav>
+  <div class="foot">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="txt">Building a better<br>working world</div>
+  </div>
+</aside>
+
+<!-- ===================== 콘텐츠 ===================== -->
+<main class="content">
+
+<!-- ============ 개요 ============ -->
+<section class="section visible" id="home">
+  <div class="page-title"><h1>페이즈 01 — 기초정보 · 조직 · 표준 설정</h1><span class="chip-id">SA-BAS</span><span class="badge b-new">1차 2606~2611</span></div>
+  <div class="crumb">개발설계 › 페이즈01_기초정보_조직_표준설정.md 기반 화면설계 · 레이아웃 준거: 구현_화면_전표_v1.1.html</div>
+  <div class="src"><b>범위</b>: SA-BAS-01~14(14화면) + R18 신규 2화면 = <b>16화면</b> (1차 14 / 2차 2 — SA-BAS-11·12). <b>MVP 최우선</b>: SA-BAS-07 계정과목(WJV-08/09)은 일반전표입력(WJV-01)과 함께 전 플랫폼 MVP(§22 N13). 이후 모든 페이즈(P02 전기이월~P08 부가세)의 FK 마스터·검증 메타데이터를 공급한다(§25.1).</div>
+
+  <h2 class="sec">업무 흐름 (P01 §3)</h2>
+  <div class="flow">
+    <span class="st">온보딩 게이트 ①~⑧<br><small>표준 배포→테넌트→표준 채택</small></span><span class="ar">→</span>
+    <span class="st hl">BAS-01 회사등록</span><span class="ar">→</span>
+    <span class="st">BAS-02 권한 · BAS-03 환경설정<br><small>코드체계·차원 스위치</small></span><span class="ar">→</span>
+    <span class="st hl">BAS-07 계정과목 [MVP]<br><small>→ R18 구조설계 → FS 매핑</small></span><span class="ar">→</span>
+    <span class="st">BAS-04~06·08~10<br><small>부서·사원·거래처·현장·PJT·차량</small></span><span class="ar">→</span>
+    <span class="st end">P02 전기이월 → P03 전표</span>
+  </div>
+  <p class="note">운영 반복: BAS-13 코드변환(수시) · BAS-14 마감후이월(기수 말 — P05 결산 후 차기 자동 적재 순환). 입력 순서 강제: BAS-03 관리코드 "1.사용함" → 해당 차원 마스터(04·05·08·09·10) 활성. BAS-10은 고정자산등록→BAS-07(관리항목)→BAS-10 순서.</p>
+
+  <h2 class="sec">화면 인벤토리 · 차수</h2>
+  <table class="spec">
+    <tr><th>#</th><th>화면 ID</th><th>명칭</th><th class="c">차수</th><th>설계서 근거</th><th>본 문서 메뉴</th></tr>
+    <tr><td>1</td><td>SA-BAS-01</td><td>회사등록</td><td class="c">1차</td><td>§25.1.1</td><td>회사·환경 › 회사등록</td></tr>
+    <tr><td>2</td><td>SA-BAS-02</td><td>권한설정</td><td class="c">1차</td><td>§25.1.2, §4.3</td><td>회사·환경 › 권한설정</td></tr>
+    <tr><td>3</td><td>SA-BAS-03</td><td>환경설정</td><td class="c">1차</td><td>§25.1.3, §9.3</td><td>회사·환경 › 환경설정</td></tr>
+    <tr><td>4</td><td>SA-BAS-04</td><td>부서등록(회계)</td><td class="c">1차</td><td>§25.1.4, §9.1</td><td>조직·거래처 › 부서등록</td></tr>
+    <tr><td>5</td><td>SA-BAS-05</td><td>사원등록(회계)</td><td class="c">1차</td><td>§25.1.5, M1</td><td>조직·거래처 › 사원등록</td></tr>
+    <tr><td>6</td><td>SA-BAS-06</td><td>거래처등록 (일반/금융/카드·R8)</td><td class="c">1차</td><td>§25.1.6, §11.1.1-(8)</td><td>조직·거래처 › 거래처등록</td></tr>
+    <tr><td>7</td><td>SA-BAS-07</td><td>계정과목 및 적요등록 — WJV-08</td><td class="c"><b>1차 MVP</b></td><td>§25.1.7, §11.6.2</td><td>계정과목 › 계정과목·적요등록</td></tr>
+    <tr><td>7-1</td><td>WJV-09</td><td>외국 법인/계정 관리</td><td class="c">1차</td><td>§11.6.2-(3)</td><td>계정과목 › 외국 법인/계정</td></tr>
+    <tr><td>8</td><td>SA-BAS-08</td><td>현장등록(회계)</td><td class="c">1차</td><td>§25.1.8</td><td>현장·PJT·차량 › 현장등록</td></tr>
+    <tr><td>9</td><td>SA-BAS-09</td><td>프로젝트등록(회계)</td><td class="c">1차</td><td>§25.1.9</td><td>현장·PJT·차량 › 프로젝트등록</td></tr>
+    <tr><td>10</td><td>SA-BAS-10</td><td>업무용승용차 등록</td><td class="c">1차</td><td>§25.1.10</td><td>현장·PJT·차량 › 업무용승용차</td></tr>
+    <tr><td>11</td><td>SA-BAS-13</td><td>거래처등코드변환</td><td class="c">1차</td><td>§25.1.13</td><td>조직·거래처 › 코드변환</td></tr>
+    <tr><td>12</td><td>SA-BAS-14</td><td>마감후이월(회계)</td><td class="c">1차</td><td>§25.1.14</td><td>회사·환경 › 마감후이월</td></tr>
+    <tr><td>13</td><td>R18-A</td><td>계정체계/세목/관리항목 구조설계 ★★★</td><td class="c">1차</td><td>§11.6.2-(4)</td><td>계정과목 › 계정 구조설계</td></tr>
+    <tr><td>14</td><td>R18-B</td><td>재무제표·세무신고 매핑관리 ★★★</td><td class="c">1차</td><td>§11.6.2-(4), §11.3.2</td><td>계정과목 › FS·세무신고 매핑</td></tr>
+    <tr><td>15</td><td>SA-BAS-11</td><td>외주처등록</td><td class="c"><span class="badge b-gray">2차</span></td><td>§25.1.11</td><td>현장·PJT·차량 › 외주처등록</td></tr>
+    <tr><td>16</td><td>SA-BAS-12</td><td>거래처DM인쇄</td><td class="c"><span class="badge b-gray">2차</span></td><td>§25.1.12</td><td>조직·거래처 › 거래처DM인쇄</td></tr>
+  </table>
+</section>
+
+<!-- ============ SA-BAS-01 회사등록 ============ -->
+<section class="section" id="bas01">
+  <div class="page-title"><h1>회사등록</h1><span class="chip-id">SA-BAS-01</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 회사등록 &nbsp;|&nbsp; 테넌트+회계기간(기수) 마스터 최선행 등록 (P01 §4.1, §25.1.1)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-01 회사등록 — 좌측 회사(테넌트) 목록 + 우측 상세 6탭. Smart A "기수 단일파일" → tenant + fiscal_period 모델(§25.0.2 C1)</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">회사등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-01</span><span class="tb-right">자가 기장 TENANT_LED · 👤 홍길동 · 회사 관리자</span></div>
+    <div class="qbar">
+      <span class="qlabel">회사</span><span class="qv">전체(담당 테넌트) ▾</span>
+      <span class="qlabel">기수</span><span class="qv">7기 (2026-01-01 ~ 2026-12-31) ▾</span>
+      <span class="qlabel">구분</span><span class="seg"><span class="on">전체</span><span>법인</span><span>개인</span></span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button><button class="abtn" style="padding:3px 12px">환경설정</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right">
+      <button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn red">삭제 (F4)</button>
+      <button class="abtn ghost">데이터 재구성</button><button class="abtn ghost">더보기 ▾</button><button class="abtn yellow">WEHAGO 동기화</button>
+    </div></div>
+    <div class="mock-flex">
+      <div class="lpane">
+        <div class="lp-t">회사(테넌트) 목록</div>
+        <table class="grid">
+          <tr><th>코드</th><th>회사명</th><th>구분</th><th>기수</th></tr>
+          <tr class="sel"><td>1000</td><td>EY Korea Co., Ltd.</td><td class="c">법인</td><td class="c">7기</td></tr>
+          <tr><td>1001</td><td>미림푸드</td><td class="c">법인</td><td class="c">3기</td></tr>
+          <tr><td>1002</td><td>한빛상사</td><td class="c">개인</td><td class="c">5기</td></tr>
+          <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+        </table>
+      </div>
+      <div class="mock-main">
+        <div class="tabbar">
+          <span class="tab on">기본사항</span><span class="tab">부가정보·본지점</span><span class="tab">회사인감(도장)</span><span class="tab">추가사항</span><span class="tab">회사담당자</span><span class="tab" style="color:#9a9aa4">개인사업자 <span class="tno">(④=1 시)</span></span>
+        </div>
+        <div class="formgrid">
+          <div class="ff"><label>① 기수 <span class="badge b-block">등록 후 수정불가</span></label><div class="fv ro">7기 (개업연도=1기 자동)</div></div>
+          <div class="ff"><label>② 회계기간 <span class="badge b-block">법인 1년 초과 불가</span></label><div class="fv">2026-01-01 ~ 2026-12-31 <span class="lens">📅</span></div></div>
+          <div class="ff"><label>③ 인사년도</label><div class="fv ro">2026 (자동 파생)</div></div>
+          <div class="ff"><label>④ 법인·개인구분</label><div class="fv">0.법인 ▾</div></div>
+          <div class="ff wide"><label>⑤ 회사명 + 태그</label><div class="fv">EY Korea Co., Ltd. <span class="lens">태그(수임처 연동 시)</span></div></div>
+          <div class="ff"><label>⑥ 사업자등록번호 <span class="badge b-warn">체크섬</span></label><div class="fv">123-45-67890 <span class="lens">✓ 검증</span></div></div>
+          <div class="ff"><label>종사업자번호</label><div class="fv">0000</div></div>
+          <div class="ff"><label>⑦ 법인등록번호</label><div class="fv">110111-1234567</div></div>
+          <div class="ff"><label>⑧ 대표자성명</label><div class="fv">김대표 (공동대표 "~외 N명")</div></div>
+          <div class="ff"><label>⑨ 대표자주민번호 <span class="badge b-block">PII 암호화</span></label><div class="fv ro">701010-*******&nbsp;<span class="lens">👁 Step-up</span></div></div>
+          <div class="ff"><label>⑩ 대표자 내외국인</label><div class="fv">0.내국인 ▾</div></div>
+          <div class="ff wide"><label>⑪ 사업장주소</label><div class="fv">서울 영등포구 여의공원로 111 <span class="lens">🔍 우편번호</span></div></div>
+          <div class="ff"><label>⑫ 전화 / 팩스</label><div class="fv">02-3787-1000 / 02-783-5890</div></div>
+          <div class="ff"><label>⑬ 업종코드(업태/종목) <span class="badge b-warn">전자신고 필수</span></label><div class="fv">741109 서비스/회계 <span class="lens">🔍</span></div></div>
+          <div class="ff"><label>⑭ 설립년월일</label><div class="fv">2020-01-02 <span class="lens">📅</span></div></div>
+          <div class="ff"><label>⑮ 개업년월일 / ⑯ 폐업</label><div class="fv">2020-01-02 / — <span class="lens">📅</span></div></div>
+        </div>
+        <div class="statusbar"><span class="okmsg">✓ 사업자번호 검증 통과 · 활성 테넌트 중복 없음</span><span class="cnt">기수 7 / 회계기간 정합 OK</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">기타 탭 요약 (§25.1.1)</div><div class="rp-b">
+          <div class="kv"><span class="k">부가정보</span><span class="v">영문명·본지점·과세단위</span></div>
+          <div class="kv"><span class="k">회사인감</span><span class="v">기본/등록인감·도장문구 4서체</span></div>
+          <div class="kv"><span class="k">추가사항</span><span class="v">세무서(F2)·법정동, 중소기업여부</span></div>
+          <div class="kv"><span class="k">회사담당자</span><span class="v">이메일(전자세금계산서 필수)</span></div>
+          <div class="kv"><span class="k">개인 전용</span><span class="v">소득구분·과세유형(일반/간이/면세)</span></div>
+        </div></div>
+        <div class="rp-box"><div class="rp-t">검증 (§15·§25.1.1)</div><div class="rp-b">
+          · 사업자번호 오류 → 전자세금계산서·전자신고 <span class="badge b-block">차단</span><br>
+          · 활성 테넌트 사업자번호 중복 <span class="badge b-block">저장 차단</span><br>
+          · 기수↔회계기간 정합 불일치 <span class="badge b-block">수정 불가</span><br>
+          · 중소기업여부 → 접대비 한도·세율 분기
+        </div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">모든 후행 화면의 부모 · 본지점→사업장 차원(§9) · WEHAGO 회사설정 동기화 · SA-DAT-07 기수변경(P10) 공유</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-02 권한설정 ============ -->
+<section class="section" id="bas02">
+  <div class="page-title"><h1>권한설정</h1><span class="chip-id">SA-BAS-02</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 권한설정 &nbsp;|&nbsp; 사용자×테넌트×메뉴 매트릭스 = RBAC(§4.3)+RLS (P01 §4.2)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-02 권한설정 — 좌측 사원 목록 + 우측 서비스·메뉴 권한 매트릭스. 권한 없는 메뉴는 미노출 원칙</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">권한설정</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-02</span><span class="tb-right">회사 관리자 전용</span></div>
+    <div class="qbar">
+      <span class="qlabel">① 사원</span><span class="qv">배포 사원 자동반영(서비스별 배포관리 연동) ▾</span>
+      <span class="qlabel">② 회사권한</span><span class="seg"><span class="on">0.전체회사</span><span>1.관리회사</span></span>
+      <span class="qv off">→ RLS 테넌트 스코프 범위 결정</span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn dark">저장 (F3)</button><button class="abtn ghost">권한 일괄 부여</button><button class="abtn ghost">권한 일괄 회수</button><button class="abtn yellow">적용</button></div></div>
+    <div class="mock-flex">
+      <div class="lpane">
+        <div class="lp-t">사원 (user ↔ tenant 매핑)</div>
+        <table class="grid">
+          <tr><th>사원</th><th>회사권한</th><th>사용</th></tr>
+          <tr class="sel"><td>홍길동 대리</td><td class="c">전체회사</td><td class="c">여</td></tr>
+          <tr><td>이경리 사원</td><td class="c">관리회사</td><td class="c">여</td></tr>
+          <tr><td>박세무 과장</td><td class="c">관리회사</td><td class="c">부</td></tr>
+        </table>
+      </div>
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>③ 서비스명</th><th class="c">④ 사용여부</th><th class="c">⑤ 메뉴사용</th><th>메뉴별 권한 (RoleMenuPermission + MenuActionGrant)</th></tr>
+          <tr><td>회계관리 (BK 회계)</td><td class="c"><span class="ck">◉</span> 0.여</td><td class="c">0.선택메뉴 ▾</td><td>기초정보 ☑ · 전표 ☑(조회/등록/수정) · 결산 ☐ · 부가세 ☑(조회) · 데이터관리 ☐</td></tr>
+          <tr><td>급여관리</td><td class="c"><span class="ck">○</span> 1.부</td><td class="c ro">—</td><td class="c" style="color:#9a9aa4">모듈 접속 불가(미노출)</td></tr>
+          <tr><td>물류관리</td><td class="c"><span class="ck">○</span> 1.부</td><td class="c ro">—</td><td class="c" style="color:#9a9aa4">—</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">⚠ 회사권한 "관리회사" 미접속 시 대표회사 접속 후 권한 재설정 안내</span><span class="cnt">⑥ 라이센스: 회계 5/10 · 급여 0/5 — 서비스마켓 ▸</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">통제 (§4.2·§15)</div><div class="rp-b">
+          · 가드레일(관리회사 정책 상한) 위반 설정 <span class="badge b-block">저장 차단</span><br>
+          · API 게이트웨이 인가 미들웨어가 사용여부·메뉴사용 enforce<br>
+          · 표준 Role 템플릿(STD_ROLE §6.1) + 회사 커스텀 Role 위에 메뉴 권한<br>
+          · 변경 <code>DataChangeLog</code>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-03 환경설정 ============ -->
+<section class="section" id="bas03">
+  <div class="page-title"><h1>환경설정</h1><span class="chip-id">SA-BAS-03</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 환경설정 &nbsp;|&nbsp; tenant_config = TenantAccountingConfig + DimensionConfig (P01 §4.3, §9.3)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-03 환경설정 — 공통/회계/사용자 3탭. 코드체계·소수점·6 관리차원 스위치가 전표 검증·자동전표·결산 분기 조건</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">환경설정</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-03</span><span class="tb-right">최초 설정 후 변경 자제 · 변경 시 영향분석</span></div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn dark">저장 (F3)</button><button class="abtn ghost">변경 영향 분석</button><button class="abtn yellow">적용</button></div></div>
+    <div class="tabbar"><span class="tab on">공통</span><span class="tab">회계</span><span class="tab">사용자</span></div>
+    <div class="mock-flex"><div class="mock-main">
+      <div class="formgrid c3">
+        <div class="ff"><label>① 계정과목코드체계 → accountCodeLength(N8)</label><div class="fv">2.세목사용 5자리 ▾ <span class="lens">3/5/8/9 가변</span></div></div>
+        <div class="ff"><label>② 소수점관리 (M4)</label><div class="fv">수량 2 · 단가 2 · 금액 0 / 3.반올림 ▾</div></div>
+        <div class="ff"><label>단가 VAT 포함여부</label><div class="fv">0.미포함 ▾</div></div>
+        <div class="ff"><label>④ 단축키 설정</label><div class="fv">1.사용함 (F5 삭제/F9 인쇄) ▾</div></div>
+        <div class="ff"><label>⑤ 거래처코드 입력방법</label><div class="fv">화면표시 0.표시 · 자동완성 0.사용 ▾</div></div>
+        <div class="ff"><label>journalApprovalMode (§11.1-(7) N3)</label><div class="fv">OPTIONAL ▾ <span class="lens">REQUIRED/NONE</span></div></div>
+      </div>
+      <h3 class="sub" style="margin-left:12px">③ 관리코드 사용여부·자리수 = 6 관리차원 스위치 (<code>DimensionConfig.enabled</code>, §9.3)</h3>
+      <table class="grid" style="margin:0 12px 12px;width:calc(100% - 24px)">
+        <tr><th>관리코드</th><th class="c">사용여부</th><th class="c">자리수</th><th>연동 마스터</th><th>효과</th></tr>
+        <tr><td>프로젝트</td><td class="c"><span class="ck">◉</span> 1.사용함</td><td class="c">4~8</td><td>SA-BAS-09</td><td>전표 PROJECT 차원 활성</td></tr>
+        <tr><td>자금관리</td><td class="c"><span class="ck">◉</span> 1.사용함</td><td class="c">—</td><td>어음·차입금(AUX)</td><td>자금 관리항목 스위치</td></tr>
+        <tr><td>현장</td><td class="c"><span class="ck">○</span> 0.사용안함</td><td class="c">—</td><td>SA-BAS-08</td><td class="c" style="color:#9a9aa4">마스터 비활성</td></tr>
+        <tr><td>제품</td><td class="c"><span class="ck">○</span> 0.사용안함</td><td class="c">—</td><td>재고(P04 2차)</td><td class="c" style="color:#9a9aa4">—</td></tr>
+        <tr><td>부서·사원</td><td class="c"><span class="ck">◉</span> 1.사용함</td><td class="c">4~8/10</td><td>SA-BAS-04·05</td><td>DEPARTMENT·EMPLOYEE 차원</td></tr>
+        <tr><td>거래처</td><td class="c"><span class="ck">◉</span> 1.사용함</td><td class="c">6~10</td><td>SA-BAS-06</td><td>전표 거래처 FK</td></tr>
+        <tr><td>업무용승용차</td><td class="c"><span class="ck">◉</span> 1.사용함</td><td class="c">—</td><td>SA-BAS-10</td><td>차량 관리항목</td></tr>
+      </table>
+      <div class="statusbar"><span class="warnmsg">⚠ 관리코드 사용 시 계정과목별 관리항목 선행등록 필요 · 필수 전환 시 미입력 과거 전표 목록 산출(§10.2)</span></div>
+    </div>
+    <div class="rpanel">
+      <div class="rp-box"><div class="rp-t">회계 탭 항목 (§25.1.3)</div><div class="rp-b">
+        ① 중단사업코드(0/1.부서/2.PJT)<br>② 중소기업회계기준·재무제표 작성선택<br>③ 매입매출 자동설정(봉사료)<br>④ 부가세 공급가액 소수점(14/17/21/22·56/57/61 끝수처리)<br>⑤ 과세유형 추가(매입자발행·복지카드 등)<br>⑥ 중고차량/차대번호 → 재활용폐자원<br>⑦ 물류전표처리 메뉴(2차) 노출<br>⑧ 체크펜 원장 표시 ⑨ 성실신고(개인)
+      </div></div>
+      <div class="rp-box"><div class="rp-t">변경 통제 (§10)</div><div class="rp-b">
+        · <code>DimensionConfigHistory</code> 유효일자 버전<br>
+        · 변경 영향 분석 리포트(영향 계정·전표유형·미입력 전표 수)<br>
+        · 마감기간 차원 소급 변경 <span class="badge b-block">차단</span><br>
+        · 다른 메뉴 실행 중 변경 미반영 경고
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-04 부서등록 ============ -->
+<section class="section" id="bas04">
+  <div class="page-title"><h1>부서등록(회계)</h1><span class="chip-id">SA-BAS-04</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 부서등록 &nbsp;|&nbsp; DEPARTMENT 차원 마스터 · DepartmentCostCenterMapping (P01 §4.4, §9.1)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-04 부서등록 — 그리드 직접 입력 + WEHAGO 조직 연동. 조직 개편은 유효일자 버전, 과거 전표 차원값 보존</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">부서등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-04</span></div>
+    <div class="qbar">
+      <span class="qlabel">사용</span><span class="seg"><span class="on">전체</span><span>여</span><span>부</span></span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button><button class="abtn" style="padding:3px 12px">④ 조직연동</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn red">삭제 (F4)</button><button class="abtn ghost">코스트센터 매핑</button></div></div>
+    <div class="mock-flex"><div class="mock-main">
+      <table class="grid">
+        <tr><th>① Code (4~8자리)</th><th>② 부서명 (한30/영60)</th><th>③ 순위</th><th>상위부서</th><th>부서장</th><th>유효기간</th><th class="c">④ 연동</th><th class="c">⑤ 사용</th></tr>
+        <tr class="sel"><td>1000</td><td>경영지원팀<span class="lens">🔍</span></td><td class="c">1</td><td>본사</td><td>김부장</td><td>2020-01-02 ~</td><td class="c"><span class="badge b-ok">연동</span></td><td class="c">0.여</td></tr>
+        <tr><td>2000</td><td>영업1팀</td><td class="c">2</td><td>영업본부</td><td>이팀장</td><td>2023-01-01 ~</td><td class="c"><span class="badge b-ok">연동</span></td><td class="c">0.여</td></tr>
+        <tr><td>2100</td><td class="red">영업2팀 (변경 감지)</td><td class="c">3</td><td>영업본부</td><td>—</td><td>2026-01-01 ~</td><td class="c"><span class="badge b-warn">변경</span></td><td class="c">0.여</td></tr>
+        <tr><td>9000</td><td>구지원팀(폐지)</td><td class="c">9</td><td>—</td><td>—</td><td>~ 2025-12-31</td><td class="c">—</td><td class="c">1.부</td></tr>
+        <tr class="empty"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">✓ 연동 조직은 직접 삭제·추가 금지 — 외부 조직 동기화 이벤트로 조정</span><span class="cnt">4건 / 사용 3</span></div>
+    </div>
+    <div class="rpanel">
+      <div class="rp-box"><div class="rp-t">⑥ 현재시점 사원정보 (read-only)</div><div class="rp-b">
+        <div class="kv"><span class="k">경영지원팀</span><span class="v">5명</span></div>
+        <div class="kv"><span class="k">홍길동 대리</span><span class="v">2021-03-02 ~</span></div>
+        <div class="kv"><span class="k">이경리 사원</span><span class="v">2024-01-02 ~</span></div>
+      </div></div>
+      <div class="rp-box"><div class="rp-t">코스트센터 매핑 (§9.1)</div><div class="rp-b">
+        <div class="kv"><span class="k">경영지원팀</span><span class="v">CC100 (1:1)</span></div>
+        <div class="kv"><span class="k">영업1·2팀</span><span class="v">CC200 (N:1)</span></div>
+        <div style="color:var(--ey-gray);margin-top:4px">유효일자 기반 1:N/N:1/N:M — <code>DepartmentCostCenterMapping</code></div>
+      </div></div>
+      <div class="rp-box"><div class="rp-t">산출물·연계</div><div class="rp-b">전표 부서 항목(P03) · 거래처 담당부서 · 급여 정렬(③) · SA-OPN-08(P02)</div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-05 사원등록 ============ -->
+<section class="section" id="bas05">
+  <div class="page-title"><h1>사원등록(회계)</h1><span class="chip-id">SA-BAS-05</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 사원등록 &nbsp;|&nbsp; EMPLOYEE 차원(M1 — 가지급금 인정이자·경비 추적) · PII (P01 §4.5)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-05 사원등록 — 조회조건 + 목록/상세. 주민번호 암호화·Step-up 평문 조회 · Code 변경 불가</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">사원등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-05</span></div>
+    <div class="qbar">
+      <span class="qlabel">화면설정</span><span class="seg"><span class="on">전체</span><span>재직자</span><span>퇴직자</span></span>
+      <span class="qlabel">사원검색</span><span class="qv">성명/코드 🔍</span>
+      <span class="qlabel">정렬</span><span class="qv">코드순 ▾ <span style="color:#9a9aa4">(성명/입력/부서/입사일)</span></span>
+      <span class="qright"><button class="navbtn">조건검색 ▾</button><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right">
+      <button class="abtn ghost">사원명잠금</button><button class="abtn ghost">연동정보</button><button class="abtn ghost">가지급금대표자설정</button><button class="abtn ghost">신규 일괄등록(엑셀)</button>
+      <button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn red">삭제 (F4)</button>
+    </div></div>
+    <div class="mock-flex">
+      <div class="lpane">
+        <div class="lp-t">사원 목록</div>
+        <table class="grid">
+          <tr><th>Code</th><th>사원명</th><th>부서</th></tr>
+          <tr class="sel"><td>E0001</td><td>홍길동</td><td>경영지원팀</td></tr>
+          <tr><td>E0002</td><td>이경리</td><td>경영지원팀</td></tr>
+          <tr><td>E0009</td><td class="blue">박퇴사 (퇴사)</td><td>영업1팀</td></tr>
+        </table>
+      </div>
+      <div class="mock-main">
+        <div class="tabbar"><span class="tab on">사원등록</span><span class="tab">추가사항</span></div>
+        <div class="formgrid">
+          <div class="ff"><label>① Code (10자 · 변경불가)</label><div class="fv ro">E0001</div></div>
+          <div class="ff"><label>② 사원명 (퇴사 시 파란색)</label><div class="fv">홍길동</div></div>
+          <div class="ff"><label>③ 내/외</label><div class="fv">0.내국인 ▾</div></div>
+          <div class="ff"><label>④ 주민번호 <span class="badge b-block">PII</span></label><div class="fv ro">850505-*******&nbsp;<span class="lens">👁 Step-up</span></div></div>
+          <div class="ff"><label>⑤ 입사일자</label><div class="fv">2021-03-02 <span class="lens">📅</span></div></div>
+          <div class="ff"><label>⑥ 단일세율(외국인 19%)</label><div class="fv">1.부 ▾</div></div>
+          <div class="ff"><label>⑦ 거주지국·거주구분</label><div class="fv ro">대한민국 · 0.거주자 (자동)</div></div>
+          <div class="ff"><label>⑧⑨ 체류자격·국적</label><div class="fv">— <span class="lens">F2</span></div></div>
+          <div class="ff wide"><label>⑩ 주소</label><div class="fv">서울 강서구 ○○로 12</div></div>
+          <div class="ff"><label>⑪ 휴대폰 / ⑫ 이메일(급여명세서)</label><div class="fv">010-1234-5678 / hong@ey.com</div></div>
+          <div class="ff"><label>⑬ 부서/직종/직급/호봉/현장/PJT</label><div class="fv">경영지원팀 · 사무 · 대리 <span class="lens">🔍</span></div></div>
+          <div class="ff"><label>⑭ 퇴사일자</label><div class="fv">— <span class="lens">📅 Backspace+Enter 삭제</span></div></div>
+          <div class="ff"><label>⑮ 급여이체은행</label><div class="fv">국민 123-45-678 ▾</div></div>
+          <div class="ff"><label>⑯ 상시근로자 구분</label><div class="fv">일반정규직 ▾ <span class="lens">NAHAGO</span></div></div>
+        </div>
+        <div class="statusbar"><span class="warnmsg">⚠ 주민번호 붉은색=부여오류 가능(증명서류 일치 시 무시) · Code 사용 데이터 존재 시 삭제 차단 · 퇴사 재입사=기존코드 보존+신규코드</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-06 거래처등록 ============ -->
+<section class="section" id="bas06">
+  <div class="page-title"><h1>거래처등록</h1><span class="chip-id">SA-BAS-06</span><span class="badge b-new">R8 통제</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 거래처등록 &nbsp;|&nbsp; 일반/금융/카드 3탭 = partner_type · 승인 워크플로우(SOD) (P01 §4.6, §11.1.1-(8))</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-06 거래처등록 — 3탭 + 목록/상세(기본·추가). 상태: TEMP→PENDING_APPROVAL→ACTIVE / INACTIVE / CLOSED_BIZ</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">거래처등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-06</span></div>
+    <div class="qbar">
+      <span class="qlabel">사용여부</span><span class="seg"><span class="on">0.전체</span><span>1.사용</span><span>2.미사용</span></span>
+      <span class="qlabel">거래처구분</span><span class="seg"><span class="on">0.전체</span><span>1.매출</span><span>2.매입</span></span>
+      <span class="qlabel">등록번호</span><span class="qv">0.전체 ▾ <span style="color:#9a9aa4">(사업자/주민/외국인)</span></span>
+      <span class="qright"><button class="navbtn">조건검색 ▾</button><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right">
+      <button class="abtn ghost">진위여부 확인</button><button class="abtn ghost">이메일 일괄등록</button><button class="abtn ghost">거래처명 잠금</button><button class="abtn ghost">더보기 ▾</button>
+      <button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn yellow">승인요청 (R8)</button>
+    </div></div>
+    <div class="tabbar"><span class="tab on">1. 일반거래처</span><span class="tab">2. 금융거래처</span><span class="tab">3. 카드거래처</span></div>
+    <div class="mock-flex">
+      <div class="lpane">
+        <div class="lp-t">거래처 목록 (Code 6~10자리)</div>
+        <table class="grid">
+          <tr><th>Code</th><th>거래처명</th><th>상태</th></tr>
+          <tr class="sel"><td>00123</td><td>삼성문구(주)</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+          <tr><td>00124</td><td>신규상사</td><td class="c"><span class="badge b-warn">승인대기</span></td></tr>
+          <tr><td>00125</td><td>(temp)간이식당</td><td class="c"><span class="badge b-gray">TEMP</span></td></tr>
+          <tr><td>00090</td><td class="red">폐업상회</td><td class="c"><span class="badge b-block">CLOSED_BIZ</span></td></tr>
+        </table>
+      </div>
+      <div class="mock-main">
+        <div class="tabbar" style="background:#fff"><span class="tab on">기본사항</span><span class="tab">추가사항</span></div>
+        <div class="formgrid">
+          <div class="ff"><label>사업자/주민등록번호</label><div class="fv">123-45-67890 <span class="lens">tax 폐업·과세유형 조회</span></div></div>
+          <div class="ff"><label>대표자성명</label><div class="fv">김문구</div></div>
+          <div class="ff"><label>업태 / 종목</label><div class="fv">도소매 / 문구</div></div>
+          <div class="ff"><label>거래처유형 <span class="badge b-block">필수(R8)</span></label><div class="fv">공급업체 ▾ <span class="lens">고객/임직원/기타</span></div></div>
+          <div class="ff wide"><label>사업장주소</label><div class="fv">서울 중구 을지로 100 <span class="lens">🔍</span></div></div>
+          <div class="ff"><label>전화 / 팩스</label><div class="fv">02-777-0001 / —</div></div>
+          <div class="ff"><label>담당사원 / 담당부서</label><div class="fv">홍길동 / 경영지원팀 <span class="lens">🔍</span></div></div>
+          <div class="ff"><label>거래처분류 (100~199)</label><div class="fv">101 소모품 ▾</div></div>
+          <div class="ff"><label>사업자단위 주사업장 / 종사업장</label><div class="fv">부 / —</div></div>
+          <div class="ff"><label>출력용거래처명</label><div class="fv">삼성문구</div></div>
+          <div class="ff"><label>거래 시작(종료)일</label><div class="fv">2024-01-02 ~ <span class="lens">📅</span></div></div>
+          <div class="ff"><label>담당자 이메일 <span class="badge b-warn">전자세금계산서 필수</span></label><div class="fv">bill@ssmungu.co.kr</div></div>
+          <div class="ff"><label>여신한도액 <span class="badge b-warn">초과 경고+알림</span></label><div class="fv">10,000,000</div></div>
+          <div class="ff"><label>기본 VAT 유형·지급조건 (R8)</label><div class="fv">과세매입 10% · 월말 30일 ▾</div></div>
+        </div>
+        <div class="statusbar"><span class="okmsg">✓ 진위확인: 계속사업자 (2026-07-03)</span><span class="warnmsg">⚠ 거래처명 두 줄·#·영문·한문 → 전자신고 변환 오류 검증</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">R8 전표 통제 (P03 enforce)</div><div class="rp-b">
+          ① 채권계정×공급업체 <span class="badge b-block">차단</span><br>② 채무계정×고객 <span class="badge b-block">차단</span><br>③ 휴폐업·사용중지 <span class="badge b-block">차단</span><br>④ 미등록 → TEMP 생성/정식등록 유도<br>⑤ 사업자번호 중복 <span class="badge b-warn">경고</span><br>⑥ 허용계정 제한 <span class="badge b-warn">경고/차단(정책)</span>
+        </div></div>
+        <div class="rp-box"><div class="rp-t">금융/카드 탭 요약</div><div class="rp-b">
+          <b>금융</b>: 계좌·예금종류(보통/당좌)·이자율·당좌한도·<b>사업용계좌</b>·자동이체(자금계획 시드)·정기적금/예금<br>
+          <b>카드(매입)</b>: 카드번호·구분(회사/개인/사업용/제로페이)·결제일·결제계좌·한도<br>
+          <b>카드(매출)</b>: 가맹점번호·입금계좌·수수료·직불/선불(발행집계표 (6)/(8)란)
+        </div></div>
+        <div class="rp-box"><div class="rp-t">더보기</div><div class="rp-b">등록 검증 · 전표전송(일괄 반영) · 주민번호 별표 · 은행등록 · 분류등록(일반100/금융400/매출카드200/매입카드300) · 엑셀 서식 6종/불러오기</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-07 계정과목 (WJV-08) ============ -->
+<section class="section" id="bas07">
+  <div class="page-title"><h1>계정과목 및 적요등록</h1><span class="chip-id">SA-BAS-07 · WJV-08</span><span class="badge b-new">MVP 최우선</span></div>
+  <div class="crumb">기준정보 › 계정과목 및 적요등록 (또는 일반전표입력 › F2 › 계정관리) &nbsp;|&nbsp; COA 3기준 병행 · "계정 마스터가 전표를 통제한다" (P01 §4.7, §11.6.2)</div>
+  <div class="mock">
+    <div class="mock-cap">WJV-08 계정과목 관리 — 기준 탭(3기준 완전 분리 트리) + 좌측 트리 + 우측 상세·coa_control·매핑. 총 286계정(회사 194 · K-IFRS 41 · 법인세표준 51)</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">계정과목 및 적요등록</span><span class="tb-star">★</span><span class="tb-id">WJV-08</span><span class="tb-right">MVP · 데이터 주도(JSON) 탐색기 — 국내/외국 동일 컴포넌트</span></div>
+    <div class="qbar">
+      <span class="qlabel">기준</span><span class="seg"><span class="on">회사계정(K-GAAP)</span><span>K-IFRS</span><span>법인세표준계정</span></span>
+      <span class="qlabel">계정체계</span><span class="qv">전체 ▾ <span style="color:#9a9aa4">(자산/부채/자본/매출/원가/판관비/제조/도급/분양)</span></span>
+      <span class="qlabel">계정 검색</span><span class="qv">코드/명 🔍</span>
+      <span class="qlabel">필터</span><span class="chip">외화등록</span><span class="chip">관리 필수</span><span class="chip">자금연동</span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right">
+      <button class="abtn ghost">원가설정</button><button class="abtn ghost">회사계정 매핑</button><button class="abtn ghost">표준코드 초기화 <span class="badge b-block">경고</span></button><button class="abtn ghost">세목추가</button><button class="abtn ghost">엑셀 ▾</button><button class="abtn ghost">더보기 ▾</button>
+      <button class="abtn dark">＋ 신규</button><button class="abtn dark">수정</button><button class="abtn red">사용중지</button>
+    </div></div>
+    <div class="mock-flex">
+      <div class="lpane" style="width:300px">
+        <div class="lp-t">회사계정 트리 (194계정 · 세목 5자리)</div>
+        <div class="tree">
+          <div class="tnode lv1">▾ 자산 <span class="cnt">65</span></div>
+          <div class="tnode lv2">▾ 당좌자산</div>
+          <div class="tnode lv3">101 현금</div>
+          <div class="tnode lv3">103 보통예금 <span class="cnt">금융연동</span></div>
+          <div class="tnode lv3">108 외상매출금 <span class="cnt">거래처필수·과세매출</span></div>
+          <div class="tnode lv3">110 받을어음 <span class="cnt">자금연동</span></div>
+          <div class="tnode lv2">▸ 재고자산 <span class="cnt">146 상품 · 153 원재료 · 162 부재료 = 의제매입 06/07</span></div>
+          <div class="tnode lv1">▸ 부채 <span class="cnt">21</span> · 자본 <span class="cnt">10</span> · 수익 <span class="cnt">17</span></div>
+          <div class="tnode lv1">▾ 비용 <span class="cnt">81</span></div>
+          <div class="tnode lv2">▸ 제조원가(500) · 도급(600) · 분양(700) · 판관비(800)</div>
+          <div class="tnode lv2 on">▾ 법인세비용 998</div>
+          <div class="tnode lv3 on">99801 법인세(당기) <span class="cnt">자동결산</span></div>
+          <div class="tnode lv3">99802 법인지방소득세 · 99803 이연법인세비용</div>
+        </div>
+      </div>
+      <div class="mock-main">
+        <div class="formgrid c3">
+          <div class="ff"><label>② Code (3/5자리 · 가변 N8)</label><div class="fv ro">99801</div></div>
+          <div class="ff"><label>③ 계정과목 <span class="badge b-block">붉은색=Ctrl+F1 운영자</span></label><div class="fv">법인세(당기)</div></div>
+          <div class="ff"><label>④ 구분(성격) / ⑭ normalBalance</label><div class="fv ro">비용 · 차변</div></div>
+          <div class="ff"><label>⑤ 사용 <span class="badge b-warn">삭제 대신 사용중지</span></label><div class="fv">0.여 ▾</div></div>
+          <div class="ff"><label>⑥ 관계 (결산대체)</label><div class="fv ro">136 선납세금 · 261 미지급세금</div></div>
+          <div class="ff"><label>⑨ 표준용코드 → tax_std_account</label><div class="fv">8011 당기법인세 <span class="lens">✓ 매핑</span></div></div>
+          <div class="ff"><label>⑩⑪ 출력용명칭 / 영문명 (L10N)</label><div class="fv">법인세비용 / Current income tax</div></div>
+          <div class="ff"><label>⑭ isControlAccount / carryForward</label><div class="fv ro">부 / 여</div></div>
+          <div class="ff"><label>⑫ 현금적요/대체적요 (계정별 8개)</label><div class="fv">01 법인세 납부 … <span class="lens">편집</span></div></div>
+        </div>
+        <h3 class="sub" style="margin-left:12px">⑬ coa_control — 계정 주도 전표 통제 (§11.6.2-(2))</h3>
+        <table class="grid" style="margin:0 12px 12px;width:calc(100% - 24px)">
+          <tr><th>6 관리차원</th><th>거래처/증빙</th><th>외화/금융</th><th>부가세/의제적요</th><th>자금항목</th><th>자동결산/결산대체</th></tr>
+          <tr><td>사업장 필수 · 부서 노출 · PJT/현장/사원/CC 미사용</td><td class="c">선택 / 미사용</td><td class="c">부 / 부</td><td class="c">— / —</td><td class="c">—</td><td class="c"><b>여</b> / 99801↔136·261</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">⚠ 법인세표준계정 매핑 누락 시 결산·신고 집계 경고(W3) · 코드 중복·세목 계층 정합 차단</span><span class="cnt">회사 194 · K-IFRS 41 · 표준 51 = 286</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">기준 간 매핑 (coa_mapping)</div><div class="rp-b">
+          <div class="kv"><span class="k">회사계정</span><span class="v">99801 법인세(당기)</span></div>
+          <div class="kv"><span class="k">K-IFRS</span><span class="v">5410 법인세비용 (IAS 12)</span></div>
+          <div class="kv"><span class="k">법인세표준</span><span class="v">8011 당기법인세</span></div>
+          <div class="kv"><span class="k">세무 특기</span><span class="v">산출세액−공제·감면+가산세</span></div>
+        </div></div>
+        <div class="rp-box"><div class="rp-t">더보기 (§25.1.7 E)</div><div class="rp-b">원가설정(제조455/도급452/분양453) · 영문계정 일괄 · 출력용명칭 일괄 · 표준재무제표 초기화 · 세목계정추가 · 차감계정 오류확인 · 재무제표 유형(일반/금융보험) · 전기 표준용코드 불러오기 → SA-OPN(P02)</div></div>
+        <div class="rp-box"><div class="rp-t">템플릿·초기화 (N8)</div><div class="rp-b">온보딩 시 <code>STD_ACCOUNT</code> 템플릿 복제 → 회사 수정·확장 · <b>엑셀 업로드 초기화</b> 지원</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WJV-09 외국 법인/계정 ============ -->
+<section class="section" id="wjv09">
+  <div class="page-title"><h1>외국 법인/계정 관리</h1><span class="chip-id">WJV-09</span></div>
+  <div class="crumb">기준정보 › 외국 법인/계정 관리 &nbsp;|&nbsp; legal_entity 단위 트리 분리 · 기본 US GAAP · 본사 이중 매핑 (P01 §4.7-D, §11.6.2-(3))</div>
+  <div class="mock">
+    <div class="mock-cap">WJV-09 — 법인 선택 → GAAP 자동 적용 트리 + 본사 매핑. GAAP 레지스트리 확장(WJV-09D)</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">외국 법인/계정 관리</span><span class="tb-star">☆</span><span class="tb-id">WJV-09</span><span class="tb-right">기준 변경·추가 = operator:masterdata:write</span></div>
+    <div class="qbar">
+      <span class="qlabel">법인</span><span class="qv">US Inc. (미국 · USD) ▾</span>
+      <span class="qlabel">기준</span><span class="seg"><span class="on">US GAAP</span><span>IFRS</span><span>J-GAAP</span><span>C-GAAP</span><span>UK GAAP</span></span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button><button class="abtn" style="padding:3px 12px">＋ 기준(GAAP) 추가</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="lpane" style="width:300px">
+        <div class="lp-t">US GAAP 트리 (50계정 · ASC)</div>
+        <div class="tree">
+          <div class="tnode lv1">▾ Assets</div>
+          <div class="tnode lv2">1010 Cash</div>
+          <div class="tnode lv2 on">1100 A/R <span class="cnt">거래처</span></div>
+          <div class="tnode lv2">1500 PP&amp;E · 1700 Deferred tax assets</div>
+          <div class="tnode lv1">▸ Liabilities <span class="cnt">2010 A/P · 2300 Income taxes payable</span></div>
+          <div class="tnode lv1">▸ Equity <span class="cnt">3010 Common stock · 3100 R/E</span></div>
+          <div class="tnode lv1">▾ P/L</div>
+          <div class="tnode lv2">4010 Product revenue · 4020 Service revenue</div>
+          <div class="tnode lv2">8010 Current tax · 8020 Deferred tax</div>
+        </div>
+      </div>
+      <div class="mock-main">
+        <table class="spec" style="margin:12px">
+          <tr><th>법인</th><th>국가</th><th class="c">회계기준</th><th class="c">통화</th><th class="c">본사 매핑</th></tr>
+          <tr><td>US Inc.</td><td>미국</td><td class="c">US GAAP (기본 자동)</td><td class="c">USD</td><td class="c"><span class="badge b-ok">완료</span></td></tr>
+          <tr><td>EU GmbH</td><td>유럽</td><td class="c">IFRS</td><td class="c">EUR</td><td class="c"><span class="badge b-ok">완료</span></td></tr>
+          <tr><td>JP KK</td><td>일본</td><td class="c">J-GAAP</td><td class="c">JPY</td><td class="c"><span class="badge b-warn">진행중</span></td></tr>
+          <tr><td>CN Co. / UK Ltd.</td><td>중국/영국</td><td class="c">C-GAAP / UK GAAP</td><td class="c">CNY/GBP</td><td class="c"><span class="badge b-warn">진행중</span></td></tr>
+        </table>
+        <div class="modal">
+          <div class="m-t">＋ 기준(GAAP) 추가 — WJV-09D <span class="x">✕</span></div>
+          <div class="m-b">
+            <div class="formgrid" style="grid-template-columns:1fr 1fr;padding:0">
+              <div class="ff"><label>기준 코드 / 표시명</label><div class="fv">DE_HGB / HGB</div></div>
+              <div class="ff"><label>국가·지역 / 표시통화</label><div class="fv">독일 / EUR</div></div>
+              <div class="ff"><label>기준체계</label><div class="fv">로컬 GAAP ▾ <span class="lens">IFRS 기반/US GAAP 기반</span></div></div>
+              <div class="ff"><label>계정 트리 초기화</label><div class="fv">IFRS 복제 ▾ <span class="lens">공백/US 복제/엑셀 업로드</span></div></div>
+              <div class="ff"><label>본사 매핑 기준</label><div class="fv ro">회사계정+법인세표준 — 자동 매핑 후 검수</div></div>
+              <div class="ff"><label>표시 언어</label><div class="fv">영어+한글 부제 (현지어 병기 옵션)</div></div>
+            </div>
+          </div>
+          <div class="m-f"><button class="abtn">취소</button><button class="abtn yellow">등록 (검수 필요)</button></div>
+        </div>
+        <div class="statusbar"><span class="warnmsg">⚠ 본사계정 매핑 누락 시 연결·세무보고 경고 · 기준 변환: ASC 606↔IFRS 15 / 842↔16 / 740↔IAS 12 · 기능통화 기표→표시통화 환산</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">선택 계정 — 1100 A/R</div><div class="rp-b">
+          <div class="kv"><span class="k">Normal balance</span><span class="v">Debit</span></div>
+          <div class="kv"><span class="k">본사 회사계정</span><span class="v">108 외상매출금</span></div>
+          <div class="kv"><span class="k">법인세표준</span><span class="v">1030 매출채권</span></div>
+        </div></div>
+        <div class="rp-box"><div class="rp-t">GAAP 레지스트리</div><div class="rp-b">US 50(기본)·IFRS 41·J 25·C 18·UK 18 = 152계정 + 확장(HGB·ASPE·Ind AS·AASB)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ R18-A 구조설계 ============ -->
+<section class="section" id="r18a">
+  <div class="page-title"><h1>계정체계/세목/관리항목 구조설계</h1><span class="chip-id">R18-A</span><span class="badge b-new">★★★ 1차</span></div>
+  <div class="crumb">기준정보 › 계정 구조설계 (SA-BAS-07 더보기에서도 진입) &nbsp;|&nbsp; D365 Main account + Dimension 개념 — coa_control 구조 설계형 UX (P01 §4.13)</div>
+  <div class="mock">
+    <div class="mock-cap">R18-A — 코드 체계 설계 + 트리 캔버스 + 계정(군)×차원 매트릭스 일괄 편집</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">계정 구조설계</span><span class="tb-star">☆</span><span class="tb-id">R18-A</span><span class="tb-right">통제 속성 변경 = 운영자/관리자(정책)</span></div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn ghost">일괄 적용(계정 범위)</button><button class="abtn ghost">속성 복사</button><button class="abtn dark">저장 (F3)</button><button class="abtn yellow">검증 실행</button></div></div>
+    <div class="mock-flex"><div class="mock-main">
+      <div class="formgrid c3">
+        <div class="ff"><label>계정 코드 길이 (N8)</label><div class="fv">5자리(세목) ▾ <span class="lens">3/5/8/9 가변</span></div></div>
+        <div class="ff"><label>세목 계층</label><div class="fv ro">상위 3자리 + 세목 2자리</div></div>
+        <div class="ff"><label>대상 기준 트리</label><div class="fv">회사계정(K-GAAP) ▾ <span class="lens">K-IFRS/법인세표준/외국법인</span></div></div>
+      </div>
+      <h3 class="sub" style="margin-left:12px">계정(군) × 관리항목 매트릭스 = coa_control 일괄 설계</h3>
+      <table class="grid" style="margin:0 12px 12px;width:calc(100% - 24px)">
+        <tr><th>계정 범위</th><th class="c">사업장</th><th class="c">부서</th><th class="c">PJT</th><th class="c">현장</th><th class="c">사원</th><th class="c">CC</th><th class="c">거래처</th><th class="c">증빙</th><th class="c">외화</th><th class="c">부가세</th><th class="c">자금</th><th class="c">자동결산</th></tr>
+        <tr><td>108·110·120 (채권)</td><td class="c">필수</td><td class="c">노출</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c"><b>필수</b></td><td class="c">선택</td><td class="c">○(108)</td><td class="c">과세매출</td><td class="c">110 받을어음</td><td class="c">—</td></tr>
+        <tr><td>800번대 판관비 (일괄)</td><td class="c">필수</td><td class="c"><b>필수</b>(801·802·811)</td><td class="c">노출</td><td class="c">—</td><td class="c">노출</td><td class="c">노출</td><td class="c">선택</td><td class="c">필수(811·813 등 12계정)</td><td class="c">—</td><td class="c">불공검토(813)</td><td class="c">—</td><td class="c">818 감가상각</td></tr>
+        <tr><td>60x 도급원가</td><td class="c">필수</td><td class="c">—</td><td class="c">—</td><td class="c"><b>필수</b></td><td class="c">—</td><td class="c">노출</td><td class="c">선택</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td></tr>
+        <tr><td>998·99801~06 법인세</td><td class="c">필수</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c">—</td><td class="c"><b>여</b>(결산대체 136·261)</td></tr>
+      </table>
+      <div class="statusbar"><span class="warnmsg">⚠ 검증: 코드 중복·세목 정합 / 결산대체 관계 무결성 / 필수 차원인데 DimensionConfig.enabled=N 조합 경고(§9.3·9.5)</span></div>
+    </div>
+    <div class="rpanel">
+      <div class="rp-box"><div class="rp-t">산출물</div><div class="rp-b"><code>coa_control</code> 설정 일체(전표 라인 검증 메타데이터 — P03 <code>DIMENSION_REQUIRED</code>/<code>AUX_REQUIRED</code>) · 코드 체계 정의(<code>accountCodeLength</code>)</div></div>
+      <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">SA-BAS-03(차원 스위치) · SA-BAS-07(계정 마스터)와 동일 데이터 편집 · 변경 <code>DataChangeLog</code></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ R18-B FS 매핑관리 ============ -->
+<section class="section" id="r18b">
+  <div class="page-title"><h1>재무제표·세무신고 매핑관리</h1><span class="chip-id">R18-B</span><span class="badge b-new">★★★ 1차</span></div>
+  <div class="crumb">기준정보 › 재무제표·세무신고 매핑관리 &nbsp;|&nbsp; SAP FSV / D365 Row Definition 방식 — DisclosureMapping·coa_mapping·GroupReportMapping 통합 (P01 §4.14)</div>
+  <div class="mock">
+    <div class="mock-cap">R18-B — FS 버전 관리(4종) + Row Definition 그리드 + 미매핑/중복매핑 자동 검출</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">재무제표·세무신고 매핑관리</span><span class="tb-star">☆</span><span class="tb-id">R18-B</span><span class="tb-right">제출용 확정 = 결산 승인 권한</span></div>
+    <div class="qbar">
+      <span class="qlabel">FS 버전</span><span class="seg"><span class="on">제출용</span><span>표준용</span><span>내부관리용</span><span>그룹보고용</span></span>
+      <span class="qlabel">서식</span><span class="qv">재무상태표 ▾ <span style="color:#9a9aa4">(IS/표준FS/세무신고/그룹)</span></span>
+      <span class="qlabel">적용기간</span><span class="qv">FY2026 (2026-01-01~12-31)</span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button><button class="abtn" style="padding:3px 12px">버전 복사</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn ghost">미매핑/중복 검출</button><button class="abtn dark">행 추가</button><button class="abtn dark">저장 (F3)</button><button class="abtn yellow">버전 확정</button></div></div>
+    <div class="mock-flex"><div class="mock-main">
+      <table class="grid">
+        <tr><th>Row No.</th><th>Description (행)</th><th class="c">Totaling Type</th><th>Totaling (계정 범위)</th><th class="c">검증</th></tr>
+        <tr><td>1010</td><td>Ⅰ. 유동자산</td><td class="c">Formula</td><td>1011 + 1020</td><td class="c"><span class="badge b-ok">OK</span></td></tr>
+        <tr class="sel"><td>1011</td><td>&nbsp;&nbsp;1. 당좌자산</td><td class="c">Posting Accounts</td><td>101..145</td><td class="c"><span class="badge b-ok">OK</span></td></tr>
+        <tr><td>1020</td><td>&nbsp;&nbsp;2. 재고자산</td><td class="c">Posting Accounts</td><td>146..175</td><td class="c"><span class="badge b-ok">OK</span></td></tr>
+        <tr><td>8010</td><td>법인세비용(총액) — 표준IS</td><td class="c">Posting Accounts</td><td>998, 99801..99806</td><td class="c"><span class="badge b-warn">중복 1</span></td></tr>
+        <tr class="empty"><td></td><td></td><td></td><td></td><td></td></tr>
+      </table>
+      <div class="statusbar"><span class="warnmsg">⚠ 미매핑 2계정(232 임차보증금, 387 자기주식) · 중복매핑 1계정(99801 — 8010·8011 동시) — 자동 검출 리포트</span><span class="cnt">버전 v3 · FY2026</span></div>
+    </div>
+    <div class="rpanel">
+      <div class="rp-box"><div class="rp-t">매핑 대상 (§4.14)</div><div class="rp-b">회사계정↔K-IFRS↔법인세표준(<code>coa_mapping</code>) · 표준재무제표(표준용코드) · 공시(<code>DisclosureMapping</code>) · 그룹(<code>GroupReportMapping</code> §11.20)</div></div>
+      <div class="rp-box"><div class="rp-t">검증 (§15)</div><div class="rp-b">법인세표준 매핑 누락 = 결산·신고 <span class="badge b-warn">경고(W3)</span><br>그룹보고 매핑 누락 = Export <span class="badge b-block">차단</span>+리포트<br>재무제표 유형(일반/금융보험) 서식 정합</div></div>
+      <div class="rp-box"><div class="rp-t">버전 이력</div><div class="rp-b">
+        <div class="kv"><span class="k">v3 (현재)</span><span class="v">FY2026 · 편집중</span></div>
+        <div class="kv"><span class="k">v2</span><span class="v">FY2025 · 확정</span></div>
+        <div class="kv"><span class="k">v1</span><span class="v">FY2024 · 확정</span></div>
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-08 현장등록 ============ -->
+<section class="section" id="bas08">
+  <div class="page-title"><h1>현장등록(회계)</h1><span class="chip-id">SA-BAS-08</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 현장등록 &nbsp;|&nbsp; SITE 차원(사업장 귀속) · 도급/분양 (P01 §4.8)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-08 현장등록 — 현장 목록 + 계약(회차) 상세. SA-BAS-03 현장코드 "1.사용함" 선행</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">현장등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-08</span></div>
+    <div class="qbar">
+      <span class="qlabel">사용구분</span><span class="seg"><span class="on">2.전체</span><span>0.사용</span><span>1.사용안함</span></span>
+      <span class="qlabel">현장구분</span><span class="seg"><span class="on">2.전체</span><span>0.도급</span><span>1.분양</span></span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn red">삭제 (F4)</button></div></div>
+    <div class="mock-flex"><div class="mock-main">
+      <div class="formgrid">
+        <div class="ff"><label>③ Code (4~8자리)</label><div class="fv">S001</div></div>
+        <div class="ff"><label>④ 현장명</label><div class="fv">여의도 오피스 신축</div></div>
+        <div class="ff"><label>⑤ 구분 <span class="badge b-warn">원가귀속 분기</span></label><div class="fv">0.도급 ▾</div></div>
+        <div class="ff"><label>⑥ 진행상황 / ⑦ 사용</label><div class="fv">1.진행 · 0.사용 ▾</div></div>
+        <div class="ff wide"><label>⑧ 공사명</label><div class="fv">여의도 A블록 오피스 신축공사</div></div>
+        <div class="ff"><label>⑨ 공사기간 / ⑩ 착공·완료일</label><div class="fv">2025-03-01 ~ 2027-02-28</div></div>
+        <div class="ff"><label>⑪ 원청회사 <span class="badge b-block">BAS-06 선행</span></label><div class="fv">(주)대한건설 <span class="lens">🔍</span></div></div>
+        <div class="ff"><label>⑫ 사원/부서</label><div class="fv">이현장 / 공사1팀 <span class="lens">🔍</span></div></div>
+      </div>
+      <table class="grid" style="margin:0 12px 12px;width:calc(100% - 24px)">
+        <tr><th>⑬ 당초/회차</th><th>일자</th><th class="num">⑭ 계약금액</th><th class="num">선수금</th><th>비고</th></tr>
+        <tr><td class="c">1차 (최초 계약)</td><td>2025-02-15</td><td class="num">5,000,000,000</td><td class="num">500,000,000</td><td>—</td></tr>
+        <tr><td class="c">2차 (계약변경)</td><td>2026-04-01</td><td class="num">5,400,000,000</td><td class="num">—</td><td>설계변경 증액</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">✓ 당해년도 기성액은 전표 407/40700 공사수입금으로 입력 (2·3차는 공사대장 참고)</span></div>
+    </div>
+    <div class="rpanel"><div class="rp-box"><div class="rp-t">산출물·연계</div><div class="rp-b">현장별공사원가집계표 · 공사대장 · 현장별원가비용현황<br>후행: 전표(P03) · SA-BAS-11 외주처 · SA-OPN-17·18·19(P02)</div></div></div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-09 프로젝트등록 ============ -->
+<section class="section" id="bas09">
+  <div class="page-title"><h1>프로젝트등록(회계)</h1><span class="chip-id">SA-BAS-09</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 프로젝트등록 &nbsp;|&nbsp; PROJECT 차원 · 예산금액=예실 분석 기준(§11.19) (P01 §4.9)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-09 프로젝트등록</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">프로젝트등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-09</span></div>
+    <div class="qbar">
+      <span class="qlabel">조회조건</span><span class="seg"><span class="on">0.전체</span><span>1.진행</span><span>2.완료</span><span>3.보류</span></span>
+      <span class="qlabel">사용여부</span><span class="seg"><span class="on">2.전체</span><span>0.여</span><span>1.부</span></span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn red">삭제 (F4)</button></div></div>
+    <div class="mock-flex"><div class="mock-main">
+      <div class="formgrid">
+        <div class="ff"><label>③ Code (4~8자리)</label><div class="fv">P2601</div></div>
+        <div class="ff"><label>④ 프로젝트명</label><div class="fv">ERP 구축 컨설팅</div></div>
+        <div class="ff"><label>⑤ 시작일/종료일</label><div class="fv">2026-01-02 ~ 2026-12-31 <span class="lens">📅</span></div></div>
+        <div class="ff"><label>⑥ 구분 (연도말 상태)</label><div class="fv">1.진행 ▾</div></div>
+        <div class="ff"><label>⑦ 사용</label><div class="fv">0.사용 ▾</div></div>
+        <div class="ff"><label>⑨ 보류(완료)예정일 (구분 2·3 시)</label><div class="fv ro">—</div></div>
+        <div class="ff"><label>⑩ 예산금액 <span class="badge b-ref">예실 기준</span></label><div class="fv">120,000,000</div></div>
+        <div class="ff"><label>⑪ 주관사원/주관부서</label><div class="fv">박컨설팅 / 컨설팅1팀 <span class="lens">🔍</span></div></div>
+        <div class="ff full"><label>⑧ 목적과 내용</label><div class="fv">고객사 ERP 회계모듈 구축 및 데이터 이관</div></div>
+      </div>
+      <div class="statusbar"><span class="okmsg">✓ 사용안함 프로젝트는 연관 메뉴 미사용 · 프로젝트 비용계정은 PJT 필수(R9 — coa_control)</span></div>
+    </div>
+    <div class="rpanel"><div class="rp-box"><div class="rp-t">산출물·연계</div><div class="rp-b">프로젝트손익현황·원가현황 · 장부 PJT별 조회<br>후행: 전표(P03) · SA-OPN-11·12·13(P02)</div></div></div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-10 업무용승용차 ============ -->
+<section class="section" id="bas10">
+  <div class="page-title"><h1>업무용승용차 등록</h1><span class="chip-id">SA-BAS-10</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 업무용승용차 &nbsp;|&nbsp; 세무조정 비용한도(800만·업무사용비율) 입력값 · 고정자산 연동 (P01 §4.10)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-10 — 입력 프로세스: 고정자산등록 → SA-BAS-07(관리항목 추가) → 본 화면. 차량번호+명의구분 = 동일 차량 판정 키</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">업무용승용차 등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-10</span></div>
+    <div class="qbar">
+      <span class="qlabel">정렬</span><span class="qv">차량코드순 ▾ <span style="color:#9a9aa4">(번호/차종/사원/사용/구분)</span></span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button><button class="abtn" style="padding:3px 12px">엑셀변환</button></span>
+    </div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn ghost">새로 불러오기(고정자산)</button><button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn red">삭제 (F4)</button></div></div>
+    <div class="tabbar"><span class="tab on">기본사항</span><span class="tab">운행정보</span><span class="tab">근무지등록</span></div>
+    <div class="mock-flex"><div class="mock-main">
+      <div class="formgrid">
+        <div class="ff"><label>① Code (Enter 시 자동)</label><div class="fv ro">C001</div></div>
+        <div class="ff"><label>② 차량번호/차종 <span class="badge b-warn">전자신고 검증</span></label><div class="fv">12가3456 / 그랜저 HEV</div></div>
+        <div class="ff"><label>③ 명의구분 <span class="badge b-ref">명세서 자동반영</span></label><div class="fv">2.리스 ▾ <span class="lens">0.회사/1.렌트/3.직원/4.타인/5~7(비)</span></div></div>
+        <div class="ff"><label>④ 사용</label><div class="fv">0.사용 ▾</div></div>
+        <div class="ff wide"><label>⑤ 고정자산 계정/코드/명/취득일/경비구분</label><div class="fv ro">208 차량운반구 · FA-0021 · 2025-05-02 <span class="lens">🔍 자동반영</span></div></div>
+        <div class="ff"><label>⑥ 임차기간 <span class="badge b-block">명의 1·2 필수</span></label><div class="fv">2025-05-02 ~ 2028-05-01</div></div>
+        <div class="ff"><label>⑦ 기초주행누적거리</label><div class="fv">12,500 km</div></div>
+        <div class="ff"><label>⑧ 보험가입여부</label><div class="fv">0.업무전용자동차보험 ▾</div></div>
+        <div class="ff"><label>⑨ 보험기간</label><div class="fv">2026-05-02 ~ 2027-05-01</div></div>
+        <div class="ff"><label>운행정보 ① 사원·부서</label><div class="fv">홍길동 / 경영지원팀 <span class="lens">🔍</span></div></div>
+        <div class="ff"><label>운행정보 ② 전표반영</label><div class="fv">○ 여 <span class="lens">전표·운행기록부 자동반영</span></div></div>
+      </div>
+      <div class="statusbar"><span class="warnmsg">⚠ 재이월 시 차량번호+명의구분 모두 동일해야 동일 차량 인식(기초주행거리 이월) — 불일치 시 빈 코드 최소값 채번</span></div>
+    </div>
+    <div class="rpanel"><div class="rp-box"><div class="rp-t">산출물·연계</div><div class="rp-b">업무용승용차관련비용명세서 · 운행기록부(SA-LDG-17, P04) · 재활용폐자원(중고차)<br>선행: 고정자산등록(P08)·SA-BAS-07 / 후행: 전표(P03)·SA-BAS-14 이월</div></div>
+    <div class="rp-box"><div class="rp-t">근무지등록</div><div class="rp-b">[10] 로그인 회사 주소(기본) · [11~99] 추가 · 현재회사주소 "○"(운행기록부)</div></div></div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-13 코드변환 ============ -->
+<section class="section" id="bas13">
+  <div class="page-title"><h1>거래처등코드변환</h1><span class="chip-id">SA-BAS-13</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 거래처등코드변환 &nbsp;|&nbsp; 관리자 전용 마스터 코드 재매핑 배치 — 복합키 FK 트랜잭션 일괄 갱신 (P01 §4.11)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-13 — 변환 조건 설정 + [변환하기] 배치(멱등·Idempotency-Key). 가드 6종 위반 시 차단</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">거래처등코드변환</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-13</span><span class="tb-right">관리자 전용</span></div>
+    <div class="actionbar"><div class="ab-right"><button class="abtn ghost">변환 이력</button><button class="abtn yellow">▶ 변환하기 (배치 실행)</button></div></div>
+    <div class="mock-flex"><div class="mock-main">
+      <div class="formgrid c3">
+        <div class="ff"><label>① 회사/기수/회계년도</label><div class="fv">1000 EY Korea · 7기 · 2026 ▾</div></div>
+        <div class="ff"><label>② 변환대상</label><div class="fv">거래처코드 ▾ <span class="lens">계정과목/품목</span></div></div>
+        <div class="ff"><label>③ 변환대상조건 <span class="badge b-warn">②와 동일 불가</span></label><div class="fv">0.사용안함 ▾ <span class="lens">계정/거래처/부서/사원/현장/PJT</span></div></div>
+        <div class="ff"><label>④ 변환대상코드 (변경 전)</label><div class="fv">00125 (temp)간이식당 <span class="lens">🔍</span></div></div>
+        <div class="ff"><label>⑤ 치환대상코드 (변경 후)</label><div class="fv">00200 간이식당(정식) <span class="lens">🔍</span></div></div>
+        <div class="ff"><label>⑥ 전표구분</label><div class="fv">일반+매입매출 ▾ <span class="lens">☑ 전자분 포함</span></div></div>
+        <div class="ff"><label>⑦ 변환코드 설정</label><div class="fv">☑ 초기이월 선택 · ☑ 합계표 추가전표 · DM변환 1.여</div></div>
+        <div class="ff"><label>⑧ 변환기간</label><div class="fv">월별 2026-01 ~ 2026-06 ▾ <span class="lens">신규 등록 시 설정 불가</span></div></div>
+      </div>
+      <div class="statusbar"><span class="okmsg">✓ 실행 결과: 전표 142건 · 초기이월 3건 갱신 — DataChangeLog 전후값 기록</span></div>
+    </div>
+    <div class="rpanel">
+      <div class="rp-box"><div class="rp-t">가드 조건 (§25.1.13)</div><div class="rp-b">
+        · 자금항목 설정 계정(어음·차입금·미불·차량) <span class="badge b-block">변환 불가</span><br>
+        · <b>세금계산서합계표 마감</b> 기간 <span class="badge b-block">차단</span>(해제 필요)<br>
+        · 마감 상태(CLOSED/LOCKED) 전표 <span class="badge b-block">차단</span><br>
+        · 치환 계정 적요코드 없음 → "0(공란)"·세무조정 미반영 <span class="badge b-warn">경고</span><br>
+        · 할인기관·이체계좌코드 미변환(직접 변경)<br>
+        · 자동전표(통장 제외)는 사업자번호 일치 시만
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-14 마감후이월 ============ -->
+<section class="section" id="bas14">
+  <div class="page-title"><h1>마감후이월(회계)</h1><span class="chip-id">SA-BAS-14</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 마감후이월 &nbsp;|&nbsp; 기수 마감·차기이월 배치 — opening_balance idempotent 적재 · 주기장 전속 (P01 §4.12)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-14 — 이월 대상 체크 선택 + 재무제표 확인 탭 + [마감]. 분산 락(동시 사용자 차단) · 재이월=기존 삭제 후 재적재</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">마감후이월</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-14</span><span class="tb-right">주기장 측 담당 (NOT_PRIMARY_BOOKKEEPER 차단)</span></div>
+    <div class="qbar">
+      <span class="qlabel">① 마감기수</span><span class="qv ro">7기 (2026-01-01~12-31)</span>
+      <span class="qlabel">이월기수</span><span class="qv ro">8기 (자동 — 다음 fiscal_period)</span>
+      <span class="qright"><button class="abtn" style="padding:3px 12px">마감취소 <span class="badge b-block">Step-up</span></button><button class="abtn yellow" style="padding:3px 18px">▶ 마감 실행</button></span>
+    </div>
+    <div class="tabbar"><span class="tab on">이월 대상 선택</span><span class="tab">재무제표 확인 (과목별/세목별/관리용/제출용/표준)</span></div>
+    <div class="mock-flex"><div class="mock-main">
+      <table class="grid">
+        <tr><th class="c">선택</th><th>이월 항목</th><th>이월 규칙 (§25.1.14)</th></tr>
+        <tr><td class="c">☑</td><td>② 환경설정</td><td>중단사업·중소기업회계기준 등 옵션값 그대로 이월</td></tr>
+        <tr><td class="c">☑</td><td>③ 고정자산등록</td><td>이월기수 데이터 있으면 <b>삭제 후 이월</b></td></tr>
+        <tr><td class="c">☑</td><td>④ 업무용승용차등록</td><td>기존 미삭제·변경정보만 추가 — 차량번호+명의구분 동일 시 동일 차량</td></tr>
+        <tr><td class="c">☑</td><td>⑤ 재무제표 → 전기분</td><td>마감기수 재무제표 → 이월기수 전기분(기존 삭제 후 덮어쓰기)</td></tr>
+        <tr><td class="c">☑</td><td>⑥ 거래처별 초기이월</td><td>종료월 잔액 → 전기이월 금액. "옵션" 제외 계정은 총 잔액 · 잔액 0원 미이월</td></tr>
+        <tr><td class="c">☑</td><td>⑥ 부서·사원/미완성공사/현장별·거래처별/외주처별/프로젝트별</td><td>체크 시 각 초기이월(SA-OPN, P02) 적재</td></tr>
+      </table>
+      <div class="statusbar"><span class="warnmsg">⚠ 동시 사용자 존재 시 차단(분산 락 — "다른 사용자 진행 중") · 이월기수 기존 전표는 미삭제 · 전체 해제=마감만 수행</span><span class="cnt">상태: 미마감</span></div>
+    </div>
+    <div class="rpanel">
+      <div class="rp-box"><div class="rp-t">선행·후행</div><div class="rp-b">선행: 당기 결산 완료(P05) · 모든 메뉴 종료<br>후행: 이월기수 SA-OPN-01~08·13·15~19(P02) 자동 적재 · 마감 플래그=전표 수정·BAS-13 가드</div></div>
+      <div class="rp-box"><div class="rp-t">재무제표 확인 순서</div><div class="rp-b">제조원가명세서→손익계산서→이잉처→재무상태표(종료월) · 기간별/PJT별 확인 후 마감해야 정확 이월</div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-11 외주처 (2차) ============ -->
+<section class="section" id="bas11">
+  <div class="page-title"><h1>외주처등록</h1><span class="chip-id">SA-BAS-11</span><span class="badge b-gray">2차</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 외주처등록 &nbsp;|&nbsp; 현장(SITE)×거래처 관계 엔티티 — 외주대장·초기이월 시드 (P01 §4.15)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-11 — 현장/외주처 선택 + 회차별 계약. SA-BAS-08·06 선행</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">외주처등록</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-11</span><span class="tb-right"><span class="badge b-gray">2차 개발</span></span></div>
+    <div class="qbar">
+      <span class="qlabel">① 구분</span><span class="seg"><span class="on">2.전체</span><span>0.현장</span><span>1.외주처</span></span>
+      <span class="qv">현장: S001 여의도 오피스 <span class="lens">F2</span></span>
+      <span class="qv">외주처: 00300 (주)철근나라 <span class="lens">F2</span></span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button></span>
+    </div>
+    <div class="mock-flex"><div class="mock-main">
+      <div class="formgrid c3">
+        <div class="ff"><label>②③ 공사내용/면허·공사기간</label><div class="fv">철근콘크리트 · 2025-04~2026-10</div></div>
+        <div class="ff"><label>④ 총 계약금액</label><div class="fv">850,000,000</div></div>
+        <div class="ff"><label>⑤ 담당사원/부서 (거래처 설정 자동반영)</label><div class="fv">이현장 / 공사1팀</div></div>
+      </div>
+      <table class="grid" style="margin:0 12px 12px;width:calc(100% - 24px)">
+        <tr><th>⑧ 회차</th><th>일자(외주계약일)</th><th class="num">계약금액</th><th class="num">선급금</th><th>반영</th></tr>
+        <tr><td class="c">1</td><td>2025-04-01</td><td class="num">800,000,000</td><td class="num">80,000,000</td><td>외주대장(P04 LDG-16) 자동반영</td></tr>
+        <tr><td class="c">2</td><td>2026-05-01</td><td class="num">50,000,000</td><td class="num">—</td><td>마감후이월 → SA-OPN-18</td></tr>
+      </table>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ SA-BAS-12 DM인쇄 (2차) ============ -->
+<section class="section" id="bas12">
+  <div class="page-title"><h1>거래처DM인쇄</h1><span class="chip-id">SA-BAS-12</span><span class="badge b-gray">2차</span></div>
+  <div class="crumb">기준정보 › 기초정보관리 › 거래처DM인쇄 &nbsp;|&nbsp; 거래처 read-only 뷰 라벨 인쇄 (P01 §4.16)</div>
+  <div class="mock">
+    <div class="mock-cap">SA-BAS-12 — 조회 + DM 등록사항 + 라벨 인쇄. 직접입력 거래처는 transient</div>
+    <div class="titlebar"><span class="tb-crumb">기준정보</span><span class="tb-sep">›</span><span class="tb-title">거래처DM인쇄</span><span class="tb-star">☆</span><span class="tb-id">SA-BAS-12</span><span class="tb-right"><span class="badge b-gray">2차 개발</span></span></div>
+    <div class="qbar">
+      <span class="qlabel">구분</span><span class="qv">0.전체 ▾ <span style="color:#9a9aa4">(매출/매입/일반/주민/직접입력)</span></span>
+      <span class="qlabel">거래상태</span><span class="seg"><span class="on">0.전체</span><span>1.사용</span><span>2.미사용</span></span>
+      <span class="qlabel">조회</span><span class="qv">부서·사원·분류별 ▾</span>
+      <span class="qright"><button class="abtn yellow" style="padding:3px 18px">🔍 조회</button><button class="abtn" style="padding:3px 12px">🖨 라벨 인쇄</button></span>
+    </div>
+    <div class="mock-flex"><div class="mock-main">
+      <table class="grid">
+        <tr><th class="c">☑</th><th>거래처</th><th>주소선택</th><th>수신자(전화·H·P)</th><th>수식어</th><th>부서/사원</th></tr>
+        <tr><td class="c">☑</td><td>삼성문구(주)</td><td>사업장 주소 ▾</td><td>김문구 (02-777-0001)</td><td>귀중 ▾</td><td>경영지원팀/홍길동</td></tr>
+        <tr><td class="c">☑</td><td>(직접입력) 새거래처</td><td>DB주소</td><td>—</td><td>귀하</td><td>—</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">✓ 더보기: 등록사항 업데이트(전체/라인) · 새로/추가 불러오기 · 일괄변경(주소·수신자·수식어) · 주민번호 별표</span></div>
+    </div></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <div class="beamline"></div>
+  <div><b style="color:#fff">EY</b> · BK 페이즈01 화면설계 (기초정보·조직·표준 설정) · 기준: 설계/개발설계/페이즈01_기초정보_조직_표준설정.md · 레이아웃: 구현_화면_전표_v1.1.html</div>
+  <div style="margin-left:auto">© 2026 EY Korea Co., Ltd. All Rights Reserved.</div>
+</footer>
+
+<script>
+var screenSpecs = [];
+screenSpecs.push(
+  {id:'home', desc:[
+    '범위: SA-BAS-01~14와 R18 신규 2화면, 총 16화면을 페이즈01 기준정보 화면군으로 정리한다.',
+    '우선순위: SA-BAS-07 계정과목은 일반전표입력과 함께 MVP 최우선이며 R18 구조설계·FS 매핑으로 확장된다.',
+    '연계: P02 전기이월, P03 전표, P04 장부, P05 결산, P06~P08 부가세·고정자산 화면의 FK 마스터와 검증 메타데이터를 공급한다.'
+  ]},
+  {id:'bas01', desc:[
+    '목적: 기장·관리 대상 회사의 테넌트와 fiscal_period를 최선행으로 등록해 신고서·세금계산서·재무제표 출력의 단일 기준을 만든다.',
+    '검증: 사업자번호 체크섬, 활성 테넌트 중복, 기수와 회계기간 정합을 저장 전에 통제하며 대표자 주민번호는 암호화·Step-up 조회 대상이다.',
+    '연계: 본지점·과세단위는 사업장 차원으로 이어지고 WEHAGO 회사설정 동기화 및 P10 기수변경과 공유된다.'
+  ], tabs:[
+    ['기본사항','§25.1.1','핵심=기수·회계기간·법인/개인·사업자번호·대표자·주소','검증=회계기간 1년 초과, 사업자번호 중복, 기수 불일치 차단','출력=전자신고·세금계산서·재무제표 기본값','note=등록 후 기수·회계기간은 수정 가드가 강하게 걸린다.'],
+    ['부가정보·본지점','§9.1','핵심=영문 회사명·대표자 영문명·영문 주소·홈페이지·메모','본지점=본점/지점, 과세단위, 종사업자번호, 지점 권한등록','연계=사업장 차원 BUSINESS_PLACE와 영문 재무제표'],
+    ['회사인감(도장)','§25.1.1','핵심=기본인감, 사용자등록인감, 도장문구 4서체','분기=법인은 상호명·대표이사, 개인은 대표자명·대표자','출력=PDF·민원서류·세금계산서 날인 이미지'],
+    ['추가사항','§25.1.1','핵심=사업장 세무서, 지방세 법정동·행정동, 법인구분','세무=중소기업여부, 비중소기업구분, 종류별 구분','효과=접대비 한도, 결손금 소급공제, 세율·세액감면 분기'],
+    ['회사담당자','전자세금계산서','핵심=성명·부서·모바일·이메일·공인전자주소','필수=전자세금계산서 발행·수취 이메일','연계=WEHAGO 수임처·전자세금계산서 파이프라인'],
+    ['개인사업자','④=1','핵심=소득구분, 과세유형, 대표자 주소·전화·세무서','분기=일반/간이/면세/간이세금계산서발급','효과=부가세·종소세 신고서 자동반영']
+  ]},
+  {id:'bas02', desc:[
+    '목적: 회사관리자가 사용자별 회계 서비스와 메뉴 권한을 배포해 RBAC와 RLS 기반 접근 통제를 구성한다.',
+    '검증: 관리회사 정책 상한을 넘는 권한 설정은 저장 차단하고, 권한 없는 메뉴는 목록 자체를 미노출한다.',
+    '연계: 표준 Role 템플릿과 회사 커스텀 Role 위에 메뉴 권한을 얹으며 API 게이트웨이가 사용여부·메뉴사용을 enforce한다.'
+  ]},
+  {id:'bas03', desc:[
+    '목적: 계정코드 자리수, 소수점, 6 관리차원 사용여부를 tenant_config로 저장해 전표 검증과 자동전표·결산 로직의 분기 조건을 만든다.',
+    '검증: 차원 필수 전환 시 미입력 과거 전표를 산출하고, 마감기간 차원 소급 변경은 차단한다.',
+    '연계: SA-BAS-04~05·08~10 차원 마스터 노출과 P03 전표 검증, journalApprovalMode 설정에 직접 영향을 준다.'
+  ], tabs:[
+    ['공통','TenantAccountingConfig','코드체계=계정코드 3/5/8/9자리, 세목 사용 여부','소수점=수량·단가·금액, 절사/올림/반올림, VAT 포함','차원=프로젝트·자금·현장·제품·부서사원·거래처·차량 스위치'],
+    ['회계','§25.1.3','중단사업=사용안함/부서/PJT 선택으로 손익·원가명세서 연동','부가세=공급가액 끝수처리와 과세유형 추가 옵션','기타=중소기업회계기준, 물류전표, 성실신고, 체크펜 원장 표시'],
+    ['사용자','인쇄 보기','핵심=인쇄 기본설정 팝업 또는 미리보기 기본값','효과=사용자별 출력 흐름과 전표·장부 인쇄 UX','note=사용자 탭은 운영 편의 설정이므로 차원 검증 데이터와 분리한다.']
+  ]}
+);
+screenSpecs.push(
+  {id:'bas04', desc:[
+    '목적: 부서 조직도를 DEPARTMENT 차원 마스터로 등록해 전표 라인, 거래처 담당부서, 급여자료 정렬의 기준을 제공한다.',
+    '검증: WEHAGO에서 연동된 조직은 BK에서 직접 삭제·추가하지 않고 외부 조직 동기화 이벤트로 조정한다.',
+    '연계: OrganizationUnit, Department, EmployeeOrgAssignment, DepartmentCostCenterMapping으로 조직 개편과 코스트센터 매핑을 유효일자별 보존한다.'
+  ]},
+  {id:'bas05', desc:[
+    '목적: 사원 마스터를 EMPLOYEE 차원으로 등록해 채권·채무·경비의 부서·사원별 관리와 가지급금·세무조사 추적을 지원한다.',
+    '검증: 사원 Code는 사용 데이터 존재 시 삭제·변경을 차단하고, 주민번호 평문 조회는 Step-up과 개인정보 접근로그 대상이다.',
+    '연계: 인사·NAHAGO 연동, 전표 사원항목, 급여자료입력, 사업장가입자자격취득신고서에 사용된다.'
+  ], tabs:[
+    ['사원등록','§25.1.5','기본=Code, 사원명, 내외국인, 주민번호, 입사일','소속=부서·직종·직급·호봉·현장·프로젝트 F2 연결','세무=단일세율, 거주지국, 체류자격, 국적'],
+    ['추가사항','더보기','연동=WEHAGO 신규직원·퇴사자·사원연동 설정','일괄=신규 사원 엑셀 일괄등록 서식','통제=사원명잠금, 가지급금 대표자 설정, 퇴사 재입사 코드 보존']
+  ]},
+  {id:'bas06', desc:[
+    '목적: 일반·금융·카드 거래처를 partner_type으로 분리 등록해 적격증빙, 채권채무, 통장잔액, 카드명세의 핵심 FK를 제공한다.',
+    '검증: 신규 거래처는 승인 워크플로우를 거쳐 ACTIVE가 되며 휴폐업·미사용·거래처 유형 위반은 R8 통제로 전표에서 enforce한다.',
+    '연계: 국세청 사업자 상태, WEHAGO 거래처관리, P03 전표, 거래처원장, 자금계획, 세금계산서·카드 집계표와 연결된다.'
+  ], tabs:[
+    ['1. 일반거래처 - 기본사항','partner_type=GENERAL','식별=사업자/주민등록번호, 대표자, 업태·종목, 거래처유형','주소=사업장주소, 전화·팩스, 담당사원·담당부서','세무=폐업·과세유형 조회, 단위신고거래처, 출력용거래처명'],
+    ['1. 일반거래처 - 추가사항','§25.1.6','담당=부서·담당자·직급·이메일, 홈페이지','금융=금융기관·계좌번호·예금주·입금계좌','통제=여신한도, 담보설정액, 주류코드, 지방세 법정코드'],
+    ['2. 금융거래처 - 기본','partner_type=BANK','계좌=계좌번호, 개설점, 예금종류, 이자율','한도=당좌한도액, 당좌차월기일, 사업용계좌 여부','연계=성실신고 사업용계좌별 잔액현황'],
+    ['2. 금융거래처 - 자동이체','자금계획','항목=일자, 자동납부, 자금항목코드, 금액, 기간','상대=상대거래처와 지급조건','효과=BK 자금계획 자동전표 시드'],
+    ['3. 카드거래처 - 매입카드','partner_type=CARD','카드=카드번호, 카드구분, 결제일, 결제계좌','담당=카드담당사원·부서, 사용한도','세무=카드구분이 신용카드매출전표등수령명세서 유형으로 반영'],
+    ['3. 카드거래처 - 매출카드','발행집계표','가맹=가맹점번호, 입금계좌, 수수료','구분=직불/선불/제로페이 등 발행집계표 컬럼 반영','연계=매출카드 수수료와 입금계좌 정산']
+  ]}
+);
+screenSpecs.push(
+  {id:'bas07', desc:[
+    '목적: 회사계정, K-IFRS, 법인세표준계정을 병행 관리하고 coa_control로 전표 입력 가능 여부와 필수 관리항목을 통제한다.',
+    '검증: 계정 삭제는 사용중지로 대체하고 코드 중복, 세목 계층 오류, 표준용코드·법인세표준 매핑 누락을 경고 또는 차단한다.',
+    '연계: P03 일반전표입력이 DIMENSION_REQUIRED, AUX_REQUIRED 같은 계정 주도 검증 메타데이터를 소비한다.'
+  ], tabs:[
+    ['회사계정(K-GAAP)','194계정','화면=회사별 수정·확장 가능한 실제 전표 계정 트리','통제=coa_control, 적요, 표준용코드, 결산대체 관계','연계=전표 입력·장부·결산 산출의 직접 FK'],
+    ['K-IFRS','41계정','화면=공시·내부관리용 기준 트리와 회사계정 매핑','검증=K-IFRS 미매핑 계정 경고','연계=R18-B 공시 매핑과 재무제표 출력'],
+    ['법인세표준계정','51계정','화면=세무신고 집계용 표준계정 트리','검증=표준계정 매핑 누락 시 결산·법인세 집계 경고','연계=법인세 신고와 표준재무제표 코드'],
+    ['적요등록','계정별 8개','화면=현금적요·대체적요 코드와 기본 문구 등록','검증=치환 계정 적요코드 없음 시 BAS-13에서 0 공란 반영','효과=전표 입력 속도와 전표 문구 표준화'],
+    ['관리항목·통제','coa_control','화면=6차원 노출/필수, 거래처/증빙, 외화, 금융, 부가세, 자금항목','검증=필수 차원인데 BAS-03 스위치가 꺼져 있으면 경고','효과=계정 마스터가 전표 라인 UI와 저장 검증을 결정']
+  ]},
+  {id:'wjv09', desc:[
+    '목적: 외국 법인별 계정 트리를 법인·GAAP 기준으로 분리 관리하고 본사 회사계정 및 법인세표준계정과 이중 매핑한다.',
+    '검증: 본사계정 매핑 누락은 연결·세무보고 경고 대상이며 기준 추가·변경은 operator:masterdata:write 권한이 필요하다.',
+    '연계: 기능통화 기표와 표시통화 환산, 그룹 보고, 연결·세무 보고 계정 변환의 기준이 된다.'
+  ], tabs:[
+    ['US GAAP','기본','화면=미국 법인 기본 트리와 ASC 기준 계정','매핑=회사계정 108, 법인세표준 1030 등 본사 기준 연결','검증=ASC 606·842·740 대응 계정 정합'],
+    ['IFRS','국제','화면=IFRS 법인 트리와 K-IFRS·회사계정 매핑','연계=IFRS 15·16·IAS 12 변환','효과=외국법인 내부보고와 그룹 통합'],
+    ['J-GAAP','일본','화면=일본 법인 로컬 GAAP 트리','매핑=본사 계정과 법인세표준계정으로 이중 매핑','상태=기본 제공 25계정에서 회사 확장'],
+    ['C-GAAP','중국','화면=중국 법인 로컬 GAAP 트리','검증=본사 매핑 누락 경고','상태=기본 제공 18계정에서 회사 확장'],
+    ['UK GAAP','영국','화면=영국 법인 로컬 GAAP 트리','통제=기준 추가 시 레지스트리 등록과 검수','상태=기본 제공 18계정에서 회사 확장']
+  ]},
+  {id:'r18a', desc:[
+    '목적: 계정체계, 세목, 관리항목 연결관계를 시각적으로 설계해 SA-BAS-07의 coa_control 설정을 구조 설계형 UX로 제공한다.',
+    '검증: 코드 중복, 세목 계층 정합, 결산대체 관계 무결성, 차원 스위치와 필수 차원 충돌을 자동 점검한다.',
+    '연계: SA-BAS-03 차원 스위치와 SA-BAS-07 계정 마스터를 같은 데이터로 편집하며 P03 전표 검증을 생성한다.'
+  ]},
+  {id:'r18b', desc:[
+    '목적: 재무제표 행 정의와 세무신고·공시·그룹보고 매핑을 통합 관리해 SAP FSV/D365 Row Definition 방식의 보고 구조를 제공한다.',
+    '검증: 미매핑·중복매핑 계정을 자동 검출하고 그룹보고 매핑 누락 시 Export를 차단한다.',
+    '연계: P05 결산 재무제표, 법인세 신고 집계, DisclosureMapping, GroupReportMapping, coa_mapping API와 연결된다.'
+  ], tabs:[
+    ['제출용','확정 권한','화면=외부 제출 재무제표 버전과 Row Definition','검증=확정은 결산 승인 권한 필요','효과=신고·제출 산출물 기준'],
+    ['표준용','표준FS','화면=표준재무제표 코드와 회사계정 매핑','검증=법인세표준계정 매핑 누락 경고','연계=표준 재무제표와 법인세 신고'],
+    ['내부관리용','관리보고','화면=관리 목적 재분류 행과 계정 범위','효과=경영관리 손익·원가 분석','검증=중복매핑 리포트'],
+    ['그룹보고용','§11.20','화면=그룹 계정 매핑과 Export 구조','검증=그룹보고 매핑 누락 시 Export 차단','연계=그룹 보고 패키지와 외국법인 계정 매핑']
+  ]}
+);
+screenSpecs.push(
+  {id:'bas08', desc:[
+    '목적: 현장을 SITE 차원으로 등록해 도급·분양 원가와 현장별 전표·장부·초기이월의 기준을 만든다.',
+    '검증: 현장코드 사용은 SA-BAS-03 현장 스위치 선행이 필요하고 원청회사는 거래처등록 선행이 필요하다.',
+    '연계: 현장별공사원가집계표, 공사대장, P03 전표, SA-BAS-11 외주처, P02 현장별 초기이월로 이어진다.'
+  ]},
+  {id:'bas09', desc:[
+    '목적: 프로젝트를 PROJECT 차원으로 등록하고 예산금액을 예실 분석과 프로젝트 손익 조회의 기준으로 사용한다.',
+    '검증: 사용안함 프로젝트는 후행 메뉴에서 선택을 제한하고, 프로젝트 비용계정은 coa_control의 PJT 필수 규칙을 따른다.',
+    '연계: P03 전표, P02 프로젝트 초기이월, 프로젝트손익현황·원가현황·장부별 PJT 조회와 연결된다.'
+  ]},
+  {id:'bas10', desc:[
+    '목적: 업무용승용차를 차량 관리항목으로 등록해 세무조정 비용한도, 업무사용비율, 운행기록부와 연결한다.',
+    '검증: 차량번호와 명의구분을 동일 차량 판정 키로 사용하며 재이월 시 불일치하면 새 코드로 채번한다.',
+    '연계: 고정자산등록(P08), SA-BAS-07 관리항목, P03 전표, P04 운행기록부, SA-BAS-14 차량 이월과 연결된다.'
+  ], tabs:[
+    ['기본사항','§25.1.10','핵심=Code, 차량번호, 차종, 명의구분, 사용여부','자산=고정자산 계정·코드·명·취득일·경비구분 자동반영','검증=차량번호 전자신고 검증, 명의구분별 임차기간 필수'],
+    ['운행정보','전표반영','핵심=사원·부서, 전표반영 여부, 업무사용비율','효과=운행기록부와 업무용승용차관련비용명세서 반영','연계=P04 SA-LDG-17 운행기록부'],
+    ['근무지등록','10~99','핵심=로그인 회사 주소 10번 기본, 추가 근무지 11~99','표시=현재회사주소 ○가 운행기록부 기본 위치','효과=차량별 출발·도착 근무지 기본값']
+  ]},
+  {id:'bas13', desc:[
+    '목적: 전표에 입력된 계정과목, 거래처, 품목 코드를 관리자 전용 배치로 일괄 재매핑한다.',
+    '검증: 자금항목 설정 계정, 세금계산서합계표 마감 기간, CLOSED/LOCKED 기간은 변환을 차단한다.',
+    '연계: 일반·매입매출전표, 초기이월, 거래처DM 변환 옵션과 연결되며 DataChangeLog에 전후값을 남긴다.'
+  ]},
+  {id:'bas14', desc:[
+    '목적: 당기 결산 후 마감기수 잔액과 기초정보를 이월기수 opening_balance와 전기분 재무제표로 적재한다.',
+    '검증: 분산 락으로 동시 사용자를 차단하고 재이월은 기존 삭제 후 재적재하는 idempotent 방식으로 처리한다.',
+    '연계: P05 결산 완료 후 실행되어 P02 전기이월 화면군으로 자동 적재되며 마감 플래그는 전표 수정과 BAS-13 가드 조건이 된다.'
+  ], tabs:[
+    ['이월 대상 선택','§25.1.14','체크=환경설정, 고정자산, 차량, 재무제표, 거래처별 초기이월','규칙=체크한 메뉴만 이월, 전체 해제는 마감만 수행','주의=이월기수 기존 전표는 삭제하지 않는다.'],
+    ['재무제표 확인','마감 전 검증','조회=과목별·세목별·관리용·제출용·표준 탭','순서=제조원가명세서, 손익계산서, 이익잉여금처분계산서, 재무상태표','효과=확인 후 마감해야 이월기수 전기분 FS가 정확하다.']
+  ]},
+  {id:'bas11', desc:[
+    '목적: 현장별 외주처와 회차별 계약금액·선급금을 등록해 외주대장과 차기 초기이월의 시드로 사용한다.',
+    '검증: 현장등록과 거래처등록 선행이 필요하고 계약금액 입력 시 외주대장 자동반영 기준이 된다.',
+    '연계: SA-BAS-08 현장, SA-BAS-06 거래처, P04 외주대장, P02 외주처별 초기이월과 연결된다.'
+  ]},
+  {id:'bas12', desc:[
+    '목적: 거래처 마스터를 read-only로 조회해 우편물 발송용 DM 라벨 데이터를 생성하고 인쇄한다.',
+    '검증: 거래상태 변경은 거래처등록 사용여부 변경 후 등록사항 업데이트로 반영하며 직접입력 거래처는 임시 데이터로만 사용한다.',
+    '연계: SA-BAS-06 거래처, SA-BAS-04 부서, SA-BAS-05 사원, SA-BAS-13의 거래처 DM변환 옵션과 연결된다.'
+  ]}
+);
+function addScreenDetails(){
+  function el(tag, cls, text){
+    var node = document.createElement(tag);
+    if(cls){ node.className = cls; }
+    if(text !== undefined){ node.textContent = text; }
+    return node;
+  }
+  function splitLine(line){
+    var idx = line.indexOf(':');
+    if(idx < 0){ return ['설명', line]; }
+    return [line.slice(0, idx), line.slice(idx + 1).trim()];
+  }
+  function splitField(line){
+    var idx = line.indexOf('=');
+    if(idx < 0){ return ['항목', line]; }
+    return [line.slice(0, idx), line.slice(idx + 1).trim()];
+  }
+  screenSpecs.forEach(function(spec){
+    var section = document.getElementById(spec.id);
+    if(!section || section.querySelector('.screen-details')){ return; }
+    var details = el('div', 'screen-details');
+    details.appendChild(el('div', 'sd-title', '화면 아래 설명 · 설계서 참조'));
+
+    var descList = el('div', 'screen-desc-list');
+    (spec.desc || []).forEach(function(line){
+      var parts = splitLine(line);
+      var item = el('div', 'screen-desc-item');
+      item.appendChild(el('span', 'desc-label', parts[0]));
+      item.appendChild(el('span', 'desc-body', parts[1]));
+      descList.appendChild(item);
+    });
+    details.appendChild(descList);
+    section.appendChild(details);
+  });
+}
+
+addScreenDetails();
+
+document.querySelectorAll('.tabbar').forEach(function(bar){
+  bar.querySelectorAll('.tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      bar.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+      tab.classList.add('on');
+    });
+  });
+});
+document.querySelectorAll('.mitem').forEach(function(mi){
+  mi.addEventListener('click',function(){
+    document.querySelectorAll('.mitem').forEach(function(x){x.classList.remove('active')});
+    mi.classList.add('active');
+    var sec=mi.getAttribute('data-sec');
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('visible')});
+    var el=document.getElementById(sec);
+    if(el){el.classList.add('visible');window.scrollTo({top:0});}
+  });
+});
+</script>
+</body>
+</html>
