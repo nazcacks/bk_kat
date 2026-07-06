@@ -111,6 +111,23 @@ code{background:#EFEFF4;border:1px solid var(--ey-border);border-radius:3px;padd
 .tab{padding:6px 16px;border:1px solid var(--ey-border);border-bottom:none;border-radius:6px 6px 0 0;background:#EFEFF4;font-size:12px;font-weight:600;color:#5a5a66;cursor:pointer}
 .tab.on{background:#fff;color:var(--ey-text);font-weight:700;border-color:#b9b9c2;border-bottom:2px solid #fff;margin-bottom:-1px}
 .tab .tno{color:#9a9aa4;font-size:10.5px}
+.tab-missing-screens{display:none;background:#fff;border-bottom:1px solid var(--ey-border);padding:0}
+.missing-tab-panel{display:none}
+.missing-tab-panel.on{display:block}
+.tab-design{border:1px solid var(--ey-border);border-radius:6px;background:#fff;overflow:hidden;box-shadow:0 1px 3px rgba(30,30,40,.06)}
+.tab-design-head{display:flex;align-items:center;gap:10px;background:#F3F3F7;border-bottom:1px solid var(--ey-border);padding:8px 12px;font-size:12px}
+.tab-design-head b{font-size:13.5px;color:var(--ey-text)}
+.tab-design-head .badge{margin-left:auto}
+.tab-design-body{padding:0}
+.tab-design-grid{grid-template-columns:repeat(3,1fr);padding:12px}
+.tab-design-table{padding:0 12px 12px}
+.tab-design-note{margin:0 12px 12px;padding:8px 10px;background:#FCFCFE;border-left:3px solid var(--ey-yellow);font-size:11.5px;color:var(--ey-gray)}
+.tab-design-split{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:0}
+.tab-design-side{border-left:1px solid var(--ey-border);background:#FCFCFE;padding:10px;display:flex;flex-direction:column;gap:10px}
+.tab-design-list-layout{display:grid;grid-template-columns:300px minmax(0,1fr) 260px;gap:0}
+.tab-design-list-pane{width:auto;min-width:0;position:relative;top:auto;height:auto;border-right:1px solid var(--ey-border)}
+.tab-design-detail{min-width:0;background:#fff}
+.tab-design-list-pane table.grid td,.tab-design-list-pane table.grid th{font-size:11.5px}
 /* 폼 */
 .formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;padding:12px}
 .formgrid.c3{grid-template-columns:repeat(3,1fr)}
@@ -180,7 +197,7 @@ table.grid .blue{color:var(--ey-blue)}
 .modal .m-f{padding:8px 12px;border-top:1px solid var(--ey-border);display:flex;justify-content:flex-end;gap:6px}
 .footer{background:var(--ey-darker);color:#b9b9c2;padding:14px 22px;font-size:11px;display:flex;align-items:center;gap:14px}
 .footer .beamline{width:70px;height:8px;background:var(--ey-yellow);transform:skewX(-30deg)}
-@media(max-width:1100px){.formgrid{grid-template-columns:repeat(2,1fr)}.ff.full{grid-column:span 2}.screen-desc-list{grid-template-columns:1fr}}
+@media(max-width:1100px){.formgrid{grid-template-columns:repeat(2,1fr)}.ff.full{grid-column:span 2}.screen-desc-list{grid-template-columns:1fr}.tab-design-grid{grid-template-columns:1fr}.tab-design-split,.tab-design-list-layout{grid-template-columns:1fr}.tab-design-side{border-left:none;border-top:1px solid var(--ey-border)}.tab-design-list-pane{border-right:none;border-bottom:1px solid var(--ey-border)}}
 </style>
 </head>
 <body>
@@ -557,6 +574,98 @@ table.grid .blue{color:var(--ey-blue)}
       <button class="abtn dark">신규 (F2)</button><button class="abtn dark">저장 (F3)</button><button class="abtn yellow">승인요청 (R8)</button>
     </div></div>
     <div class="tabbar"><span class="tab on">1. 일반거래처</span><span class="tab">2. 금융거래처</span><span class="tab">3. 카드거래처</span></div>
+    <div class="tab-missing-screens">
+      <div class="missing-tab-panel" data-tab-index="1">
+        <div class="mock-flex">
+          <div class="lpane">
+            <div class="lp-t">금융거래처 목록 (Code 6~10자리)</div>
+            <table class="grid">
+              <tr><th>Code</th><th>금융거래처명</th><th>상태</th></tr>
+              <tr class="sel"><td>F001</td><td>국민은행 보통예금</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+              <tr><td>F002</td><td>신한은행 당좌예금</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+              <tr><td>F003</td><td>우리은행 정기예금</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+              <tr><td>F004</td><td>폐쇄 계좌</td><td class="c"><span class="badge b-gray">INACTIVE</span></td></tr>
+            </table>
+          </div>
+          <div class="mock-main">
+            <div class="formgrid">
+              <div class="ff"><label>Code</label><div class="fv ro">F001</div></div>
+              <div class="ff"><label>금융거래처명</label><div class="fv">국민은행 보통예금</div></div>
+              <div class="ff"><label>계좌번호</label><div class="fv">123-456-789012</div></div>
+              <div class="ff"><label>계좌개설점</label><div class="fv">여의도지점</div></div>
+              <div class="ff"><label>예금종류</label><div class="fv">0.보통 ▾</div></div>
+              <div class="ff"><label>이자율</label><div class="fv">2.10%</div></div>
+              <div class="ff"><label>당좌한도액</label><div class="fv">50,000,000</div></div>
+              <div class="ff"><label>당좌차월기일</label><div class="fv">2026-12-31 <span class="lens">📅</span></div></div>
+              <div class="ff"><label>사업자등록번호</label><div class="fv">123-45-67890</div></div>
+              <div class="ff"><label>사업용계좌</label><div class="fv">0.여 ▾ <span class="lens">성실신고</span></div></div>
+              <div class="ff"><label>분류명</label><div class="fv">400 금융거래처 ▾</div></div>
+              <div class="ff"><label>계좌개설(해지)일</label><div class="fv">2024-01-02 ~ <span class="lens">📅</span></div></div>
+              <div class="ff wide"><label>사업장주소</label><div class="fv">서울 영등포구 여의공원로 111 <span class="lens">🔍</span></div></div>
+              <div class="ff"><label>전화 / 팩스</label><div class="fv">02-0000-0000 / 02-0000-0001</div></div>
+            </div>
+            <table class="grid" style="margin:0 12px 12px;width:calc(100% - 24px)">
+              <tr><th>자동이체 항목</th><th>값</th><th>자금계획 반영</th></tr>
+              <tr><td>자동납부</td><td>매월 25일</td><td>지급 예정 생성</td></tr>
+              <tr><td>자금항목</td><td>임차료</td><td>자금계획입력 자동반영</td></tr>
+              <tr><td>금액/기간</td><td>2,500,000 / 2026-01~12</td><td>월별 계획</td></tr>
+              <tr><td>상대거래처</td><td>건물주 A</td><td>상대 FK 연결</td></tr>
+            </table>
+            <div class="statusbar"><span class="okmsg">✓ 금융거래처 목록 선택 기준 상세 화면</span><span class="cnt">partner_type=BANK</span></div>
+          </div>
+          <div class="rpanel">
+            <div class="rp-box"><div class="rp-t">선택 거래처</div><div class="rp-b">F001 국민은행 보통예금 상세</div></div>
+            <div class="rp-box"><div class="rp-t">검증</div><div class="rp-b">사업용계좌 여부는 성실신고 사업용계좌별 잔액현황에 반영된다.</div></div>
+            <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">자금계획 · 통장잔액 · 금융거래처 원장</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="missing-tab-panel" data-tab-index="2">
+        <div class="mock-flex">
+          <div class="lpane">
+            <div class="lp-t">카드거래처 목록 (Code 6~10자리)</div>
+            <table class="grid">
+              <tr><th>Code</th><th>카드/가맹점명</th><th>상태</th></tr>
+              <tr class="sel"><td>C001</td><td>국민 법인카드</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+              <tr><td>C002</td><td>현대 개인사업용카드</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+              <tr><td>C101</td><td>BC 매출가맹점</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+              <tr><td>C102</td><td>제로페이 가맹점</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+            </table>
+          </div>
+          <div class="mock-main">
+            <div class="formgrid">
+              <div class="ff"><label>Code</label><div class="fv ro">C001</div></div>
+              <div class="ff"><label>카드/가맹점명</label><div class="fv">국민 법인카드</div></div>
+              <div class="ff"><label>카드번호</label><div class="fv">1234-56**-****-7890</div></div>
+              <div class="ff"><label>카드구분</label><div class="fv">2.회사사업용 ▾</div></div>
+              <div class="ff"><label>결제일</label><div class="fv">매월 15일</div></div>
+              <div class="ff"><label>카드담당사원/부서</label><div class="fv">홍길동 / 경영지원팀 <span class="lens">🔍</span></div></div>
+              <div class="ff"><label>결제계좌</label><div class="fv">F001 국민은행 보통예금 <span class="lens">🔍</span></div></div>
+              <div class="ff"><label>사용한도</label><div class="fv">3,000,000</div></div>
+              <div class="ff"><label>사업자/주민번호</label><div class="fv">123-45-67890</div></div>
+              <div class="ff"><label>카드분류</label><div class="fv">300 매입카드 ▾</div></div>
+              <div class="ff"><label>유효기간</label><div class="fv">2028-12</div></div>
+              <div class="ff"><label>가맹점번호</label><div class="fv">A-001-7788</div></div>
+              <div class="ff"><label>입금계좌</label><div class="fv">F001 국민은행 보통예금 <span class="lens">🔍</span></div></div>
+              <div class="ff"><label>수수료율</label><div class="fv">2.1%</div></div>
+            </div>
+            <table class="grid" style="margin:0 12px 12px;width:calc(100% - 24px)">
+              <tr><th>카드 유형</th><th>신고 반영</th><th>비고</th></tr>
+              <tr><td>매입카드</td><td>신용카드매출전표등수령명세서</td><td>카드구분 자동반영</td></tr>
+              <tr><td>매출카드</td><td>발행집계표 (6)/(8)란</td><td>직불/선불 구분</td></tr>
+              <tr><td>제로페이</td><td>수령명세서 유형</td><td>별도 코드 반영</td></tr>
+              <tr><td>결제계좌</td><td>금융거래처 F001</td><td>정산 계좌 연결</td></tr>
+            </table>
+            <div class="statusbar"><span class="okmsg">✓ 카드거래처 목록 선택 기준 상세 화면</span><span class="cnt">partner_type=CARD</span></div>
+          </div>
+          <div class="rpanel">
+            <div class="rp-box"><div class="rp-t">선택 거래처</div><div class="rp-b">C001 국민 법인카드 상세</div></div>
+            <div class="rp-box"><div class="rp-t">검증</div><div class="rp-b">결제계좌는 금융거래처 탭 거래처와 연결된다.</div></div>
+            <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">카드 전표 · 부가세 신고 · 수수료 정산</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="mock-flex">
       <div class="lpane">
         <div class="lp-t">거래처 목록 (Code 6~10자리)</div>
@@ -1214,14 +1323,285 @@ function addScreenDetails(){
 
 addScreenDetails();
 
-document.querySelectorAll('.tabbar').forEach(function(bar){
-  bar.querySelectorAll('.tab').forEach(function(tab){
-    tab.addEventListener('click', function(){
-      bar.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
-      tab.classList.add('on');
+var tabScreenDesigns = {
+  bas01: {
+    '부가정보·본지점': {
+      title:'회사등록 - 부가정보·본지점', badge:'§25.1.1 / §9.1',
+      fields:[['회사영문명','EY Korea Co., Ltd.'],['대표자 영문성명','Kim Dae Pyo'],['회사영문주소','111 Yeouigongwon-ro, Yeongdeungpo-gu, Seoul','wide'],['홈페이지','https://www.ey.com/ko_kr'],['회사메모','외부 신고·영문 재무제표용 기본 정보'],['본·지점여부','본점'],['과세단위','사업자단위 과세 미사용'],['종사업자번호','0000'],['권한등록','지점 데이터 조회 가능 직원 지정']],
+      table:{columns:['구분','현재 값','후행 반영'],rows:[['본점현황','본점 1 · 지점 0','사업장 차원 BUSINESS_PLACE'],['권한등록','회사 관리자, 세무 담당자','지점 데이터 조회 범위'],['영문 정보','회사·대표자·주소 입력','영문 FS·비거주자 지급명세서']]},
+      side:[['검증','본지점·과세단위 변경은 사업장 차원과 신고서 출력에 영향을 준다.'],['연계','WEHAGO 회사설정, 영문 재무제표, 사업장 차원']]},
+    '회사인감': {
+      title:'회사등록 - 회사인감(도장)', badge:'도장/PDF',
+      fields:[['기본인감','법인 기본 인감 자동 생성'],['사용자등록인감','스캔 이미지 blob 등록'],['도장문구','상호명 / 대표이사'],['서체','4서체 선택'],['적용범위','PDF·민원서류·세금계산서'],['기본문구','대표이사']],
+      table:{columns:['인감 구분','등록 상태','사용처'],rows:[['기본인감','자동','민원서류 기본'],['사용자등록인감','등록 필요','외부 제출 PDF'],['도장문구','대표이사','세금계산서·신고 첨부']]},
+      side:[['검증','이미지 미등록 시 기본인감으로 출력한다.'],['연계','PDF 출력, 전자세금계산서, 민원서류']]},
+    '추가사항': {
+      title:'회사등록 - 추가사항·추가정보', badge:'세무 분기',
+      fields:[['사업장 세무서','영등포세무서 F2'],['지방세 법정동','1156010100'],['행정동코드','1156054000'],['법인구분','내국법인'],['중소기업여부','0.중소'],['비중소기업구분','-'],['종류별 구분','1.중소'],['개업/설립 관련 메모','세율·세액감면 분기 기준']],
+      table:{columns:['항목','설정','영향'],rows:[['중소기업여부','0.중소','접대비 한도·결손금 소급공제'],['법인구분','내국법인','법인세 신고 분기'],['법정동·행정동','코드 입력','지방세 신고·주소 정합']]},
+      side:[['검증','중소기업여부는 세율·세액감면 로직에 직접 사용된다.'],['연계','법인세, 지방세, 부가세 신고서']]},
+    '회사담당자': {
+      title:'회사등록 - 회사담당자', badge:'전자세금계산서',
+      fields:[['성명','홍길동'],['부서','경영지원팀'],['모바일','010-1234-5678'],['이메일','tax@ey.com'],['공인전자주소','eykorea#mail'],['담당 구분','발행/수취 담당'],['알림 수신','전자세금계산서 오류·승인 알림']],
+      table:{columns:['담당 역할','연락처','필수 여부'],rows:[['전자세금계산서 발행','tax@ey.com','필수'],['신고 담당','report@ey.com','권장'],['시스템 알림','010-1234-5678','권장']]},
+      side:[['검증','전자세금계산서 발행·수취 담당 이메일은 필수다.'],['연계','WEHAGO 수임처, 세금계산서 파이프라인']]},
+    '개인사업자': {
+      title:'회사등록 - 개인사업자 전용', badge:'④=1 시 노출',
+      fields:[['소득구분','40.사업'],['과세유형','0.일반'],['과세유형 전환일','-'],['대표자 비거주구분','0.거주자'],['소유여부','2.임대'],['대표자 주소','서울 영등포구 ...','wide'],['대표자 전화','02-0000-0000'],['주소지 세무서','영등포세무서'],['공동사업장','0.부']],
+      table:{columns:['개인사업자 항목','신고 반영'],rows:[['소득구분','종합소득세 신고서'],['과세유형','부가세 신고서 자동반영'],['대표자 주소·전화','종소세 신고 기본정보'],['공동사업장','공동사업 분기']]},
+      side:[['검증','법인·개인구분이 개인일 때만 노출된다.'],['연계','부가세·종소세 신고서']]}
+  },
+  bas03: {
+    '회계': {
+      title:'환경설정 - 회계', badge:'§25.1.3',
+      fields:[['중단사업코드','0.사용안함 / 1.부서 / 2.PJT'],['중소기업회계기준','1.사용함'],['재무제표 작성선택','0.자본변동표'],['매입매출 자동설정','봉사료 구분 기재분 사용'],['공급가액 끝수처리','매출 14/17/21/22 · 매입 56/57/61'],['과세유형 추가','매입자발행·복지카드·현금영수증'],['중고차량/차대번호','재활용폐자원세액공제 반영'],['물류전표처리','2차 메뉴 노출 제어'],['성실신고 확인대상','개인 사업자 카드계정 분기']],
+      table:{columns:['설정군','저장 위치','영향 화면'],rows:[['부가세 소수점','TenantAccountingConfig','매입매출전표·부가세'],['중단사업','DimensionConfig 태깅 조건','손익/원가명세서'],['물류전표','메뉴 사용여부','P03/P04 2차']]},
+      side:[['검증','마감기간 차원 소급 변경은 차단된다.'],['연계','P03 전표, P05 결산, P06~P07 부가세']]},
+    '사용자': {
+      title:'환경설정 - 사용자', badge:'인쇄/보기',
+      fields:[['인쇄 보기 설정','1.미리보기 사용'],['인쇄 기본설정 팝업','0.사용안함'],['전표 체크펜 표시','원장 표시 사용'],['단축키 도움말','F5 삭제 / F9 인쇄'],['기본 조회 정렬','최근 입력순'],['저장 후 포커스','다음 입력칸']],
+      table:{columns:['사용자 옵션','기본값','비고'],rows:[['미리보기','사용','인쇄 전 확인'],['단축키','사용','F5/F9'],['조회 정렬','최근 입력순','사용자별 저장']]},
+      side:[['검증','사용자 탭은 운영 편의 설정이며 차원 검증 데이터와 분리된다.'],['연계','전표·장부 인쇄 UX']]}
+  },
+  bas05: {
+    '추가사항': {
+      title:'사원등록 - 추가사항', badge:'§25.1.5 더보기',
+      fields:[['사원명잠금','성명·주민번호·입사일 수정 제어'],['연동정보','WEHAGO 신규직원·퇴사자 연동'],['가지급금 대표자','대표자 인정이자 기본값'],['신규 일괄등록','SA10_신규사원등록양식.xlsx'],['필수 컬럼','사원코드·이름·내외·주민번호·직급·직책·입사일','wide'],['엑셀변환','목록 export·표시']],
+      table:{columns:['관리 기능','동작','통제'],rows:[['사원명잠금','핵심 PII 수정 잠금','회사 관리자'],['연동정보','인사·NAHAGO 동기화','변경 로그'],['일괄등록','엑셀 업로드','필수 컬럼 검증']]},
+      side:[['검증','사원Code 사용 데이터 존재 시 삭제 불가.'],['연계','인사모듈, NAHAGO, 급여자료입력']]}
+  },
+  bas06: {
+    '추가사항': {
+      title:'거래처등록 - 일반거래처 추가사항', badge:'§25.1.6',
+      fields:[['담당자/직급','김담당 / 과장'],['담당자 이메일','bill@ssmungu.co.kr'],['홈페이지','https://partner.example.com'],['금융기관/계좌','국민 123-45-67890'],['예금주','삼성문구(주)'],['여신한도액','10,000,000'],['담보설정액','5,000,000'],['주류코드','소매'],['지방세법정코드','1114010100']],
+      table:{columns:['추가 항목','사용처','검증'],rows:[['담당자 이메일','전자세금계산서','필수'],['여신한도액','수금등록·미수채권','초과 경고+알림'],['입금계좌','송금명세서','계좌 형식 검증']]},
+      side:[['검증','여신한도 초과는 경고+알림이며 차단 여부는 회사 정책이다.'],['연계','미수채권집계, 세금계산서, 송금명세서']]},
+    '금융거래처': {
+      title:'거래처등록 - 금융거래처', badge:'partner_type=BANK',
+      list:{title:'금융거래처 목록', columns:['Code','금융거래처명','예금종류','사업용','상태'], rows:[['F001','국민은행 보통예금','0.보통','여','ACTIVE'],['F002','신한은행 당좌예금','1.당좌','여','ACTIVE'],['F003','우리은행 정기예금','2.기타','부','ACTIVE'],['F004','폐쇄 계좌','0.보통','부','INACTIVE']]},
+      fields:[['Code','F001'],['금융거래처명','국민은행 보통예금'],['계좌번호','123-456-789012'],['계좌개설점','여의도지점'],['예금종류','0.보통'],['이자율','2.10%'],['당좌한도액','50,000,000'],['당좌차월기일','2026-12-31'],['사업자등록번호','123-45-67890'],['사업용계좌','0.여'],['분류명','400 금융거래처'],['계좌개설(해지)일','2024-01-02 ~'],['사업장주소','서울 영등포구 여의공원로 111','wide'],['전화/팩스','02-0000-0000 / 02-0000-0001']],
+      table:{columns:['자동이체 항목','값','자금계획 반영'],rows:[['자동납부','매월 25일','지급 예정 생성'],['자금항목','임차료','자금계획입력 자동반영'],['금액/기간','2,500,000 / 2026-01~12','월별 계획'],['상대거래처','건물주 A','상대 FK 연결']]},
+      side:[['선택 거래처','F001 국민은행 보통예금 상세'],['검증','사업용계좌 여부는 성실신고 사업용계좌별 잔액현황에 반영된다.'],['연계','자금계획, 통장잔액, 금융거래처 원장']]},
+    '카드거래처': {
+      title:'거래처등록 - 카드거래처', badge:'partner_type=CARD',
+      list:{title:'카드거래처 목록', columns:['Code','카드/가맹점명','구분','결제일','상태'], rows:[['C001','국민 법인카드','매입카드','15일','ACTIVE'],['C002','현대 개인사업용카드','매입카드','25일','ACTIVE'],['C101','BC 매출가맹점','매출카드','D+2','ACTIVE'],['C102','제로페이 가맹점','매출카드','D+1','ACTIVE']]},
+      fields:[['Code','C001'],['카드/가맹점명','국민 법인카드'],['카드번호','1234-56**-****-7890'],['카드구분','2.회사사업용'],['결제일','매월 15일'],['카드담당사원/부서','홍길동 / 경영지원팀'],['결제계좌','F001 국민은행 보통예금'],['사용한도','3,000,000'],['사업자/주민번호','123-45-67890'],['카드분류','300 매입카드'],['유효기간','2028-12'],['가맹점번호','A-001-7788'],['입금계좌','F001 국민은행 보통예금'],['수수료율','2.1%']],
+      table:{columns:['카드 유형','신고 반영','비고'],rows:[['매입카드','신용카드매출전표등수령명세서','카드구분 자동반영'],['매출카드','발행집계표 (6)/(8)란','직불/선불 구분'],['제로페이','수령명세서 유형','별도 코드 반영'],['결제계좌','금융거래처 F001','정산 계좌 연결']]},
+      side:[['선택 거래처','C001 국민 법인카드 상세'],['검증','결제계좌는 금융거래처 탭 거래처와 연결된다.'],['연계','카드 전표, 부가세 신고, 수수료 정산']]}
+  },
+  bas10: {
+    '운행정보': {
+      title:'업무용승용차 - 운행정보', badge:'운행기록부',
+      fields:[['사원','홍길동'],['부서','경영지원팀'],['전표반영','○ 여'],['업무사용비율','78.5%'],['기초주행거리','12,500 km'],['당기 업무주행','8,120 km'],['당기 총주행','10,350 km'],['비용한도 검토','감가상각비 800만 한도'],['운행기록부','SA-LDG-17 자동반영']],
+      table:{columns:['월','업무 km','비업무 km','전표반영'],rows:[['2026-01','620','120','완료'],['2026-02','710','95','완료'],['2026-03','680','140','대기']]},
+      side:[['검증','차량번호+명의구분이 동일 차량 판정 키다.'],['연계','운행기록부, 업무용승용차관련비용명세서']]},
+    '근무지등록': {
+      title:'업무용승용차 - 근무지등록', badge:'10~99',
+      fields:[['10 기본 근무지','로그인 회사 주소'],['11 추가 근무지','여의도 고객사'],['12 추가 근무지','강남 프로젝트룸'],['현재회사주소','○'],['출발 기본값','10 본사'],['도착 기본값','11 고객사']],
+      table:{columns:['코드','근무지명','주소','운행기록부 기본'],rows:[['10','본사','서울 영등포구 여의공원로 111','○'],['11','고객사','서울 중구 을지로 100',''],['12','프로젝트룸','서울 강남구 테헤란로 10','']]},
+      side:[['검증','10번은 로그인 회사 주소 기본값이다.'],['연계','운행정보 출발·도착지 기본 선택']]}
+  },
+  bas14: {
+    '재무제표 확인': {
+      title:'마감후이월 - 재무제표 확인', badge:'마감 전 검증',
+      fields:[['조회 기준','과목별 / 세목별 / 관리용 / 제출용 / 표준'],['제조원가명세서','종료월 기준'],['손익계산서','종료월 기준'],['이익잉여금처분계산서','당기 결산 완료 기준'],['재무상태표','종료월 기준'],['프로젝트 손익/원가','프로젝트별 종료월'],['확인 상태','미확인 2건'],['마감 실행','확인 후 가능']],
+      table:{columns:['재무제표','조회 범위','상태'],rows:[['제조원가명세서','종료월','확인'],['손익계산서','종료월','확인'],['재무상태표','종료월','미확인'],['프로젝트 손익','프로젝트별','미확인']]},
+      side:[['검증','재무제표 확인 후 마감해야 전기분 재무제표 이월이 정확하다.'],['연계','P02 전기분 FS, opening_balance 적재']]}
+  }
+};
+
+function normalizeMissingTabText(text){
+  return (text || '').replace(/\s*\([^)]*\)/g, '').replace(/^\s*\d+\.\s*/, '').replace(/\s+/g, ' ').trim();
+}
+
+function resolveTabDesign(sectionId, label){
+  var group = tabScreenDesigns[sectionId];
+  if(!group){ return null; }
+  if(group[label]){ return group[label]; }
+  var keys = Object.keys(group);
+  for(var i = 0; i < keys.length; i += 1){
+    if(keys[i].indexOf(label) >= 0 || label.indexOf(keys[i]) >= 0){ return group[keys[i]]; }
+  }
+  return null;
+}
+
+function makeEl(tag, cls, text){
+  var node = document.createElement(tag);
+  if(cls){ node.className = cls; }
+  if(text !== undefined){ node.textContent = text; }
+  return node;
+}
+
+function buildGrid(columns, rows, selectedFirst){
+  var table = makeEl('table', 'grid');
+  var header = document.createElement('tr');
+  columns.forEach(function(col){ header.appendChild(makeEl('th', '', col)); });
+  table.appendChild(header);
+  rows.forEach(function(row, rowIndex){
+    var tr = document.createElement('tr');
+    if(selectedFirst && rowIndex === 0){ tr.className = 'sel'; }
+    row.forEach(function(cell){ tr.appendChild(makeEl('td', '', cell)); });
+    table.appendChild(tr);
+  });
+  return table;
+}
+
+function buildTabDetailBody(config){
+  var main = makeEl('div', 'tab-design-body');
+  var grid = makeEl('div', 'formgrid tab-design-grid');
+  (config.fields || []).forEach(function(field){
+    var wrap = makeEl('div', 'ff' + (field[2] === 'wide' ? ' wide' : ''));
+    wrap.appendChild(makeEl('label', '', field[0]));
+    wrap.appendChild(makeEl('div', 'fv', field[1]));
+    grid.appendChild(wrap);
+  });
+  main.appendChild(grid);
+
+  if(config.table){
+    var tableWrap = makeEl('div', 'tab-design-table');
+    tableWrap.appendChild(buildGrid(config.table.columns, config.table.rows, false));
+    main.appendChild(tableWrap);
+  }
+  if(config.note){ main.appendChild(makeEl('div', 'tab-design-note', config.note)); }
+
+  var status = makeEl('div', 'statusbar');
+  status.appendChild(makeEl('span', 'okmsg', '✓ 설계서 기준 탭 화면'));
+  status.appendChild(makeEl('span', 'cnt', config.title));
+  main.appendChild(status);
+  return main;
+}
+
+function buildTabSide(config){
+  var side = makeEl('div', 'tab-design-side');
+  (config.side || []).forEach(function(item){
+    var box = makeEl('div', 'rp-box');
+    box.appendChild(makeEl('div', 'rp-t', item[0]));
+    box.appendChild(makeEl('div', 'rp-b', item[1]));
+    side.appendChild(box);
+  });
+  return side;
+}
+
+function buildRPanel(config){
+  var panel = makeEl('div', 'rpanel');
+  (config.side || []).forEach(function(item){
+    var box = makeEl('div', 'rp-box');
+    box.appendChild(makeEl('div', 'rp-t', item[0]));
+    box.appendChild(makeEl('div', 'rp-b', item[1]));
+    panel.appendChild(box);
+  });
+  return panel;
+}
+
+function buildPartnerTabMain(config){
+  var main = makeEl('div', 'mock-main');
+  var grid = makeEl('div', 'formgrid');
+  (config.fields || []).forEach(function(field){
+    var wrap = makeEl('div', 'ff' + (field[2] === 'wide' ? ' wide' : ''));
+    wrap.appendChild(makeEl('label', '', field[0]));
+    wrap.appendChild(makeEl('div', 'fv', field[1]));
+    grid.appendChild(wrap);
+  });
+  main.appendChild(grid);
+
+  if(config.table){
+    var tableWrap = makeEl('div');
+    tableWrap.style.margin = '0 12px 12px';
+    tableWrap.style.width = 'calc(100% - 24px)';
+    tableWrap.appendChild(buildGrid(config.table.columns, config.table.rows, false));
+    main.appendChild(tableWrap);
+  }
+
+  var status = makeEl('div', 'statusbar');
+  status.appendChild(makeEl('span', 'okmsg', '✓ 선택 목록 기준 상세 화면'));
+  status.appendChild(makeEl('span', 'cnt', config.title));
+  main.appendChild(status);
+  return main;
+}
+
+function buildDesignedTabPane(config, index){
+  var pane = makeEl('div', 'missing-tab-panel');
+  pane.setAttribute('data-tab-index', String(index));
+
+  if(config.list){
+    var flex = makeEl('div', 'mock-flex');
+    var listPane = makeEl('div', 'lpane');
+    listPane.appendChild(makeEl('div', 'lp-t', config.list.title || '거래처 목록'));
+    listPane.appendChild(buildGrid(config.list.columns, config.list.rows, true));
+    flex.appendChild(listPane);
+    flex.appendChild(buildPartnerTabMain(config));
+    flex.appendChild(buildRPanel(config));
+    pane.appendChild(flex);
+    return pane;
+  }
+
+  var shell = makeEl('div', 'tab-design');
+  var head = makeEl('div', 'tab-design-head');
+  head.appendChild(makeEl('b', '', config.title));
+  if(config.badge){ head.appendChild(makeEl('span', 'badge b-ref', config.badge)); }
+  shell.appendChild(head);
+  var split = makeEl('div', 'tab-design-split');
+  split.appendChild(buildTabDetailBody(config));
+  split.appendChild(buildTabSide(config));
+  shell.appendChild(split);
+  pane.appendChild(shell);
+  return pane;
+}
+
+function wireMissingTabScreens(){
+  document.querySelectorAll('.tabbar').forEach(function(bar){
+    if(bar.closest('.screen-details')){ return; }
+    var section = bar.closest('.section');
+    if(!section){ return; }
+    var tabs = Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+    var existingHolder = bar.nextElementSibling && bar.nextElementSibling.classList.contains('tab-missing-screens') ? bar.nextElementSibling : null;
+    var holder = existingHolder || makeEl('div', 'tab-missing-screens');
+    var hasDesignedPane = !!(existingHolder && holder.querySelector('.missing-tab-panel'));
+
+    if(!existingHolder){
+      tabs.forEach(function(tab, index){
+        var label = normalizeMissingTabText(tab.textContent);
+        var config = resolveTabDesign(section.id, label);
+        if(index > 0 && config){
+          holder.appendChild(buildDesignedTabPane(config, index));
+          hasDesignedPane = true;
+        }
+      });
+      if(hasDesignedPane){ bar.insertAdjacentElement('afterend', holder); }
+    }
+
+    var legacyNodes = [];
+    if(hasDesignedPane){
+      var node = holder.nextElementSibling;
+      while(node){
+        legacyNodes.push(node);
+        node = node.nextElementSibling;
+      }
+    }
+
+    function showTab(index){
+      tabs.forEach(function(t){ t.classList.remove('on'); });
+      tabs[index].classList.add('on');
+      if(!hasDesignedPane){ return; }
+      var pane = holder.querySelector('.missing-tab-panel[data-tab-index="' + index + '"]');
+      holder.querySelectorAll('.missing-tab-panel').forEach(function(p){ p.classList.remove('on'); });
+      if(pane){
+        holder.style.display = 'block';
+        pane.classList.add('on');
+        legacyNodes.forEach(function(n){ n.style.display = 'none'; });
+      }else{
+        holder.style.display = 'none';
+        legacyNodes.forEach(function(n){ n.style.display = ''; });
+      }
+    }
+
+    tabs.forEach(function(tab, index){
+      tab.addEventListener('click', function(){ showTab(index); });
     });
   });
-});
+}
+
+wireMissingTabScreens();
 document.querySelectorAll('.mitem').forEach(function(mi){
   mi.addEventListener('click',function(){
     document.querySelectorAll('.mitem').forEach(function(x){x.classList.remove('active')});

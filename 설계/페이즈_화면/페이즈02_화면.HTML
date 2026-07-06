@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 페이즈02 화면설계 - 전기이월 · 개시잔액</title>
+<style>
+:root{
+  --ey-yellow:#FFE600; --ey-dark:#2E2E38; --ey-darker:#1A1A24; --ey-gray:#747480;
+  --ey-light:#F6F6FA; --ey-border:#E1E1E6; --ey-text:#2E2E38; --ey-red:#E0362C;
+  --ey-green:#168736; --ey-blue:#188CE5; --ey-link:#155CB4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ey-text);background:var(--ey-light);font-size:13.5px;line-height:1.55}
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;background:var(--ey-darker);color:#fff;height:54px;padding:0 16px;border-bottom:1px solid #000}
+.ey-logo{display:flex;align-items:center;gap:10px;min-width:210px}
+.ey-mark{position:relative;width:40px;height:40px;background:#000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px}
+.ey-mark .beam{position:absolute;top:4px;left:4px;width:0;height:0;border-left:32px solid transparent;border-bottom:9px solid var(--ey-yellow);transform:skewX(-18deg)}
+.ey-mark .ey{font-weight:800;font-size:19px;color:#fff;line-height:1}
+.ey-tag{font-size:10.5px;line-height:1.25;color:#d9d9e0;font-weight:600}
+.company-select{display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.company-select .code{color:#b9b9c2}
+.global-search{flex:1;max-width:560px;display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;color:#8a8a94;font-size:12.5px}
+.top-utils{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12.5px;white-space:nowrap}
+.top-utils .util{display:flex;align-items:center;gap:5px;cursor:pointer;color:#e8e8ee}
+.top-utils .fav .ico{color:var(--ey-yellow)}
+.top-utils .avatar{width:26px;height:26px;border-radius:50%;background:#fff;color:var(--ey-darker);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:232px;background:var(--ey-dark);color:#d7d7de;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow:hidden}
+.sidebar .menu-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #3d3d47;color:#fff;font-weight:700;font-size:13px}
+.sidebar nav{flex:1;overflow:auto;padding:4px 0 8px}
+.mgroup{margin-top:5px}
+.mgroup>.gtitle{display:flex;align-items:center;gap:8px;padding:5px 16px;font-weight:700;font-size:12.5px;color:var(--ey-yellow);cursor:pointer}
+.mgroup>.gtitle .bar{width:3px;height:14px;background:var(--ey-yellow);border-radius:2px}
+.mgroup.plain>.gtitle{color:#fff}
+.mgroup.plain>.gtitle .bar{background:#6a6a75}
+.mitem{display:block;padding:4px 16px 4px 34px;font-size:12.2px;color:#c9c9d2;cursor:pointer;border-left:3px solid transparent;text-decoration:none}
+.mitem:hover{background:#3a3a45;color:#fff}
+.mitem.active{background:var(--ey-yellow);color:#1a1a24;font-weight:700;border-left-color:#c9b400}
+.mitem .mid{float:right;font-size:10px;color:#8a8a94;margin-top:2px}
+.mitem.active .mid{color:#55550a}
+.sidebar .foot{padding:8px 16px;border-top:1px solid #3d3d47;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sidebar .foot .ey-mark{width:30px;height:30px}
+.sidebar .foot .ey-mark .beam{border-left-width:24px;border-bottom-width:7px;top:3px;left:3px}
+.sidebar .foot .ey-mark .ey{font-size:14px}
+.sidebar .foot .txt{font-size:10px;color:#b9b9c2;line-height:1.3;font-weight:600}
+.content{flex:1;padding:18px 22px 60px;max-width:calc(100% - 232px)}
+.section{display:none}
+.section.visible{display:block}
+.page-title{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.page-title h1{font-size:20px;font-weight:800}
+.page-title .chip-id{background:var(--ey-dark);color:var(--ey-yellow);font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700}
+.crumb{font-size:11.5px;color:var(--ey-gray);margin-bottom:12px}
+.src{font-size:11.5px;color:var(--ey-gray);background:#EFEFF4;border-left:3px solid var(--ey-yellow);padding:8px 12px;border-radius:0 4px 4px 0;margin:10px 0 16px}
+.src b{color:var(--ey-text)}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin:0 2px;vertical-align:1px}
+.b-block{background:#FBE9E7;color:var(--ey-red);border:1px solid #F5C6C0}
+.b-warn{background:#FFF8DC;color:#8a6d00;border:1px solid #EFE0A0}
+.b-ok{background:#E8F5E9;color:var(--ey-green);border:1px solid #BFE3C6}
+.b-new{background:var(--ey-yellow);color:#1a1a24;border:1px solid #d9c400}
+.b-ref{background:#EAF2FB;color:var(--ey-link);border:1px solid #C5DCF5}
+.b-gray{background:#EFEFF4;color:#5a5a66;border:1px solid #d9d9e0}
+.mock{background:#fff;border:1px solid var(--ey-border);border-radius:6px;box-shadow:0 1px 4px rgba(30,30,40,.08);margin:12px 0 20px;overflow:hidden}
+.mock .mock-cap{background:#EFEFF4;border-bottom:1px solid var(--ey-border);padding:5px 12px;font-size:11px;color:var(--ey-gray);font-weight:600}
+.titlebar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--ey-darker);border-bottom:2px solid var(--ey-yellow)}
+.titlebar .tb-crumb{font-size:12px;color:#b9b9c2;font-weight:600}
+.titlebar .tb-sep{color:#6a6a75;font-weight:700}
+.titlebar .tb-title{font-size:15px;font-weight:800;color:#fff}
+.titlebar .tb-star{color:var(--ey-yellow);font-size:14px;cursor:pointer}
+.titlebar .tb-id{background:var(--ey-yellow);color:#1a1a24;font-size:10.5px;padding:2px 8px;border-radius:3px;font-weight:700}
+.titlebar .tb-right{margin-left:auto;font-size:11px;color:#c9c9d2}
+.qbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#fff;flex-wrap:wrap;font-size:12px}
+.qbar .qlabel{font-size:11px;color:var(--ey-gray);font-weight:700}
+.qbar .seg{display:inline-flex;border:1px solid #c9c9d2;border-radius:4px;overflow:hidden}
+.qbar .seg span{padding:3px 10px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;color:#5a5a66}
+.qbar .seg span.on{background:var(--ey-dark);color:var(--ey-yellow)}
+.qbar .qv{display:inline-flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:3px 8px;background:#fff;font-size:12px}
+.qbar .qright{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+.actionbar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap}
+.abtn{border:1px solid #c9c9d2;background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.abtn.dark{background:var(--ey-dark);color:#fff;border-color:var(--ey-dark)}
+.abtn.red{background:var(--ey-red);color:#fff;border-color:var(--ey-red)}
+.abtn.yellow{background:var(--ey-yellow);color:#1a1a24;border-color:#d9c400;font-weight:700}
+.abtn.ghost{background:#fff}
+.ab-right{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.tabbar{display:flex;gap:2px;padding:8px 12px 0;background:#FCFCFE;border-bottom:1px solid var(--ey-border)}
+.tab{padding:6px 16px;border:1px solid var(--ey-border);border-bottom:none;border-radius:6px 6px 0 0;background:#EFEFF4;font-size:12px;font-weight:600;color:#5a5a66;cursor:pointer}
+.tab.on{background:#fff;color:var(--ey-text);font-weight:700;border-color:#b9b9c2;border-bottom:2px solid #fff;margin-bottom:-1px}
+.tab-panel{display:none}
+.tab-panel.on{display:block}
+.mock-flex{display:flex;gap:0}
+.mock-main{flex:1;min-width:0}
+.lpane{width:285px;flex-shrink:0;border-right:1px solid var(--ey-border);background:#FCFCFE;display:flex;flex-direction:column}
+.lpane .lp-t{background:#F3F3F7;padding:6px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rpanel{width:260px;flex-shrink:0;border-left:1px solid var(--ey-border);background:#FCFCFE;padding:10px;display:flex;flex-direction:column;gap:12px}
+.rp-box{border:1px solid var(--ey-border);border-radius:5px;background:#fff}
+.rp-box .rp-t{background:#F3F3F7;padding:5px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rp-box .rp-b{padding:8px 10px;font-size:11.5px}
+.rp-box .kv{display:flex;justify-content:space-between;margin:3px 0;gap:8px}
+.rp-box .kv .k{color:var(--ey-gray);white-space:nowrap}
+.rp-box .kv .v{font-weight:600;text-align:right}
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;padding:12px}
+.formgrid.c3{grid-template-columns:repeat(3,1fr)}
+.ff{display:flex;flex-direction:column;gap:2px}
+.ff label{font-size:11px;color:var(--ey-gray);font-weight:600}
+.ff .fv{display:flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:4px 8px;background:#fff;font-size:12.5px;min-height:28px}
+.ff .fv.ro{background:#F3F3F7;color:#5a5a66}
+.ff .fv .lens{margin-left:auto;color:#9a9aa4;font-size:11px;cursor:pointer}
+.ff.wide{grid-column:span 2}
+.ff.full{grid-column:span 4}
+table.grid{width:100%;border-collapse:collapse;font-size:12px;background:#fff}
+table.grid th{background:#F3F3F7;border:1px solid var(--ey-border);padding:5px 6px;font-weight:700;color:#44444e;white-space:nowrap}
+table.grid td{border:1px solid var(--ey-border);padding:4px 6px;white-space:nowrap}
+table.grid td.num{text-align:right;font-family:Consolas,monospace}
+table.grid td.c{text-align:center}
+table.grid tr.sel td{background:#FFFBE0}
+table.grid .red{color:var(--ey-red);font-weight:700}
+table.grid .blue{color:var(--ey-blue)}
+.statusbar{display:flex;align-items:center;gap:16px;background:var(--ey-darker);color:#e8e8ee;padding:7px 12px;font-size:11.5px}
+.statusbar .okmsg{color:#7ADB8F;font-weight:700}
+.statusbar .warnmsg{color:#FFD666;font-weight:700}
+.statusbar .errormsg{color:#FF8B82;font-weight:700}
+.statusbar .cnt{margin-left:auto;color:#b9b9c2}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 16px}
+.flow .st{background:#fff;border:1.5px solid var(--ey-dark);border-radius:4px;padding:4px 10px;font-size:11.5px;font-weight:700}
+.flow .st.hl{background:var(--ey-yellow);border-color:#c9b400}
+.flow .st.end{background:var(--ey-dark);color:#fff}
+.flow .ar{color:#9a9aa4;font-weight:700}
+.dash-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 16px}
+.metric{background:#fff;border:1px solid var(--ey-border);border-radius:6px;padding:10px}
+.metric .mt{font-size:11px;color:var(--ey-gray);font-weight:700}
+.metric .mv{font-size:20px;font-weight:800;margin-top:2px}
+.metric .ms{font-size:11.5px;color:#5a5a66}
+.gate-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:12px}
+.matrix-wrap{overflow:auto;margin:0 12px 12px;border:1px solid var(--ey-border)}
+.matrix-wrap table.grid{border:0}
+.screen-details{margin:2px 0 30px}
+.screen-details .sd-title{font-size:14px;font-weight:800;margin:8px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+.screen-desc-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 14px}
+.screen-desc-item{background:#fff;border:1px solid var(--ey-border);border-left:3px solid var(--ey-yellow);border-radius:0 5px 5px 0;padding:8px 10px;font-size:11.8px;min-height:62px}
+.screen-desc-item .desc-label{display:block;font-weight:800;color:var(--ey-dark);margin-bottom:3px}
+.screen-desc-item .desc-body{color:#4b4b55}
+.footer{background:var(--ey-darker);color:#b9b9c2;padding:14px 22px;font-size:11px;display:flex;align-items:center;gap:14px}
+.footer .beamline{width:70px;height:8px;background:var(--ey-yellow);transform:skewX(-30deg)}
+@media(max-width:1200px){
+  .formgrid{grid-template-columns:repeat(2,1fr)}
+  .ff.full{grid-column:span 2}
+  .screen-desc-list,.dash-grid,.gate-grid{grid-template-columns:1fr}
+  .mock-flex{flex-direction:column}
+  .lpane,.rpanel{width:auto;border-left:none;border-right:none;border-bottom:1px solid var(--ey-border)}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="ey-logo">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="ey-tag">Shape the future<br>with confidence</div>
+  </div>
+  <div class="company-select"><span class="code">1000</span> <b>EY Korea Co., Ltd.</b> <span>▾</span></div>
+  <div class="global-search">🔍 전기이월, 개시잔액, 화면 ID 검색 (Ctrl + K)</div>
+  <div class="top-utils">
+    <div class="util">🔔 검증 알림</div>
+    <div class="util fav"><span class="ico">★</span> 즐겨찾기</div>
+    <div class="util">? 도움말</div>
+    <div class="util"><span class="avatar">홍</span> 홍길동 대리 ▾</div>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="menu-head">☰ Menu — 전기이월 (P02)</div>
+  <nav>
+    <a class="mitem active" data-sec="home" style="padding-left:16px;font-weight:700">🏠 페이즈 개요</a>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>전기 재무제표</div>
+      <a class="mitem" data-sec="opn01">전기분재무상태표 <span class="mid">OPN-01</span></a>
+      <a class="mitem" data-sec="opn02">전기분손익계산서 <span class="mid">OPN-02</span></a>
+      <a class="mitem" data-sec="opn03">전기분원가명세서 <span class="mid">OPN-03</span></a>
+      <a class="mitem" data-sec="opn04">이익잉여금처분 <span class="mid">OPN-04</span></a>
+      <a class="mitem" data-sec="opn05">자본변동표 <span class="mid">OPN-05</span></a>
+      <a class="mitem" data-sec="opn06">현금흐름표 <span class="mid">OPN-06</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>차원별 초기이월</div>
+      <a class="mitem" data-sec="opn07">거래처별초기이월 <span class="mid">OPN-07</span></a>
+      <a class="mitem" data-sec="opn08">부서/사원별초기이월 <span class="mid">OPN-08</span></a>
+      <a class="mitem" data-sec="opn13">프로젝트초기이월 <span class="mid">OPN-13</span></a>
+    </div>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>기간·프로젝트 분석</div>
+      <a class="mitem" data-sec="opn09">기간별손익계산서 <span class="mid">OPN-09</span></a>
+      <a class="mitem" data-sec="opn10">기간별원가계산서 <span class="mid">OPN-10</span></a>
+      <a class="mitem" data-sec="opn11">프로젝트손익현황 <span class="mid">OPN-11</span></a>
+      <a class="mitem" data-sec="opn12">프로젝트원가현황 <span class="mid">OPN-12</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>2차·건설·이관</div>
+      <a class="mitem" data-sec="opn14">중단사업손익 <span class="mid">OPN-14</span></a>
+      <a class="mitem" data-sec="opn15">중단사업원가 <span class="mid">OPN-15</span></a>
+      <a class="mitem" data-sec="opn16">중도시산표 <span class="mid">OPN-16</span></a>
+      <a class="mitem" data-sec="opn17">미완성공사초기이월 <span class="mid">OPN-17</span></a>
+      <a class="mitem" data-sec="opn18">외주처별초기이월 <span class="mid">OPN-18</span></a>
+      <a class="mitem" data-sec="opn19">현장별/거래처별초기이월 <span class="mid">OPN-19</span></a>
+    </div>
+  </nav>
+  <div class="foot">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="txt">Opening Balance<br>Design Mockup</div>
+  </div>
+</aside>
+
+<main class="content" id="content">
+  <section class="section visible" id="home">
+    <div class="page-title"><h1>페이즈02 전기이월 · 개시잔액</h1><span class="chip-id">SA-OPN-01~19</span><span class="badge b-new">검증 게이트</span></div>
+    <div class="crumb">기초정보관리 II › 전기이월 | 전기 재무제표 스냅샷 + 계정×차원 opening_balance + ACTIVE 전환 게이트</div>
+    <div class="src"><b>설계 근거</b> 페이즈02_전기이월_개시잔액.md §1~§12. 최초 작업년도 수기/엑셀 입력, 차기부터 SA-BAS-14 마감후이월 자동 적재.</div>
+
+    <div class="dash-grid">
+      <div class="metric"><div class="mt">화면 범위</div><div class="mv">19</div><div class="ms">1차 13개 · 2차 6개</div></div>
+      <div class="metric"><div class="mt">검증 상태</div><div class="mv">2건</div><div class="ms">차액 보정 필요</div></div>
+      <div class="metric"><div class="mt">대량 업로드</div><div class="mv">3</div><div class="ms">VALIDATED 배치 대기</div></div>
+      <div class="metric"><div class="mt">테넌트 상태</div><div class="mv">PENDING</div><div class="ms">게이트 통과 후 ACTIVE</div></div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-cap">개시잔액 검증 게이트 — 차대균형·차원 정합·이관 tie-out 전건 통과 후 업무 개시</div>
+      <div class="titlebar"><span class="tb-crumb">기준정보 II</span><span class="tb-sep">›</span><span class="tb-title">개시잔액 검증 게이트</span><span class="tb-id">OPENING-GATE</span><span class="tb-right">/api/tenant/opening/validation-gate</span></div>
+      <div class="qbar">
+        <span class="qlabel">작업년도</span><span class="qv">2026</span>
+        <span class="qlabel">기준연도</span><span class="seg"><span class="on">전기</span><span>전전기</span><span>전전전기</span></span>
+        <span class="qlabel">기장모드</span><span class="qv">OPERATOR_LED</span>
+        <span class="qright"><button class="abtn yellow">게이트 재검증</button><button class="abtn dark">ACTIVE 전환 요청</button></span>
+      </div>
+      <div class="actionbar"><div class="ab-right">
+        <button class="abtn ghost">MigrationBatch 업로드</button><button class="abtn ghost">오류행 리포트</button><button class="abtn ghost">Tie-out 결과</button><button class="abtn red">차단 항목 보기</button>
+      </div></div>
+      <div class="gate-grid" style="padding:12px">
+        <table class="grid">
+          <tr><th>게이트 항목</th><th>상태</th><th>차액/오류</th><th>처리</th></tr>
+          <tr><td>SA-OPN-01 대차균형</td><td class="c"><span class="badge b-ok">통과</span></td><td class="num">0</td><td>저장 가능</td></tr>
+          <tr class="sel"><td>거래처별 초기이월 합계</td><td class="c"><span class="badge b-block">차단</span></td><td class="num red">-1,200,000</td><td>OPN-07 보정</td></tr>
+          <tr><td>프로젝트·현장 차원 정합</td><td class="c"><span class="badge b-warn">경고</span></td><td class="num red">350,000</td><td>OPN-13/19 확인</td></tr>
+          <tr><td>이관 tie-out</td><td class="c"><span class="badge b-ok">통과</span></td><td class="num">0</td><td>verified=true</td></tr>
+        </table>
+        <div>
+          <div class="flow">
+            <span class="st">P01 마스터 완료</span><span class="ar">→</span><span class="st">개시잔액 업로드</span><span class="ar">→</span><span class="st hl">검증 게이트</span><span class="ar">→</span><span class="st end">ACTIVE</span><span class="ar">→</span><span class="st">P03 업무 개시</span>
+          </div>
+          <table class="grid">
+            <tr><th>배치</th><th>상태</th><th>멱등키</th><th>결과</th></tr>
+            <tr><td>MB-2607-001</td><td class="c"><span class="badge b-ok">VALIDATED</span></td><td>opn-bs-2026</td><td>미리보기 완료</td></tr>
+            <tr><td>MB-2607-002</td><td class="c"><span class="badge b-warn">RECEIVED</span></td><td>partner-open</td><td>오류행 3건</td></tr>
+            <tr><td>TB-IMPORT-01</td><td class="c"><span class="badge b-ok">POSTED</span></td><td>handover-2025</td><td>tie-out 0</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="statusbar"><span class="errormsg">✕ ACTIVE 전환 차단: 차원별 합계 차액이 남아 있음</span><span class="cnt">VALIDATION_FAILED</span></div>
+    </div>
+
+    <div class="screen-details">
+      <div class="sd-title">화면 아래 설명 · 설계서 참조</div>
+      <div class="screen-desc-list">
+        <div class="screen-desc-item"><span class="desc-label">목표</span><span class="desc-body">전기 재무제표 스냅샷과 계정×차원별 opening_balance를 적재해 P03 업무 개시 전 검증 게이트를 통과시킨다.</span></div>
+        <div class="screen-desc-item"><span class="desc-label">흐름</span><span class="desc-body">P01 마스터 완료 후 수기/엑셀/이관으로 개시잔액을 적재하고, 차대균형·차원 정합·tie-out을 검증한다.</span></div>
+        <div class="screen-desc-item"><span class="desc-label">차단</span><span class="desc-body">차대 불균형, 차원 합계 불일치, tie-out 미통과, 마감 잠금, 비주기장 반영 시도를 차단한다.</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<footer class="footer"><span class="beamline"></span><span>BK Phase 02 Screen Mockup · 전기이월 · 개시잔액 · SA-OPN</span></footer>
+
+<script>
+var screens = [
+  {
+    id:'opn01', group:'전기 재무제표', phase:'1차', code:'SA-OPN-01', title:'전기분재무상태표', basis:'§25.2.1',
+    purpose:'전년도·전전년도·전전전년도 재무상태표를 입력해 개시잔액과 비교식 재무상태표의 전기 자료로 활용한다.',
+    query:[['기준연도','전기 ▾'],['작업년도','2026'],['표시','전체보기'],['차액표시','여']],
+    actions:['항목보기','대표자설정','엑셀 업로드','MigrationBatch 미리보기','신규 (F2)','저장 (F3)'],
+    left:{title:'계정 분류', rows:[['자산','1,245,300,000','선택'],['부채','742,200,000',''],['자본','503,100,000',''],['대차차액','0','통과']]},
+    tabs:[
+      {name:'재무상태표 입력', fields:[['기준연도','전기(2025)'],['계정코드','103 보통예금'],['세목','10301 국민은행'],['차변','180,000,000'],['대변',''],['기말재고 반영','원재료 153 / 상품 146'],['대표자설정','가지급금 대표자 홍길동'],['입력 규칙','충당금·결손금 - 입력 금지','wide']],
+       table:{cols:['Code','계정과목','차변','대변','검증'], rows:[['101','현금','3,500,000','',''],['103','보통예금','180,000,000','',''],['108','외상매출금','245,000,000','','거래처별 이월 필요'],['252','지급어음','','70,000,000','어음등록 필요'],['375','이월이익잉여금','','320,000,000','OPN-04 정합']]},
+       status:['ok','✓ 대차차액 0 · 서버 측 균형 제약 통과']},
+      {name:'항목보기', table:{cols:['집계항목','구성 계정','금액','후행 반영'], rows:[['당좌자산','101/103/108/110','428,500,000','OPN-07·08 준거'],['재고자산','146/153/162','315,000,000','OPN-02·03 기말재고'],['자본','331/375','503,100,000','OPN-04 정합']]} }
+    ],
+    right:[['핵심 검증','대차차액 0 강제, 379/380 직접 입력 차단, 충당금·결손금 - 입력 금지'],['후행 연계','OPN-02·03 기말재고, OPN-04 이익잉여금, OPN-07·08·13·19 초기이월 준거'],['권한','tenant:masterdata:write · 마감기수 수정은 Step-up']],
+    desc:[['목적','전기 BS 스냅샷이 페이즈02 전체 준거 금액 원천이다.'],['검증','대차균형은 메뉴 종료 확인창과 서버 제약 양쪽에서 강제한다.'],['연계','차기부터 SA-BAS-14 마감후이월이 자동 적재하고 직접 수정 가능하다.']]
+  },
+  {
+    id:'opn02', group:'전기 재무제표', phase:'1차', code:'SA-OPN-02', title:'전기분손익계산서', basis:'§25.2.2',
+    purpose:'전기 손익계산서를 입력해 비교식 손익계산서와 전기 포괄손익계산서 자료를 공급한다.',
+    query:[['기간','2025-01-01 ~ 2025-12-31'],['기준연도','전기'],['표시','계정과목 코드보기'],['기말재고','OPN-01 자동반영']],
+    actions:['항목보기','포괄손익 작성','전기분재무상태표 연계확인','엑셀 업로드','저장 (F3)'],
+    left:{title:'손익 항목', rows:[['매출액','1,560,000,000','선택'],['매출원가','910,000,000',''],['판관비','420,000,000',''],['당기순손익','230,000,000','']]},
+    tabs:[
+      {name:'손익계산서', fields:[['기간','2025-01-01 ~ 2025-12-31'],['계정코드','401 상품매출'],['금액','1,560,000,000'],['기말재고액','OPN-01 반영'],['당기제품제조원가','620,000,000'],['당기순손익','230,000,000']],
+       table:{cols:['Code','계정과목','금액','정합'], rows:[['401','상품매출','1,560,000,000',''],['451','상품매출원가','910,000,000','OPN-03 확인'],['801','급여','180,000,000',''],['998','법인세비용','32,000,000',''],['999','당기순이익','230,000,000','OPN-04 확인']]},
+       status:['warn','⚠ 당기제품제조원가 OPN-03 금액과 교차 검증']},
+      {name:'포괄손익', table:{cols:['구분','금액','비고'], rows:[['당기순이익','230,000,000','OPN-04 공급'],['기타포괄손익','12,000,000','직접 입력'],['총포괄손익','242,000,000','비교식 표시']]} }
+    ],
+    right:[['교차 정합','당기제품제조원가=OPN-03, 당기순손익=OPN-04'],['후행 연계','OPN-09 기간별손익, OPN-11 프로젝트손익, P05 비교식 손익계산서'],['입력 규칙','계정명 2글자 이상 또는 F2, 세목 사용 시 5자리']],
+    desc:[['목적','전기 손익 스냅샷을 만들고 기간별·프로젝트별 손익의 연간 준거가 된다.'],['검증','원가명세서와 이익잉여금처분계산서의 핵심 금액을 교차 확인한다.'],['산출','비교식 손익계산서와 전기 포괄손익계산서 자료를 만든다.']]
+  },
+  {
+    id:'opn03', group:'전기 재무제표', phase:'1차', code:'SA-OPN-03', title:'전기분원가명세서', basis:'§25.2.3',
+    purpose:'전기 제조원가명세서를 입력하고 당기제품제조원가를 손익계산서와 정합한다.',
+    query:[['기준연도','전기'],['원가구분','제조'],['기말재고','OPN-01 자동반영'],['표시','전체보기']],
+    actions:['원가설정','항목보기','전체보기','엑셀 업로드','저장 (F3)'],
+    left:{title:'원가 분류', rows:[['원재료비','310,000,000','선택'],['노무비','140,000,000',''],['제조경비','210,000,000',''],['당기제품제조원가','620,000,000','']]},
+    tabs:[
+      {name:'원가명세서', fields:[['계정코드','501 원재료비'],['금액','310,000,000'],['기초재공품','24,000,000'],['타계정대체','-'],['기말재고액','153 원재료 자동반영'],['원가설정','451 상품매출원가 연결']],
+       table:{cols:['Code','원가항목','금액','비고'], rows:[['501','원재료비','310,000,000','기말재고 OPN-01'],['503','노무비','140,000,000',''],['505','제조경비','210,000,000',''],['510','기말재공품','40,000,000','차감'],['599','당기제품제조원가','620,000,000','OPN-02 정합']]},
+       status:['ok','✓ 기말재고 자동반영 · 원가설정 연결 확인']},
+      {name:'원가설정', table:{cols:['매출원가','원가경비','관계','상태'], rows:[['451 상품매출원가','501 원재료비','결산대체','연결'],['451 상품매출원가','503 노무비','결산대체','연결'],['451 상품매출원가','505 제조경비','결산대체','연결']]} }
+    ],
+    right:[['검증','기말재고는 OPN-01 금액 자동반영, 수기 상충 차단'],['후행 연계','OPN-10 기간별원가, OPN-12 프로젝트원가'],['메타데이터','P01 SA-BAS-07 원가설정·계정 관계 재사용']],
+    desc:[['목적','전기 제조원가 스냅샷과 당기제품제조원가 준거를 만든다.'],['검증','OPN-02 손익계산서의 당기제품제조원가와 일치해야 한다.'],['연계','원가설정은 계정과목 관계 메타데이터를 그대로 사용한다.']]
+  },
+  {
+    id:'opn04', group:'전기 재무제표', phase:'1차', code:'SA-OPN-04', title:'전기분이익잉여금처분계산서', basis:'§25.2.4',
+    purpose:'법인 전용 처분계산서 전기 자료를 입력하고 BS 이월이익잉여금 및 PL 당기순손익과 정합한다.',
+    query:[['법인/개인','법인'],['기준연도','전기'],['처분구분','전체'],['노출','개인사업자 미노출']],
+    actions:['라인추가','처분항목 추가','처분항목 제외','초기화','저장 (F3)'],
+    left:{title:'처분 항목', rows:[['미처분이익잉여금','550,000,000','선택'],['당기순이익','230,000,000',''],['이익준비금','23,000,000',''],['차기이월','527,000,000','']]},
+    tabs:[
+      {name:'처분계산서', fields:[['계정과목','375 이월이익잉여금'],['금액','550,000,000'],['당기순손익','230,000,000'],['결손금 입력','- 사용'],['라인추가','커서 위치 하위항목 추가'],['초기화','전체 삭제 확인 경고']],
+       table:{cols:['라인','과목명','금액','정합'], rows:[['I','미처분이익잉여금','550,000,000','OPN-01'],['II','당기순이익','230,000,000','OPN-02'],['III','이익준비금','23,000,000',''],['IV','배당금','0',''],['V','차기이월미처분이익잉여금','527,000,000','']]},
+       status:['warn','⚠ 개인사업자 테넌트에서는 메뉴 미노출']},
+      {name:'정합성', table:{cols:['검증','기준 화면','상태'], rows:[['이월이익잉여금','OPN-01','통과'],['당기순손익','OPN-02','통과'],['결손금 부호','OPN-04 입력 규칙','통과']]} }
+    ],
+    right:[['노출 제어','회사등록 법인/개인 구분에 따라 개인사업자는 미노출'],['교차 검증','OPN-01 미처분이익잉여금, OPN-02 당기순손익'],['감사','초기화·라인 삭제는 DataChangeLog 기록']],
+    desc:[['목적','법인의 전기 이익잉여금 처분 자료를 비교식 결산에 공급한다.'],['검증','BS/PL와 핵심 금액을 맞춘다.'],['주의','OPN-01과 달리 처분계산서 결손금은 - 입력을 허용한다.']]
+  },
+  {
+    id:'opn05', group:'전기 재무제표', phase:'1차', code:'SA-OPN-05', title:'전기분자본변동표', basis:'§25.2.5',
+    purpose:'전기·전전기 자본변동표를 입력하고 자본 항목 행 구성을 계정과목 자본 분류와 연계한다.',
+    query:[['전기년도','전기'],['입력방식','직접입력'],['집계항목','표시'],['자동반영','SA-BAS-14']],
+    actions:['추가','집계화면 설정','전기자료 불러오기','엑셀 업로드','저장 (F3)'],
+    left:{title:'자본 항목', rows:[['자본금','100,000,000','선택'],['자본잉여금','45,000,000',''],['이익잉여금','527,000,000',''],['합계','672,000,000','']]},
+    tabs:[
+      {name:'자본변동 입력', fields:[['전기년도','2025'],['직접입력','활성'],['자본금','100,000,000'],['이익잉여금','527,000,000'],['집계 표시','여'],['라인추가','하위항목 추가']],
+       table:{cols:['항목','기초','증가','감소','기말'], rows:[['자본금','100,000,000','0','0','100,000,000'],['자본잉여금','45,000,000','0','0','45,000,000'],['이익잉여금','505,000,000','45,000,000','23,000,000','527,000,000'],['자본합계','650,000,000','45,000,000','23,000,000','672,000,000']]},
+       status:['ok','✓ 자본 분류 계정과 연결된 구성형 리포트']},
+      {name:'집계 설정', table:{cols:['집계항목','표시','구성'], rows:[['자본금','여','331'],['자본잉여금','여','341~349'],['이익잉여금','여','375/376']]}}
+    ],
+    right:[['데이터 성격','자본변동 전기 스냅샷'],['선행','SA-BAS-07 자본 분류, SA-BAS-14 자동반영'],['후행','P05 결산 재무제표 자본변동표']],
+    desc:[['목적','전기 자본변동표 비교치를 제공한다.'],['기능','라인 추가와 집계항목 표시 설정을 제공한다.'],['연계','계정과목의 자본 분류 메타데이터와 연결된다.']]
+  },
+  {
+    id:'opn06', group:'전기 재무제표', phase:'1차', code:'SA-OPN-06', title:'전기분현금흐름표', basis:'§25.2.6',
+    purpose:'전기 현금흐름표를 입력하고 영업·투자·재무 분류 구조를 리포트 템플릿 매핑과 공유한다.',
+    query:[['현금흐름분류','0.전체'],['기준연도','전기'],['과목편집','가능'],['자동반영','SA-BAS-14']],
+    actions:['과목편집','소분류 추가','삭제','전체초기화','저장 (F3)'],
+    left:{title:'현금흐름 분류', rows:[['영업활동','310,000,000','선택'],['투자활동','-120,000,000',''],['재무활동','80,000,000',''],['현금증감','270,000,000','']]},
+    tabs:[
+      {name:'현금흐름 입력', fields:[['분류','영업활동'],['과목','당기순이익'],['금액','230,000,000'],['조정항목','감가상각비'],['소분류','영업활동 현금흐름'],['매핑','CashFlowMapping']],
+       table:{cols:['분류','과목','금액','매핑'], rows:[['영업','당기순이익','230,000,000','CF-OP-01'],['영업','감가상각비','80,000,000','CF-OP-02'],['투자','유형자산 취득','-120,000,000','CF-INV-01'],['재무','차입금 증가','80,000,000','CF-FIN-01']]},
+       status:['ok','✓ 현금흐름표 리포트 템플릿과 매핑']},
+      {name:'과목편집', table:{cols:['동작','대상','처리'], rows:[['과목추가','중분류','소분류 생성'],['삭제','선택 과목','확인 후 제거'],['전체초기화','현금흐름표','초기 템플릿 복원']]}}
+    ],
+    right:[['분류','0.전체/1.영업/2.투자/3.재무'],['공유 테이블','CashFlowMapping 계열을 P05 현금흐름표와 공유'],['통제','전체초기화는 확인 경고와 감사로그']],
+    desc:[['목적','전기 현금흐름표 비교치를 입력한다.'],['기능','분류별 조회와 과목편집을 제공한다.'],['연계','P05 현금흐름표 템플릿 매핑과 같은 구조를 쓴다.']]
+  },
+  {
+    id:'opn07', group:'차원별 초기이월', phase:'1차', code:'SA-OPN-07', title:'거래처별초기이월', basis:'§25.2.7',
+    purpose:'재무상태표 계정잔액에 대한 거래처별 채권채무 잔액과 어음 관리내역을 입력한다.',
+    query:[['계정과목','108 외상매출금'],['거래처','전체'],['차액표시','여'],['어음계정','110/252/260 관리']],
+    actions:['전기분재무상태표 불러오기','어음등록','화면구성','오류행 리포트','저장 (F3)'],
+    left:{title:'BS 준거 계정', rows:[['108 외상매출금','245,000,000','선택'],['110 받을어음','60,000,000','관리내역'],['252 지급어음','70,000,000','어음등록'],['차액','-1,200,000','차단']]},
+    tabs:[
+      {name:'거래처별 잔액', fields:[['계정','108 외상매출금'],['준거 금액','245,000,000'],['거래처','00123 삼성문구'],['이월잔액','80,000,000'],['차액','-1,200,000'],['차액표시','여']],
+       table:{cols:['거래처코드','거래처명','이월잔액','관리내역','상태'], rows:[['00123','삼성문구(주)','80,000,000','-','정상'],['00124','신규상사','60,000,000','-','정상'],['00125','간이식당','103,800,000','-','차액 발생'],['합계','','243,800,000','','차액 -1,200,000']]},
+       status:['error','✕ 거래처별 합계와 계정 잔액 차액 0 필요']},
+      {name:'어음등록', table:{cols:['어음종류','금융기관','시작어음번호','매수','만기일자'], rows:[['1.어음','국민은행','A-2025-0001','20','2026-03-31'],['4.전자','신한은행','E-2025-1001','10','2026-04-30']]}}
+    ],
+    right:[['차액 통제','좌측 BS 계정금액 vs 우측 거래처 합계가 0이어야 게이트 통과'],['자금관리 계정','110·252·260은 어음번호·은행·만기·발행일 관리내역 강제'],['후행','거래처원장·받을어음/지급어음 보조부']],
+    desc:[['목적','거래처별 채권채무 전기이월을 P04 거래처원장으로 넘긴다.'],['검증','계정 잔액과 거래처 합계 차액이 게이트 항목이다.'],['어음','지급어음은 발행 어음번호 선행 등록 후 선택한다.']]
+  },
+  {
+    id:'opn08', group:'차원별 초기이월', phase:'1차', code:'SA-OPN-08', title:'부서/사원별초기이월', basis:'§25.2.8',
+    purpose:'계정잔액을 부서·사원·거래처 차원으로 입력해 계정별원장 부서/사원 탭 전기이월로 반영한다.',
+    query:[['계정과목','가지급금'],['부서','전체'],['사원','전체'],['거래처','자동반영']],
+    actions:['전기분재무상태표 불러오기','사원검색(F2)','차액 검증','엑셀 업로드','저장 (F3)'],
+    left:{title:'계정별 준거', rows:[['134 가지급금','22,000,000','선택'],['253 가수금','18,500,000',''],['차액','0','통과']]},
+    tabs:[
+      {name:'부서/사원', fields:[['계정','134 가지급금'],['사원','E0001 홍길동'],['부서','경영지원팀 자동반영'],['금액','12,000,000'],['거래처','00123 삼성문구'],['차액','0']],
+       table:{cols:['사원','부서','거래처','이월잔액','상태'], rows:[['홍길동','경영지원팀','삼성문구','12,000,000','정상'],['이경리','경영지원팀','신규상사','10,000,000','정상'],['합계','','','22,000,000','통과']]},
+       status:['ok','✓ 사원 입력 시 부서 자동반영']},
+      {name:'거래처 보조', table:{cols:['거래처','사원','금액','비고'], rows:[['삼성문구','홍길동','12,000,000',''],['신규상사','이경리','10,000,000','']]}}
+    ],
+    right:[['자동반영','SA-BAS-05 사원 소속 부서 자동반영'],['게이트','계정 잔액=부서/사원/거래처 합계 정합'],['후행','계정별원장 부서별·사원별 탭']],
+    desc:[['목적','부서·사원별 보조부의 전기이월 잔액을 만든다.'],['검증','SA-OPN-01 계정금액과 차원 합계가 같아야 한다.'],['연계','부서와 사원 마스터가 선행되어야 한다.']]
+  },
+  {
+    id:'opn09', group:'기간·프로젝트 분석', phase:'1차', code:'SA-OPN-09', title:'전기 기간별손익계산서', basis:'§25.3.1',
+    purpose:'전기 손익계산서 금액을 12개월로 배분해 월별 비교 리포트 API에 공급한다.',
+    query:[['기준','SA-OPN-02'],['월','1~12월'],['대분류 항목집계','여'],['코드보기','여']],
+    actions:['계정과목복사','손익계산서 불러오기','항목집계','엑셀 업로드','저장 (F3)'],
+    left:{title:'손익 준거', rows:[['401 상품매출','1,560,000,000','선택'],['451 매출원가','910,000,000',''],['801 급여','180,000,000',''],['차액','0','통과']]},
+    matrix:true,
+    tabs:[
+      {name:'월별 배분', fields:[['계정','401 상품매출'],['손익계산서 금액','1,560,000,000'],['월별 합계','1,560,000,000'],['차액','0'],['집계항목','매출액'],['코드보기','여']],
+       status:['ok','✓ 월별 합계와 연간 준거 일치']},
+      {name:'경고 예시', table:{cols:['계정','연간 준거','월별 합계','차액'], rows:[['801 급여','180,000,000','179,500,000','-500,000'],['802 복리후생비','24,000,000','24,000,000','0']]}}
+    ],
+    right:[['준거','SA-OPN-02 손익계산서 금액 read-only'],['경고','월별 합계 불일치 시 합계란 붉은색'],['후행','P05 기간별손익계산서, 월별 비교 API']],
+    desc:[['목적','전기 손익을 월별로 나눠 기간별 비교 자료를 만든다.'],['검증','월별 합계가 연간 손익 준거와 다르면 붉은색 경고를 낸다.'],['기능','대분류 항목집계와 계정과목 코드보기를 제공한다.']]
+  },
+  {
+    id:'opn10', group:'기간·프로젝트 분석', phase:'1차', code:'SA-OPN-10', title:'전기 기간별원가계산서', basis:'§25.3.2',
+    purpose:'전기 원가명세서 금액을 12개월로 배분해 월별 원가 비교 리포트에 공급한다.',
+    query:[['기준','SA-OPN-03'],['원가구분','제조'],['집계항목','여'],['코드보기','여']],
+    actions:['원가설정','원가명세서 불러오기','항목집계','계정과목 코드보기','저장 (F3)'],
+    left:{title:'원가 준거', rows:[['501 원재료비','310,000,000','선택'],['503 노무비','140,000,000',''],['505 제조경비','210,000,000',''],['차액','-300,000','경고']]},
+    matrix:true,
+    tabs:[
+      {name:'월별 원가', fields:[['계정','501 원재료비'],['원가명세서 금액','310,000,000'],['월별 합계','309,700,000'],['차액','-300,000'],['원가설정','451 매출원가 연결'],['표시','대분류 항목집계']],
+       status:['warn','⚠ 월별 합계와 원가명세서 준거 금액 차액 발생']},
+      {name:'원가설정', table:{cols:['원가경비','연결 매출원가','상태'], rows:[['501 원재료비','451 상품매출원가','연결'],['503 노무비','451 상품매출원가','연결'],['505 제조경비','451 상품매출원가','연결']]}}
+    ],
+    right:[['준거','SA-OPN-03 원가명세서 계정금액'],['경고','월별 합계 불일치 시 합계란 붉은색'],['후행','P05 기간별원가명세서']],
+    desc:[['목적','전기 원가를 월별로 나눠 비교식 기간별원가를 만든다.'],['기능','원가설정과 대분류 항목집계를 제공한다.'],['검증','월별 합계가 원가명세서 준거와 맞는지 확인한다.']]
+  },
+  {
+    id:'opn11', group:'기간·프로젝트 분석', phase:'1차', code:'SA-OPN-11', title:'전기 프로젝트손익현황', basis:'§25.3.3',
+    purpose:'전기 손익항목을 프로젝트별로 배분해 프로젝트 손익 분석 리포트에 공급한다.',
+    query:[['프로젝트','PJT-2025-01'],['준거','SA-OPN-02'],['표시','손익항목'],['차액','표시']],
+    actions:['계정과목복사','프로젝트 검색(F2)','손익계산서 불러오기','엑셀 업로드','저장 (F3)'],
+    left:{title:'프로젝트 목록', rows:[['PJT-001','ERP 구축','선택'],['PJT-002','세무자문',''],['PJT-003','감사 지원',''],['미배부','12,000,000','경고']]},
+    tabs:[
+      {name:'프로젝트 손익', fields:[['프로젝트','PJT-001 ERP 구축'],['계정','401 상품매출'],['금액','520,000,000'],['준거','OPN-02 매출액'],['계정과목복사','PJT-002에서 복사'],['차액','0']],
+       table:{cols:['Code','계정과목','프로젝트 금액','준거 배부','상태'], rows:[['401','상품매출','520,000,000','1,560,000,000','정상'],['451','매출원가','310,000,000','910,000,000','정상'],['801','급여','62,000,000','180,000,000','정상']]},
+       status:['ok','✓ 계정×프로젝트 손익 키로 저장']},
+      {name:'복사', table:{cols:['복사 원본','대상','처리'], rows:[['PJT-002 세무자문','PJT-001 ERP 구축','계정 구조만 복사'],['전기분손익계산서','선택 프로젝트','계정+금액 불러오기']]}}
+    ],
+    right:[['선행','SA-OPN-02 손익 준거, SA-BAS-09 프로젝트'],['저장 키','계정×프로젝트'],['후행','프로젝트 손익 분석 리포트']],
+    desc:[['목적','전기 손익을 프로젝트별로 배분한다.'],['기능','계정과목복사로 다른 프로젝트 구조를 재사용한다.'],['연계','SA-BAS-14 프로젝트 누적 손익 자동반영 수신처다.']]
+  },
+  {
+    id:'opn12', group:'기간·프로젝트 분석', phase:'1차', code:'SA-OPN-12', title:'전기 프로젝트원가현황', basis:'§25.3.4',
+    purpose:'전기 원가항목을 프로젝트별·원가경비별로 배분해 프로젝트 원가 분석 리포트에 공급한다.',
+    query:[['원가경비','제조원가'],['프로젝트','PJT-001'],['준거','SA-OPN-03'],['차액','표시']],
+    actions:['불러오기','원가설정','계정과목 복사','프로젝트 검색(F2)','저장 (F3)'],
+    left:{title:'원가경비', rows:[['제조원가','620,000,000','선택'],['도급원가','0',''],['분양원가','0',''],['미배부','0','통과']]},
+    tabs:[
+      {name:'프로젝트 원가', fields:[['원가경비','제조원가'],['프로젝트','PJT-001 ERP 구축'],['계정','501 원재료비'],['금액','160,000,000'],['준거','OPN-03'],['차액','0']],
+       table:{cols:['Code','원가항목','프로젝트 금액','원가명세서 준거','상태'], rows:[['501','원재료비','160,000,000','310,000,000','정상'],['503','노무비','70,000,000','140,000,000','정상'],['505','제조경비','95,000,000','210,000,000','정상']]},
+       status:['ok','✓ 계정×프로젝트×원가경비 키로 저장']},
+      {name:'불러오기', table:{cols:['기능','내용','비고'], rows:[['불러오기','선택 프로젝트에 OPN-03 계정 불러오기','금액 수정 가능'],['원가설정','매출원가-원가경비 연결','BAS-07 재사용'],['계정과목 복사','다른 프로젝트 복사','구조 재사용']]}}
+    ],
+    right:[['선행','SA-OPN-03 원가 준거, SA-BAS-09 프로젝트'],['기능','불러오기·원가설정·계정과목복사'],['후행','프로젝트 원가 분석 리포트']],
+    desc:[['목적','전기 원가를 프로젝트별로 배분한다.'],['기능','선택 프로젝트에 원가명세서 계정을 불러온다.'],['연계','프로젝트 누적 원가현황 자동반영 대상이다.']]
+  },
+  {
+    id:'opn13', group:'차원별 초기이월', phase:'1차', code:'SA-OPN-13', title:'프로젝트초기이월', basis:'§25.3.5',
+    purpose:'BS 계정잔액을 프로젝트와 부서/사원/거래처 차원으로 나눠 다차원 opening_balance를 적재한다.',
+    query:[['프로젝트','전체'],['계정','108 외상매출금'],['차액표시','여'],['탭','계정과목/부서·사원/거래처']],
+    actions:['전기분재무상태표 불러오기','프로젝트 검색(F2)','차액 검증','엑셀 업로드','저장 (F3)'],
+    left:{title:'BS 준거 계정', rows:[['108 외상매출금','245,000,000','선택'],['134 가지급금','22,000,000',''],['차액','350,000','경고']]},
+    tabs:[
+      {name:'계정과목', fields:[['계정','108 외상매출금'],['프로젝트','PJT-001 ERP 구축'],['금액','120,000,000'],['차액','350,000'],['세목','5자리 사용'],['준거','OPN-01']],
+       table:{cols:['프로젝트','계정','금액','차액','상태'], rows:[['PJT-001','108 외상매출금','120,000,000','0','정상'],['PJT-002','108 외상매출금','124,650,000','350,000','경고'],['합계','','244,650,000','350,000','보정 필요']]},
+       status:['warn','⚠ 프로젝트별 합계와 BS 계정 준거 차액 확인']},
+      {name:'부서·사원', table:{cols:['프로젝트','부서','사원','금액'], rows:[['PJT-001','컨설팅1팀','홍길동','60,000,000'],['PJT-001','컨설팅2팀','이경리','60,000,000']]}},
+      {name:'거래처', table:{cols:['프로젝트','거래처','금액','상태'], rows:[['PJT-001','삼성문구','80,000,000','정상'],['PJT-001','신규상사','40,000,000','정상']]}}
+    ],
+    right:[['탭 구조','계정과목 / 부서·사원 / 거래처'],['저장 키','계정×프로젝트×(부서/사원/거래처)'],['게이트','프로젝트 합계와 OPN-01 준거 차액 검증']],
+    desc:[['목적','프로젝트 차원의 계정별원장 전기이월을 만든다.'],['검증','SA-OPN-01 계정금액과 프로젝트별 합계 차액을 표시한다.'],['연계','부서·사원·거래처 마스터와 함께 다차원 키를 저장한다.']]
+  },
+  {
+    id:'opn14', group:'2차·건설·이관', phase:'2차', code:'SA-OPN-14', title:'전기 중단사업손익계산서', basis:'§25.3.6',
+    purpose:'중단 부서 또는 중단 프로젝트별 전기 손익계산서를 입력한다.',
+    query:[['중단사업차원','부서'],['환경설정','사용 가능'],['중소기업회계기준','0.사용안함'],['준거','OPN-02']],
+    actions:['중단사업코드설정','항목보기','손익계산서 불러오기','엑셀 업로드','저장 (F3)'],
+    left:{title:'중단사업 차원', rows:[['D010 해외사업부','중단','선택'],['PJT-099 폐쇄프로젝트','중단',''],['환경전제','충족','통과']]},
+    tabs:[
+      {name:'중단사업 손익', fields:[['중단사업부서','D010 해외사업부'],['계정','401 상품매출'],['금액','120,000,000'],['집계','매출액'],['항목보기','구성 계정 역조회'],['환경전제','중단사업코드 1.부서']],
+       table:{cols:['Code','계정과목','금액','분류'], rows:[['401','상품매출','120,000,000','매출액'],['451','매출원가','84,000,000','매출원가'],['801','급여','16,000,000','판관비'],['999','중단사업손익','20,000,000','손익']]},
+       status:['ok','✓ 환경설정 전제 충족 시 입력 가능']},
+      {name:'사용 전제', table:{cols:['전제','필요 값','현재'], rows:[['중단사업코드설정','1.부서 또는 2.PJT','1.부서'],['중소기업회계기준','0.사용안함','0.사용안함']]}}
+    ],
+    right:[['메뉴 게이트','환경설정 전제 미충족 시 사용 불가'],['선행','SA-BAS-03, SA-OPN-02, 부서/PJT 마스터'],['후행','P05 중단사업손익계산서 전기 자료']],
+    desc:[['목적','중단사업 손익 전기 스냅샷을 만든다.'],['전제','중단사업코드설정과 중소기업회계기준 설정이 맞아야 한다.'],['연계','중단사업 차원은 부서 또는 프로젝트로 한정한다.']]
+  },
+  {
+    id:'opn15', group:'2차·건설·이관', phase:'2차', code:'SA-OPN-15', title:'전기 중단사업원가명세서', basis:'§25.3.7',
+    purpose:'중단 부서 또는 중단 프로젝트별 전기 원가명세서를 입력한다.',
+    query:[['중단사업차원','PJT'],['원가구분','제조'],['환경설정','사용 가능'],['준거','OPN-03']],
+    actions:['원가설정','중단사업 코드설정','항목보기','원가명세서 불러오기','저장 (F3)'],
+    left:{title:'중단 원가 차원', rows:[['PJT-099 폐쇄프로젝트','중단','선택'],['D010 해외사업부','중단',''],['환경전제','충족','통과']]},
+    tabs:[
+      {name:'중단사업 원가', fields:[['중단사업PJT','PJT-099 폐쇄프로젝트'],['계정','501 원재료비'],['금액','38,000,000'],['원가설정','451 연결'],['항목보기','원재료비 역조회'],['환경전제','중단사업코드 2.PJT']],
+       table:{cols:['Code','원가항목','금액','비고'], rows:[['501','원재료비','38,000,000',''],['503','노무비','21,000,000',''],['505','제조경비','14,000,000',''],['599','중단사업제품제조원가','73,000,000','']]},
+       status:['ok','✓ 중단사업 원가 전기 자료 생성']},
+      {name:'원가설정', table:{cols:['원가항목','매출원가','상태'], rows:[['501 원재료비','451 상품매출원가','연결'],['503 노무비','451 상품매출원가','연결']]}}
+    ],
+    right:[['전제','OPN-14와 동일한 환경설정 게이트'],['선행','SA-BAS-03, SA-OPN-03, 부서/PJT'],['후행','P05 중단사업원가명세서']],
+    desc:[['목적','중단사업 원가 전기 스냅샷을 만든다.'],['기능','원가설정과 중단사업 코드설정을 제공한다.'],['검증','환경설정 전제 미충족 시 메뉴를 비활성화한다.']]
+  },
+  {
+    id:'opn16', group:'2차·건설·이관', phase:'2차', code:'SA-OPN-16', title:'중도시산표', basis:'§25.3.8',
+    purpose:'기중 사용 시작 또는 기장 누락 시 시산표를 입력하고 개시 분개 자동전표 batch로 전송한다.',
+    query:[['전표일자','2026-07-01'],['모드','조회모드'],['회계기간','OPEN'],['전표번호','001 예정']],
+    actions:['조회모드','편집모드','전표추가','분개화면 보기','임대주택 계정설정'],
+    left:{title:'시산표 합계', rows:[['차변합계','865,000,000','선택'],['대변합계','865,000,000',''],['차액','0','통과'],['채번','001','예정']]},
+    tabs:[
+      {name:'시산표 입력', fields:[['계정','103 보통예금'],['차변','180,000,000'],['대변',''],['항목별 합계','당좌자산'],['회계기간','OPEN'],['전표일자','2026-07-01']],
+       table:{cols:['Code','계정과목','차변','대변','분류'], rows:[['101','현금','3,500,000','','당좌자산'],['103','보통예금','180,000,000','','당좌자산'],['252','지급어음','','70,000,000','유동부채'],['331','자본금','','100,000,000','자본']]},
+       status:['ok','✓ 차대균형 통과 후 전표추가 가능']},
+      {name:'분개 미리보기', table:{cols:['전표일자','번호','차/대','계정','금액'], rows:[['2026-07-01','001','DR','103 보통예금','180,000,000'],['2026-07-01','001','CR','331 자본금','100,000,000']]}}
+    ],
+    right:[['전표 전송','[전표추가]로 P03 일반전표입력에 개시 분개 생성'],['채번','전표일자 단위 매일 001 리셋, NUMBERING_CONFLICT 재시도'],['차단','OPEN 외 기간 전표일자, 차대 불균형']],
+    desc:[['목적','기중 도입 시 시산표 잔액을 개시 분개로 변환한다.'],['기능','전표추가 전 분개화면 보기로 미리보기를 제공한다.'],['검증','차대균형과 회계기간 OPEN 상태를 확인한다.']]
+  },
+  {
+    id:'opn17', group:'2차·건설·이관', phase:'2차', code:'SA-OPN-17', title:'미완성공사초기이월', basis:'§25.3.9',
+    purpose:'도급·분양 탭별 미완성공사 초기이월을 입력해 현장별공사원가집계표 전기 공사비로 반영한다.',
+    query:[['현장','전체'],['구분','도급'],['차액표시','여'],['원가경비','설정됨']],
+    actions:['상세입력','원가경비 설정','현장 검색(F2)','엑셀 업로드','저장 (F3)'],
+    left:{title:'현장 목록', rows:[['S001 강남 현장','430,000,000','선택'],['S002 부산 현장','210,000,000',''],['S003 분양 A','150,000,000','']]},
+    tabs:[
+      {name:'도급', fields:[['현장','S001 강남 현장'],['총 공사비용','430,000,000'],['분류','재료비'],['분류금액','180,000,000'],['상세입력','계정별 금액'],['원가경비','도급원가']],
+       table:{cols:['분류','상세 계정','금액','상태'], rows:[['재료비','601 원재료비','180,000,000','정상'],['노무비','603 노무비','90,000,000','정상'],['외주비','605 외주비','160,000,000','정상'],['합계','','430,000,000','통과']]},
+       status:['ok','✓ 현장×계정 미완성공사 이월 저장']},
+      {name:'분양', table:{cols:['현장','분류','금액','비고'], rows:[['S003 분양 A','토지비','80,000,000',''],['S003 분양 A','건축비','70,000,000','']]}}
+    ],
+    right:[['탭','도급 / 분양 구분'],['상세입력','분류 선택 후 계정별 상세 금액 입력'],['후행','현장별공사원가집계표 전기 공사비']],
+    desc:[['목적','건설 현장의 미완성공사 전기이월을 현장 차원으로 저장한다.'],['기능','도급·분양 탭과 상세입력 팝업을 제공한다.'],['검증','분류별 집계와 상세 계정 합계를 맞춘다.']]
+  },
+  {
+    id:'opn18', group:'2차·건설·이관', phase:'2차', code:'SA-OPN-18', title:'외주처별초기이월', basis:'§25.3.10',
+    purpose:'외주처×현장별 공사계약금액·선급금·외주비를 입력하고 잔액을 자동 계산한다.',
+    query:[['외주처','전체'],['현장','전체'],['차수','2차'],['선행','SA-BAS-11']],
+    actions:['외주처 검색(F2)','현장 검색(F2)','계약 불러오기','엑셀 업로드','저장 (F3)'],
+    left:{title:'외주처 목록', rows:[['SC001 대명건설','S001','선택'],['SC002 한빛전기','S001',''],['SC003 세진설비','S002','']]},
+    tabs:[
+      {name:'외주처 이월', fields:[['외주처','SC001 대명건설'],['현장','S001 강남 현장'],['공사계약금액','500,000,000'],['선급금','80,000,000'],['외주비','260,000,000'],['잔액','160,000,000 자동계산']],
+       table:{cols:['외주처','현장','계약금액','선급금','외주비','잔액'], rows:[['대명건설','강남 현장','500,000,000','80,000,000','260,000,000','160,000,000'],['한빛전기','강남 현장','120,000,000','10,000,000','75,000,000','35,000,000']]},
+       status:['ok','✓ 잔액=공사계약금액-선급금-외주비 자동 계산']},
+      {name:'선행 검증', table:{cols:['마스터','필요','상태'], rows:[['외주처등록','SA-BAS-11','확인'],['현장등록','SA-BAS-08','확인']]}}
+    ],
+    right:[['계산식','잔액=공사계약금액-선급금-외주비'],['선행','SA-BAS-11 외주처, SA-BAS-08 현장'],['후행','외주대장, 외주처별 채권채무 관리']],
+    desc:[['목적','외주처별 공사 계약·선급·외주비 전기이월을 만든다.'],['검증','외주처와 현장 등록이 선행되어야 한다.'],['산출','외주대장과 외주처별 채권채무 관리로 이어진다.']]
+  },
+  {
+    id:'opn19', group:'2차·건설·이관', phase:'2차', code:'SA-OPN-19', title:'현장별/거래처별초기이월', basis:'§25.3.11',
+    purpose:'계정과목별 현장 초기이월과 현장별 거래처 초기이월을 입력해 계정×현장×거래처 opening_balance를 저장한다.',
+    query:[['계정','108 외상매출금'],['현장','S001 강남 현장'],['거래처','전체'],['차액표시','여']],
+    actions:['전기분재무상태표 불러오기','현장 검색(F2)','거래처 검색(F2)','차액 검증','저장 (F3)'],
+    left:{title:'현장 준거', rows:[['108 외상매출금','245,000,000','선택'],['S001 강남 현장','140,000,000',''],['S002 부산 현장','105,000,000',''],['차액','0','통과']]},
+    tabs:[
+      {name:'계정과목별 현장초기이월', fields:[['계정','108 외상매출금'],['BS 준거','245,000,000'],['현장','S001 강남 현장'],['현장 이월잔액','140,000,000'],['차액','0'],['차액표시','여']],
+       table:{cols:['현장','계정','현장별 금액','BS 준거 대비 차액','상태'], rows:[['S001 강남 현장','108','140,000,000','0','정상'],['S002 부산 현장','108','105,000,000','0','정상'],['합계','','245,000,000','0','통과']]},
+       status:['ok','✓ 현장별 합계와 BS 계정 잔액 일치']},
+      {name:'현장별 거래처초기이월', table:{cols:['현장','거래처','금액','현장 합계 차액'], rows:[['S001 강남 현장','삼성문구','80,000,000','0'],['S001 강남 현장','신규상사','60,000,000','0'],['S002 부산 현장','간이식당','105,000,000','0']]}}
+    ],
+    right:[['다차원 키','계정×현장×거래처'],['검증','현장별 합계 vs BS 계정, 현장 거래처 합계 vs 현장 합계'],['후행','계정별원장 현장별 탭, 현장별 잔액명세서']],
+    desc:[['목적','현장과 거래처를 함께 가진 초기이월을 저장한다.'],['검증','차액 검증은 서버 측 validation으로 enforce한다.'],['연계','현장별 계정별원장과 잔액명세서에 전기이월로 표시된다.']]
+  }
+];
+
+function el(tag, cls, text){
+  var node = document.createElement(tag);
+  if(cls){ node.className = cls; }
+  if(text !== undefined){ node.textContent = text; }
+  return node;
+}
+
+function badgeForPhase(phase){
+  return phase === '2차' ? 'badge b-gray' : 'badge b-new';
+}
+
+function makeTable(cols, rows){
+  var table = el('table','grid');
+  var tr = document.createElement('tr');
+  cols.forEach(function(c){ tr.appendChild(el('th','',c)); });
+  table.appendChild(tr);
+  (rows || []).forEach(function(row, i){
+    var r = document.createElement('tr');
+    if(i === 0){ r.className = 'sel'; }
+    row.forEach(function(cell, idx){
+      var td = el('td','',cell);
+      if(idx > 1 && /[0-9,]+/.test(String(cell))){ td.className = 'num'; }
+      if(String(cell).indexOf('차단') >= 0 || String(cell).indexOf('경고') >= 0 || String(cell).indexOf('-') === 0){ td.className += ' red'; }
+      r.appendChild(td);
+    });
+    table.appendChild(r);
+  });
+  return table;
+}
+
+function makeFields(fields){
+  var grid = el('div','formgrid');
+  (fields || []).forEach(function(field){
+    var wrap = el('div','ff' + (field[2] === 'wide' ? ' wide' : ''));
+    wrap.appendChild(el('label','',field[0]));
+    wrap.appendChild(el('div','fv' + (String(field[1]).indexOf('자동') >= 0 || String(field[1]).indexOf('read') >= 0 ? ' ro' : ''),field[1]));
+    grid.appendChild(wrap);
+  });
+  return grid;
+}
+
+function makeLeft(spec){
+  var pane = el('div','lpane');
+  pane.appendChild(el('div','lp-t',spec.left.title));
+  pane.appendChild(makeTable(['항목','금액/상태','비고'], spec.left.rows));
+  return pane;
+}
+
+function makeRight(spec){
+  var panel = el('div','rpanel');
+  spec.right.forEach(function(box){
+    var rb = el('div','rp-box');
+    rb.appendChild(el('div','rp-t',box[0]));
+    rb.appendChild(el('div','rp-b',box[1]));
+    panel.appendChild(rb);
+  });
+  return panel;
+}
+
+function makeMatrix(){
+  var wrap = el('div','matrix-wrap');
+  var cols = ['Code','계정과목','준거','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월','합계','차액'];
+  var rows = [
+    ['401','상품매출','1,560,000','130,000','128,000','132,000','130,000','129,000','131,000','130,000','130,000','129,000','131,000','130,000','130,000','1,560,000','0'],
+    ['451','매출원가','910,000','76,000','75,000','76,000','75,000','76,000','76,000','75,000','76,000','76,000','75,000','75,000','75,000','910,000','0'],
+    ['801','급여','180,000','15,000','15,000','15,000','15,000','15,000','15,000','15,000','15,000','15,000','15,000','14,500','15,000','179,500','-500']
+  ];
+  wrap.appendChild(makeTable(cols, rows));
+  return wrap;
+}
+
+function renderTabPanel(tab, spec, index){
+  var panel = el('div','tab-panel' + (index === 0 ? ' on' : ''));
+  if(tab.fields){ panel.appendChild(makeFields(tab.fields)); }
+  if(spec.matrix && index === 0){ panel.appendChild(makeMatrix()); }
+  if(tab.table){
+    var tableWrap = el('div','matrix-wrap');
+    tableWrap.appendChild(makeTable(tab.table.cols, tab.table.rows));
+    panel.appendChild(tableWrap);
+  }
+  var status = el('div','statusbar');
+  var cls = tab.status && tab.status[0] === 'error' ? 'errormsg' : tab.status && tab.status[0] === 'warn' ? 'warnmsg' : 'okmsg';
+  status.appendChild(el('span',cls,(tab.status && tab.status[1]) || '✓ 설계서 기준 목업 화면'));
+  status.appendChild(el('span','cnt',spec.code + ' · ' + spec.basis));
+  panel.appendChild(status);
+  return panel;
+}
+
+function renderScreen(spec){
+  var section = el('section','section');
+  section.id = spec.id;
+  var title = el('div','page-title');
+  title.appendChild(el('h1','',spec.title));
+  title.appendChild(el('span','chip-id',spec.code));
+  title.appendChild(el('span',badgeForPhase(spec.phase),spec.phase));
+  section.appendChild(title);
+  section.appendChild(el('div','crumb','기초정보관리 II › 전기이월 › ' + spec.title + ' | ' + spec.basis + ' | ' + spec.purpose));
+
+  var mock = el('div','mock');
+  mock.appendChild(el('div','mock-cap',spec.code + ' ' + spec.title + ' — ' + spec.group + ' · ' + spec.purpose));
+  var tb = el('div','titlebar');
+  tb.appendChild(el('span','tb-crumb','기준정보 II'));
+  tb.appendChild(el('span','tb-sep','›'));
+  tb.appendChild(el('span','tb-title',spec.title));
+  tb.appendChild(el('span','tb-star','☆'));
+  tb.appendChild(el('span','tb-id',spec.code));
+  tb.appendChild(el('span','tb-right',spec.phase + ' · ' + spec.basis));
+  mock.appendChild(tb);
+
+  var q = el('div','qbar');
+  spec.query.forEach(function(item){
+    q.appendChild(el('span','qlabel',item[0]));
+    q.appendChild(el('span','qv',item[1]));
+  });
+  var qr = el('span','qright');
+  qr.appendChild(el('button','abtn yellow','🔍 조회'));
+  q.appendChild(qr);
+  mock.appendChild(q);
+
+  var ab = el('div','actionbar');
+  var ar = el('div','ab-right');
+  spec.actions.forEach(function(action, i){
+    ar.appendChild(el('button','abtn ' + (i === spec.actions.length - 1 ? 'dark' : 'ghost'),action));
+  });
+  ab.appendChild(ar);
+  mock.appendChild(ab);
+
+  var flex = el('div','mock-flex');
+  flex.appendChild(makeLeft(spec));
+  var main = el('div','mock-main');
+  var tabs = el('div','tabbar');
+  spec.tabs.forEach(function(tab, i){ tabs.appendChild(el('span','tab' + (i === 0 ? ' on' : ''),tab.name)); });
+  main.appendChild(tabs);
+  spec.tabs.forEach(function(tab, i){ main.appendChild(renderTabPanel(tab, spec, i)); });
+  flex.appendChild(main);
+  flex.appendChild(makeRight(spec));
+  mock.appendChild(flex);
+  section.appendChild(mock);
+
+  var details = el('div','screen-details');
+  details.appendChild(el('div','sd-title','화면 아래 설명 · 설계서 참조'));
+  var list = el('div','screen-desc-list');
+  spec.desc.forEach(function(item){
+    var box = el('div','screen-desc-item');
+    box.appendChild(el('span','desc-label',item[0]));
+    box.appendChild(el('span','desc-body',item[1]));
+    list.appendChild(box);
+  });
+  details.appendChild(list);
+  section.appendChild(details);
+  return section;
+}
+
+var content = document.getElementById('content');
+screens.forEach(function(spec){ content.appendChild(renderScreen(spec)); });
+
+document.querySelectorAll('.mitem').forEach(function(mi){
+  mi.addEventListener('click',function(){
+    document.querySelectorAll('.mitem').forEach(function(x){ x.classList.remove('active'); });
+    mi.classList.add('active');
+    var sec = mi.getAttribute('data-sec');
+    document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('visible'); });
+    var target = document.getElementById(sec);
+    if(target){ target.classList.add('visible'); window.scrollTo({top:0}); }
+  });
+});
+
+document.querySelectorAll('.tabbar').forEach(function(bar){
+  var tabs = Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+  var panels = [];
+  var node = bar.nextElementSibling;
+  while(node && node.classList.contains('tab-panel')){
+    panels.push(node);
+    node = node.nextElementSibling;
+  }
+  tabs.forEach(function(tab, index){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('on'); });
+      panels.forEach(function(p){ p.classList.remove('on'); });
+      tab.classList.add('on');
+      if(panels[index]){ panels[index].classList.add('on'); }
+    });
+  });
+});
+</script>
+</body>
+</html>
