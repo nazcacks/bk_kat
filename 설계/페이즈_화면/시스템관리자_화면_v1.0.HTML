@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 시스템관리자 화면설계 — 운영 콘솔 (SEC_ADMIN, EY 레이아웃)</title>
+<style>
+:root{
+  --ey-yellow:#FFE600; --ey-dark:#2E2E38; --ey-darker:#1A1A24; --ey-gray:#747480;
+  --ey-light:#F6F6FA; --ey-border:#E1E1E6; --ey-text:#2E2E38; --ey-red:#E0362C;
+  --ey-green:#168736; --ey-blue:#188CE5; --ey-link:#155CB4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ey-text);background:var(--ey-light);font-size:13.5px;line-height:1.55}
+/* ===== 상단바 ===== */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;background:var(--ey-darker);color:#fff;height:54px;padding:0 16px;border-bottom:1px solid #000}
+.ey-logo{display:flex;align-items:center;gap:10px;min-width:210px}
+.ey-mark{position:relative;width:40px;height:40px;background:#000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px}
+.ey-mark .beam{position:absolute;top:4px;left:4px;width:0;height:0;border-left:32px solid transparent;border-bottom:9px solid var(--ey-yellow);transform:skewX(-18deg)}
+.ey-mark .ey{font-weight:800;font-size:19px;color:#fff;line-height:1}
+.ey-tag{font-size:10.5px;line-height:1.25;color:#d9d9e0;font-weight:600}
+.company-select{display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.company-select .code{color:#b9b9c2}
+.global-search{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;color:#8a8a94;font-size:12.5px}
+.top-utils{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12.5px;white-space:nowrap}
+.top-utils .util{display:flex;align-items:center;gap:5px;cursor:pointer;color:#e8e8ee}
+.top-utils .fav .ico{color:var(--ey-yellow)}
+.top-utils .avatar{width:26px;height:26px;border-radius:50%;background:#fff;color:var(--ey-darker);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+/* ===== 레이아웃 ===== */
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:216px;background:var(--ey-dark);color:#d7d7de;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow:auto}
+.sidebar .menu-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #3d3d47;color:#fff;font-weight:700;font-size:13px}
+.sidebar nav{flex:1;overflow:auto;padding:4px 0 8px}
+.mgroup{margin-top:5px}
+.mgroup>.gtitle{display:flex;align-items:center;gap:8px;padding:5px 16px;font-weight:700;font-size:12.5px;color:var(--ey-yellow);cursor:pointer}
+.mgroup>.gtitle .bar{width:3px;height:14px;background:var(--ey-yellow);border-radius:2px}
+.mgroup.plain>.gtitle{color:#fff}
+.mgroup.plain>.gtitle .bar{background:#6a6a75}
+.mitem{display:block;padding:4px 16px 4px 34px;font-size:12.5px;color:#c9c9d2;cursor:pointer;border-left:3px solid transparent;text-decoration:none}
+.mitem:hover{background:#3a3a45;color:#fff}
+.mitem.active{background:var(--ey-yellow);color:#1a1a24;font-weight:700;border-left-color:#c9b400}
+.mitem .mid{float:right;font-size:10px;color:#8a8a94;margin-top:2px}
+.mitem.active .mid{color:#55550a}
+.sidebar .foot{padding:8px 16px;border-top:1px solid #3d3d47;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sidebar .foot .ey-mark{width:30px;height:30px}
+.sidebar .foot .ey-mark .beam{border-left-width:24px;border-bottom-width:7px;top:3px;left:3px}
+.sidebar .foot .ey-mark .ey{font-size:14px}
+.sidebar .foot .txt{font-size:10px;color:#b9b9c2;line-height:1.3;font-weight:600}
+/* ===== 콘텐츠 ===== */
+.content{flex:1;padding:18px 22px 60px;max-width:calc(100% - 216px)}
+.section{display:none}
+.section.visible{display:block}
+.page-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.page-title h1{font-size:20px;font-weight:800}
+.page-title .star{color:var(--ey-yellow);font-size:16px}
+.page-title .chip-id{background:var(--ey-dark);color:var(--ey-yellow);font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700}
+.crumb{font-size:11.5px;color:var(--ey-gray);margin-bottom:12px}
+.src{font-size:11.5px;color:var(--ey-gray);background:#EFEFF4;border-left:3px solid var(--ey-yellow);padding:8px 12px;border-radius:0 4px 4px 0;margin:10px 0 16px}
+.src b{color:var(--ey-text)}
+h2.sec{font-size:15.5px;font-weight:800;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+h2.sec .no{color:#9a9aa4;font-weight:700;margin-right:6px}
+h3.sub{font-size:13.5px;font-weight:700;margin:16px 0 8px;padding-left:8px;border-left:3px solid var(--ey-yellow)}
+p.desc{margin:6px 0 10px;color:#44444e}
+ul.plain{margin:6px 0 12px 18px}
+ul.plain li{margin:3px 0}
+table.spec{width:100%;border-collapse:collapse;margin:8px 0 16px;background:#fff;font-size:12.5px}
+table.spec th{background:var(--ey-dark);color:#fff;padding:6px 10px;text-align:left;font-weight:600;border:1px solid #45454f;font-size:12px}
+table.spec td{padding:5px 10px;border:1px solid var(--ey-border);vertical-align:top}
+table.spec tr:nth-child(even) td{background:#FAFAFD}
+table.spec td.c,table.spec th.c{text-align:center}
+code{background:#EFEFF4;border:1px solid var(--ey-border);border-radius:3px;padding:0 4px;font-family:Consolas,monospace;font-size:12px;color:#7A2E8D}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin:0 2px;vertical-align:1px}
+.b-block{background:#FBE9E7;color:var(--ey-red);border:1px solid #F5C6C0}
+.b-warn{background:#FFF8DC;color:#8a6d00;border:1px solid #EFE0A0}
+.b-ok{background:#E8F5E9;color:var(--ey-green);border:1px solid #BFE3C6}
+.b-new{background:var(--ey-yellow);color:#1a1a24;border:1px solid #d9c400}
+.b-ref{background:#EAF2FB;color:var(--ey-link);border:1px solid #C5DCF5}
+.b-gray{background:#EFEFF4;color:#5a5a66;border:1px solid #d9d9e0}
+/* ===== 목업 공통 ===== */
+.mock{background:#fff;border:1px solid var(--ey-border);border-radius:6px;box-shadow:0 1px 4px rgba(30,30,40,.08);margin:12px 0 20px;overflow:hidden}
+.mock .mock-cap{background:#EFEFF4;border-bottom:1px solid var(--ey-border);padding:5px 12px;font-size:11px;color:var(--ey-gray);font-weight:600}
+.screen-details{margin:2px 0 30px}
+.screen-details .sd-title{font-size:14px;font-weight:800;margin:8px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+.screen-desc-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 14px}
+.screen-desc-item{background:#fff;border:1px solid var(--ey-border);border-left:3px solid var(--ey-yellow);border-radius:0 5px 5px 0;padding:8px 10px;font-size:11.8px;min-height:62px}
+.screen-desc-item .desc-label{display:block;font-weight:800;color:var(--ey-dark);margin-bottom:3px}
+.screen-desc-item .desc-body{color:#4b4b55}
+/* 타이틀바 (EY 다크) */
+.titlebar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--ey-darker);border-bottom:2px solid var(--ey-yellow);flex-wrap:wrap}
+.titlebar .tb-crumb{font-size:12px;color:#b9b9c2;font-weight:600}
+.titlebar .tb-sep{color:#6a6a75;font-weight:700}
+.titlebar .tb-title{font-size:15px;font-weight:800;color:#fff}
+.titlebar .tb-star{color:var(--ey-yellow);font-size:14px;cursor:pointer}
+.titlebar .tb-id{background:var(--ey-yellow);color:#1a1a24;font-size:10.5px;padding:2px 8px;border-radius:3px;font-weight:700}
+.titlebar .tb-right{margin-left:auto;font-size:11px;color:#c9c9d2}
+/* 조회조건 바 */
+.qbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#fff;flex-wrap:wrap;font-size:12px}
+.qbar .qlabel{font-size:11px;color:var(--ey-gray);font-weight:700}
+.qbar .seg{display:inline-flex;border:1px solid #c9c9d2;border-radius:4px;overflow:hidden}
+.qbar .seg span{padding:3px 10px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;color:#5a5a66}
+.qbar .seg span.on{background:var(--ey-dark);color:var(--ey-yellow)}
+.qbar .qv{display:inline-flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:3px 8px;background:#fff;font-size:12px}
+.qbar .qv.off{background:#F3F3F7;color:#9a9aa4}
+.qbar .navbtn{border:1px solid #c9c9d2;background:#fff;border-radius:3px;padding:2px 7px;font-size:11px;cursor:pointer;font-weight:700}
+.qbar .qright{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+/* 액션바 (우측 정렬) */
+.actionbar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap}
+.abtn{border:1px solid #c9c9d2;background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.abtn.dark{background:var(--ey-dark);color:#fff;border-color:var(--ey-dark)}
+.abtn.red{background:var(--ey-red);color:#fff;border-color:var(--ey-red)}
+.abtn.yellow{background:var(--ey-yellow);color:#1a1a24;border-color:#d9c400;font-weight:700}
+.abtn.ghost{background:#fff}
+.abtn.sm{padding:2px 7px;font-size:11px}
+.ab-right{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+/* 탭 */
+.tabbar{display:flex;gap:2px;padding:8px 12px 0;background:#FCFCFE;border-bottom:1px solid var(--ey-border);flex-wrap:wrap}
+.tab{padding:6px 16px;border:1px solid var(--ey-border);border-bottom:none;border-radius:6px 6px 0 0;background:#EFEFF4;font-size:12px;font-weight:600;color:#5a5a66;cursor:pointer}
+.tab.on{background:#fff;color:var(--ey-text);font-weight:700;border-color:#b9b9c2;border-bottom:2px solid #fff;margin-bottom:-1px}
+.tab .tno{color:#9a9aa4;font-size:10.5px}
+.tabpane{display:none}
+.tabpane.on{display:block}
+/* 폼 */
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;padding:12px}
+.formgrid.c3{grid-template-columns:repeat(3,1fr)}
+.formgrid.c2{grid-template-columns:repeat(2,1fr)}
+.ff{display:flex;flex-direction:column;gap:2px}
+.ff label{font-size:11px;color:var(--ey-gray);font-weight:600}
+.ff .fv{display:flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:4px 8px;background:#fff;font-size:12.5px;min-height:28px}
+select.fv{display:block;width:100%;height:28px;min-height:28px;padding:3px 8px}
+.ff .fv.ro{background:#F3F3F7;color:#5a5a66}
+.ff .fv .lens{margin-left:auto;color:#9a9aa4;font-size:11px;cursor:pointer}
+.ff.wide{grid-column:span 2}
+.ff.full{grid-column:span 4}
+.formgrid.c3 .ff.full{grid-column:span 3}
+.formgrid.c2 .ff.full{grid-column:span 2}
+.formgrid.label-left .ff{display:grid;grid-template-columns:86px minmax(0,1fr);align-items:center;gap:6px}
+.formgrid.label-left .ff label{text-align:right;white-space:nowrap}
+.formgrid.label-left .ff .fv{min-width:0}
+.mock input,.mock select,.mock textarea{border:1px solid #c9c9d2;border-radius:4px;background:#fff;padding:3px 6px;font:inherit;color:var(--ey-text)}
+.mock input,.mock select{height:26px}
+.mock textarea{width:100%;resize:vertical}
+table.grid input,table.grid select{width:100%;min-width:0}
+table.grid input.num{text-align:right;font-family:Consolas,monospace}
+/* 기능바/토글 */
+.fnbar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--ey-border);border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap;font-size:12px}
+.chip{border:1px solid #c9c9d2;background:#fff;border-radius:14px;padding:3px 12px;font-size:11.5px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--ey-dark);color:var(--ey-yellow);border-color:var(--ey-dark)}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.toggle .sw{width:34px;height:18px;border-radius:9px;background:var(--ey-yellow);position:relative;display:inline-block}
+.toggle .sw::after{content:'';position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#1a1a24}
+.sumbox{margin-left:auto;display:flex;gap:14px;font-weight:700;font-size:12px}
+.sumbox .ok{color:var(--ey-green)}
+/* 그리드 */
+table.grid{width:100%;border-collapse:collapse;font-size:12px;background:#fff}
+table.grid th{background:#F3F3F7;border:1px solid var(--ey-border);padding:5px 6px;font-weight:700;color:#44444e;white-space:nowrap}
+table.grid td{border:1px solid var(--ey-border);padding:4px 6px;white-space:nowrap}
+table.grid td .lens{float:right;color:#9a9aa4;margin-left:8px;cursor:pointer}
+table.grid td.num{text-align:right;font-family:Consolas,monospace}
+table.grid td.c{text-align:center}
+table.grid tr.sel td{background:#FFFBE0}
+table.grid tr.empty td{color:#c9c9d2;height:26px}
+table.grid tr.tot td{background:#F3F3F7;font-weight:700}
+table.grid .red{color:var(--ey-red);font-weight:700}
+table.grid .blue{color:var(--ey-blue)}
+table.grid .dr{color:var(--ey-blue);font-weight:700}
+table.grid .cr{color:var(--ey-red);font-weight:700}
+table.grid .dim{color:#9a9aa4}
+.statusbar{display:flex;align-items:center;gap:16px;background:var(--ey-darker);color:#e8e8ee;padding:7px 12px;font-size:11.5px;flex-wrap:wrap}
+.statusbar .okmsg{color:#7ADB8F;font-weight:700}
+.statusbar .warnmsg{color:#FFD666;font-weight:700}
+.statusbar .opts{display:flex;gap:12px}
+.statusbar .cnt{margin-left:auto;color:#b9b9c2}
+/* 좌우 배치 + 패널 */
+.mock-flex{display:flex;gap:0}
+.mock-main{flex:1;min-width:0}
+.lpane{width:280px;flex-shrink:0;border-right:1px solid var(--ey-border);background:#FCFCFE;display:flex;flex-direction:column}
+.menu-master-layout .lpane{width:560px}
+.lpane .lp-t{background:#F3F3F7;padding:6px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rpanel{width:250px;flex-shrink:0;border-left:1px solid var(--ey-border);background:#FCFCFE;padding:10px;display:flex;flex-direction:column;gap:12px}
+.rp-box{border:1px solid var(--ey-border);border-radius:5px;background:#fff}
+.rp-box .rp-t{background:#F3F3F7;padding:5px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rp-box .rp-b{padding:8px 10px;font-size:11.5px}
+.rp-box .kv{display:flex;justify-content:space-between;margin:3px 0;gap:8px}
+.rp-box .kv .k{color:var(--ey-gray);white-space:nowrap}
+.rp-box .kv .v{font-weight:600;text-align:right}
+.dropzone{border:1.5px dashed #c9c9d2;border-radius:5px;padding:10px;text-align:center;color:#9a9aa4;font-size:11px;margin-bottom:6px}
+.file{display:flex;align-items:center;gap:6px;font-size:11.5px;margin:3px 0;color:#44444e}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+.source-wjv .page-title{flex-wrap:nowrap}
+.source-wjv .titlebar{flex-wrap:nowrap}
+.source-wjv .ab-right{flex-wrap:nowrap}
+.source-wjv .rpanel{width:230px}
+.source-wjv .rp-box .kv{gap:0}
+.source-wjv .statusbar{flex-wrap:nowrap}
+.source-wjv table.grid td,.source-wjv table.grid th{white-space:nowrap}
+/* 트리 */
+.tree{padding:8px 6px;font-size:12px;overflow:auto;max-height:430px}
+.tree .tnode{padding:2px 8px;cursor:pointer;border-radius:3px;white-space:nowrap}
+.tree .tnode:hover{background:#EFEFF4}
+.tree .tnode.on{background:var(--ey-yellow);font-weight:700}
+.tree .tnode.lv2{padding-left:18px}
+.tree .tnode.lv3{padding-left:30px}
+.tree .tnode .twist{display:inline-block;width:14px;color:#6f6f78}
+.tree .tnode .cnt{color:#8a8a94;font-size:10.5px;margin-left:4px}
+.lpane .tree{max-height:620px;overflow:auto;padding:6px}
+.fv{overflow:hidden;text-overflow:ellipsis}
+.tree .lv1{font-weight:700}
+.tree .lv2{padding-left:22px}
+.tree .lv3{padding-left:40px;color:#44444e}
+.tree .cnt{color:#9a9aa4;font-size:10.5px}
+.tree .red{color:var(--ey-red)}
+.note{font-size:11.5px;color:var(--ey-gray);margin:6px 0 14px;padding-left:2px}
+.kbd{display:inline-block;border:1px solid #b9b9c2;border-bottom-width:2px;border-radius:3px;background:#fff;padding:0 5px;font-size:11px;font-family:Consolas,monospace;font-weight:700;color:#44444e}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 16px}
+.flow .st{background:#fff;border:1.5px solid var(--ey-dark);border-radius:4px;padding:4px 10px;font-size:11.5px;font-weight:700}
+.flow .st.hl{background:var(--ey-yellow);border-color:#c9b400}
+.flow .st.end{background:var(--ey-dark);color:#fff}
+.flow .ar{color:#9a9aa4;font-weight:700}
+/* 모달 목업 */
+.modal{max-width:560px;margin:10px auto;border:2px solid var(--ey-dark);border-radius:6px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.modal .m-t{background:var(--ey-darker);color:#fff;padding:8px 12px;font-weight:700;font-size:12.5px;display:flex}
+.modal .m-t .x{margin-left:auto;color:#c9c9d2;cursor:pointer}
+.modal .m-b{padding:12px}
+.modal .m-f{padding:8px 12px;border-top:1px solid var(--ey-border);display:flex;justify-content:flex-end;gap:6px}
+.footer{background:var(--ey-darker);color:#b9b9c2;padding:14px 22px;font-size:11px;display:flex;align-items:center;gap:14px}
+.footer .beamline{width:70px;height:8px;background:var(--ey-yellow);transform:skewX(-30deg)}
+@media(max-width:1100px){.twocol{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,1fr)}.ff.full{grid-column:span 2}.screen-desc-list{grid-template-columns:1fr}.mock-flex{flex-direction:column}.lpane,.rpanel{width:auto;border:none;border-bottom:1px solid var(--ey-border)}}
+</style>
+</head>
+<body>
+
+<!-- ===================== 상단바 ===================== -->
+<header class="topbar">
+  <div class="ey-logo">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="ey-tag">Shape the future<br>with confidence</div>
+  </div>
+  <div class="company-select"><span class="code">1000</span> <b>EY Korea Co., Ltd.</b> <span>▾</span></div>
+  <div class="global-search">🔍 메뉴, 기능, 코드 검색 (Ctrl + K)</div>
+  <div class="top-utils">
+    <div class="util">🔔 공지사항</div>
+    <div class="util fav"><span class="ico">★</span> 즐겨찾기</div>
+    <div class="util">? 도움말</div>
+    <div class="util"><span class="avatar">홍</span> 홍길동 대리 ▾</div>
+    <div class="util">▦</div>
+  </div>
+</header>
+
+<div class="layout">
+<!-- ===================== 좌측 메뉴 ===================== -->
+<aside class="sidebar">
+  <div class="menu-head">☰ Menu — 시스템관리자 운영 콘솔</div>
+  <nav>
+    <a class="mitem active" data-sec="home" style="padding-left:16px;font-weight:700">🏠 페이즈 개요</a>
+    
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>운영 진입·현황</div>
+      <a class="mitem" data-sec="op01">운영 현황 대시보드 <span class="mid">OP-01</span></a>
+      <a class="mitem" data-sec="op03">테넌트 인프라 <span class="mid">OP-03</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>사용자·인증·권한</div>
+      <a class="mitem" data-sec="op06a">사용자 관리 <span class="mid">OP-06A</span></a>
+      <a class="mitem" data-sec="op06g">사용자그룹 관리 <span class="mid">OP-06A</span></a>
+      <a class="mitem" data-sec="op06b">인증 정책 <span class="mid">OP-06B</span></a>
+      <a class="mitem" data-sec="op06d">메뉴 마스터 <span class="mid">OP-06D</span></a>
+      <a class="mitem" data-sec="op06c">Role·권한 관리 <span class="mid">OP-06C</span></a>
+    </div>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>공통·운영</div>
+      <a class="mitem" data-sec="op05c">시스템 공통코드 <span class="mid">OP-05C</span></a>
+      <a class="mitem" data-sec="op09">배치·연계 운영 <span class="mid">OP-09</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>보안·감사</div>
+      <a class="mitem" data-sec="op10">보안·감사 운영 <span class="mid">OP-10</span></a>
+      <a class="mitem" data-sec="op07">Break-glass·접근 <span class="mid">OP-07</span></a>
+      <a class="mitem" data-sec="gate">검증·수용기준 <span class="mid">DoD</span></a>
+    </div>
+  </nav>
+  <div class="foot">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="txt">Building a better<br>working world</div>
+  </div>
+</aside>
+
+<!-- ===================== 콘텐츠 ===================== -->
+<main class="content">
+
+
+<section class="section visible" id="home">
+  <div class="page-title"><h1>시스템관리자 운영 콘솔 화면설계</h1><span class="chip-id">SEC_ADMIN</span><span class="badge b-new">v1.0</span></div>
+  <div class="crumb">개발설계 › 시스템관리자.md 기반 화면설계 · 레이아웃 준거: phase-screen-designer template · 기준문서 bk_설계서_v1.1.md §3, §4, §12, §13, §26</div>
+  <div class="src"><b>범위</b>: 관리회사 시스템관리자가 사용하는 운영 콘솔 화면군. 사용자·사용자그룹·인증·메뉴·권한·공통코드·배치·보안·감사·Break-glass를 한 화면설계서로 통합한다. 화면 권한은 <code>SEC_ADMIN</code>을 기준으로 하며, 테넌트 업무 전표 작성·승인·마감·신고 전송은 제외한다.</div>
+  <h2 class="sec">업무 흐름 — 시스템관리자 End-to-End</h2>
+  <div class="flow"><span class="st">운영 진입<br><small>2FA · IP 허용</small></span><span class="ar">→</span><span class="st hl">사용자·권한<br><small>OP-06A~D</small></span><span class="ar">→</span><span class="st">공통코드·메뉴 발행<br><small>DRAFT → PUBLISHED</small></span><span class="ar">→</span><span class="st">배치·보안 운영<br><small>OP-09 · OP-10</small></span><span class="ar">→</span><span class="st end">감사·사후검토<br><small>append-only</small></span></div>
+  <p class="note">모든 위험 작업은 Step-up, 사유, 감사로그가 필요하다. 메뉴는 권한이 없으면 비활성이 아니라 미노출되며, 사용자그룹 메뉴권한의 <code>DENY</code>가 Role 허용보다 우선한다.</p>
+  <h2 class="sec">화면 인벤토리 · 운영 콘솔</h2>
+  <table class="spec">
+    <tr><th>#</th><th>화면 ID</th><th>명칭</th><th class="c">우선순위</th><th>핵심 기능</th><th>근거</th></tr>
+    <tr><td>1</td><td>OP-01</td><td>운영 현황 대시보드</td><td class="c"><span class="badge b-new">MVP</span></td><td>SLO, 배치 지연, 보안 이벤트, 장애 요약</td><td>§19, §26.1</td></tr>
+    <tr><td>2</td><td>OP-06A</td><td>사용자 관리</td><td class="c"><span class="badge b-new">MVP</span></td><td>OperatorUser/TenantUser, 상태, MFA, 세션, 그룹</td><td>BF-04, §3</td></tr>
+    <tr><td>3</td><td>OP-06A</td><td>사용자그룹 관리</td><td class="c"><span class="badge b-new">MVP</span></td><td>그룹, 구성원, Role 상속, 그룹별 메뉴권한</td><td>BF-04, §4.3</td></tr>
+    <tr><td>4</td><td>OP-06B</td><td>인증 정책</td><td class="c"><span class="badge b-new">MVP</span></td><td>MFA, SSO, WebAuthn, 세션, 잠금 정책</td><td>BF-05, §3</td></tr>
+    <tr><td>5</td><td>OP-06D</td><td>메뉴 마스터</td><td class="c"><span class="badge b-new">MVP</span></td><td>MenuVersion, 메뉴 트리, 다국어, 발행/롤백</td><td>BF-12, §12.1</td></tr>
+    <tr><td>6</td><td>OP-06C</td><td>Role·권한 관리</td><td class="c"><span class="badge b-new">MVP</span></td><td>Role, 메뉴, ACTION, 데이터범위, 시뮬레이션</td><td>BF-07, §4.3</td></tr>
+    <tr><td>7</td><td>OP-05C</td><td>시스템 공통코드</td><td class="c"><span class="badge b-new">MVP</span></td><td>시스템 예약 코드, 버전, 영향 분석</td><td>§6, §12.2</td></tr>
+    <tr><td>8</td><td>OP-09/10/07</td><td>운영·보안·접근</td><td class="c"><span class="badge b-ref">확장</span></td><td>배치/DLQ, KMS/DLP, Break-glass 녹화</td><td>§14, §17, §20, §26</td></tr>
+  </table>
+  <h2 class="sec">선행조건 · 통제 원칙</h2>
+  <table class="spec">
+    <tr><th>구분</th><th>조건</th><th>화면 반영</th></tr>
+    <tr><td>인증</td><td>운영자는 2FA 필수, 위험 작업은 Step-up</td><td>인증 정책·각 저장/발행 버튼에 Step-up badge</td></tr>
+    <tr><td>권한</td><td>미권한 메뉴는 미노출, 명시적 거부 우선</td><td>Role·그룹 메뉴권한 미리보기와 충돌 표시</td></tr>
+    <tr><td>감사</td><td>운영자 CUD·보안 조치·발행은 append-only 로그</td><td>감사 이력 패널과 statusbar 표시</td></tr>
+    <tr><td>경계</td><td>시스템관리자는 전표 작성/승인/마감/신고 전송 단독 불가</td><td>권한 시뮬레이션에서 OP-08 기장 메뉴 미노출</td></tr>
+  </table>
+</section>
+
+<section class="section" id="op01">
+  <div class="page-title"><h1>운영 현황 대시보드</h1><span class="chip-id">OP-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">운영 콘솔 › 운영 현황 · SLO, 배치, 보안 이벤트, 테넌트 상태를 한 화면에서 관측</div>
+  <div class="mock">
+    <div class="mock-cap">OP-01 — 오늘의 장애·배치·보안 이벤트를 시스템관리자 조치 기준으로 묶어 보여준다.</div>
+    <div class="titlebar"><span class="tb-crumb">운영 콘솔</span><span class="tb-sep">›</span><span class="tb-title">운영 현황</span><span class="tb-star">☆</span><span class="tb-id">OP-01</span><span class="tb-right">Asia/Seoul · 2026-07-08 14:30 · 👤 SEC_ADMIN</span></div>
+    <div class="qbar"><span class="qlabel">범위</span><span class="seg"><span class="on">전체</span><span>보안</span><span>배치</span></span><span class="qlabel">기간</span><span class="qv">오늘 00:00 ~ 현재 <span class="lens">📅</span></span><span class="qlabel">심각도</span><span class="qv">SEV1~3 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">알림설정</button></span></div>
+    <div class="fnbar"><span class="chip on">SLO 99.94%</span><span class="chip">배치 지연 3</span><span class="chip">DLQ 12</span><span class="chip">보안 이벤트 5</span><span class="chip">승인대기 7</span><div class="sumbox"><span class="ok">핵심 API 정상</span><span>에러버짓 68%</span></div></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>영역</th><th>상태</th><th class="c">건수</th><th>대표 이벤트</th><th>조치</th></tr>
+          <tr class="sel"><td>배치</td><td><span class="badge b-warn">지연</span></td><td class="c">3</td><td>VAT_RECON_DAILY 18분 지연 · worker-07 재시작 필요</td><td>OP-09 이동</td></tr>
+          <tr><td>보안</td><td><span class="badge b-block">주의</span></td><td class="c">5</td><td>비정상 시간대 관리자 접근 2건 · 대량 다운로드 임계 근접</td><td>OP-10 분석</td></tr>
+          <tr><td>인증</td><td><span class="badge b-warn">확인</span></td><td class="c">4</td><td>MFA 미등록 운영자 4명 · D-3 차단 예정</td><td>OP-06B 통지</td></tr>
+          <tr><td>메뉴/권한</td><td><span class="badge b-ok">정상</span></td><td class="c">1</td><td>MenuVersion v42 발행 완료 · 캐시 무효화 100%</td><td>감사 이력</td></tr>
+          <tr class="tot"><td colspan="2">요약</td><td class="c">24</td><td colspan="2" class="blue">SEV1 없음 · 재처리 가능 DLQ 9건 · 승인 대기 7건</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">배치 지연 3건 — SLA 30분 초과 전 조치 필요</span><span class="cnt">OperatorActivityLog 기록 대상</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">오늘의 우선순위</div><div class="rp-b">1. DLQ 재처리 승인<br>2. MFA 미등록자 통지<br>3. 보안 이벤트 Step-up 확인</div></div>
+        <div class="rp-box"><div class="rp-t">접근 경계</div><div class="rp-b"><span class="badge b-block">BOOKKEEPING 차단</span><br>기장 Role 없는 시스템관리자는 OP-08 업무 메뉴 미노출</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">운영 콘솔 진입 후 시스템 상태와 조치 우선순위를 즉시 파악한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">기간, 심각도, 배치/보안/인증/권한 영역, 테넌트 영향 범위.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">SLO, 지연 배치, DLQ, 보안 이벤트, 승인대기, MFA 미등록자를 요약한다.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">권한 없는 영역은 카드 자체를 숨기고, 민감 로그는 Step-up 후 상세 진입한다.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">운영자 활동 로그, 알림, 인시던트, 배치 재처리 요청으로 연결된다.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">OP-06, OP-09, OP-10, OP-07 상세 화면과 SecurityEvent, OperatorActivityLog.</span></div></div></div>
+</section>
+
+<section class="section" id="op03">
+  <div class="page-title"><h1>테넌트 인프라·격리 티어</h1><span class="chip-id">OP-03</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">운영 콘솔 › 이용회사/테넌트 · 격리 티어, 쿼터, 스냅샷, PITR 복구 지원</div>
+  <div class="mock">
+    <div class="mock-cap">OP-03 — 테넌트별 격리 티어와 복구 준비 상태를 기술적으로 운영한다.</div>
+    <div class="titlebar"><span class="tb-crumb">이용회사/테넌트</span><span class="tb-sep">›</span><span class="tb-title">테넌트 인프라</span><span class="tb-star">☆</span><span class="tb-id">OP-03</span><span class="tb-right">VIEW 세션 · 평문 데이터 접근 없음</span></div>
+    <div class="qbar"><span class="qlabel">테넌트</span><span class="qv">회사명/tenantId <span class="lens">⌕</span></span><span class="qlabel">티어</span><span class="seg"><span class="on">전체</span><span>SHARED</span><span>SCHEMA</span><span>DEDICATED</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/SUSPENDED/MIGRATING <span class="lens">▾</span></span><span class="qlabel">스냅샷일</span><span class="qv">최근 7일 <span class="lens">📅</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">스냅샷 생성</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>Tenant</th><th>회사명</th><th>티어</th><th class="c">상태</th><th>쿼터</th><th>최근 스냅샷</th><th>복구 검증</th></tr>
+          <tr class="sel"><td>T-10035</td><td>금명전자</td><td>SCHEMA</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td>DB 62% · Jobs 4/10</td><td>2026-07-08 03:00</td><td><span class="badge b-ok">checksum OK</span></td></tr>
+          <tr><td>T-10110</td><td>EDPR Korea</td><td>DEDICATED</td><td class="c"><span class="badge b-warn">MIGRATING</span></td><td>Storage 78%</td><td>2026-07-07 23:30</td><td>CDC_SYNC 92%</td></tr>
+          <tr><td>T-10201</td><td>Inteva Korea</td><td>SHARED</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td>API 38%</td><td>2026-07-08 03:00</td><td><span class="badge b-ok">PITR ready</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 평문 데이터 접근 없이 인프라 메타만 조회</span><span class="cnt">TierMigrationJob 1건 진행 중</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">전환 게이트</div><div class="rp-b">레코드 count · 금액 합계 · checksum · 해시체인 · 라우팅 검증</div></div><div class="rp-box"><div class="rp-t">차단 조건</div><div class="rp-b"><span class="badge b-block">마감/신고 성수기</span><br>스냅샷 없음 · 롤백계획 없음 · checksum 불일치</div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">테넌트 격리 티어, 쿼터, 스냅샷, 복구 상태를 기술 관점에서 운영한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">테넌트, 티어, 상태, 쿼터 초과, 스냅샷 생성일, 전환 작업 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">티어 전환 예약, 스냅샷 생성, PITR 복구 요청, 쿼터 조정, 검증 결과 확인.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">count, 금액합계, checksum, 해시체인, 라우팅이 불일치하면 전환 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">TenantSnapshot, TierMigrationJob, TierMigrationValidation, 롤백 로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">OP-09 배치 큐, OP-10 감사로그, §2 멀티테넌시·백업 정책.</span></div></div></div>
+</section>
+
+<section class="section" id="op06a">
+  <div class="page-title"><h1>사용자 관리</h1><span class="chip-id">OP-06A · BF-04</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">사용자·인증·권한 › 사용자 관리 · OperatorUser/TenantUser 계정 생명주기와 보안 상태</div>
+  <div class="mock">
+    <div class="mock-cap">OP-06A — 사용자를 초대·수정·잠금·MFA 초기화하고, 그룹/Role 상속 결과를 미리 본다.</div>
+    <div class="titlebar"><span class="tb-crumb">사용자·인증·권한</span><span class="tb-sep">›</span><span class="tb-title">사용자 관리</span><span class="tb-star">☆</span><span class="tb-id">OP-06A</span><span class="tb-right"><span class="badge b-gray">Step-up 유효 07:12</span> · 👤 SEC_ADMIN</span></div>
+    <div class="tabbar"><div class="tab on">사용자 목록 <span class="tno">1</span></div><div class="tab">보안·세션 <span class="tno">2</span></div></div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">검색어</span><span class="qv">이름/loginId/소속 <span class="lens">⌕</span></span><span class="qlabel">사용자그룹</span><span class="seg"><span class="on">전체</span><span>OPERATOR</span><span>TENANT</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/LOCKED/DISABLED <span class="lens">▾</span></span><span class="qlabel">MFA</span><span class="qv">미등록 포함 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button></span></div>
+      <div class="mock-flex">
+        <div class="mock-main"><table class="grid"><tr><th>구분</th><th>Login ID</th><th>이름</th><th>소속</th><th class="c">상태</th><th class="c">MFA</th><th>그룹/Role</th><th>최근 로그인</th></tr><tr class="sel"><td>OPERATOR</td><td>sec.admin@ey.com</td><td>김시스템</td><td>시스템운영팀</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td class="c"><span class="badge b-ok">WebAuthn</span></td><td>SEC_ADMIN · 보안운영팀</td><td>2026-07-08 13:52</td></tr><tr><td>OPERATOR</td><td>ops.junior@ey.com</td><td>박운영</td><td>고객지원팀</td><td class="c"><span class="badge b-warn">PASSWORD_EXPIRED</span></td><td class="c"><span class="badge b-block">미등록</span></td><td>SUPPORT · 고객지원</td><td>2026-06-21</td></tr><tr><td>TENANT</td><td>acct@kum.co.kr</td><td>이회계</td><td>금명전자</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td class="c"><span class="badge b-ok">TOTP</span></td><td>회계팀 · TENANT_ADMIN</td><td>2026-07-08 09:31</td></tr></table><div class="statusbar"><span class="warnmsg">MFA 미등록 운영자 1명 — D-3 핵심 메뉴 차단 예정</span><span class="cnt">loginId 전역 유일</span></div></div>
+        <div class="rpanel"><div class="rp-box"><div class="rp-t">선택 사용자</div><div class="rp-b"><div class="kv"><span class="k">userGroup</span><span class="v">OPERATOR</span></div><div class="kv"><span class="k">operatorOrgId</span><span class="v">SYS-OPS</span></div><div class="kv"><span class="k">riskScore</span><span class="v">18 / Low</span></div></div></div><div class="rp-box"><div class="rp-t">가능 조치</div><div class="rp-b"><button class="abtn sm">MFA 초기화</button> <button class="abtn sm">세션 종료</button><br><span class="badge b-block">본인 조치 차단</span></div></div></div>
+      </div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">사용자</span><span class="qv">ops.junior@ey.com <span class="lens">⌕</span></span><span class="qlabel">보안상태</span><span class="qv">MFA 미등록/잠금/실패 <span class="lens">▾</span></span><span class="qlabel">기간</span><span class="qv">최근 30일 <span class="lens">📅</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">수정</button><button class="abtn dark">저장</button><button class="abtn ghost">본인확인 완료</button><button class="abtn dark">MFA 초기화 요청</button></span></div>
+      <div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>보안 항목</th><th>상태</th><th>상세</th><th>조치</th></tr><tr class="sel"><td>MFA</td><td><span class="badge b-block">미등록</span></td><td>등록 기한 2026-07-11 · 핵심 메뉴 차단 예정</td><td>초기화 링크 발송</td></tr><tr><td>활성 세션</td><td><span class="badge b-warn">2개</span></td><td>Chrome Seoul · Edge Busan</td><td>강제 종료</td></tr><tr><td>신뢰기기</td><td><span class="badge b-ok">1개</span></td><td>Windows Hello 등록</td><td>해제</td></tr><tr><td>로그인 이력</td><td>최근 실패 3회</td><td>비정상 시간대 없음</td><td>감사로그 보기</td></tr></table><div class="statusbar"><span class="warnmsg">MFA 초기화는 Step-up + 승인자 필요</span><span class="cnt">UserSecurityAction 기록</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">상태 전이</div><div class="rp-b"><span class="chip">INVITED</span> → <span class="chip on">ACTIVE</span> → <span class="chip">LOCKED</span> → <span class="chip">DISABLED</span></div></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">운영자와 이용회사 사용자 계정의 생성, 상태, 인증수단, 그룹·Role 상속을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">loginId, userGroup, operatorOrgId/homeTenantId, 연락처, locale, 초기 그룹.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">초대, 정보수정, 잠금/휴면/비활성, MFA 초기화, 세션 종료, 권한 미리보기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">loginId 중복, 소속 필수, 상태전이, 본인 보안 조치, SCIM 충돌을 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">User, OperatorUser/TenantUser, UserSecurityAction, UserAuditLog.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">UserGroup, RoleAssignment, MfaDevice, UserSession, LoginHistory.</span></div></div></div>
+</section>
+
+<section class="section" id="op06g">
+  <div class="page-title"><h1>사용자그룹 관리</h1><span class="chip-id">OP-06A · UserGroup</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">사용자·인증·권한 › 사용자그룹 관리 · 구성원, Role 상속, 그룹별 메뉴 노출 정책</div>
+  <div class="mock">
+    <div class="mock-cap">OP-06A — 사용자그룹별 메뉴를 INHERIT/ALLOW/DENY로 관리하고 영향 사용자를 시뮬레이션한다.</div>
+    <div class="titlebar"><span class="tb-crumb">사용자·인증·권한</span><span class="tb-sep">›</span><span class="tb-title">사용자그룹 관리</span><span class="tb-star">☆</span><span class="tb-id">OP-06A</span><span class="tb-right">MenuVersion v42 · PUBLISHED</span></div>
+    <div class="tabbar"><div class="tab on">그룹·구성원 <span class="tno">1</span></div><div class="tab">메뉴 권한 <span class="tno">2</span></div></div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">그룹명</span><span class="qv">groupCode/국문/영문 <span class="lens">⌕</span></span><span class="qlabel">그룹 유형</span><span class="seg"><span class="on">전체</span><span>OPERATOR_ORG</span><span>TENANT_ORG</span><span>SECURITY</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/INACTIVE <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button></span></div>
+      <div class="mock-flex"><div class="lpane"><div class="lp-t">그룹 트리</div><div class="tree"><div class="tnode lv1 on">▸ 보안운영팀 <span class="cnt">12명</span></div><div class="tnode lv2">Break-glass 승인자 <span class="cnt">3명</span></div><div class="tnode lv2">감사로그 열람자 <span class="cnt">6명</span></div><div class="tnode lv1">▸ 고객지원팀 <span class="cnt">28명</span></div><div class="tnode lv2">지원 VIEW 전용 <span class="cnt">18명</span></div></div></div><div class="mock-main"><table class="grid"><tr><th>구성원</th><th>userGroup</th><th>상속 Role</th><th>메뉴 정책</th><th>만료</th><th class="c">상태</th></tr><tr class="sel"><td>김시스템</td><td>OPERATOR</td><td>SEC_ADMIN</td><td>OP-10 ALLOW · OP-08 DENY</td><td>상시</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td>정감사</td><td>OPERATOR</td><td>AUDITOR</td><td>OP-10 READ · EXPORT DENY</td><td>2026-12-31</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td>임보안</td><td>OPERATOR</td><td>SEC_ADMIN</td><td>Break-glass review ALLOW</td><td>임시 D+7</td><td class="c"><span class="badge b-warn">TEMP</span></td></tr></table><div class="statusbar"><span class="okmsg">✓ 그룹 구성원 범위 OPERATOR 일치</span><span class="cnt">UserGroupMember 12건</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">상속 요약</div><div class="rp-b"><div class="kv"><span class="k">Role</span><span class="v">SEC_ADMIN</span></div><div class="kv"><span class="k">DataScope</span><span class="v">GLOBAL</span></div><div class="kv"><span class="k">Menu DENY</span><span class="v">OP-08</span></div></div></div></div></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">그룹</span><span class="qv">보안운영팀 <span class="lens">▾</span></span><span class="qlabel">메뉴코드</span><span class="qv">OP-06/OP-10 <span class="lens">⌕</span></span><span class="qlabel">정책</span><span class="seg"><span>INHERIT</span><span>ALLOW</span><span class="on">DENY</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">영향 분석</button></span></div>
+      <div class="mock-flex"><div class="lpane"><div class="lp-t">MenuVersion v42</div><div class="tree"><div class="tnode lv1 on">▸ OP 운영콘솔</div><div class="tnode lv2">OP-06 사용자·권한 <span class="cnt">ALLOW</span></div><div class="tnode lv3">OP-06D 메뉴 마스터 <span class="cnt">ALLOW</span></div><div class="tnode lv2 red">OP-08 기장 워크벤치 <span class="cnt">DENY</span></div><div class="tnode lv2">OP-10 보안·감사 <span class="cnt">ALLOW</span></div></div></div><div class="mock-main"><table class="grid"><tr><th>메뉴</th><th>Role 권한</th><th>그룹 정책</th><th>최종 노출</th><th>진입</th><th>사유</th></tr><tr class="sel"><td>OP-10 보안·감사</td><td>ALLOW</td><td><span class="badge b-ok">ALLOW</span></td><td>보임</td><td>가능</td><td>보안운영팀 기본 메뉴</td></tr><tr><td>OP-08 기장 워크벤치</td><td>ALLOW</td><td><span class="badge b-block">DENY</span></td><td>숨김</td><td>불가</td><td>SEC_ADMIN 기장 업무 분리</td></tr><tr><td>OP-06D 메뉴 마스터</td><td>ALLOW</td><td><span class="badge b-gray">INHERIT</span></td><td>보임</td><td>가능</td><td>RoleMenuPermission 상속</td></tr><tr><td>OP-07 녹화 재생</td><td>READ</td><td><span class="badge b-warn">ALLOW+승인</span></td><td>보임</td><td>승인 후</td><td>2인 승인 필요</td></tr></table><div class="statusbar"><span class="warnmsg">DENY 우선 — 같은 사용자의 다른 그룹 ALLOW가 있어도 OP-08은 미노출</span><span class="cnt">영향 사용자 12명</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">충돌 검증</div><div class="rp-b"><span class="badge b-warn">USER_GROUP_MENU_CONFLICT</span><br>ALLOW 1건 · DENY 1건 → DENY 우선 기록</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>PUT /api/operator/user-groups/{groupId}/menu-permissions</code></div></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">사용자그룹의 구성원, Role 상속, 메뉴 노출/숨김 정책을 한 곳에서 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">groupCode, groupNameKo/En, groupType, ownerScope, 구성원, Role, 메뉴 permissionMode.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">그룹 생성/폐기, 구성원 일괄 변경, Role 바인딩, 메뉴 INHERIT/ALLOW/DENY 설정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">그룹 범위, 구성원 userGroup, 메뉴 버전, 부모 메뉴 DENY, 다중 그룹 충돌.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">UserGroup, UserGroupMember, UserGroupRoleBinding, UserGroupMenuPermission.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">/api/me/menus bootstrap, PermissionEvaluationCache, RoleMenuPermission, 감사로그.</span></div></div></div>
+</section>
+
+<section class="section" id="op06b">
+  <div class="page-title"><h1>인증 정책 관리</h1><span class="chip-id">OP-06B · BF-05</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">사용자·인증·권한 › 인증 정책 · MFA, SSO, WebAuthn, 세션, 계정 잠금 정책</div>
+  <div class="mock">
+    <div class="mock-cap">OP-06B — 운영자 인증 보안 floor와 테넌트 인증 정책의 하한선을 관리한다.</div>
+    <div class="titlebar"><span class="tb-crumb">인증</span><span class="tb-sep">›</span><span class="tb-title">인증 정책</span><span class="tb-star">☆</span><span class="tb-id">OP-06B</span><span class="tb-right"><span class="badge b-block">Step-up 필요</span></span></div>
+    <div class="qbar"><span class="qlabel">적용대상</span><span class="seg"><span class="on">운영자</span><span>테넌트</span><span>전체</span></span><span class="qlabel">정책버전</span><span class="qv">AuthPolicy v18 <span class="lens">▾</span></span><span class="qlabel">상태</span><span class="qv">DRAFT/PUBLISHED <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button></span></div>
+    <div class="actionbar"><button class="abtn yellow">정책 검증</button><div class="ab-right"><button class="abtn ghost">변경 Diff</button><button class="abtn dark">발행</button></div></div>
+    <div class="formgrid c3"><div class="ff"><label>운영자 2FA</label><div class="fv">필수 · WebAuthn/TOTP</div></div><div class="ff"><label>비밀번호</label><div class="fv">최소 10자 · 90일 변경</div></div><div class="ff"><label>실패 잠금</label><div class="fv">5회 실패 → LOCKED</div></div><div class="ff"><label>세션</label><div class="fv">유휴 30분 · 절대 12시간</div></div><div class="ff"><label>동시 세션</label><div class="fv">운영자 2개</div></div><div class="ff"><label>휴면</label><div class="fv">365일 미접속</div></div><div class="ff full"><label>SSO/OIDC</label><div class="fv">IdP: EY-Okta · SCIM provisioning ON · externalId 충돌 0건</div></div></div>
+    <div class="statusbar"><span class="okmsg">✓ 정책 변경은 기존 세션과 신규 로그인에 즉시 반영</span><span class="cnt">AuthPolicy v18</span></div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">운영 콘솔 인증 강도와 세션/잠금/휴면 정책을 중앙에서 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">MFA 수단, 비밀번호 규칙, 세션 TTL, 동시 세션, SSO/SCIM, 휴면 기준.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">정책 저장, 영향 사용자 확인, MFA 초기화 정책, SSO/WebAuthn 설정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">운영자 2FA 필수, 위험 작업 Step-up, 약한 테넌트 정책은 floor 아래로 설정 불가.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">AuthPolicy, MfaDevice, WebauthnCredential, SsoIdentity, UserSession.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">OP-06A 사용자 보안 탭, LoginHistory, TrustedDevice, SecurityEvent.</span></div></div></div>
+</section>
+
+<section class="section" id="op06d">
+  <div class="page-title"><h1>메뉴 마스터 관리</h1><span class="chip-id">OP-06D · BF-12</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">사용자·인증·권한 › 메뉴 마스터 · MenuVersion DRAFT/PUBLISHED, 다국어, 라우트 가드</div>
+  <div class="mock">
+    <div class="mock-cap">OP-06D — OP/TN/CO 메뉴 트리를 버전 관리하고 발행 시 권한 캐시를 무효화한다.</div>
+    <div class="titlebar"><span class="tb-crumb">메뉴·권한</span><span class="tb-sep">›</span><span class="tb-title">메뉴 마스터</span><span class="tb-star">☆</span><span class="tb-id">OP-06D</span><span class="tb-right">DRAFT v43 · 기준 PUBLISHED v42</span></div>
+    <div class="qbar"><span class="qlabel">메뉴명</span><span class="qv">코드/국문/영문 <span class="lens">⌕</span></span><span class="qlabel">채널</span><span class="seg"><span class="on">OP</span><span>TN</span><span>CO</span></span><span class="qlabel">유형</span><span class="qv">GROUP/MENU/TAB/ACTION <span class="lens">▾</span></span><span class="qlabel">버전</span><span class="qv">DRAFT v43 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">영향 분석</button><button class="abtn dark">발행</button></span></div>
+    <div class="mock-flex menu-master-layout">
+      <div class="lpane">
+        <div class="lp-t">메뉴 트리 <span id="menuMasterTotal" class="cnt"></span></div>
+        <div class="tree" id="menuMasterTree"></div>
+      </div>
+      <div class="mock-main">
+        <div class="formgrid c3 label-left">
+          <div class="ff"><label>메뉴코드</label><div class="fv" id="menuCode">-</div></div>
+          <div class="ff"><label>채널</label><select class="fv" id="menuChannel"></select></div>
+          <div class="ff"><label>유형</label><select class="fv" id="menuType"></select></div>
+          <div class="ff"><label>상위메뉴</label><select class="fv" id="menuParent"></select></div>
+          <div class="ff"><label>화면ID</label><select class="fv" id="menuScreenId"></select></div>
+          <div class="ff"><label>국문명</label><div class="fv" id="menuNameKo">-</div></div>
+          <div class="ff"><label>영문명</label><div class="fv" id="menuNameEn">-</div></div>
+          <div class="ff"><label>경로</label><div class="fv" id="menuRoutePath">-</div></div>
+          <div class="ff"><label>기능플래그</label><div class="fv" id="menuFeatureFlag">-</div></div>
+          <div class="ff"><label>페이즈</label><select class="fv" id="menuPhase"></select></div>
+          <div class="ff"><label>출처</label><div class="fv" id="menuSource">-</div></div>
+          <div class="ff"><label>상태</label><select class="fv" id="menuStatus"></select></div>
+          <div class="ff full"><label>설명</label><div class="fv" id="menuDescription">-</div></div>
+        </div>
+        <table class="grid"><thead><tr><th>검증</th><th>결과</th><th>설명</th></tr></thead><tbody id="menuValidationRows"></tbody></table>
+        <div class="statusbar"><span class="warnmsg" id="menuStatusText">메뉴 선택 대기</span><span class="cnt" id="menuSelectedCount">MenuVersion v43</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">버전 Diff</div><div class="rp-b" id="menuDiffText">DRAFT v43 기준 메뉴 카탈로그를 선택하면 변경 영향이 표시된다.</div></div>
+        <div class="rp-box"><div class="rp-t">사용처 영향</div><div class="rp-b" id="menuUsageText">RoleMenuPermission · UserGroupMenuPermission · 라우트 가드 영향 분석</div></div>
+        <div class="rp-box"><div class="rp-t">권한 미리보기</div><div class="rp-b" id="menuPreviewText">권한 없는 메뉴는 비활성이 아니라 미노출한다.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">OP/TN/CO 메뉴 구조를 중앙에서 등록·수정·버전 발행한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">menuCode, channel, type, parent, screenId, displayNameKo/En, route, featureFlag.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">트리 편집, 다국어 관리, 버전 Diff, 영향 분석, 발행/롤백, 권한 미리보기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">코드/라우트 중복, 부모 유형, 순환참조, 화면 ID, 다국어 필수, 사용 중 삭제.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">Menu, MenuVersion, MenuI18n, MenuRouteBinding, MenuPublishLog.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">RoleMenuPermission, UserGroupMenuPermission, MenuActionGrant, /api/me/menus.</span></div></div></div>
+</section>
+
+<section class="section" id="op06c">
+  <div class="page-title"><h1>Role·권한 관리</h1><span class="chip-id">OP-06C</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">사용자·인증·권한 › Role·권한 관리 · 메뉴, ACTION, 데이터범위, 민감정보, 시뮬레이션</div>
+  <div class="mock">
+    <div class="mock-cap">OP-06C — Role과 사용자그룹 메뉴권한을 합산하여 실제 메뉴·버튼·데이터 접근 결과를 시뮬레이션한다.</div>
+    <div class="titlebar"><span class="tb-crumb">권한</span><span class="tb-sep">›</span><span class="tb-title">Role·권한 관리</span><span class="tb-star">☆</span><span class="tb-id">OP-06C</span><span class="tb-right"><span class="badge b-block">DENY 우선</span></span></div>
+    <div class="qbar"><span class="qlabel">Role</span><span class="qv">SEC_ADMIN <span class="lens">▾</span></span><span class="qlabel">사용자/그룹</span><span class="qv">김시스템/보안운영팀 <span class="lens">⌕</span></span><span class="qlabel">권한유형</span><span class="qv">메뉴/ACTION/데이터/민감정보 <span class="lens">▾</span></span><span class="qlabel">접근모드</span><span class="seg"><span class="on">VIEW</span><span>SUPPORT</span><span>BREAK</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">시뮬레이션</button></span></div>
+    <div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>평가 단계</th><th>대상</th><th>결과</th><th>근거</th></tr><tr class="sel"><td>1 메뉴 버전</td><td>MenuVersion v42</td><td><span class="badge b-ok">PUBLISHED</span></td><td>런타임 기준</td></tr><tr><td>2 그룹 메뉴권한</td><td>보안운영팀 · OP-08</td><td><span class="badge b-block">DENY</span></td><td>UserGroupMenuPermission</td></tr><tr><td>3 Role 메뉴권한</td><td>SEC_ADMIN · OP-10</td><td><span class="badge b-ok">ALLOW</span></td><td>RoleMenuPermission</td></tr><tr><td>4 ACTION</td><td>KEY_ROTATE</td><td><span class="badge b-warn">Step-up</span></td><td>MenuActionGrant.requiresStepUp</td></tr><tr><td>5 데이터범위</td><td>tenant=ALL</td><td><span class="badge b-ok">VIEW only</span></td><td>DataScopeRule</td></tr><tr><td>6 민감정보</td><td>PII plain view</td><td><span class="badge b-block">DENY</span></td><td>SensitiveDataGrant 없음</td></tr></table><div class="statusbar"><span class="warnmsg">OP-08은 Role 허용이 있어도 그룹 DENY로 미노출</span><span class="cnt">PermissionSimulationLog 저장</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">SOD</div><div class="rp-b">본인 Role 변경 차단<br>작성자/승인자 분리<br>SEC_ADMIN 기장 작성 금지</div></div><div class="rp-box"><div class="rp-t">캐시 키</div><div class="rp-b"><code>userId+roleHash+groupHash+menuVersion</code></div></div></div></div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">Role과 사용자그룹 권한을 합산해 실제 메뉴·ACTION·데이터 접근을 통제한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">Role, 사용자, 사용자그룹, MenuVersion, 메뉴, ACTION, 데이터범위, 민감정보 등급.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">Role 생성/복사, 권한 부여·회수, 그룹 메뉴권한 반영, 시뮬레이션, 캐시 무효화.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">미발행 메뉴, ACTION 단독 권한, SOD, 민감정보 Step-up, 명시적 DENY 우선.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">Role, RoleAssignment, RoleMenuPermission, MenuActionGrant, PermissionEvaluationCache.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">OP-06A/G/D, /api/me/menus, 서버 ACTION API 재검증.</span></div></div></div>
+</section>
+
+<section class="section" id="op05c">
+  <div class="page-title"><h1>시스템 공통코드 관리</h1><span class="chip-id">OP-05C</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">공통 표준 카탈로그 › 시스템 공통코드 · 플랫폼 공통 코드의 버전·발행·영향 분석</div>
+  <div class="mock">
+    <div class="mock-cap">OP-05C — ACCOUNT_STATUS, MENU_TYPE, ACTION_TYPE 같은 시스템 예약 코드를 DRAFT/PUBLISHED로 관리한다.</div>
+    <div class="titlebar"><span class="tb-crumb">공통 표준</span><span class="tb-sep">›</span><span class="tb-title">시스템 공통코드</span><span class="tb-star">☆</span><span class="tb-id">OP-05C</span><span class="tb-right">CommonCodeVersion v21</span></div>
+    <div class="qbar"><span class="qlabel">마스터 검색</span><span class="qv">코드그룹/그룹명 <span class="lens">⌕</span></span><span class="qlabel">도메인</span><span class="seg"><span class="on">AUTH</span><span>MENU</span><span>BATCH</span><span>SECURITY</span></span><span class="qlabel">적용범위</span><span class="qv">GLOBAL/PLAN/TENANT <span class="lens">▾</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/RETIRED <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">마스터 추가</button><button class="abtn ghost">마스터 수정</button><button class="abtn red">마스터 삭제</button><button class="abtn dark">마스터 저장</button></span></div>
+    <div class="mock-flex">
+      <div class="lpane"><div class="lp-t">마스터: 코드그룹 <span id="ccMasterTotal" class="cnt"></span></div><div class="tree" id="ccMasterList"></div></div>
+      <div class="mock-main">
+        <div class="formgrid c3 label-left"><div class="ff"><label>코드그룹</label><div class="fv" id="ccGroupCode">-</div></div><div class="ff"><label>그룹 국문명</label><div class="fv" id="ccGroupKo">-</div></div><div class="ff"><label>그룹 영문명</label><div class="fv" id="ccGroupEn">-</div></div><div class="ff"><label>도메인</label><div class="fv" id="ccDomain">-</div></div><div class="ff"><label>적용범위</label><div class="fv" id="ccScope">-</div></div><div class="ff"><label>변경정책</label><div class="fv" id="ccPolicy">-</div></div><div class="ff"><label>값 유형</label><div class="fv" id="ccValueType">-</div></div><div class="ff"><label>다국어 필수</label><div class="fv" id="ccI18n">-</div></div><div class="ff"><label>발행버전</label><div class="fv" id="ccVersion">-</div></div></div>
+        <div class="qbar"><span class="qlabel">세부 검색</span><span class="qv">코드/국문명/영문명 <span class="lens">⌕</span></span><span class="qlabel">사용여부</span><span class="seg"><span class="on">전체</span><span>Y</span><span>N</span></span><span class="qlabel">예약</span><span class="qv">SYSTEM/ADMIN <span class="lens">▾</span></span><span class="qlabel">시작일</span><span class="qv">2020-01-01 <span class="lens">📅</span></span><span class="qlabel">종료일</span><span class="qv">9999-12-31 <span class="lens">📅</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">세부 추가</button><button class="abtn ghost">세부 수정</button><button class="abtn red">세부 삭제</button><button class="abtn dark">세부 저장</button><button class="abtn ghost">영향 분석</button><button class="abtn dark">발행</button></span></div>
+        <table class="grid"><thead><tr><th>코드</th><th>코드그룹</th><th>국문명</th><th>영문명</th><th>정렬</th><th>사용여부</th><th>시작일</th><th>종료일</th><th>예약</th><th>대체코드</th><th>메타데이터</th></tr></thead><tbody id="ccItemRows"></tbody></table>
+        <div class="statusbar"><span class="okmsg" id="ccStatusText">✓ 마스터 선택 대기</span><span class="cnt" id="ccItemCount">세부 0건</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">마스터/세부 규칙</div><div class="rp-b" id="ccRuleText">마스터 선택 전 세부 저장 차단<br><span class="badge b-block">COMMON_CODE_GROUP_REQUIRED</span></div></div><div class="rp-box"><div class="rp-t">발행 차이</div><div class="rp-b" id="ccDiffText">코드그룹을 선택하면 DRAFT/PUBLISHED 차이가 표시된다.</div></div><div class="rp-box"><div class="rp-t">사용처 영향</div><div class="rp-b" id="ccUsageText">문서 검토 출처와 사용처가 표시된다.</div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">공통코드를 마스터(코드그룹)와 세부(코드항목) 관계로 관리하고 런타임에 일관된 정의를 제공한다.</span></div><div class="screen-desc-item"><span class="desc-label">마스터 입력</span><span class="desc-body">코드그룹, 그룹 국문명, 그룹 영문명, 도메인, 적용범위, 변경정책, 값 유형, 다국어 필수.</span></div><div class="screen-desc-item"><span class="desc-label">세부 입력</span><span class="desc-body">코드, 코드그룹, 국문명, 영문명, 정렬순서, 사용여부, 시작일, 종료일, 대체코드, 메타데이터.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">마스터/세부별 조회·추가·수정·삭제·저장, DRAFT/PUBLISHED, 가져오기/내보내기, 사용처 영향 분석.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">마스터 미선택, 코드그룹 불일치, 중복, 예약 코드 변경, 시작일/종료일, 종료일 도래 시 사용여부 자동 N, 다국어, 메타데이터 스키마 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">CommonCodeGroup, CommonCodeItem, CommonCodeVersion, CommonCodeUsage, CommonCodeHistory.</span></div></div></div>
+</section>
+
+<section class="section" id="op09">
+  <div class="page-title"><h1>배치·연계 운영</h1><span class="chip-id">OP-09</span><span class="badge b-ref">운영</span></div>
+  <div class="crumb">운영·배치·연계 › 배치, 큐, DLQ, 워커, 커넥터 볼트 상태</div>
+  <div class="mock">
+    <div class="mock-cap">OP-09 — 실패 배치와 DLQ를 멱등키 기준으로 안전하게 재처리한다.</div>
+    <div class="titlebar"><span class="tb-crumb">운영</span><span class="tb-sep">›</span><span class="tb-title">배치·연계 운영</span><span class="tb-star">☆</span><span class="tb-id">OP-09</span><span class="tb-right">worker 24/28 · DLQ 12</span></div>
+    <div class="qbar"><span class="qlabel">기간</span><span class="qv">오늘 00:00~현재 <span class="lens">📅</span></span><span class="qlabel">상태</span><span class="seg"><span class="on">FAILED</span><span>RETRY</span><span>DEAD_LETTER</span></span><span class="qlabel">배치군</span><span class="qv">운영/회사/기장/보고 <span class="lens">▾</span></span><span class="qlabel">테넌트</span><span class="qv">tenantId/전체 <span class="lens">⌕</span></span><span class="qlabel">멱등키</span><span class="qv">idem-* <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn dark">선택 재처리</button></span></div>
+    <div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>Job</th><th>Tenant</th><th>상태</th><th>실패 원인</th><th>멱등키</th><th class="c">재처리</th></tr><tr class="sel"><td>VAT_RECON_DAILY</td><td>T-10035</td><td><span class="badge b-warn">RETRY</span></td><td>connector timeout</td><td>idem-8841</td><td class="c"><span class="badge b-ok">가능</span></td></tr><tr><td>BANK_SCRAPE_SYNC</td><td>T-10201</td><td><span class="badge b-block">DLQ</span></td><td>OAuth token expired</td><td>idem-9012</td><td class="c"><span class="badge b-warn">토큰 회전 후</span></td></tr><tr><td>REPORT_EXPORT</td><td>ALL</td><td><span class="badge b-ok">SUCCESS</span></td><td>—</td><td>idem-7770</td><td class="c">—</td></tr></table><div class="statusbar"><span class="warnmsg">동일 멱등키 + 동일 요청 해시일 때만 재처리 허용</span><span class="cnt">DLQ 12건</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">재처리 게이트</div><div class="rp-b">Step-up · 사유 · 멱등키 · 데이터 반영 여부 검증</div></div><div class="rp-box"><div class="rp-t">커넥터</div><div class="rp-b">토큰 만료 D-2 · 평문 secret 조회 금지 · KMS secretRef만 표시</div></div></div></div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">운영/회사/기장/보고 배치와 연계 큐의 실패·지연을 관측하고 재처리한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">배치군, 상태, 테넌트, 실패 원인, 멱등키, 워커, 커넥터 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">DLQ 조회, 원인 요약, 재처리, 토큰/인증서 만료 알림, 워커 상태 모니터링.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">멱등키 충돌, 데이터 반영 중복, Step-up, 사유, 평문 secret 접근 금지.</span></div><div class="screen-desc-item"><span class="desc-label">처리 결과</span><span class="desc-body">ScrapingTask, IntegrationStaging, AsyncReportJob, IntegrationLog 갱신.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">ConnectorVaultService, DistributedLockService, NotificationService, OP-10 보안 이벤트.</span></div></div></div>
+</section>
+
+<section class="section" id="op10">
+  <div class="page-title"><h1>보안·감사 운영</h1><span class="chip-id">OP-10</span><span class="badge b-ref">보안</span></div>
+  <div class="crumb">보안·감사 운영 › KMS, DLP, 감사로그 해시체인, 컴플라이언스</div>
+  <div class="mock">
+    <div class="mock-cap">OP-10 — 키 회전, 대량행위, 감사로그 무결성을 통합 점검한다.</div>
+    <div class="titlebar"><span class="tb-crumb">보안</span><span class="tb-sep">›</span><span class="tb-title">보안·감사 운영</span><span class="tb-star">☆</span><span class="tb-id">OP-10</span><span class="tb-right"><span class="badge b-block">민감 로그 Step-up</span></span></div>
+    <div class="tabbar"><div class="tab on">KMS·키 회전 <span class="tno">1</span></div><div class="tab">DLP·감사로그 <span class="tno">2</span></div></div>
+    <div class="tabpane on"><div class="qbar"><span class="qlabel">Key</span><span class="qv">keyId/tenantId <span class="lens">⌕</span></span><span class="qlabel">키 범위</span><span class="seg"><span class="on">전체</span><span>TENANT</span><span>BACKUP</span></span><span class="qlabel">상태</span><span class="qv">정상/회전예정/폐기예약 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">영향 분석</button><button class="abtn ghost">회전 실행</button></span></div><div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>Key</th><th>용도</th><th>버전</th><th>마지막 회전</th><th>상태</th><th>재암호화</th></tr><tr class="sel"><td>tenant-dek-T-10035</td><td>DB field</td><td>v7</td><td>2026-05-01</td><td><span class="badge b-warn">회전 예정</span></td><td>0%</td></tr><tr><td>backup-worm-root</td><td>WORM backup</td><td>v3</td><td>2026-03-15</td><td><span class="badge b-ok">정상</span></td><td>100%</td></tr></table><div class="statusbar"><span class="warnmsg">키 삭제는 즉시 삭제가 아니라 폐기 예약 · 2인 승인 · Step-up 필요</span><span class="cnt">KeyRotationLog</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">분리 통제</div><div class="rp-b">키 관리 권한 ≠ 테넌트 평문 데이터 접근 권한</div></div></div></div></div>
+    <div class="tabpane"><div class="qbar"><span class="qlabel">기간</span><span class="qv">최근 7일 <span class="lens">📅</span></span><span class="qlabel">이벤트</span><span class="seg"><span class="on">DLP</span><span>AuditChain</span><span>Access</span></span><span class="qlabel">사용자</span><span class="qv">loginId/전체 <span class="lens">⌕</span></span><span class="qlabel">심각도</span><span class="qv">주의/위험/차단 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">검증</button></span></div><div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>이벤트</th><th>사용자</th><th>대상</th><th>임계</th><th>처리</th></tr><tr class="sel"><td>대량 다운로드</td><td>auditor@ey.com</td><td>PersonalDataAccessLog</td><td><span class="badge b-warn">85%</span></td><td>승인 대기</td></tr><tr><td>해시체인 검증</td><td>system</td><td>AuditLogChain</td><td><span class="badge b-ok">OK</span></td><td>무결성 통과</td></tr><tr><td>비정상 시간대</td><td>ops.junior@ey.com</td><td>OP-06B</td><td><span class="badge b-warn">주의</span></td><td>추가 인증</td></tr></table><div class="statusbar"><span class="okmsg">✓ 감사로그 원본은 삭제 불가 · DLP 룰/임계값만 CRUD 대상</span><span class="cnt">SecurityEvent 5건</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">마스킹</div><div class="rp-b">녹화·로그·엑셀 다운로드에서 PII/PASSWORD/SECRET 원문 차단</div></div></div></div></div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">KMS, 키 회전, DLP, 감사로그 무결성, 컴플라이언스 점검을 운영한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">키 용도, 테넌트, 이벤트 유형, 민감정보 등급, 기간, 심각도.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">키 회전, 재암호화 진행률, 대량행위 승인/차단, 해시체인 검증.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">2인 승인, Step-up, 평문 데이터 접근 분리, 로그 누락 시 트랜잭션 실패.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">KeyRotationLog, SecurityEvent, AuditLogChain, DataDestructionLog.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">OP-07 접근 세션, OP-09 배치, DLP 승인, NotificationService.</span></div></div></div>
+</section>
+
+<section class="section" id="op07">
+  <div class="page-title"><h1>Break-glass·접근 거버넌스</h1><span class="chip-id">OP-07</span><span class="badge b-ref">보안</span></div>
+  <div class="crumb">접근 거버넌스 › Break-glass, 접근 세션, 녹화 재생, 사후검토</div>
+  <div class="mock">
+    <div class="mock-cap">OP-07 — 긴급 접근 요청과 녹화 재생을 승인·검토하고 접근 로그를 감사한다.</div>
+    <div class="titlebar"><span class="tb-crumb">접근 거버넌스</span><span class="tb-sep">›</span><span class="tb-title">Break-glass 검토</span><span class="tb-star">☆</span><span class="tb-id">OP-07</span><span class="tb-right">요청자≠승인자≠사후검토자</span></div>
+    <div class="qbar"><span class="qlabel">기간</span><span class="qv">최근 30일 <span class="lens">📅</span></span><span class="qlabel">접근모드</span><span class="seg"><span class="on">전체</span><span>SUPPORT</span><span>BREAK</span></span><span class="qlabel">상태</span><span class="qv">REQUESTED/ACTIVE/REVIEWED <span class="lens">▾</span></span><span class="qlabel">테넌트</span><span class="qv">tenantId/회사명 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button></span></div>
+    <div class="fnbar"><span class="chip">REQUESTED</span><span class="ar">→</span><span class="chip">APPROVED</span><span class="ar">→</span><span class="chip on">ACTIVE</span><span class="ar">→</span><span class="chip">EXPIRED</span><span class="ar">→</span><span class="chip">REVIEWED</span></div>
+    <div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>세션</th><th>테넌트</th><th>모드</th><th>사유</th><th>녹화</th><th>승인</th></tr><tr class="sel"><td>BG-20260708-014</td><td>T-10035</td><td><span class="badge b-block">BREAK_GLASS</span></td><td>신고마감 전 DB 라우팅 장애</td><td><span class="badge b-ok">ON · 마스킹</span></td><td>2/2</td></tr><tr><td>AS-20260708-221</td><td>T-10201</td><td>SUPPORT_SESSION</td><td>SSO 설정 지원</td><td>OFF</td><td>1/1</td></tr></table><div class="statusbar"><span class="warnmsg">녹화 재생은 별도 승인 후 가능</span><span class="cnt">SessionRecording 1건</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">녹화 마스킹</div><div class="rp-b">PASSWORD · PII · FINANCIAL · PAYROLL · SECRET 필드 원문 캡처 차단</div></div><div class="rp-box"><div class="rp-t">사후검토</div><div class="rp-b">AdminAccessLog + DataChangeLog + 녹화 타임라인 통합 리포트</div></div></div></div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">긴급 접근과 테넌트 지원 세션을 승인·기록·검토한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">접근모드, 테넌트, 사유, 기간, 요청자, 승인자, 녹화 재생 요청.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">세션 발급, 녹화, 마스킹, 재생 승인, 사후검토, 회사 통지.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">요청자/승인자/검토자 분리, 사전동의, 시간·범위 제한, 민감정보 마스킹.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">AdminAccessSession, BreakGlassRequest, SessionRecording, ReviewReport.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">OP-10 감사로그, PersonalDataAccessLog, SecurityEvent, NotificationService.</span></div></div></div>
+</section>
+
+<section class="section" id="gate">
+  <div class="page-title"><h1>검증·수용기준</h1><span class="chip-id">DoD</span><span class="badge b-gray">공통</span></div>
+  <div class="crumb">공통 › 검증·오류·수용기준 · 시스템관리자 화면군 공통 완료 조건</div>
+  <h2 class="sec">권한 평가 파이프라인</h2>
+  <div class="flow"><span class="st">MenuVersion<br><small>PUBLISHED</small></span><span class="ar">→</span><span class="st hl">UserGroupMenuPermission<br><small>DENY 우선</small></span><span class="ar">→</span><span class="st">RoleMenuPermission</span><span class="ar">→</span><span class="st">MenuActionGrant</span><span class="ar">→</span><span class="st">DataScope</span><span class="ar">→</span><span class="st end">SensitiveData·SOD</span></div>
+  <h2 class="sec">오류·차단 코드</h2>
+  <table class="spec"><tr><th>오류 코드</th><th>조건</th><th>처리</th></tr><tr><td><code>USER_LOGIN_ID_DUPLICATED</code></td><td>전역 loginId 중복</td><td>사용자 저장 차단</td></tr><tr><td><code>USER_GROUP_MENU_CONFLICT</code></td><td>같은 사용자 그룹들이 ALLOW/DENY 충돌</td><td>DENY 우선, 충돌 표시</td></tr><tr><td><code>MENU_I18N_REQUIRED</code></td><td>국문명 또는 영문명 누락</td><td>메뉴 저장·발행 차단</td></tr><tr><td><code>ROLE_SELF_ESCALATION_DENIED</code></td><td>본인 권한 상승 또는 본인 승인</td><td>저장 차단</td></tr><tr><td><code>PERMISSION_CACHE_STALE</code></td><td>권한 캐시 버전 불일치</td><td>캐시 재생성</td></tr></table>
+  <h2 class="sec">완료 기준</h2>
+  <table class="spec"><tr><th>#</th><th>기준</th><th>검증 방법</th></tr><tr><td>1</td><td>OP-06A~D 사용자·그룹·인증·메뉴·권한 화면이 저장/시뮬레이션/감사로그를 제공한다.</td><td>화면별 API와 감사로그 샘플 확인</td></tr><tr><td>2</td><td>그룹 메뉴권한 DENY가 Role 허용보다 우선하여 /api/me/menus에서 미노출된다.</td><td>사용자그룹 메뉴권한 테스트</td></tr><tr><td>3</td><td>시스템 공통코드와 메뉴 발행 후 프론트 bootstrap·API validator·권한 캐시가 갱신된다.</td><td>ETag/version 비교</td></tr><tr><td>4</td><td>위험 작업은 Step-up, 사유, 승인, append-only 로그 없이는 완료되지 않는다.</td><td>트랜잭션 실패 테스트</td></tr></table>
+</section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <div class="beamline"></div>
+  <div>EY BK 회계 플랫폼 — 시스템관리자 화면설계 v1.0 · 근거: bk_설계서_v1.1.md + 설계/개발설계/시스템관리자.md · phase-screen-designer</div>
+</footer>
+
+<script>
+/* MENU_MASTER_CATALOG_START */
+var MENU_MASTER_ROWS=[
+  ["OP","운영콘솔","bk_설계서_v1.1.md:5024","관리회사 OP channel"],
+  ["OP-00","운영 진입","bk_설계서_v1.1.md:5028","이용회사 선택, 운영자 홈"],
+  ["OP-01","운영 현황","bk_설계서_v1.1.md:5029","운영 대시보드, 운영 리포트"],
+  ["OP-02","관리회사·조직","bk_설계서_v1.1.md:5030","관리회사·조직, 운영 조직 권한·활동 이력"],
+  ["OP-03","이용회사/테넌트","bk_설계서_v1.1.md:5031","테넌트 목록/상세, 테넌트 운영 작업"],
+  ["OP-04","구독·요금·사용량","bk_설계서_v1.1.md:5032","구독·요금제, 청구 운영"],
+  ["OP-05","공통 표준 카탈로그","bk_설계서_v1.1.md:5033","표준 카탈로그, 표준 배포 관리"],
+  ["OP-06","사용자·인증·권한","bk_설계서_v1.1.md:5034","사용자 관리, 인증 정책, 역할·가드레일·결재선, 메뉴·권한 관리"],
+  ["OP-07","접근 거버넌스 [Step-up]","bk_설계서_v1.1.md:5035","접근 세션·개인정보 접근 로그, Break-glass 요청·승인·녹화·사후 검토"],
+  ["OP-08","기장 워크벤치 [기장]","bk_설계서_v1.1.md:5036","기장 모드 설정, 기장 워크벤치"],
+  ["OP-09","운영·배치·연계 모니터링","bk_설계서_v1.1.md:5037","배치·스케줄·자료수집 ETL·DLQ·외부 연계 볼트·관측성/SLO, 연계 장애 처리"],
+  ["OP-10","보안·감사 운영","bk_설계서_v1.1.md:5038","KMS·키 회전·DLP·대량행위 통제·감사로그 해시체인, 컴플라이언스 점검"],
+  ["OP-11","AI·규칙 운영 [AI]","bk_설계서_v1.1.md:5039","이상거래 탐지 규칙·모델/룰 버전·챗봇 가드레일·QueryTool 허용목록"],
+  ["BF-00","이용회사 선택","bk_설계서_v1.1.md:169","기초 / BF-00 / 이용회사 선택 / 2.2"],
+  ["BF-01","관리회사 운영조직 도메인","bk_설계서_v1.1.md:663","5.5 관리회사 운영조직 도메인"],
+  ["BF-02","테넌트 인프라 운영","bk_설계서_v1.1.md:171","기초 / BF-02 / 테넌트 목록·인프라·쿼터·스냅샷·비동기 잡 / 2장, 7장"],
+  ["BF-10","구독 상세·사용량·청구/결제","bk_설계서_v1.1.md:179","기초 / BF-10 / 구독 상세·사용량·청구/결제 / 7장"],
+  ["BF-08","표준 카탈로그 관리","bk_설계서_v1.1.md:177","기초 / BF-08 / 표준 카탈로그·버전·항목·테넌트 채택/확장 / 6장"],
+  ["OP-05C","시스템 공통코드 관리","시스템관리자.md:309","4.12 시스템 공통코드 관리"],
+  ["BF-04","사용자그룹 관리","시스템관리자.md:713","4.16 사용자그룹 관리"],
+  ["BF-05","인증 정책 편집","bk_설계서_v1.1.md:174","기초 / BF-05 / 인증 정책 편집 / 3.2"],
+  ["BF-07","역할·가드레일·결재선","bk_설계서_v1.1.md:176","기초 / BF-07 / 역할·역할 부여·가드레일·예외·결재선·외부 파트너·기장 배정 / 4장"],
+  ["BF-12","메뉴 마스터 관리","시스템관리자.md:461","4.13 메뉴 마스터 관리"],
+  ["OP-06A","사용자 관리","시스템관리자.md:641","4.15 사용자 관리"],
+  ["OP-06B","인증 정책 관리","시스템관리자.md:102","AuthPolicy MFA SSO"],
+  ["OP-06C","Role·권한 관리","시스템관리자.md:552","4.14 Role·권한 관리"],
+  ["OP-06D","메뉴 마스터 관리","시스템관리자.md:461","4.13 메뉴 마스터 관리"],
+  ["OP-06G","사용자그룹 관리","시스템관리자.md:713","UserGroup management"],
+  ["BF-06","접근 세션 로그·긴급대행 동의/요청","bk_설계서_v1.1.md:175","기초 / BF-06 / 접근 세션 로그·긴급대행 동의/요청 / 5장"],
+  ["BF-03","기장 설정·전환 요청 워크플로우","bk_설계서_v1.1.md:172","기초 / BF-03 / 기장 설정·전환 요청 워크플로우 / 21장"],
+  ["TN","업무화면","bk_설계서_v1.1.md:5041","Tenant workspace channel"],
+  ["TN-00","홈·현황","bk_설계서_v1.1.md:5045","회사 대시보드"],
+  ["TN-01","회사 설정·기초","bk_설계서_v1.1.md:5046","기장 방식, 차원/관리항목, 알림 설정"],
+  ["TN-02","기초정보관리","bk_설계서_v1.1.md:5047","SA-BAS-01~14"],
+  ["TN-03","전기이월·개시잔액","bk_설계서_v1.1.md:5048","SA-OPN-01~19"],
+  ["TN-04","전표 입력·결재","bk_설계서_v1.1.md:5049","일반전표입력, 현금 간편입력, 매입매출전표입력, 전표 도구·정정, 일괄 입력·결재함"],
+  ["TN-05","보조부·관리항목","bk_설계서_v1.1.md:5050","관리항목 입력·통합 관리, 거래처·자금 보조부, 특수 보조부"],
+  ["TN-06","자동전표·증빙","bk_설계서_v1.1.md:5051","증빙함·자료수집, 자동전표 후보"],
+  ["TN-07","장부·원장·보조장부","bk_설계서_v1.1.md:5052","주요 장부, 보조 장부"],
+  ["TN-08","마감·결산·재무제표 [Step-up]","bk_설계서_v1.1.md:5053","마감 관리, 재무제표·결산장부, 보고패키지·명세/tie-out·스케줄"],
+  ["TN-09","부가세·신고서류","bk_설계서_v1.1.md:5054","주요 신고, 첨부·업종별 서식"],
+  ["TN-10","세무·고정자산·차량","bk_설계서_v1.1.md:5055","법인세·원천세, 고정자산·차량"],
+  ["TN-11","자금·예산·어음","bk_설계서_v1.1.md:5056","자금관리, 예적금·차입금, 어음·당좌"],
+  ["TN-12","외화·관계사·관리회계 [선택]","bk_설계서_v1.1.md:5057","다중 회계기준·이중통화 환산·외화평가, 관계사 대사·Cost-plus·예실·그룹보고 Export — 기능 플래그"],
+  ["TN-13","원가·재고·제조 [Phase/업종]","bk_설계서_v1.1.md:5058","재고 수불부·제조원가명세·원가 배부·재고 tie-out — 제조/유통 업종, Phase 2 항목 포함"],
+  ["TN-14","협업·AI [AI]","bk_설계서_v1.1.md:5059","Open Items/질의·고객 확인·알림, 이상거래 탐지·AI 조회 챗봇"],
+  ["TN-15","데이터관리·이관","bk_설계서_v1.1.md:5060","삭제전표복구·백업/복구·보존/파기, SA 내보내기/올리기·기수변경"],
+  ["BF-09","차원·조직·사용정책","bk_설계서_v1.1.md:178","기초 / BF-09 / 차원·조직관리 — 사업장·코스트센터·부서·프로젝트·현장·사원·사용정책 / 9장"],
+  ["BF-11","알림 매트릭스 관리","bk_설계서_v1.1.md:180","기초 / BF-11 / 알림 — 수신 매트릭스·템플릿·D-N 스케줄·웹훅 / 18장"],
+  ["SA-BAS-01","회사등록","페이즈01_기초정보_조직_표준설정.md:81","4.1 SA-BAS-01 회사등록","Company Registration"],
+  ["SA-BAS-02","권한설정","페이즈01_기초정보_조직_표준설정.md:130","4.2 SA-BAS-02 권한설정","Permission Settings"],
+  ["SA-BAS-03","환경설정","페이즈01_기초정보_조직_표준설정.md:152","4.3 SA-BAS-03 환경설정","Environment Settings"],
+  ["SA-BAS-04","부서등록","페이즈01_기초정보_조직_표준설정.md:189","4.4 SA-BAS-04 부서등록","Department Registration"],
+  ["SA-BAS-05","사원등록","페이즈01_기초정보_조직_표준설정.md:211","4.5 SA-BAS-05 사원등록","Employee Registration"],
+  ["SA-BAS-06","거래처등록","페이즈01_기초정보_조직_표준설정.md:250","4.6 SA-BAS-06 거래처등록 R8)","Business Partner Registration"],
+  ["SA-BAS-07","계정과목 및 적요등록","페이즈01_기초정보_조직_표준설정.md:297","4.7 SA-BAS-07 계정과목 및 적요등록 — WJV-08/09 확정 설계 【MVP 최우선】","Account and Summary Registration"],
+  ["SA-BAS-08","현장등록","페이즈01_기초정보_조직_표준설정.md:369","4.8 SA-BAS-08 현장등록","Site Registration"],
+  ["SA-BAS-09","프로젝트등록","페이즈01_기초정보_조직_표준설정.md:396","4.9 SA-BAS-09 프로젝트등록","Project Registration"],
+  ["SA-BAS-10","업무용승용차 등록","페이즈01_기초정보_조직_표준설정.md:420","4.10 SA-BAS-10 업무용승용차 등록","Business Vehicle Registration"],
+  ["SA-BAS-11","외주처등록","페이즈01_기초정보_조직_표준설정.md:520","4.15 SA-BAS-11 외주처등록 【2차】","Subcontractor Registration"],
+  ["SA-BAS-12","거래처DM인쇄","페이즈01_기초정보_조직_표준설정.md:540","4.16 SA-BAS-12 거래처DM인쇄 【2차】","Partner DM Printing"],
+  ["SA-BAS-13","거래처등코드변환","페이즈01_기초정보_조직_표준설정.md:439","4.11 SA-BAS-13 거래처등코드변환","Partner Code Conversion"],
+  ["SA-BAS-14","마감후이월","페이즈01_기초정보_조직_표준설정.md:461","4.12 SA-BAS-14 마감후이월","Post-closing Carryforward"],
+  ["WJV-08","계정과목 관리","페이즈01_기초정보_조직_표준설정.md:297","4.7 SA-BAS-07 계정과목 및 적요등록 — WJV-08/09 확정 설계 【MVP 최우선】"],
+  ["WJV-09","외국 법인/계정 관리","bk_설계서_v1.1.md:8393","13장 외국 법인/계정 관리 / WJV-09 / 본 문서 11.6.2-, 11.6, 6.1.1 / 적용"],
+  ["SA-OPN-01","전기분재무상태표","페이즈02_전기이월_개시잔액.md:119","4.1 SA-OPN-01 전기분재무상태표 【1차】","Prior Financial Position"],
+  ["SA-OPN-02","전기분손익계산서","페이즈02_전기이월_개시잔액.md:144","4.2 SA-OPN-02 전기분손익계산서 【1차】","Prior Income Statement"],
+  ["SA-OPN-03","전기분원가명세서","페이즈02_전기이월_개시잔액.md:161","4.3 SA-OPN-03 전기분원가명세서 【1차】","Prior Cost Statement"],
+  ["SA-OPN-04","전기분이익잉여금처분계산서","페이즈02_전기이월_개시잔액.md:178","4.4 SA-OPN-04 전기분이익잉여금처분계산서 【1차】","Prior Retained Earnings Appropriation"],
+  ["SA-OPN-05","전기분자본변동표","페이즈02_전기이월_개시잔액.md:196","4.5 SA-OPN-05 전기분자본변동표 【1차】","Prior Equity Changes"],
+  ["SA-OPN-06","전기분현금흐름표","페이즈02_전기이월_개시잔액.md:213","4.6 SA-OPN-06 전기분현금흐름표 【1차】","Prior Cash Flow Statement"],
+  ["SA-OPN-07","거래처별초기이월","페이즈02_전기이월_개시잔액.md:228","4.7 SA-OPN-07 거래처별초기이월 【1차】","Customer Opening Balance"],
+  ["SA-OPN-08","부서/사원별초기이월","페이즈02_전기이월_개시잔액.md:255","4.8 SA-OPN-08 부서/사원별초기이월 【1차】","Department Employee Opening Balance"],
+  ["SA-OPN-09","전기 기간별손익계산서","페이즈02_전기이월_개시잔액.md:271","4.9 SA-OPN-09 전기 기간별손익계산서 【1차】","Prior Period Income Statement"],
+  ["SA-OPN-10","전기 기간별원가계산서","페이즈02_전기이월_개시잔액.md:289","4.10 SA-OPN-10 전기 기간별원가계산서 【1차】","Prior Period Cost Statement"],
+  ["SA-OPN-11","전기 프로젝트손익현황","페이즈02_전기이월_개시잔액.md:306","4.11 SA-OPN-11 전기 프로젝트손익현황 【1차】","Prior Project Profit Status"],
+  ["SA-OPN-12","전기 프로젝트원가현황","페이즈02_전기이월_개시잔액.md:321","4.12 SA-OPN-12 전기 프로젝트원가현황 【1차】","Prior Project Cost Status"],
+  ["SA-OPN-13","프로젝트초기이월","페이즈02_전기이월_개시잔액.md:339","4.13 SA-OPN-13 프로젝트초기이월 【1차】","Project Opening Balance"],
+  ["SA-OPN-14","전기 중단사업손익계산서","페이즈02_전기이월_개시잔액.md:355","4.14 SA-OPN-14 전기 중단사업손익계산서 【2차】","Prior Discontinued Ops Income"],
+  ["SA-OPN-15","전기 중단사업원가명세서","페이즈02_전기이월_개시잔액.md:373","4.15 SA-OPN-15 전기 중단사업원가명세서 【2차】","Prior Discontinued Ops Cost"],
+  ["SA-OPN-16","중도시산표","페이즈02_전기이월_개시잔액.md:391","4.16 SA-OPN-16 중도시산표 【2차】","Interim Trial Balance"],
+  ["SA-OPN-17","미완성공사초기이월","페이즈02_전기이월_개시잔액.md:416","4.17 SA-OPN-17 미완성공사초기이월 【2차】","Unfinished Construction Opening"],
+  ["SA-OPN-18","외주처별초기이월","페이즈02_전기이월_개시잔액.md:433","4.18 SA-OPN-18 외주처별초기이월 【2차】","Subcontractor Opening Balance"],
+  ["SA-OPN-19","현장별/거래처별초기이월","페이즈02_전기이월_개시잔액.md:448","4.19 SA-OPN-19 현장별/거래처별초기이월 【2차】","Site Customer Opening Balance"],
+  ["JV-01","일반전표입력","bk_설계서_v1.1.md:151","S2 / 더존식 전표번호 — 전표일자 단위로 매일 001부터 리셋되는 일련번호. 유형코드·연월·한글유형을 번호에 넣지 않고, 대체·입금·출금·매입·매출 구분은 「구분」 컬럼으로 표시. 외부 참조 표기 YYYY-MM-DD-NNN / JV-01·검색·보조부 / 11.1, 12.2 / 반영"],
+  ["JV-02","입금/출금 간편입력 모드","bk_설계서_v1.1.md:183","전표 / JV-02·03 / 입금/출금 간편입력 모드 / 11.1"],
+  ["JV-03","출금 간편입력 모드","bk_설계서_v1.1.md:150","S1 / 입금/출금 전표 메뉴 폐지·일반전표입력 통합 — 별도 입금/출금 메뉴를 두지 않고, 현금 라인 위치로 입금/출금을 자동 판별 / JV-01~03 / 11.1 / 반영"],
+  ["JV-04","매입·매출 전표","bk_설계서_v1.1.md:184","전표 / JV-04·05 / 매입·매출 전표 / 11.4"],
+  ["JV-05","매출 전표","bk_설계서_v1.1.md:184","Sales journal mode"],
+  ["JV-06","전표 도구","페이즈03_전표_자동전표.md:230","스마트 입력 / 자주 쓰는 계정·연상검색·자동분개 추천·템플릿 반복 / 사용 빈도 즐겨찾기·초성/영문/코드 연상검색·과거 거래 이력 기반 상대계정/분개 추천·JV-06 템플릿"],
+  ["JV-07","전표 검색 목록","bk_설계서_v1.1.md:157","S8 / 거래처 마스터 검증 — 사업자등록번호 형식·휴폐업 여부 검증. 외부 기장자료 대량 업로드·매핑·전체 미리보기 / JV-07·08, BF / 11.1, 11.4 / 보완"],
+  ["JV-08","다건/일괄 전표 입력","페이즈03_전표_자동전표.md:232","대량 입력 / JV-08 대량 업로드 / 외부 기장자료 매핑·대량 엑셀 업로드·일괄 상대계정 변경·전체 미리보기, 부록 C 6.4)"],
+  ["SA-JNL-01","일반전표입력","페이즈03_전표_자동전표.md:102","4.1 SA-JNL-01 일반전표입력 — 1차","General Journal Entry"],
+  ["SA-JNL-02","매입매출전표입력","페이즈03_전표_자동전표.md:249","4.2 SA-JNL-02 매입매출전표입력 — 1차","Purchase Sales Journal Entry"],
+  ["SA-JNL-03","정기청구입력 — 2차","페이즈03_전표_자동전표.md:504","4.12 SA-JNL-03 정기청구입력 — 2차"],
+  ["SA-JNL-04","물류전표처리 — 2차","페이즈03_전표_자동전표.md:511","4.13 SA-JNL-04 물류전표처리 — 2차"],
+  ["WJV-01","일반전표입력","페이즈03_전표_자동전표.md:102","4.1 SA-JNL-01 일반전표입력 — 1차","General Journal Entry"],
+  ["WPV-01","매입매출전표입력","페이즈03_전표_자동전표.md:249","4.2 SA-JNL-02 매입매출전표입력 — 1차","Purchase Sales Journal Entry"],
+  ["AUX-01","거래처별 보조원장","페이즈04_장부_보조부.md:119","4.1 AUX-01 거래처별 보조원장","Customer Auxiliary Ledger"],
+  ["AUX-02","어음 보조원장","페이즈04_장부_보조부.md:154","4.2 AUX-02 어음 보조원장","Bills Auxiliary Ledger"],
+  ["AUX-03","예금 보조원장","페이즈04_장부_보조부.md:173","4.3 AUX-03 예금 보조원장","Deposit Auxiliary Ledger"],
+  ["AUX-04","카드 보조원장","페이즈04_장부_보조부.md:192","4.4 AUX-04 카드 보조원장","Card Auxiliary Ledger"],
+  ["AUX-05","가지급금·가수금 보조원장","페이즈04_장부_보조부.md:208","4.5 AUX-05 가지급금·가수금 보조원장","Advance Receipt Payment Ledger"],
+  ["AUX-06","부가세 보조원장","페이즈04_장부_보조부.md:225","4.6 AUX-06 부가세 보조원장","VAT Auxiliary Ledger"],
+  ["AUX-07","현금출납장","페이즈04_장부_보조부.md:254","4.7 AUX-07 현금출납장","Cash Book"],
+  ["AUX-08","재고 수불부","페이즈04_장부_보조부.md:259","4.8 AUX-08 재고 수불부","Inventory Ledger"],
+  ["AUX-09","고정자산대장","페이즈04_장부_보조부.md:265","4.9 AUX-09 고정자산대장","Fixed Asset Ledger"],
+  ["WJV-02","우측 도킹 패널 — 관리항목 입력","페이즈03_전표_자동전표.md:201","4.1.7 우측 도킹 패널 — 관리항목 입력"],
+  ["WJV-03","부가세 부속서류","bk_설계서_v1.1.md:7680","WJV-03부가세 부속서류 반영"],
+  ["WJV-04","받을어음 입력","bk_설계서_v1.1.md:7732","WJV-04받을어음 입력"],
+  ["WJV-05","지급어음 입력","bk_설계서_v1.1.md:7755","WJV-05지급어음 입력"],
+  ["WJV-06","차입금 입력","bk_설계서_v1.1.md:7785","WJV-06차입금 입력"],
+  ["WJV-07","관리항목 통합 관리","bk_설계서_v1.1.md:7598","WJV-07관리항목 통합 관리","Management Item Integration"],
+  ["SA-ATX-01","수집정보등록 — 1차","페이즈03_전표_자동전표.md:407","4.3 SA-ATX-01 수집정보등록 — 1차"],
+  ["SA-ATX-02","전자세금계산서 — 1차","페이즈03_전표_자동전표.md:425","4.4 SA-ATX-02 전자세금계산서 — 1차"],
+  ["SA-ATX-03","전자계산서 — 1차","페이즈03_전표_자동전표.md:446","4.5 SA-ATX-03 전자계산서 — 1차"],
+  ["SA-ATX-04","신용카드 — 1차","페이즈03_전표_자동전표.md:451","4.6 SA-ATX-04 신용카드 — 1차"],
+  ["SA-ATX-05","현금영수증 — 1차","페이즈03_전표_자동전표.md:462","4.7 SA-ATX-05 현금영수증 — 1차"],
+  ["SA-ATX-06","통장 — 1차","페이즈03_전표_자동전표.md:470","4.8 SA-ATX-06 통장 — 1차"],
+  ["SA-ATX-07","자료수집현황 — 1차","페이즈03_전표_자동전표.md:477","4.9 SA-ATX-07 자료수집현황 — 1차"],
+  ["SA-ATX-08","전표전송현황 — 1차","페이즈03_전표_자동전표.md:483","4.10 SA-ATX-08 전표전송현황 — 1차"],
+  ["SA-ATX-09","국세청자료검증 및 사이트비교 — 1차","페이즈03_전표_자동전표.md:489","4.11 SA-ATX-09 국세청자료검증 및 사이트비교 — 1차"],
+  ["SA-ATX-10","ScrappingBoard — 3차","페이즈03_전표_자동전표.md:517","4.14 SA-ATX-10 ScrappingBoard — 3차"],
+  ["SA-LDG-01","전표출력","페이즈04_장부_보조부.md:283","4.10 SA-LDG-01 전표출력","Journal Print"],
+  ["SA-LDG-02","분개장","페이즈04_장부_보조부.md:300","4.11 SA-LDG-02 분개장","Journal Book"],
+  ["SA-LDG-03","일/월계표","페이즈04_장부_보조부.md:307","4.12 SA-LDG-03 일/월계표","Daily Monthly Trial Balance"],
+  ["SA-LDG-04","총계정원장","페이즈04_장부_보조부.md:314","4.13 SA-LDG-04 총계정원장","General Ledger"],
+  ["SA-LDG-05","현금출납장","페이즈04_장부_보조부.md:321","4.14 SA-LDG-05 현금출납장","Cash Book"],
+  ["SA-LDG-06","계정별원장","페이즈04_장부_보조부.md:337","4.15 SA-LDG-06 계정별원장","Account Ledger"],
+  ["SA-LDG-07","거래처원장","페이즈04_장부_보조부.md:344","4.16 SA-LDG-07 거래처원장","Customer Ledger"],
+  ["SA-LDG-08","총괄원장","페이즈04_장부_보조부.md:352","4.17 SA-LDG-08 총괄원장","Consolidated Ledger"],
+  ["SA-LDG-09","매입매출장","페이즈04_장부_보조부.md:359","4.18 SA-LDG-09 매입매출장","Purchase Sales Ledger"],
+  ["SA-LDG-10","총계정관리원장","페이즈04_장부_보조부.md:405","4.21 SA-LDG-10 총계정관리원장","Managed General Ledger"],
+  ["SA-LDG-11","세금/계산서 발급 및 수취현황","페이즈04_장부_보조부.md:411","4.22 SA-LDG-11 세금/계산서 발급 및 수취현황","Tax Invoice Issue Receipt Status"],
+  ["SA-LDG-12","신용카드매출전표 발행현황","페이즈04_장부_보조부.md:417","4.23 SA-LDG-12 신용카드매출전표 발행현황","Credit Card Sales Slip Status"],
+  ["SA-LDG-13","적요별원장","페이즈04_장부_보조부.md:423","4.24 SA-LDG-13 적요별원장","Summary Ledger"],
+  ["SA-LDG-14","전도금원장","페이즈04_장부_보조부.md:429","4.25 SA-LDG-14 전도금원장","Imprest Fund Ledger"],
+  ["SA-LDG-15","공사대장","페이즈04_장부_보조부.md:435","4.26 SA-LDG-15 공사대장","Construction Ledger"],
+  ["SA-LDG-16","외주대장","페이즈04_장부_보조부.md:441","4.27 SA-LDG-16 외주대장","Subcontract Ledger"],
+  ["SA-LDG-17","운행기록부","페이즈04_장부_보조부.md:376","4.19 SA-LDG-17 운행기록부","Driving Log"],
+  ["SA-LDG-18","차량비용현황","페이즈04_장부_보조부.md:398","4.20 SA-LDG-18 차량비용현황","Vehicle Expense Status"],
+  ["SA-LDG-19","현장/프로젝트/부서 원가안분","페이즈04_장부_보조부.md:447","4.28 SA-LDG-19 현장/프로젝트/부서 원가안분","Site Project Cost Allocation"],
+  ["SA-LDG-20","현장/프로젝트/부서 원가현황","페이즈04_장부_보조부.md:465","4.29 SA-LDG-20 원가현황 / 4.30 SA-LDG-21 손익안분 / 4.31 SA-LDG-22 손익현황"],
+  ["SA-LDG-21","손익안분","페이즈04_장부_보조부.md:465","4.30 SA-LDG-21 손익안분"],
+  ["SA-LDG-22","손익현황","페이즈04_장부_보조부.md:465","4.31 SA-LDG-22 손익현황"],
+  ["SA-LDG-23","현장/프로젝트/부서 원가손익","bk_설계서_v1.1.md:3788","25.8.5 현장/프로젝트/부서 원가손익 SA-LDG-23"],
+  ["SA-LDG-24","현장별 공사원가집계표","페이즈04_장부_보조부.md:477","4.33 SA-LDG-24 현장별 공사원가집계표","Site Construction Cost Summary"],
+  ["SA-LDG-25","공사비용현황","페이즈04_장부_보조부.md:485","4.34 SA-LDG-25 공사비용현황 / 4.35 SA-LDG-26 현장별 잔액명세서"],
+  ["SA-LDG-26","현장별 잔액명세서","페이즈04_장부_보조부.md:485","4.34 SA-LDG-25 공사비용현황 / 4.35 SA-LDG-26 현장별 잔액명세서","Site Balance Statement"],
+  ["SA-LDG-27","차원 거래처원장","페이즈04_장부_보조부.md:490","4.36 SA-LDG-27 차원 거래처원장","Dimension Customer Ledger"],
+  ["SA-LDG-28","프로젝트 누적손익현황","페이즈04_장부_보조부.md:496","4.37 SA-LDG-28 프로젝트 누적손익현황 / 4.38 SA-LDG-29 프로젝트 누적원가현황"],
+  ["SA-LDG-29","프로젝트 누적원가현황","페이즈04_장부_보조부.md:496","4.37 SA-LDG-28 프로젝트 누적손익현황 / 4.38 SA-LDG-29 프로젝트 누적원가현황","Project Cumulative Cost Status"],
+  ["SA-CLS-01","결산자료입력","페이즈05_결산_재무제표.md:170","4.3 SA-CLS-01 결산자료입력","Closing Data Input"],
+  ["SA-CLS-02","합계잔액시산표","페이즈05_결산_재무제표.md:202","4.4 SA-CLS-02 합계잔액시산표","Trial Balance"],
+  ["SA-CLS-03","재무상태표","페이즈05_결산_재무제표.md:226","4.5 SA-CLS-03 재무상태표","Statement of Financial Position"],
+  ["SA-CLS-04","손익계산서","페이즈05_결산_재무제표.md:251","4.6 SA-CLS-04 손익계산서","Income Statement"],
+  ["SA-CLS-05","제조원가명세서","페이즈05_결산_재무제표.md:274","4.7 SA-CLS-05 제조원가명세서","Manufacturing Cost Statement"],
+  ["SA-CLS-06","이익잉여금처분계산서","페이즈05_결산_재무제표.md:290","4.8 SA-CLS-06 이익잉여금처분계산서","Retained Earnings Appropriation"],
+  ["SA-CLS-07","자본변동표","페이즈05_결산_재무제표.md:306","4.9 SA-CLS-07 자본변동표","Statement of Changes in Equity"],
+  ["SA-CLS-08","현금흐름표","페이즈05_결산_재무제표.md:314","4.10 SA-CLS-08 현금흐름표","Cash Flow Statement"],
+  ["SA-CLS-09","결산부속명세서","페이즈05_결산_재무제표.md:349","4.11 SA-CLS-09 결산부속명세서","Closing Supplementary Schedules"],
+  ["SA-CLS-10","현금및예금잔액검토","페이즈05_결산_재무제표.md:476","4.20 SA-CLS-10 현금및예금잔액검토","Cash Deposit Balance Review"],
+  ["SA-CLS-11","카드·상품권 사용검토","페이즈05_결산_재무제표.md:491","4.21 SA-CLS-11 신용카드 및 상품권 등 사용내역 검토서식","Card Gift Certificate Usage Review"],
+  ["SA-CLS-12","AI 합계잔액시산표","페이즈05_결산_재무제표.md:366","4.12 SA-CLS-12 AI 합계잔액시산표","AI Trial Balance"],
+  ["SA-CLS-13","재무제표 일괄출력","페이즈05_결산_재무제표.md:382","4.13 SA-CLS-13 재무제표 일괄출력","Financial Statement Batch Print"],
+  ["SA-CLS-14","경영정보","페이즈05_결산_재무제표.md:389","4.14 SA-CLS-14 경영정보","Management Information"],
+  ["SA-CLS-15","영수증수취명세서","페이즈05_결산_재무제표.md:410","4.15 SA-CLS-15 영수증수취명세서","Receipt Collection Statement"],
+  ["SA-CLS-16","경비등의송금명세서","페이즈05_결산_재무제표.md:427","4.16 SA-CLS-16 경비등의송금명세서","Expense Remittance Statement"],
+  ["SA-CLS-17","지출증명서류합계표","페이즈05_결산_재무제표.md:441","4.17 SA-CLS-17 지출증명서류합계표","Expenditure Evidence Summary"],
+  ["SA-CLS-18","기간별손익계산서","페이즈05_결산_재무제표.md:462","4.18 SA-CLS-18 기간별손익계산서","Period Income Statement"],
+  ["SA-CLS-19","기간별원가명세서","페이즈05_결산_재무제표.md:469","4.19 SA-CLS-19 기간별원가명세서","Period Cost Statement"],
+  ["SA-CLS-20","중단사업손익계산서","페이즈05_결산_재무제표.md:505","4.22 SA-CLS-20 중단사업손익계산서","Discontinued Ops Income Statement"],
+  ["SA-CLS-21","중단사업원가명세서","페이즈05_결산_재무제표.md:512","4.23 SA-CLS-21 중단사업원가명세서","Discontinued Ops Cost Statement"],
+  ["SA-VAT-01","신고서 항목 매핑","페이즈07_부가세_첨부_업종별.md:68","3.1 본 페이즈 서식 → SA-VAT-01 신고서 란 매핑","Return Field Mapping"],
+  ["SA-VAT-02","세무리스크 자동검증","bk_설계서_v1.1.md:4249","25.11.2 세무리스크 자동검증 SA-VAT-02"],
+  ["SA-VAT-03","세금계산서합계표","페이즈06_부가세_주요신고.md:176","4.3 세금계산서합계표 SA-VAT-03","Tax Invoice Summary"],
+  ["SA-VAT-04","신용카드매출전표등 수령명세서","페이즈06_부가세_주요신고.md:205","4.4 신용카드매출전표등 수령명세서 SA-VAT-04","Credit Card Sales Receipt Statement"],
+  ["SA-VAT-05","신용카드매출전표 발행집계표","페이즈06_부가세_주요신고.md:233","4.5 신용카드매출전표 발행집계표 SA-VAT-05","Credit Card Sales Issue Summary"],
+  ["SA-VAT-06","계산서합계표","페이즈06_부가세_주요신고.md:257","4.6 계산서합계표 SA-VAT-06","Invoice Summary"],
+  ["SA-VAT-07","부가가치세 전자신고","페이즈06_부가세_주요신고.md:274","4.7 부가가치세 전자신고 SA-VAT-07","VAT E-Filing"],
+  ["SA-VAT-08","부가가치세 납부서","페이즈06_부가세_주요신고.md:303","4.8 부가가치세 납부서 SA-VAT-08","VAT Payment Form"],
+  ["SA-VAT-09","부동산임대공급가액명세서","페이즈06_부가세_주요신고.md:319","4.9 부동산임대공급가액명세서 SA-VAT-09","Real Estate Rental Supply Statement"],
+  ["SA-VAT-10","건물관리명세서","페이즈06_부가세_주요신고.md:345","4.10 건물관리명세서 SA-VAT-10","Building Management Statement"],
+  ["SA-VAT-11","의제매입세액공제신고서","페이즈06_부가세_주요신고.md:361","4.11 의제매입세액공제신고서 SA-VAT-11","Deemed Input Tax Credit Report"],
+  ["SA-VAT-12","재활용폐자원세액공제신고서","페이즈06_부가세_주요신고.md:390","4.12 재활용폐자원세액공제신고서 SA-VAT-12","Recycled Resource Tax Credit Report"],
+  ["SA-VAT-13","구리스크랩등 매입세액공제신고서","페이즈06_부가세_주요신고.md:409","4.13 구리스크랩등 매입세액공제신고서 SA-VAT-13","Copper Scrap Input Tax Credit Report"],
+  ["SA-VAT-14","현금매출명세서","페이즈06_부가세_주요신고.md:425","4.14 현금매출명세서 SA-VAT-14","Cash Sales Statement"],
+  ["SA-VAT-15","동물진료용역매출명세서","페이즈06_부가세_주요신고.md:443","4.15 동물진료용역매출명세서 SA-VAT-15","Veterinary Service Sales Statement"],
+  ["SA-VAT-16","면세유류공급명세서","bk_설계서_v1.1.md:4363","25.12.8 면세유류공급명세서 SA-VAT-16"],
+  ["SA-VAT-17","월별판매액합계표","페이즈07_부가세_첨부_업종별.md:354","4.11 월별판매액합계표 SA-VAT-17","Monthly Sales Summary"],
+  ["SA-VAT-18","농어업기자재 부가세환급신청","페이즈07_부가세_첨부_업종별.md:370","4.12 농어업기자재 부가세환급신청 SA-VAT-18","Agricultural Materials VAT Refund"],
+  ["SA-VAT-19","전자화폐결제명세서","페이즈07_부가세_첨부_업종별.md:389","4.13 전자화폐결제명세서 SA-VAT-19","Electronic Money Payment Statement"],
+  ["SA-VAT-20","전자신고세액공제신청서","페이즈07_부가세_첨부_업종별.md:407","4.14 전자신고세액공제신청서 SA-VAT-20","E-Filing Tax Credit Application"],
+  ["SA-VAT-21","보세판매장 공급실적","페이즈07_부가세_첨부_업종별.md:425","4.15 입국경로 설치된 보세판매장 공급실적명세서 SA-VAT-21","Bonded Store Supply Performance"],
+  ["SA-VAT-22","공제받지못할매입세액명세서","페이즈07_부가세_첨부_업종별.md:90","4.1 공제받지못할매입세액명세서 SA-VAT-22","Non-deductible Input VAT Statement"],
+  ["SA-VAT-23","건물등감가상각자산취득명세서","페이즈07_부가세_첨부_업종별.md:156","4.2 건물등감가상각자산취득명세서 SA-VAT-23","Depreciable Asset Acquisition"],
+  ["SA-VAT-24","대손세액공제신고서","페이즈07_부가세_첨부_업종별.md:183","4.3 대손세액공제신고서 SA-VAT-24","Bad Debt Tax Credit Report"],
+  ["SA-VAT-25","사업장별 부가세 납부/환급 신고명세","페이즈07_부가세_첨부_업종별.md:221","4.4 사업장별 부가세 납부/환급 신고명세 SA-VAT-25","Workplace VAT Payment Refund Report"],
+  ["SA-VAT-26","사업자단위과세 사업장별 부가세","페이즈07_부가세_첨부_업종별.md:248","4.5 사업자단위과세 사업장별 부가세 SA-VAT-26","Business Unit VAT by Workplace"],
+  ["SA-VAT-27","과표수정 및 추가납부계산서","bk_설계서_v1.1.md:4458","25.13.6 과표수정 및 추가납부계산서 SA-VAT-27"],
+  ["SA-VAT-28","과표 및 세액 경정청구서","bk_설계서_v1.1.md:4466","25.13.7 과표 및 세액 경정청구서 SA-VAT-28"],
+  ["SA-VAT-29","수출실적명세서","페이즈08_영세율_고정자산.md:88","4.1.1 SA-VAT-29 수출실적명세서","Export Performance Statement"],
+  ["SA-VAT-30","영세율첨부서류제출명세서","페이즈08_영세율_고정자산.md:107","4.1.2 SA-VAT-30 영세율첨부서류제출명세서","Zero-rated Attachment Statement"],
+  ["SA-VAT-31","내국신용장/구매확인서 전자발급","페이즈08_영세율_고정자산.md:124","4.1.3 SA-VAT-31 내국신용장/구매확인서 전자발급","Local LC Purchase Confirmation Issue"],
+  ["SA-VAT-32","외화획득명세서","페이즈08_영세율_고정자산.md:130","4.1.4 SA-VAT-32 외화획득명세서","Foreign Currency Earning Statement"],
+  ["SA-VAT-33","관세환급금등명세서","페이즈07_부가세_첨부_업종별.md:302","4.8 관세환급금등명세서 SA-VAT-33","Customs Refund Statement"],
+  ["SA-VAT-34","외국인관광객 면세판매 및 환급명세서","페이즈07_부가세_첨부_업종별.md:319","4.9 외국인관광객 면세판매 및 환급명세서 SA-VAT-34","Foreigner Tax-free Sales Refund"],
+  ["SA-VAT-35","외국인 의료용역 환급","페이즈07_부가세_첨부_업종별.md:441","4.16 외국인관광객 미용성형 의료용역 환급실적명세서 SA-VAT-35","Foreigner Medical Service Refund"],
+  ["SA-VAT-36","외국인관광객 숙박용역 환급실적명세서","페이즈08_영세율_고정자산.md:288","4.4.1 SA-VAT-36 외국인관광객 숙박용역 환급실적명세서","Foreigner Lodging Service Refund"],
+  ["SA-VAT-37","외국인 즉시환급 판매","페이즈08_영세율_고정자산.md:292","4.4.2 SA-VAT-37 외국인관광객 즉시환급 물품판매실적명세서","Foreigner Instant Refund Sales"],
+  ["SA-VAT-38","외국인물품","페이즈08_영세율_고정자산.md:296","4.4.3 SA-VAT-38 외국인물품 판매기록표","Foreigner Goods Sales"],
+  ["SA-VAT-39","재화·용역 공급기록표","페이즈08_영세율_고정자산.md:135","4.1.5 SA-VAT-39 재화·용역 공급기록표","Goods Services Supply Record"],
+  ["SA-VAT-40","공급가액확정명세서","페이즈08_영세율_고정자산.md:140","4.1.6 SA-VAT-40 공급가액확정명세서","Supply Value Confirmation Statement"],
+  ["SA-VAT-41","선박에 의한 운송용역 공급가액일람표","페이즈08_영세율_고정자산.md:145","4.1.7 SA-VAT-41 선박에 의한 운송용역 공급가액일람표","Ship Transport Supply Schedule"],
+  ["SA-VAT-42","외항선박등에 제공한 재화·용역 일람표","페이즈08_영세율_고정자산.md:150","4.1.8 SA-VAT-42 외항선박등에 제공한 재화·용역 일람표","Ocean Vessel Supply Schedule"],
+  ["SA-VAT-43","영세율매출명세서","페이즈08_영세율_고정자산.md:155","4.1.9 SA-VAT-43 영세율매출명세서","Zero-rated Sales Statement"],
+  ["SA-VAT-44","일반/간이과세 전환 시 재고품등 신고","페이즈08_영세율_고정자산.md:300","4.4.4 SA-VAT-44 일반/간이과세 전환 시 재고품등 신고","Tax Conversion Inventory Report"],
+  ["SA-VAT-45","과세사업전환 감가상각자산 신고서","페이즈08_영세율_고정자산.md:304","4.4.5 SA-VAT-45 과세사업전환 감가상각자산 신고서","Taxable Conversion Asset Report"],
+  ["SA-VAT-46","매입자발행세금계산서합계표","페이즈08_영세율_고정자산.md:308","4.4.6 SA-VAT-46 매입자발행세금계산서합계표","Purchaser-issued Tax Invoice Summary"],
+  ["SA-VAT-47","과세유흥장소 과표신고서","페이즈08_영세율_고정자산.md:312","4.4.7 SA-VAT-47 과세유흥장소 과표신고서","Entertainment Place Tax Base Report"],
+  ["SA-VAT-48","사업용계좌 개설신고서","페이즈08_영세율_고정자산.md:163","4.2.1 SA-VAT-48 사업용계좌 개설신고서","Business Account Opening Report"],
+  ["SA-VAT-49","납부서 작성","페이즈08_영세율_고정자산.md:178","4.2.2 SA-VAT-49 납부서 작성","Payment Form Entry"],
+  ["SA-VAT-50","사업양도신고서","페이즈08_영세율_고정자산.md:316","4.4.8 SA-VAT-50 사업양도신고서","Business Transfer Report"],
+  ["SA-FA-01","고정자산등록","페이즈08_영세율_고정자산.md:185","4.3.1 SA-FA-01 고정자산등록 )","Fixed Asset Registration"],
+  ["SA-FA-02","미상각분 감가상각계산","페이즈08_영세율_고정자산.md:240","4.3.2 SA-FA-02 미상각분 감가상각계산","Undepreciated Asset Depreciation"],
+  ["SA-FA-03","양도자산 감가상각계산","페이즈08_영세율_고정자산.md:246","4.3.3 SA-FA-03 양도자산 감가상각계산","Transferred Asset Depreciation"],
+  ["SA-FA-04","원가경비별 감가상각명세서","페이즈08_영세율_고정자산.md:252","4.3.4 SA-FA-04 원가경비별 감가상각명세서","Depreciation Expense Statement"],
+  ["SA-FA-05","고정자산관리대장","페이즈08_영세율_고정자산.md:257","4.3.5 SA-FA-05 고정자산관리대장","Fixed Asset Ledger"],
+  ["SA-FA-06","현장/프로젝트/부서 자산명세서","페이즈08_영세율_고정자산.md:265","4.3.6 SA-FA-06 현장/프로젝트/부서 자산명세서","Asset Statement by Site Project"],
+  ["SA-FA-07","월별 감가상각비 계상","페이즈08_영세율_고정자산.md:270","4.3.7 SA-FA-07 월별 감가상각비 계상","Monthly Depreciation Posting"],
+  ["SA-BIL-01","받을어음현황","페이즈09_자금_예산_어음.md:399","4.18 SA-BIL-01 받을어음현황","Notes Receivable Status"],
+  ["SA-BIL-02","지급어음현황","페이즈09_자금_예산_어음.md:416","4.19 SA-BIL-02 지급어음현황","Notes Payable Status"],
+  ["SA-BIL-03","어음집계표","페이즈09_자금_예산_어음.md:431","4.20 SA-BIL-03 어음집계표","Bills Summary"],
+  ["SA-BIL-04","당좌수표현황","페이즈09_자금_예산_어음.md:446","4.21 SA-BIL-04 당좌수표현황","Cashier Check Status"],
+  ["SA-DEP-01","예적금현황","페이즈09_자금_예산_어음.md:334","4.15 SA-DEP-01 예적금현황","Deposit Balance Status"],
+  ["SA-DEP-02","차입금스케줄관리","페이즈09_자금_예산_어음.md:358","4.16 SA-DEP-02 차입금스케줄관리","Borrowing Schedule Management"],
+  ["SA-DEP-03","차입금현황","페이즈09_자금_예산_어음.md:383","4.17 SA-DEP-03 차입금현황","Borrowing Status"],
+  ["SA-FND-01","일일자금명세/경리일보","페이즈09_자금_예산_어음.md:109","4.1 SA-FND-01 일일자금명세/경리일보","Daily Cash Statement"],
+  ["SA-FND-02","자금계획입력","페이즈09_자금_예산_어음.md:129","4.2 SA-FND-02 자금계획입력","Cash Plan Input"],
+  ["SA-FND-03","일일자금현황","페이즈09_자금_예산_어음.md:152","4.3 SA-FND-03 일일자금현황","Daily Cash Status"],
+  ["SA-FND-04","자금일월보","페이즈09_자금_예산_어음.md:169","4.4 SA-FND-04 자금일월보","Cash Daily Monthly Report"],
+  ["SA-FND-05","자금입출금내역","페이즈09_자금_예산_어음.md:185","4.5 SA-FND-05 자금입출금내역","Cash Receipt Payment Details"],
+  ["SA-FND-06","자금계획서","페이즈09_자금_예산_어음.md:200","4.6 SA-FND-06 자금계획서","Cash Plan"],
+  ["SA-FND-07","예산입력","페이즈09_자금_예산_어음.md:216","4.7 SA-FND-07 예산입력","Budget Input"],
+  ["SA-FND-08","당기예산 월별 실적현황","페이즈09_자금_예산_어음.md:242","4.8 SA-FND-08 당기예산 월별 실적현황","Current Budget Monthly Actuals"],
+  ["SA-FND-09","당기예산 분기/반기 실적현황","페이즈09_자금_예산_어음.md:258","4.9 SA-FND-09 당기예산 분기/반기 실적현황","Current Budget Period Actuals"],
+  ["SA-FND-10","전기실행액입력","페이즈09_자금_예산_어음.md:275","4.10 SA-FND-10 전기실행액입력","Prior Execution Amount Input"],
+  ["SA-FND-11","전기예산 월별 실적현황","페이즈09_자금_예산_어음.md:282","4.11 SA-FND-11 전기예산 월별 실적현황","Prior Budget Monthly Actuals"],
+  ["SA-FND-12","전기예산 분기/반기 실적현황","페이즈09_자금_예산_어음.md:289","4.12 SA-FND-12 전기예산 분기/반기 실적현황","Prior Budget Period Actuals"],
+  ["SA-FND-13","차기예산입력","페이즈09_자금_예산_어음.md:296","4.13 SA-FND-13 차기예산입력","Next Budget Input"],
+  ["SA-FND-14","추정예산","페이즈09_자금_예산_어음.md:316","4.14 SA-FND-14 추정예산","Estimated Budget"],
+  ["SA-DAT-01","전표 삭제 → 복구","페이즈10_데이터관리_운영.md:63","3.1 전표 삭제 → 복구"],
+  ["SA-DAT-02","데이터백업 / 데이터복구","bk_설계서_v1.1.md:4962","25.20.2 데이터백업 / 데이터복구 SA-DAT-02"],
+  ["SA-DAT-03","SmartA로 보낼 데이터 만들기","bk_설계서_v1.1.md:4974","25.20.3 SmartA로 보낼 데이터 만들기 SA-DAT-03"],
+  ["SA-DAT-04","SmartA로 보낼 데이터 만들기","bk_설계서_v1.1.md:4982","25.20.4 SmartA로 보낼 데이터 만들기 SA-DAT-04"],
+  ["SA-DAT-05","SmartA 데이터올리기","bk_설계서_v1.1.md:4990","25.20.5 SmartA 데이터올리기 SA-DAT-05"],
+  ["SA-DAT-06","SmartA 데이터올리기","bk_설계서_v1.1.md:4998","25.20.6 SmartA 데이터올리기 SA-DAT-06"],
+  ["SA-DAT-07","기수변경","bk_설계서_v1.1.md:5006","25.20.7 기수변경 SA-DAT-07"],
+  ["CO","공통·기술·설계 추적","bk_설계서_v1.1.md:5062","Common platform channel"],
+  ["CO-01","로그인·내 계정","bk_설계서_v1.1.md:5062","공통·기술·설계 추적 채널 — CO-01 로그인·내 계정"],
+  ["CO-02","알림·커뮤니케이션","bk_설계서_v1.1.md:5062","CO-02 알림·커뮤니케이션"],
+  ["CO-03","API·서비스 계약","bk_설계서_v1.1.md:5062","CO-03 API·서비스 계약"],
+  ["CO-04","검증·오류 처리","bk_설계서_v1.1.md:5062","CO-04 검증·오류 처리"],
+  ["CO-05","데이터 모델·상태값","bk_설계서_v1.1.md:5062","CO-05 데이터 모델·상태값"],
+  ["CO-06","배치·스케줄","bk_설계서_v1.1.md:5062","CO-06 배치·스케줄"],
+  ["CO-07","보안·개인정보","bk_설계서_v1.1.md:5062","CO-07 보안·개인정보"],
+  ["CO-08","시스템 운영·인프라","bk_설계서_v1.1.md:5062","CO-08 시스템 운영·인프라"],
+  ["CO-09","산출물·보고서","bk_설계서_v1.1.md:5062","CO-09 산출물·보고서(11.13"],
+  ["CO-10","설계서 부록 추적","bk_설계서_v1.1.md:5062","CO-10 설계서 부록 추적."]
+];
+function menuParentFor(code){
+  if(code==='OP'||code==='TN'||code==='CO'){return '';}
+  if(/^OP-\d{2}$/.test(code)){return 'OP';}
+  if(/^TN-\d{2}$/.test(code)){return 'TN';}
+  if(/^CO-\d{2}$/.test(code)){return 'CO';}
+  if(/^OP-\d{2}[A-Z]$/.test(code)){return code.slice(0,5);}
+  var bf={'BF-00':'OP-00','BF-01':'OP-02','BF-02':'OP-03','BF-03':'OP-08','BF-04':'OP-06','BF-05':'OP-06','BF-06':'OP-07','BF-07':'OP-06','BF-08':'OP-05','BF-09':'TN-01','BF-10':'OP-04','BF-11':'TN-01','BF-12':'OP-06'};
+  if(bf[code]){return bf[code];}
+  if(code.indexOf('SA-')===0){var mod=code.split('-')[1];var map={BAS:'TN-02',OPN:'TN-03',JNL:'TN-04',ATX:'TN-06',LDG:'TN-07',CLS:'TN-08',VAT:'TN-09',FA:'TN-10',FND:'TN-11',DEP:'TN-11',BIL:'TN-11',DAT:'TN-15'};return map[mod]||'TN';}
+  if(code.indexOf('AUX-')===0){return 'TN-05';}
+  if(code.indexOf('JV-')===0||code.indexOf('WPV-')===0){return 'TN-04';}
+  if(code.indexOf('WJV-')===0){if(/WJV-0[1]$/.test(code)){return 'TN-04';} if(/WJV-0[2-7]$/.test(code)){return 'TN-05';} return 'TN-02';}
+  return 'TN';
+}
+function menuChannelFor(code){var p=menuParentFor(code);return code==='OP'||p.indexOf('OP')===0?'OP':code==='CO'||p.indexOf('CO')===0?'CO':'TN';}
+function menuLevelFor(code){var p=menuParentFor(code);if(!p){return 1;}return p.length===2?2:3;}
+function menuTypeFor(code){return /^(OP|TN|CO)$/.test(code)||/^(OP|TN|CO)-\d{2}$/.test(code)?'GROUP':'MENU';}
+function menuEnFor(code,row){
+  var en={OP:'Operator Console',TN:'Tenant Workspace',CO:'Common Platform','OP-00':'Operation Entry','OP-01':'Operations Dashboard','OP-02':'Operator Organization','OP-03':'Tenant Operations','OP-04':'Subscription Billing','OP-05':'Common Standards','OP-05C':'System Common Code Management','OP-06':'Users, Authentication and Permissions','OP-06A':'User Management','OP-06B':'Authentication Policy Management','OP-06C':'Role and Permission Management','OP-06D':'Menu Master Management','OP-06G':'User Group Management','OP-07':'Access Governance','OP-08':'Bookkeeping Workbench','OP-09':'Batch and Integration Monitoring','OP-10':'Security and Audit Operations','OP-11':'AI Rule Operations','BF-00':'Tenant Selection','BF-01':'Operator Organization Hierarchy','BF-02':'Tenant List and Infrastructure Operations','BF-03':'Bookkeeping Mode Switch Workflow','BF-04':'User Group Management','BF-05':'Authentication Policy Editing','BF-06':'Access Session and Break-glass Request','BF-07':'Role and Permission Assignment','BF-08':'Standard Catalog Management','BF-09':'Dimension and Organization Management','BF-10':'Subscription Billing and Payment','BF-11':'Notification Matrix Management','BF-12':'Menu Master Management','TN-00':'Home Dashboard','TN-01':'Company Settings','TN-02':'Basic Information','TN-03':'Opening Balance','TN-04':'Journal Entry and Approval','TN-05':'Auxiliary Ledger Management','TN-06':'Auto Journal and Evidence','TN-07':'Ledgers','TN-08':'Closing and Financial Statements','TN-09':'VAT Filing','TN-10':'Tax and Fixed Assets','TN-11':'Treasury, Budget and Bills','TN-12':'FX and Intercompany Management','TN-13':'Cost, Inventory and Manufacturing','TN-14':'Collaboration and AI','TN-15':'Data Migration','JV-01':'General Journal Entry','JV-02':'Cash Receipt and Payment Simple Entry','JV-03':'Payment Simple Entry','JV-04':'Purchase Journal Entry','JV-05':'Sales Journal Entry','JV-06':'Journal Template','JV-07':'Journal Review List','JV-08':'Bulk Journal Entry','WJV-01':'General Journal Entry','WPV-01':'Purchase and Sales Journal Entry','WJV-02':'Management Item Entry Panel','WJV-03':'VAT Attachment','WJV-04':'Notes Receivable Entry','WJV-05':'Notes Payable Entry','WJV-06':'Borrowing Entry','WJV-07':'Management Item Integration','WJV-08':'Account Subject Management','WJV-09':'Foreign Corporation Account Management','AUX-01':'Customer Auxiliary Ledger','AUX-02':'Bills Auxiliary Ledger','AUX-03':'Deposit Auxiliary Ledger','AUX-04':'Card Auxiliary Ledger','AUX-05':'Advance Payment Auxiliary Ledger','AUX-06':'VAT Auxiliary Ledger','AUX-07':'Cash Book','AUX-08':'Inventory Ledger','AUX-09':'Fixed Asset Ledger','SA-LDG-21':'P&L Allocation','SA-LDG-22':'P&L Status','SA-FND-01':'Daily Cash Statement and Calendar','SA-FND-02':'Cash Plan Input','SA-FND-03':'Daily Cash Status','SA-FND-04':'Cash Daily and Monthly Report','SA-FND-05':'Cash Receipt and Payment Details','SA-FND-06':'Cash Plan','SA-FND-07':'Budget Input','SA-FND-08':'Current Budget Monthly Actual Status','SA-FND-09':'Current Budget Quarterly and Semiannual Actual Status','SA-FND-10':'Prior Period Execution Import','SA-FND-11':'Prior Budget Monthly Actual Status','SA-FND-12':'Prior Budget Quarterly and Semiannual Actual Status','SA-FND-13':'Next Budget Input','SA-FND-14':'Estimated Budget','SA-DEP-01':'Deposit Balance Status','SA-DEP-02':'Borrowing Schedule Management','SA-DEP-03':'Borrowing Status','SA-BIL-01':'Notes Receivable Status','SA-BIL-02':'Notes Payable Status','SA-BIL-03':'Bills Summary','SA-BIL-04':'Endorsed Notes Status','SA-FA-01':'Fixed Asset Registration','SA-FA-02':'Undepreciated Asset Depreciation Calculation','SA-FA-03':'Transferred Asset Depreciation Calculation','SA-FA-04':'Depreciation Expense Statement by Cost','SA-FA-05':'Fixed Asset Management Ledger','SA-FA-06':'Asset Statement by Site Project Department','SA-FA-07':'Monthly Depreciation Posting','SA-DAT-01':'Journal Deletion and Recovery','SA-DAT-02':'Data Backup and Recovery','SA-DAT-03':'Create Data for Smart A Export','SA-DAT-04':'Create Data for Smart A Export','SA-DAT-05':'Smart A Data Upload','SA-DAT-06':'Smart A Data Upload','SA-DAT-07':'Fiscal Year Change','CO-01':'Login and My Account','CO-02':'Notification and Communication','CO-03':'API and Service Contract','CO-04':'Validation and Error Handling','CO-05':'Data Model and Status Values','CO-06':'Batch and Schedule','CO-07':'Security and Privacy','CO-08':'System Operations and Infrastructure','CO-09':'Outputs and Reports','CO-10':'Design Appendix Trace'};
+  if(en[code]){return en[code];}
+  var detail=(row&&row[3])||'';
+  if(/^[A-Za-z][A-Za-z0-9 .,&/()'-]{5,}$/.test(detail)&&detail.indexOf(code)<0){return detail.replace(/\s+/g,' ').trim();}
+  var sa=code.match(/^SA-([A-Z]+)-(\d+)$/);
+  if(sa){var modules={BAS:'Basic Information',OPN:'Opening Balance',JNL:'Journal Entry',ATX:'Auto Journal Evidence',LDG:'Ledger',CLS:'Closing Statement',VAT:'VAT Filing',FA:'Fixed Assets',FND:'Treasury Planning',DEP:'Deposit and Borrowing',BIL:'Bills Management',DAT:'Data Management'};return (modules[sa[1]]||'Smart A')+' Menu '+String(parseInt(sa[2],10));}
+  var fam=code.match(/^([A-Z]+)-(\d+)$/);
+  if(fam){var families={BF:'Base Function',JV:'Journal Voucher',WJV:'Workbench Journal',WPV:'Purchase Sales Voucher',AUX:'Auxiliary Ledger'};return (families[fam[1]]||'Business')+' Menu '+String(parseInt(fam[2],10));}
+  return 'Menu Item';
+}
+function menuRouteFor(code){var ch=menuChannelFor(code);var base=ch==='OP'?'/operator':ch==='CO'?'/common':'/tenant';return base+'/'+code.toLowerCase().replace(/-/g,'/');}
+function menuPhaseFor(source){var m=source.match(/페이즈(\d{2})/);if(m){return 'PHASE'+m[1];}if(source.indexOf('시스템관리')>=0){return 'SYSADMIN';}if(source.indexOf('운영자')>=0){return 'OPERATOR';}return 'CORE';}
+function escapeHtml(value){return String(value==null?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+var MENU_MASTER_CATALOG=MENU_MASTER_ROWS.map(function(row){
+  var code=row[0];
+  return {code:code,ko:row[1],source:row[2],detail:row[3],parent:menuParentFor(code),channel:menuChannelFor(code),level:menuLevelFor(code),type:menuTypeFor(code),screen:/^(OP|TN|CO)$/.test(code)?'-':code,en:row[4]||menuEnFor(code,row),route:menuRouteFor(code),flag:'feature.menu.'+code.toLowerCase().replace(/-/g,'.'),phase:menuPhaseFor(row[2]),status:'ACTIVE'};
+});
+var MENU_TREE_EXPANDED={OP:true,TN:true,CO:true};
+function menuTreeChildrenByParent(){
+  var hasCode={};
+  var byParent={'':[]};
+  MENU_MASTER_CATALOG.forEach(function(item){hasCode[item.code]=true;});
+  MENU_MASTER_CATALOG.forEach(function(item){
+    var parent=item.parent&&hasCode[item.parent]?item.parent:'';
+    if(!byParent[parent]){byParent[parent]=[];}
+    byParent[parent].push(item);
+  });
+  return byParent;
+}
+function menuAncestorCodes(code){
+  var path=[];
+  var item=menuByCode(code);
+  var guard=0;
+  while(item&&item.parent&&guard<10){
+    path.unshift(item.parent);
+    item=menuByCode(item.parent);
+    guard++;
+  }
+  return path;
+}
+function renderMenuMasterTree(selectedCode){
+  var tree=document.getElementById('menuMasterTree');
+  if(!tree){return;}
+  tree.innerHTML='';
+  var byParent=menuTreeChildrenByParent();
+  menuAncestorCodes(selectedCode).forEach(function(code){MENU_TREE_EXPANDED[code]=true;});
+  function draw(parentCode,depth){
+    (byParent[parentCode]||[]).forEach(function(item){
+      var children=byParent[item.code]||[];
+      var expanded=!!MENU_TREE_EXPANDED[item.code];
+      var node=document.createElement('div');
+      var level=Math.min(depth,3);
+      node.className='tnode lv'+level+(item.code===selectedCode?' on':'');
+      node.setAttribute('data-code',item.code);
+      node.innerHTML='<span class="twist">'+(children.length?(expanded?'▾':'▸'):'•')+'</span>'+escapeHtml(item.code+' '+item.ko)+' <span class="cnt">'+escapeHtml(children.length?children.length+'개':item.type)+'</span>';
+      node.addEventListener('click',function(){
+        if(children.length){MENU_TREE_EXPANDED[item.code]=true;}
+        selectMenuMaster(item.code);
+      });
+      tree.appendChild(node);
+      if(children.length&&expanded){draw(item.code,depth+1);}
+    });
+  }
+  draw('',1);
+  setText('menuMasterTotal',MENU_MASTER_CATALOG.length+'개');
+}
+function menuByCode(code){return MENU_MASTER_CATALOG.find(function(item){return item.code===code;})||MENU_MASTER_CATALOG[0];}
+function setMenuSelectOptions(id,options,selectedValue){
+  var el=document.getElementById(id);
+  if(!el||el.tagName!=='SELECT'){return;}
+  var selected=selectedValue==null?'':String(selectedValue);
+  el.innerHTML='';
+  options.forEach(function(opt){
+    var option=document.createElement('option');
+    option.value=opt.value;
+    option.textContent=opt.label;
+    el.appendChild(option);
+  });
+  if(!options.some(function(opt){return String(opt.value)===selected;})){
+    var extra=document.createElement('option');
+    extra.value=selected;
+    extra.textContent=selected||'-';
+    el.appendChild(extra);
+  }
+  el.value=selected;
+}
+function menuOptionLabel(item){
+  return item.code+' - '+item.ko;
+}
+function syncMenuMasterDropdowns(item){
+  var channelLabels={OP:'OP - 운영콘솔',TN:'TN - 업무화면',CO:'CO - 공통'};
+  setMenuSelectOptions('menuChannel',['OP','TN','CO'].map(function(code){return {value:code,label:channelLabels[code]};}),item.channel);
+  setMenuSelectOptions('menuType',[
+    {value:'GROUP',label:'GROUP - 그룹'},
+    {value:'MENU',label:'MENU - 메뉴'},
+    {value:'TAB',label:'TAB - 탭'},
+    {value:'ACTION',label:'ACTION - 기능'}
+  ],item.type);
+  var parentOptions=[{value:'',label:'- 루트 메뉴'}].concat(MENU_MASTER_CATALOG.filter(function(menu){
+    return menu.code!==item.code&&menu.type==='GROUP';
+  }).map(function(menu){return {value:menu.code,label:menuOptionLabel(menu)};}));
+  setMenuSelectOptions('menuParent',parentOptions,item.parent||'');
+  var screenOptions=[{value:'-',label:'- 화면 연결 없음'}].concat(MENU_MASTER_CATALOG.filter(function(menu){
+    return !/^(OP|TN|CO)$/.test(menu.code);
+  }).map(function(menu){return {value:menu.code,label:menuOptionLabel(menu)};}));
+  setMenuSelectOptions('menuScreenId',screenOptions,item.screen);
+  var phases=[];
+  MENU_MASTER_CATALOG.forEach(function(menu){
+    if(phases.indexOf(menu.phase)<0){phases.push(menu.phase);}
+  });
+  setMenuSelectOptions('menuPhase',phases.sort().map(function(phase){return {value:phase,label:phase};}),item.phase);
+  setMenuSelectOptions('menuStatus',[
+    {value:'ACTIVE',label:'ACTIVE - 사용'},
+    {value:'DRAFT',label:'DRAFT - 작성중'},
+    {value:'PUBLISHED',label:'PUBLISHED - 발행'},
+    {value:'INACTIVE',label:'INACTIVE - 미사용'},
+    {value:'RETIRED',label:'RETIRED - 폐기'}
+  ],item.status);
+}
+function selectMenuMaster(code){
+  var item=menuByCode(code);
+  if(!item){return;}
+  renderMenuMasterTree(item.code);
+  syncMenuMasterDropdowns(item);
+  setText('menuCode',item.code);
+  setText('menuChannel',item.channel);
+  setText('menuType',item.type);
+  setText('menuParent',item.parent||'');
+  setText('menuScreenId',item.screen);
+  setText('menuNameKo',item.ko);
+  setText('menuNameEn',item.en);
+  setText('menuRoutePath',item.route);
+  setText('menuFeatureFlag',item.flag);
+  setText('menuPhase',item.phase);
+  setText('menuSource',item.source);
+  setText('menuStatus',item.status);
+  setText('menuDescription',item.detail||item.ko);
+  var tbody=document.getElementById('menuValidationRows');
+  if(tbody){
+    var parentOk=!item.parent||menuByCode(item.parent).code===item.parent;
+    tbody.innerHTML='<tr class="sel"><td>menuCode</td><td><span class="badge b-ok">OK</span></td><td>'+escapeHtml(item.channel+' channel unique in DRAFT v43')+'</td></tr>'+
+      '<tr><td>i18n</td><td><span class="badge b-ok">OK</span></td><td>'+escapeHtml(item.ko+' / '+item.en)+'</td></tr>'+
+      '<tr><td>parent</td><td><span class="badge '+(parentOk?'b-ok':'b-block')+'">'+(parentOk?'OK':'CHECK')+'</span></td><td>'+escapeHtml(item.parent||'root channel')+'</td></tr>'+
+      '<tr><td>route guard</td><td><span class="badge b-warn">IMPACT</span></td><td>'+escapeHtml('RoleMenuPermission, UserGroupMenuPermission, MenuActionGrant')+'</td></tr>';
+  }
+  setText('menuStatusText','OK '+item.code+' selected from '+item.source);
+  setText('menuSelectedCount','menu '+MENU_MASTER_CATALOG.length+' rows');
+  setText('menuDiffText','DRAFT v43 item: '+item.code+' / parent '+(item.parent||'ROOT')+' / '+item.phase);
+  setText('menuUsageText','route '+item.route+' ? screen '+item.screen+' ? source '+item.source);
+  setText('menuPreviewText',item.channel+' channel bootstrap returns this menu only when Role/UserGroup policy allows it.');
+}
+/* MENU_MASTER_CATALOG_END */
+function ccItem(code, ko, en, meta, parent, replacement, opt){
+  opt=opt||{};
+  return {code:code, ko:ko, en:en||code, meta:meta||'', parent:parent||'-', replacement:replacement||'-', useYn:opt.useYn||'Y', startDate:opt.startDate||'2020-01-01', endDate:opt.endDate||'9999-12-31'};
+}
+function ccGroup(code, ko, en, domain, policy, source, usage, items, opt){
+  opt=opt||{};
+  return {code:code, ko:ko, en:en, domain:domain||'STANDARD', scope:opt.scope||'GLOBAL', policy:policy||'ADMIN_MANAGED', valueType:opt.valueType||'STRING', i18n:opt.i18n||'Y', version:opt.version||'PUBLISHED v1 · DRAFT v2', source:source, usage:usage, items:items};
+}
+var COMMON_CODE_CATALOG=[
+  ccGroup('USER_GROUP','사용자 그룹','User Group','AUTH','SYSTEM_LOCKED','시스템관리자 §4.12','인증 토큰, 메뉴 채널, 권한 평가',[ccItem('OPERATOR','관리회사 운영자','Operator'),ccItem('TENANT','이용회사 사용자','Tenant User')]),
+  ccGroup('OPERATOR_ROLE','운영자 Role','Operator Role','AUTH','ADMIN_MANAGED','시스템관리자 §4.12, bk §4.5','운영 콘솔 Role, 업무 배정',[ccItem('BK_MANAGER','기장 책임','Bookkeeping Manager'),ccItem('BK_PREPARER','기장 담당','Bookkeeping Preparer'),ccItem('BK_REVIEWER','기장 검토','Bookkeeping Reviewer'),ccItem('SEC_ADMIN','시스템관리자','Security/System Admin'),ccItem('AUDITOR','감사자','Auditor'),ccItem('BILLING','청구 담당','Billing')]),
+  ccGroup('ACCOUNT_STATUS','계정 상태','Account Status','AUTH','SYSTEM_LOCKED','bk §12.2, §13.4, 시스템관리자 §4.12','로그인, 계정관리, 보안 이벤트',[ccItem('ACTIVE','활성','Active'),ccItem('LOCKED','잠금','Locked'),ccItem('PASSWORD_EXPIRED','비밀번호 만료','Password Expired'),ccItem('SUSPENDED','정지','Suspended'),ccItem('DORMANT','휴면','Dormant'),ccItem('DISABLED','비활성','Disabled')]),
+  ccGroup('AUTH_FACTOR_TYPE','인증 수단','Authentication Factor Type','AUTH','SYSTEM_LOCKED','bk §3','MFA, SSO, Step-up',[ccItem('PASSWORD','비밀번호','Password'),ccItem('TOTP','OTP 앱','TOTP'),ccItem('SMS_OTP','SMS OTP','SMS OTP'),ccItem('EMAIL_OTP','이메일 OTP','Email OTP'),ccItem('WEBAUTHN','패스키/WebAuthn','WebAuthn'),ccItem('BACKUP_CODE','백업 코드','Backup Code'),ccItem('SAML','SAML SSO','SAML'),ccItem('OIDC','OIDC SSO','OIDC')]),
+  ccGroup('TENANT_STATUS','테넌트 상태','Tenant Status','TENANT','SYSTEM_LOCKED','bk §12.2, §13.4','이용회사 상태, 구독·업무 차단',[ccItem('PENDING','가입대기','Pending'),ccItem('ACTIVE','활성','Active'),ccItem('SUSPENDED','정지','Suspended'),ccItem('DORMANT','휴면','Dormant'),ccItem('TERMINATED','종료','Terminated')]),
+  ccGroup('TENANT_TIER','테넌트 티어','Tenant Tier','TENANT','ADMIN_MANAGED','bk §2, §12.2','멀티테넌시 격리, 백업, 쿼터',[ccItem('SHARED','공유','Shared'),ccItem('SCHEMA','스키마 분리','Schema'),ccItem('DEDICATED','전용','Dedicated')]),
+  ccGroup('SUBSCRIPTION_STATUS','구독 상태','Subscription Status','BILLING','ADMIN_MANAGED','bk §12.2, §13.4, 운영자 §11.2','구독·요금, 기능 제한',[ccItem('TRIAL','체험','Trial'),ccItem('ACTIVE','정상','Active'),ccItem('PAST_DUE','연체','Past Due'),ccItem('SUSPENDED','정지','Suspended'),ccItem('GRACE','유예','Grace'),ccItem('TERMINATED','해지','Terminated'),ccItem('REACTIVATED','재활성','Reactivated'),ccItem('CANCELED','취소','Canceled')]),
+  ccGroup('ADMIN_ACCESS_MODE','관리자 접근모드','Admin Access Mode','ACCESS','SYSTEM_LOCKED','bk §5, §12.2, 시스템관리자 §4.12','운영자 접근 세션, 배너, 감사로그',[ccItem('VIEW','조회 지원','View'),ccItem('SUPPORT_SESSION','지원 세션','Support Session'),ccItem('BOOKKEEPING','기장 수행','Bookkeeping'),ccItem('BREAK_GLASS','긴급대행','Break Glass')]),
+  ccGroup('BOOKKEEPING_MODE','기장 모드','Bookkeeping Mode','OPERATION','ADMIN_MANAGED','bk §21, 운영자 §11.2','회계·세무 업무 수행 주체',[ccItem('OPERATOR_LED','관리회사 주도','Operator Led'),ccItem('TENANT_LED','이용회사 주도','Tenant Led'),ccItem('HYBRID','혼합','Hybrid')]),
+  ccGroup('PRIMARY_BOOKKEEPER','주기장','Primary Bookkeeper','OPERATION','ADMIN_MANAGED','시스템관리자 §4.12','마감·결산·신고 권한 귀속',[ccItem('OPERATOR','관리회사','Operator'),ccItem('TENANT','이용회사','Tenant')]),
+  ccGroup('MENU_TYPE','메뉴 유형','Menu Type','MENU','SYSTEM_LOCKED','bk §4.3, 시스템관리자 §4.12','메뉴 마스터, 권한 평가',[ccItem('GROUP','그룹','Group'),ccItem('MENU','진입 메뉴','Menu'),ccItem('TAB','탭','Tab'),ccItem('ACTION','행위','Action')]),
+  ccGroup('ACTION_TYPE','행위 유형','Action Type','MENU','SYSTEM_LOCKED','시스템관리자 §4.12','버튼 권한, API scope',[ccItem('READ','조회','Read'),ccItem('CREATE','등록','Create'),ccItem('UPDATE','수정','Update'),ccItem('DELETE','삭제','Delete'),ccItem('APPROVE','승인','Approve'),ccItem('REJECT','반려','Reject'),ccItem('CLOSE','마감','Close'),ccItem('REOPEN','마감해제','Reopen'),ccItem('SUBMIT','전송','Submit'),ccItem('EXPORT','출력','Export'),ccItem('PUBLISH','발행','Publish'),ccItem('ROLLBACK','롤백','Rollback')]),
+  ccGroup('GUARDRAIL_TYPE','가드레일 유형','Guardrail Type','PERMISSION','SYSTEM_LOCKED','bk §4.3, 시스템관리자 §4.12','권한·위임 정책',[ccItem('FORBID','금지','Forbid'),ccItem('REQUIRE_SOD','직무분리 필요','Require SOD'),ccItem('REQUIRE_STEPUP','재인증 필요','Require Step-up'),ccItem('REQUIRE_APPROVAL','승인 필요','Require Approval')]),
+  ccGroup('STANDARD_STATUS','표준 버전 상태','Standard Version Status','STANDARD','SYSTEM_LOCKED','bk §12.2, 운영자 §11.2','표준 카탈로그 버전',[ccItem('DRAFT','작성중','Draft'),ccItem('PUBLISHED','발행','Published'),ccItem('DEPRECATED','폐기예정','Deprecated'),ccItem('RETIRED','퇴역','Retired')]),
+  ccGroup('STANDARD_DISTRIBUTION_MODE','표준 배포 모드','Standard Distribution Mode','STANDARD','SYSTEM_LOCKED','bk §6, §12.2','표준 배포 정책',[ccItem('MANDATORY','강제','Mandatory'),ccItem('RECOMMENDED','권고','Recommended'),ccItem('OPTIONAL','선택','Optional')]),
+  ccGroup('JOB_STATUS','배치 상태','Job Status','BATCH','SYSTEM_LOCKED','bk §14.5, 시스템관리자 §4.12','운영 배치, 큐, DLQ',[ccItem('READY','준비','Ready'),ccItem('QUEUED','대기열','Queued'),ccItem('RUNNING','실행중','Running'),ccItem('SUCCESS','성공','Success'),ccItem('RETRY','재시도','Retry'),ccItem('FAILED','실패','Failed'),ccItem('DEAD_LETTER','DLQ','Dead Letter'),ccItem('PARTIAL_SUCCESS','부분성공','Partial Success'),ccItem('CANCELLED','취소','Cancelled')]),
+  ccGroup('TIER_MIGRATION_STATUS','티어 전환 상태','Tier Migration Status','TENANT','ADMIN_MANAGED','bk §12.2, 시스템관리자 §4.12','테넌트 티어 전환 작업',[ccItem('SCHEDULED','예약','Scheduled'),ccItem('PROVISIONING','프로비저닝','Provisioning'),ccItem('SNAPSHOTTING','스냅샷','Snapshotting'),ccItem('CDC_SYNC','CDC 동기화','CDC Sync'),ccItem('VALIDATING','검증','Validating'),ccItem('CUTOVER','전환','Cutover'),ccItem('COMPLETED','완료','Completed'),ccItem('ROLLED_BACK','롤백','Rolled Back'),ccItem('FAILED','실패','Failed')]),
+  ccGroup('SECURITY_INCIDENT_STATUS','보안 인시던트 상태','Security Incident Status','SECURITY','SYSTEM_LOCKED','bk §12.2, 시스템관리자 §4.12','보안 이벤트, IR',[ccItem('DETECTED','탐지','Detected'),ccItem('CONTAINED','격리','Contained'),ccItem('ANALYZING','분석중','Analyzing'),ccItem('RECOVERED','복구','Recovered'),ccItem('NOTIFIED','통지','Notified'),ccItem('CLOSED','종결','Closed')]),
+  ccGroup('SENSITIVITY_CLASS','민감정보 등급','Sensitivity Class','SECURITY','SYSTEM_LOCKED','시스템관리자 §4.12','마스킹, 녹화, DLP',[ccItem('PUBLIC','공개','Public'),ccItem('INTERNAL','내부','Internal'),ccItem('PII','개인정보','PII'),ccItem('FINANCIAL','금융정보','Financial'),ccItem('PAYROLL','급여','Payroll'),ccItem('SECRET','비밀','Secret'),ccItem('PASSWORD','비밀번호','Password')]),
+  ccGroup('NOTIFICATION_CHANNEL','알림 채널','Notification Channel','NOTIFICATION','ADMIN_MANAGED','시스템관리자 §4.12','알림 발송',[ccItem('IN_APP','인앱','In App'),ccItem('EMAIL','이메일','Email'),ccItem('SMS','문자','SMS'),ccItem('KAKAO','카카오','Kakao'),ccItem('WEBHOOK','웹훅','Webhook')]),
+  ccGroup('ERROR_CODE','오류 코드','Error Code','ERROR','ADMIN_MANAGED','bk §26.4, 개발설계 API/예외 표','API 오류, UI 복구 가이드',[ccItem('STEP_UP_REQUIRED','재인증 필요','Step-up Required'),ccItem('CONSOLE_IP_BLOCKED','콘솔 IP 차단','Console IP Blocked'),ccItem('ACCESS_SESSION_REQUIRED','접근 세션 필요','Access Session Required'),ccItem('BULK_ACTION_THRESHOLD','대량행위 임계 초과','Bulk Action Threshold'),ccItem('FORBIDDEN_SCOPE','권한 범위 없음','Forbidden Scope'),ccItem('VALIDATION_FAILED','검증 실패','Validation Failed'),ccItem('CLOSING_LOCKED','마감 잠금','Closing Locked'),ccItem('PERIOD_LOCKED','기간 잠금','Period Locked'),ccItem('NOT_PRIMARY_BOOKKEEPER','주기장 아님','Not Primary Bookkeeper'),ccItem('BOOKKEEPING_NOT_CONTRACTED','기장 계약 없음','Bookkeeping Not Contracted'),ccItem('IDEMPOTENCY_CONFLICT','멱등키 충돌','Idempotency Conflict'),ccItem('EXTERNAL_INTEGRATION_FAILED','외부연계 실패','External Integration Failed'),ccItem('RATE_LIMITED','요청 제한','Rate Limited'),ccItem('POSTED_IMMUTABLE','기표 후 불변','Posted Immutable'),ccItem('NUMBERING_CONFLICT','채번 충돌','Numbering Conflict'),ccItem('LOCK_NOT_ACQUIRED','잠금 획득 실패','Lock Not Acquired'),ccItem('TENANT_ACCESS_DENIED','테넌트 접근 거부','Tenant Access Denied'),ccItem('COMMON_CODE_GROUP_REQUIRED','공통코드 마스터 필요','Common Code Group Required'),ccItem('COMMON_CODE_GROUP_ITEM_MISMATCH','마스터/세부 불일치','Common Code Group Item Mismatch')]),
+  ccGroup('AUDIT_EVENT_TYPE','감사 이벤트','Audit Event Type','AUDIT','SYSTEM_LOCKED','시스템관리자 §4.12','감사로그, 보안 이벤트',[ccItem('LOGIN','로그인','Login'),ccItem('ACCESS_SESSION_START','접근 세션 시작','Access Session Start'),ccItem('DATA_EXPORT','자료 내보내기','Data Export'),ccItem('ROLE_CHANGED','Role 변경','Role Changed'),ccItem('KEY_ROTATED','키 회전','Key Rotated'),ccItem('CODE_PUBLISHED','코드 발행','Code Published')]),
+  ccGroup('FEATURE_FLAG_TYPE','기능 플래그 유형','Feature Flag Type','OPERATION','ADMIN_MANAGED','시스템관리자 §4.12','기능 플래그, 배포 게이트',[ccItem('GLOBAL','전역','Global'),ccItem('PLAN','요금제','Plan'),ccItem('TENANT','테넌트','Tenant'),ccItem('USER','사용자','User'),ccItem('EXPERIMENT','실험','Experiment')]),
+  ccGroup('RETENTION_CLASS','파일 보존 등급','Retention Class','RETENTION','ADMIN_MANAGED','시스템관리자 §4.12','데이터 티어링, 파기',[ccItem('HOT','핫','Hot'),ccItem('WARM','웜','Warm'),ccItem('COLD','콜드','Cold'),ccItem('WORM','불변보관','WORM'),ccItem('DESTROY_PENDING','파기대기','Destroy Pending')]),
+  ccGroup('BOOKKEEPING_SWITCH_STATUS','기장 모드 전환 상태','Bookkeeping Switch Status','OPERATION','ADMIN_MANAGED','bk §12.2, 운영자 §11.2','기장 모드 변경 워크플로',[ccItem('REQUESTED','요청','Requested'),ccItem('COUNTERPARTY_CONSENTED','상대 동의','Counterparty Consented'),ccItem('SCHEDULED','예약','Scheduled'),ccItem('SWITCHED','전환완료','Switched'),ccItem('REJECTED','반려','Rejected'),ccItem('CANCELLED','취소','Cancelled')]),
+  ccGroup('TENANT_ACK_STATUS','이용회사 확인 상태','Tenant Acknowledgement Status','OPERATION','ADMIN_MANAGED','bk §12.2, 운영자 §11.2','마감·신고·보고 확인',[ccItem('PENDING','대기','Pending'),ccItem('CONFIRMED','확인','Confirmed'),ccItem('OBJECTED','이의제기','Objected')]),
+  ccGroup('BREAK_GLASS_STATUS','긴급대행 상태','Break-glass Status','SECURITY','SYSTEM_LOCKED','bk §12.2, 시스템관리자 §6.3','긴급 접근 승인·검토',[ccItem('REQUESTED','요청','Requested'),ccItem('APPROVED','승인','Approved'),ccItem('ACTIVE','활성','Active'),ccItem('EXPIRED','만료','Expired'),ccItem('REVOKED','회수','Revoked'),ccItem('REVIEWED','검토완료','Reviewed')]),
+  ccGroup('DIMENSION_ASSIGNMENT_JOB_STATUS','차원 배정잡 상태','Dimension Assignment Job Status','BATCH','ADMIN_MANAGED','bk §12.2','차원 일괄배정 배치',[ccItem('READY','준비','Ready'),ccItem('RUNNING','실행중','Running'),ccItem('SUCCESS','성공','Success'),ccItem('PARTIAL','부분완료','Partial'),ccItem('FAILED','실패','Failed')]),
+  ccGroup('CONVERSION_BATCH_STATUS','변환 배치 상태','Conversion Batch Status','BATCH','ADMIN_MANAGED','bk §12.2, §13.4, §14.5','회계기준/외부자료 변환 배치',[ccItem('RECEIVED','수신','Received'),ccItem('VALIDATED','검증완료','Validated'),ccItem('MAPPED','매핑완료','Mapped'),ccItem('CONVERTED','변환완료','Converted'),ccItem('STAGED','스테이징','Staged'),ccItem('REVIEWING','검토중','Reviewing'),ccItem('POSTED','기표','Posted'),ccItem('REJECTED','반려','Rejected'),ccItem('FAILED','실패','Failed')]),
+  ccGroup('COLLECTION_TASK_STATUS','수집 태스크 상태','Collection Task Status','BATCH','SYSTEM_LOCKED','bk §12.2, 시스템관리자 §6.3','외부수집, 스크래핑, 큐',[ccItem('QUEUED','대기열','Queued'),ccItem('RUNNING','실행중','Running'),ccItem('SUCCESS','성공','Success'),ccItem('RETRY','재시도','Retry'),ccItem('FAILED','실패','Failed'),ccItem('DEAD_LETTER','DLQ','Dead Letter')]),
+  ccGroup('DISCLOSURE_DOCUMENT_STATUS','공시자료 상태','Disclosure Document Status','REPORT','ADMIN_MANAGED','bk §12.2, §13.4','공시자료·XBRL 생성/제출',[ccItem('DRAFT','작성중','Draft'),ccItem('GENERATED','생성','Generated'),ccItem('VALIDATED','검증','Validated'),ccItem('APPROVED','승인','Approved'),ccItem('SUBMITTED','제출','Submitted'),ccItem('ACCEPTED','접수','Accepted'),ccItem('REJECTED','반려','Rejected')]),
+  ccGroup('ANOMALY_ALERT_STATUS','이상 알림 상태','Anomaly Alert Status','AUDIT','ADMIN_MANAGED','bk §12.2, §13.4','이상거래 알림 처리',[ccItem('NEW','신규','New'),ccItem('IN_REVIEW','검토중','In Review'),ccItem('CONFIRMED_NORMAL','정상확인','Confirmed Normal'),ccItem('ACTION_TAKEN','조치완료','Action Taken'),ccItem('DISMISSED','해제','Dismissed')]),
+  ccGroup('ANOMALY_MODEL_STATUS','이상 모델 상태','Anomaly Model Status','AUDIT','ADMIN_MANAGED','bk §12.2','이상탐지 모델 생명주기',[ccItem('TRAINING','학습중','Training'),ccItem('STAGED','스테이징','Staged'),ccItem('ACTIVE','활성','Active'),ccItem('SHADOW','섀도우','Shadow'),ccItem('RETIRED','퇴역','Retired')]),
+  ccGroup('CHATBOT_SESSION_STATUS','챗봇 세션 상태','Chatbot Session Status','AI','ADMIN_MANAGED','bk §12.2, §13.4','AI 조회 챗봇 세션',[ccItem('ACTIVE','활성','Active'),ccItem('IDLE','유휴','Idle'),ccItem('EXPIRED','만료','Expired'),ccItem('TERMINATED','종료','Terminated')]),
+  ccGroup('FISCAL_PERIOD_STATUS','회계기간 상태','Fiscal Period Status','ACCOUNTING','SYSTEM_LOCKED','bk §12.2, 페이즈02/05','회계기간, 마감 잠금',[ccItem('FUTURE','미개시','Future'),ccItem('OPEN','열림','Open'),ccItem('TEMP_CLOSED','가마감','Temporary Closed'),ccItem('CLOSED','마감','Closed'),ccItem('LOCKED','잠금','Locked'),ccItem('REOPEN_REQUESTED','재개요청','Reopen Requested'),ccItem('REOPENED','재개','Reopened')]),
+  ccGroup('JOURNAL_ENTRY_CODE','전표 분개구분','Journal Entry Code','JOURNAL','SYSTEM_LOCKED','bk §11.1, §12.2, 페이즈03/05','전표 라인 차대·결산·세무 조정',[ccItem('DR','차변','Debit'),ccItem('CR','대변','Credit'),ccItem('RECEIPT','입금','Receipt'),ccItem('PAYMENT','출금','Payment'),ccItem('CLOSING_DR','결산차변','Closing Debit'),ccItem('CLOSING_CR','결산대변','Closing Credit'),ccItem('ACCRUAL','발생주의 조정','Accrual'),ccItem('ADJUSTMENT','수정','Adjustment'),ccItem('RECLASS','재분류','Reclass'),ccItem('TAX_ADJ','세무조정','Tax Adjustment'),ccItem('STAT_ADJ','Group GAAP 조정','Stat Adjustment')]),
+  ccGroup('NOTIFICATION_DELIVERY_STATUS','알림 발송 상태','Notification Delivery Status','NOTIFICATION','SYSTEM_LOCKED','bk §12.2','알림 발송·읽음 처리',[ccItem('QUEUED','대기열','Queued'),ccItem('SENT','발송','Sent'),ccItem('FAILED','실패','Failed'),ccItem('DEAD_LETTER','DLQ','Dead Letter'),ccItem('READ','읽음','Read')]),
+  ccGroup('EVIDENCE_STATUS','증빙 상태','Evidence Status','EVIDENCE','ADMIN_MANAGED','bk §12.2, 페이즈06/07','증빙 수집·검증·매칭',[ccItem('UPLOADED','업로드','Uploaded'),ccItem('SCANNING','스캔중','Scanning'),ccItem('CLEAN','정상','Clean'),ccItem('QUARANTINED','격리','Quarantined'),ccItem('MATCHED','매칭','Matched'),ccItem('UNMATCHED','미매칭','Unmatched'),ccItem('REVIEW_REQUIRED','검토필요','Review Required')]),
+  ccGroup('REPORT_PACKAGE_STATUS','보고패키지 상태','Report Package Status','REPORT','ADMIN_MANAGED','bk §12.2, 운영자 §11.2','월별 보고패키지 조립·전달',[ccItem('PENDING','대기','Pending'),ccItem('GENERATED','생성','Generated'),ccItem('VALIDATED','검증','Validated'),ccItem('REVIEWED','검토','Reviewed'),ccItem('DELIVERED','전달','Delivered'),ccItem('ACKED','확인','Acked')]),
+  ccGroup('TIE_OUT_STATUS','계정 명세 Tie-out 상태','Tie-out Status','REPORT','ADMIN_MANAGED','bk §12.2','계정별 명세 대사 결과',[ccItem('VERIFIED','검증완료','Verified'),ccItem('UNVERIFIED','불일치','Unverified')]),
+  ccGroup('OPEN_ITEM_STATUS','미결항목 상태','Open Item Status','ACCOUNTING','ADMIN_MANAGED','bk §12.2, 운영자 §11.2','미결항목 회신·해소',[ccItem('OPEN','미결','Open'),ccItem('ANSWERED','답변완료','Answered'),ccItem('RESOLVED','해소','Resolved')]),
+  ccGroup('GROUP_REPORT_EXPORT_STATUS','그룹보고 Export 상태','Group Report Export Status','REPORT','ADMIN_MANAGED','bk §12.2','그룹 보고 Export',[ccItem('DRAFT','작성중','Draft'),ccItem('MAPPED','매핑','Mapped'),ccItem('GENERATED','생성','Generated'),ccItem('EXPORTED','내보냄','Exported')]),
+  ccGroup('COST_CALCULATION_STATUS','제조원가 계산 상태','Cost Calculation Status','COST','ADMIN_MANAGED','bk §12.2, 페이즈05','제조원가 계산·승인',[ccItem('OPEN','열림','Open'),ccItem('CALCULATING','계산중','Calculating'),ccItem('CALCULATED','계산완료','Calculated'),ccItem('TIED_OUT','대사완료','Tied Out'),ccItem('APPROVED','승인','Approved'),ccItem('FAILED','실패','Failed')]),
+  ccGroup('NTS_TRANSMISSION_STATUS','국세청 전송상태','NTS Transmission Status','VAT','ADMIN_MANAGED','bk §11.4, §12.2, 페이즈07','국세청/홈택스 전송·대사',[ccItem('NOT_TARGET','전송대상 아님','Not Target'),ccItem('PENDING','대기','Pending'),ccItem('ISSUED','발행','Issued'),ccItem('SENT','전송','Sent'),ccItem('ACCEPTED','접수','Accepted'),ccItem('REJECTED','반려','Rejected'),ccItem('CANCELLED','취소','Cancelled'),ccItem('MANUAL_EVIDENCE','수기증빙','Manual Evidence')]),
+  ccGroup('JOURNAL_TYPE','전표 유형','Journal Type','JOURNAL','ADMIN_MANAGED','bk §12.2, 페이즈03','화면 구분 컬럼, 입출금 자동 판별',[ccItem('SUBSTITUTE','대체','Substitute'),ccItem('RECEIPT','입금','Receipt'),ccItem('PAYMENT','출금','Payment'),ccItem('PURCHASE','매입','Purchase'),ccItem('SALES','매출','Sales')]),
+  ccGroup('JOURNAL_NUMBERING_STATUS','전표번호 채번 상태','Journal Numbering Status','JOURNAL','SYSTEM_LOCKED','bk §12.2, 페이즈10','일자별 전표번호 채번·결번',[ccItem('PLANNED','예정','Planned'),ccItem('CONFIRMED','확정','Confirmed'),ccItem('NUMBERING_CONFLICT','채번충돌','Numbering Conflict')]),
+  ccGroup('BUSINESS_PARTNER_STATUS','거래처 상태','Business Partner Status','MASTERDATA','ADMIN_MANAGED','bk §12.2, 페이즈01/04','거래처 승인·휴폐업 통제',[ccItem('TEMP_VENDOR','임시 공급업체','Temporary Vendor'),ccItem('TEMP_CUSTOMER','임시 고객','Temporary Customer'),ccItem('PENDING_APPROVAL','승인대기','Pending Approval'),ccItem('ACTIVE','활성','Active'),ccItem('INACTIVE','사용중지','Inactive'),ccItem('CLOSED_BIZ','휴폐업','Closed Business')]),
+  ccGroup('JOURNAL_STATUS','전표 상태','Journal Status','JOURNAL','SYSTEM_LOCKED','bk §13.4, §14.5','전표 작성·승인·기표·취소',[ccItem('DRAFT','작성중','Draft'),ccItem('CLIENT_SUBMITTED','고객제출','Client Submitted'),ccItem('REVIEWING','검토중','Reviewing'),ccItem('PENDING_APPROVAL','승인대기','Pending Approval'),ccItem('REJECTED','반려','Rejected'),ccItem('APPROVED','승인','Approved'),ccItem('POSTED','기표','Posted'),ccItem('ADJUSTED','조정','Adjusted'),ccItem('REVERSED','역분개','Reversed'),ccItem('CANCELLED','취소','Cancelled')]),
+  ccGroup('APPROVAL_STATUS','결재 상태','Approval Status','APPROVAL','SYSTEM_LOCKED','bk §13.4, §14.5','전자결재·승인 워크플로',[ccItem('DRAFT','작성중','Draft'),ccItem('IN_PROGRESS','진행중','In Progress'),ccItem('APPROVED','승인','Approved'),ccItem('REJECTED','반려','Rejected'),ccItem('WITHDRAWN','회수','Withdrawn'),ccItem('FINALIZED','종결','Finalized'),ccItem('POST_PENDING','기표대기','Post Pending')]),
+  ccGroup('SERVICE_CONTRACT_STATUS','서비스계약 상태','Service Contract Status','CONTRACT','ADMIN_MANAGED','bk §14.5','서비스 계약 생명주기',[ccItem('PENDING','대기','Pending'),ccItem('ACTIVE','활성','Active'),ccItem('SUSPENDED','정지','Suspended'),ccItem('TERMINATED','종료','Terminated'),ccItem('EXPIRED','만료','Expired')]),
+  ccGroup('ASSIGNMENT_STATUS','담당배정 상태','Assignment Status','OPERATION','ADMIN_MANAGED','bk §14.5','담당자 배정·이관',[ccItem('ASSIGNED','배정','Assigned'),ccItem('TRANSFER_REQUESTED','이관요청','Transfer Requested'),ccItem('TRANSFERRED','이관완료','Transferred'),ccItem('ENDED','종료','Ended')]),
+  ccGroup('CLIENT_TASK_STATUS','고객업무 상태','Client Task Status','OPERATION','ADMIN_MANAGED','bk §14.5','고객 자료요청·검토·완료',[ccItem('REQUESTED','요청','Requested'),ccItem('UPLOADED','업로드','Uploaded'),ccItem('IN_PROGRESS','진행중','In Progress'),ccItem('REVIEWING','검토중','Reviewing'),ccItem('CLIENT_CONFIRMING','고객확인','Client Confirming'),ccItem('COMPLETED','완료','Completed'),ccItem('ON_HOLD','보류','On Hold')]),
+  ccGroup('TAX_INVOICE_STATUS','세금계산서 상태','Tax Invoice Status','VAT','ADMIN_MANAGED','bk §14.5','세금계산서 전송·재시도',[ccItem('DRAFT','작성중','Draft'),ccItem('READY_TO_SEND','전송준비','Ready To Send'),ccItem('SENT','전송','Sent'),ccItem('ACCEPTED','접수','Accepted'),ccItem('FAILED','실패','Failed'),ccItem('CANCELLED','취소','Cancelled'),ccItem('RETRY_PENDING','재시도대기','Retry Pending')]),
+  ccGroup('FILING_FILE_STATUS','신고파일 상태','Filing File Status','TAX','ADMIN_MANAGED','bk §14.5, 페이즈06','신고파일 생성·제출',[ccItem('CREATED','생성','Created'),ccItem('VALIDATED','검증','Validated'),ccItem('SUBMITTED','제출','Submitted'),ccItem('ACCEPTED','접수','Accepted'),ccItem('REJECTED','반려','Rejected')]),
+  ccGroup('ASSET_STATUS','자산 상태','Asset Status','ASSET','ADMIN_MANAGED','bk §14.5, 페이즈08','고정자산 생명주기',[ccItem('REGISTERED','등록','Registered'),ccItem('ACTIVE','활성','Active'),ccItem('TRANSFERRED','이동','Transferred'),ccItem('DISPOSED','처분','Disposed'),ccItem('CLOSED','종료','Closed')]),
+  ccGroup('VAT_RETURN_TYPE','부가세신고유형','VAT Return Type','VAT','ADMIN_MANAGED','bk §14.5, 페이즈06','부가세 신고 구분',[ccItem('PRELIMINARY','예정','Preliminary'),ccItem('FINAL','확정','Final'),ccItem('AMENDED','수정','Amended'),ccItem('LATE','기한후','Late')]),
+  ccGroup('BOOKKEEPING_SCOPE_TYPE','기장 분담 기준','Bookkeeping Scope Type','OPERATION','ADMIN_MANAGED','운영자 §9.5, bk §21.6','HYBRID 업무 분담 규칙',[ccItem('JOURNAL_TYPE','전표유형','Journal Type'),ccItem('TRANSACTION_SOURCE','거래원천','Transaction Source'),ccItem('ACCOUNT_RANGE','계정범위','Account Range'),ccItem('MODULE','모듈','Module')]),
+  ccGroup('STANDARD_CATALOG_CODE','표준 카탈로그 코드','Standard Catalog Code','STANDARD','STANDARD_MANAGED','bk §6.1, 페이즈01','공통 표준 카탈로그 종류',[ccItem('STD_ACCOUNT','표준계정 템플릿','Standard Account'),ccItem('STD_VAT','부가세 세율/과세유형','Standard VAT'),ccItem('STD_TAX_RULE','세법 룰 마스터','Standard Tax Rule'),ccItem('STD_WITHHOLDING','원천세 기준','Standard Withholding'),ccItem('STD_FORM','신고서식','Standard Form'),ccItem('STD_CODE','공통코드','Standard Code'),ccItem('STD_ROLE','Role 템플릿','Standard Role'),ccItem('STD_APPROVAL','결재선 템플릿','Standard Approval'),ccItem('STD_CASHFLOW','현금흐름 매핑','Standard Cashflow'),ccItem('STD_TAXONOMY','XBRL 분류체계','Standard Taxonomy'),ccItem('STD_CONVERSION','기준 변환규칙','Standard Conversion'),ccItem('STD_ANOMALY_RULE','이상탐지 규칙','Standard Anomaly Rule'),ccItem('STD_NOTIFICATION','알림 템플릿','Standard Notification'),ccItem('STD_REPORT_PACKAGE','보고패키지 템플릿','Standard Report Package'),ccItem('STD_SCHEDULE','명세서 템플릿','Standard Schedule'),ccItem('STD_GROUP_MAPPING','그룹 보고 매핑','Standard Group Mapping'),ccItem('STD_ACCOUNT_L10N','다국어 계정명','Standard Account Localization'),ccItem('STD_COSTING','제조원가 템플릿','Standard Costing'),ccItem('STD_PURCHASE_TAX_STATUS','매입원장 세무상태','Standard Purchase Tax Status')]),
+  ccGroup('DIMENSION_TYPE','관리차원 유형','Dimension Type','MASTERDATA','STANDARD_MANAGED','bk §9, 페이즈01','전표 라인·보고 차원',[ccItem('BUSINESS_PLACE','사업장','Business Place'),ccItem('COST_CENTER','코스트센터','Cost Center'),ccItem('DEPARTMENT','부서','Department'),ccItem('PROJECT','프로젝트','Project'),ccItem('SITE','현장','Site'),ccItem('EMPLOYEE','사원','Employee')]),
+  ccGroup('JOURNAL_APPROVAL_MODE','전표 결재 모드','Journal Approval Mode','JOURNAL','ADMIN_MANAGED','bk §11.1','회사별 전표 결재 옵션',[ccItem('REQUIRED','필수','Required'),ccItem('OPTIONAL','선택','Optional'),ccItem('NONE','없음','None')]),
+  ccGroup('CASH_FLOW_ACTIVITY','현금흐름 활동구분','Cash Flow Activity','REPORT','STANDARD_MANAGED','bk §11.3.1, 페이즈05','현금흐름표 활동 구분',[ccItem('OPERATING','영업활동','Operating'),ccItem('INVESTING','투자활동','Investing'),ccItem('FINANCING','재무활동','Financing')]),
+  ccGroup('DISCLOSURE_REPORT_TYPE','공시 보고서 유형','Disclosure Report Type','REPORT','STANDARD_MANAGED','bk §11.3.2','공시자료·XBRL 산출 유형',[ccItem('ANNUAL','사업보고서','Annual'),ccItem('SEMI','반기보고서','Semiannual'),ccItem('QUARTER','분기보고서','Quarterly'),ccItem('AUDIT','감사보고서 첨부','Audit'),ccItem('SUBMISSION','제출용','Submission')]),
+  ccGroup('ACCOUNTING_STANDARD','회계기준','Accounting Standard','ACCOUNTING','STANDARD_MANAGED','bk §11.6','다중 회계기준·변환',[ccItem('K_GAAP','일반기업회계기준','K-GAAP'),ccItem('K_IFRS','한국채택국제회계기준','K-IFRS'),ccItem('US_GAAP','미국회계기준','US GAAP'),ccItem('IFRS','국제회계기준','IFRS'),ccItem('JP_GAAP','일본회계기준','JP GAAP')]),
+  ccGroup('AUX_LEDGER_TYPE','보조원장 유형','Auxiliary Ledger Type','LEDGER','STANDARD_MANAGED','bk §12.1','전표 라인 보조부 연결',[ccItem('VENDOR','거래처','Vendor'),ccItem('NOTE','어음','Note'),ccItem('BANK','은행','Bank'),ccItem('CARD','카드','Card'),ccItem('ADVANCE','가지급금','Advance'),ccItem('VAT','부가세','VAT'),ccItem('QTY','수량','Quantity')]),
+  ccGroup('TENANT_INPUT_POLICY','이용회사 입력 정책','Tenant Input Policy','OPERATION','ADMIN_MANAGED','bk §11.1, 페이즈09','기장대행 회사의 이용회사 입력 허용범위',[ccItem('NONE','입력 차단','None'),ccItem('REQUEST_ONLY','기장 요청만 허용','Request Only')]),
+  ccGroup('BILL_RECEIVABLE_STATUS','받을어음 상태','Bill Receivable Status','TREASURY','ADMIN_MANAGED','페이즈09 §자금·어음','받을어음 보관·할인·배서·만기',[ccItem('HELD','보관','Held'),ccItem('DISCOUNTED','할인','Discounted'),ccItem('ENDORSED','배서','Endorsed'),ccItem('MATURED','만기','Matured'),ccItem('DEFAULTED','부도','Defaulted'),ccItem('PARTIAL_DISCOUNTED','부분할인','Partial Discounted'),ccItem('RETURNED','반환','Returned'),ccItem('SPLIT_ENDORSED','분할배서','Split Endorsed')]),
+  ccGroup('BILL_PAPER_STATUS','어음 용지 상태','Bill Paper Status','TREASURY','ADMIN_MANAGED','페이즈09 §자금·어음','어음 용지 발행·결제·폐기',[ccItem('UNISSUED','미발행','Unissued'),ccItem('ISSUED','발행','Issued'),ccItem('SETTLED','결제','Settled'),ccItem('COLLATERALIZED','담보','Collateralized'),ccItem('DISCARDED','폐기','Discarded')])
+];
+function renderCommonCodeMasters(selectedCode){
+  var list=document.getElementById('ccMasterList');
+  if(!list){return;}
+  list.innerHTML='';
+  COMMON_CODE_CATALOG.forEach(function(g){
+    var node=document.createElement('div');
+    node.className='tnode lv1'+(g.code===selectedCode?' on':'');
+    node.setAttribute('data-code',g.code);
+    node.innerHTML='▸ '+g.ko+' <span class="cnt">'+g.code+' · '+g.items.length+'개</span>';
+    node.addEventListener('click',function(){selectCommonCode(g.code);});
+    list.appendChild(node);
+  });
+  var total=document.getElementById('ccMasterTotal');
+  if(total){total.textContent=COMMON_CODE_CATALOG.length+'개';}
+}
+function setText(id,value){
+  var el=document.getElementById(id);
+  if(!el){return;}
+  if(el.tagName==='SELECT'){
+    var selected=value==null?'':String(value);
+    if(!Array.prototype.some.call(el.options,function(opt){return opt.value===selected;})){
+      var option=document.createElement('option');
+      option.value=selected;
+      option.textContent=selected||'-';
+      el.appendChild(option);
+    }
+    el.value=selected;
+    return;
+  }
+  el.textContent=value;
+}
+function todayYmd(){
+  var d=new Date();
+  var pad=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+}
+function commonCodeUseYn(item,today){
+  var endDate=item.endDate||'9999-12-31';
+  if(endDate!=='9999-12-31'&&endDate<=today){item.useYn='N';}
+  return item.useYn==='N'?'N':'Y';
+}
+function selectCommonCode(code){
+  var group=COMMON_CODE_CATALOG.find(function(g){return g.code===code;})||COMMON_CODE_CATALOG[0];
+  if(!group){return;}
+  renderCommonCodeMasters(group.code);
+  setText('ccGroupCode',group.code);
+  setText('ccGroupKo',group.ko);
+  setText('ccGroupEn',group.en);
+  setText('ccDomain',group.domain);
+  setText('ccScope',group.scope);
+  setText('ccPolicy',group.policy);
+  setText('ccValueType',group.valueType);
+  setText('ccI18n',group.i18n);
+  setText('ccVersion',group.version);
+  var tbody=document.getElementById('ccItemRows');
+  if(tbody){
+    var today=todayYmd();
+    tbody.innerHTML=group.items.map(function(item,idx){
+      var badge=group.policy==='SYSTEM_LOCKED'?'b-block':'b-warn';
+      var useYn=commonCodeUseYn(item,today);
+      var useBadge=useYn==='Y'?'b-ok':'b-block';
+      return '<tr'+(idx===0?' class="sel"':'')+'><td>'+item.code+'</td><td>'+group.code+'</td><td>'+item.ko+'</td><td>'+item.en+'</td><td>'+((idx+1)*10)+'</td><td><span class="badge '+useBadge+'">'+useYn+'</span></td><td>'+item.startDate+'</td><td>'+item.endDate+'</td><td><span class="badge '+badge+'">'+(group.policy==='SYSTEM_LOCKED'?'SYSTEM':'ADMIN')+'</span></td><td>'+item.replacement+'</td><td>'+(item.meta||('source='+group.domain))+'</td></tr>';
+    }).join('');
+  }
+  setText('ccStatusText','✓ '+group.code+' 선택 상태 · '+group.items.length+'건 표시');
+  setText('ccItemCount','마스터 '+COMMON_CODE_CATALOG.length+'개 · 세부 '+group.items.length+'건');
+  var rule=document.getElementById('ccRuleText');
+  if(rule){rule.innerHTML='마스터 선택 전 세부 저장 차단<br><span class="badge b-block">COMMON_CODE_GROUP_REQUIRED</span><br>종료일 도래 시 사용여부 자동 N<br>변경정책: '+group.policy;}
+  setText('ccDiffText','DRAFT 변경분은 '+group.code+' 마스터 기준으로 비교·발행한다. 현재 '+group.version);
+  setText('ccUsageText',group.usage+' · 출처: '+group.source);
+}
+document.querySelectorAll('.mitem').forEach(function(mi){
+  mi.addEventListener('click',function(){
+    document.querySelectorAll('.mitem').forEach(function(x){x.classList.remove('active')});
+    mi.classList.add('active');
+    var sec=mi.getAttribute('data-sec');
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('visible')});
+    var el=document.getElementById(sec);
+    if(el){el.classList.add('visible');window.scrollTo({top:0});}
+  });
+});
+// 로컬 탭 전환 (mock 내부 .tabbar)
+document.querySelectorAll('.mock .tabbar').forEach(function(bar){
+  var mock=bar.closest('.mock');
+  var tabs=Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+  var panes=Array.prototype.slice.call(mock.children).filter(function(c){return c.classList&&c.classList.contains('tabpane')});
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('on')});
+      tab.classList.add('on');
+      if(panes.length){ panes.forEach(function(p){p.classList.remove('on')}); if(panes[i]) panes[i].classList.add('on'); }
+    });
+  });
+});
+renderMenuMasterTree('OP-06D');
+selectMenuMaster('OP-06D');
+renderCommonCodeMasters(COMMON_CODE_CATALOG[0]&&COMMON_CODE_CATALOG[0].code);
+selectCommonCode(COMMON_CODE_CATALOG[0]&&COMMON_CODE_CATALOG[0].code);
+</script>
+</body>
+</html>
