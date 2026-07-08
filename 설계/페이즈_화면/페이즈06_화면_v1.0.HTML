@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 페이즈06 화면설계 — 부가세 주요신고 (SA-VAT, EY 레이아웃)</title>
+<style>
+:root{
+  --ey-yellow:#FFE600; --ey-dark:#2E2E38; --ey-darker:#1A1A24; --ey-gray:#747480;
+  --ey-light:#F6F6FA; --ey-border:#E1E1E6; --ey-text:#2E2E38; --ey-red:#E0362C;
+  --ey-green:#168736; --ey-blue:#188CE5; --ey-link:#155CB4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ey-text);background:var(--ey-light);font-size:13.5px;line-height:1.55}
+/* ===== 상단바 ===== */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;background:var(--ey-darker);color:#fff;height:54px;padding:0 16px;border-bottom:1px solid #000}
+.ey-logo{display:flex;align-items:center;gap:10px;min-width:210px}
+.ey-mark{position:relative;width:40px;height:40px;background:#000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px}
+.ey-mark .beam{position:absolute;top:4px;left:4px;width:0;height:0;border-left:32px solid transparent;border-bottom:9px solid var(--ey-yellow);transform:skewX(-18deg)}
+.ey-mark .ey{font-weight:800;font-size:19px;color:#fff;line-height:1}
+.ey-tag{font-size:10.5px;line-height:1.25;color:#d9d9e0;font-weight:600}
+.company-select{display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.company-select .code{color:#b9b9c2}
+.global-search{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;color:#8a8a94;font-size:12.5px}
+.top-utils{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12.5px;white-space:nowrap}
+.top-utils .util{display:flex;align-items:center;gap:5px;cursor:pointer;color:#e8e8ee}
+.top-utils .fav .ico{color:var(--ey-yellow)}
+.top-utils .avatar{width:26px;height:26px;border-radius:50%;background:#fff;color:var(--ey-darker);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+/* ===== 레이아웃 ===== */
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:216px;background:var(--ey-dark);color:#d7d7de;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow:auto}
+.sidebar .menu-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #3d3d47;color:#fff;font-weight:700;font-size:13px}
+.sidebar nav{flex:1;overflow:auto;padding:4px 0 8px}
+.mgroup{margin-top:5px}
+.mgroup>.gtitle{display:flex;align-items:center;gap:8px;padding:5px 16px;font-weight:700;font-size:12.5px;color:var(--ey-yellow);cursor:pointer}
+.mgroup>.gtitle .bar{width:3px;height:14px;background:var(--ey-yellow);border-radius:2px}
+.mgroup.plain>.gtitle{color:#fff}
+.mgroup.plain>.gtitle .bar{background:#6a6a75}
+.mitem{display:block;padding:4px 16px 4px 34px;font-size:12.5px;color:#c9c9d2;cursor:pointer;border-left:3px solid transparent;text-decoration:none}
+.mitem:hover{background:#3a3a45;color:#fff}
+.mitem.active{background:var(--ey-yellow);color:#1a1a24;font-weight:700;border-left-color:#c9b400}
+.mitem .mid{float:right;font-size:10px;color:#8a8a94;margin-top:2px}
+.mitem.active .mid{color:#55550a}
+.sidebar .foot{padding:8px 16px;border-top:1px solid #3d3d47;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sidebar .foot .ey-mark{width:30px;height:30px}
+.sidebar .foot .ey-mark .beam{border-left-width:24px;border-bottom-width:7px;top:3px;left:3px}
+.sidebar .foot .ey-mark .ey{font-size:14px}
+.sidebar .foot .txt{font-size:10px;color:#b9b9c2;line-height:1.3;font-weight:600}
+/* ===== 콘텐츠 ===== */
+.content{flex:1;padding:18px 22px 60px;max-width:calc(100% - 216px)}
+.section{display:none}
+.section.visible{display:block}
+.page-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.page-title h1{font-size:20px;font-weight:800}
+.page-title .star{color:var(--ey-yellow);font-size:16px}
+.page-title .chip-id{background:var(--ey-dark);color:var(--ey-yellow);font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700}
+.crumb{font-size:11.5px;color:var(--ey-gray);margin-bottom:12px}
+.src{font-size:11.5px;color:var(--ey-gray);background:#EFEFF4;border-left:3px solid var(--ey-yellow);padding:8px 12px;border-radius:0 4px 4px 0;margin:10px 0 16px}
+.src b{color:var(--ey-text)}
+h2.sec{font-size:15.5px;font-weight:800;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+h2.sec .no{color:#9a9aa4;font-weight:700;margin-right:6px}
+h3.sub{font-size:13.5px;font-weight:700;margin:16px 0 8px;padding-left:8px;border-left:3px solid var(--ey-yellow)}
+p.desc{margin:6px 0 10px;color:#44444e}
+ul.plain{margin:6px 0 12px 18px}
+ul.plain li{margin:3px 0}
+table.spec{width:100%;border-collapse:collapse;margin:8px 0 16px;background:#fff;font-size:12.5px}
+table.spec th{background:var(--ey-dark);color:#fff;padding:6px 10px;text-align:left;font-weight:600;border:1px solid #45454f;font-size:12px}
+table.spec td{padding:5px 10px;border:1px solid var(--ey-border);vertical-align:top}
+table.spec tr:nth-child(even) td{background:#FAFAFD}
+table.spec td.c,table.spec th.c{text-align:center}
+code{background:#EFEFF4;border:1px solid var(--ey-border);border-radius:3px;padding:0 4px;font-family:Consolas,monospace;font-size:12px;color:#7A2E8D}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin:0 2px;vertical-align:1px}
+.b-block{background:#FBE9E7;color:var(--ey-red);border:1px solid #F5C6C0}
+.b-warn{background:#FFF8DC;color:#8a6d00;border:1px solid #EFE0A0}
+.b-ok{background:#E8F5E9;color:var(--ey-green);border:1px solid #BFE3C6}
+.b-new{background:var(--ey-yellow);color:#1a1a24;border:1px solid #d9c400}
+.b-ref{background:#EAF2FB;color:var(--ey-link);border:1px solid #C5DCF5}
+.b-gray{background:#EFEFF4;color:#5a5a66;border:1px solid #d9d9e0}
+/* ===== 목업 공통 ===== */
+.mock{background:#fff;border:1px solid var(--ey-border);border-radius:6px;box-shadow:0 1px 4px rgba(30,30,40,.08);margin:12px 0 20px;overflow:hidden}
+.mock .mock-cap{background:#EFEFF4;border-bottom:1px solid var(--ey-border);padding:5px 12px;font-size:11px;color:var(--ey-gray);font-weight:600}
+.screen-details{margin:2px 0 30px}
+.screen-details .sd-title{font-size:14px;font-weight:800;margin:8px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+.screen-desc-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 14px}
+.screen-desc-item{background:#fff;border:1px solid var(--ey-border);border-left:3px solid var(--ey-yellow);border-radius:0 5px 5px 0;padding:8px 10px;font-size:11.8px;min-height:62px}
+.screen-desc-item .desc-label{display:block;font-weight:800;color:var(--ey-dark);margin-bottom:3px}
+.screen-desc-item .desc-body{color:#4b4b55}
+/* 타이틀바 (EY 다크) */
+.titlebar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--ey-darker);border-bottom:2px solid var(--ey-yellow);flex-wrap:wrap}
+.titlebar .tb-crumb{font-size:12px;color:#b9b9c2;font-weight:600}
+.titlebar .tb-sep{color:#6a6a75;font-weight:700}
+.titlebar .tb-title{font-size:15px;font-weight:800;color:#fff}
+.titlebar .tb-star{color:var(--ey-yellow);font-size:14px;cursor:pointer}
+.titlebar .tb-id{background:var(--ey-yellow);color:#1a1a24;font-size:10.5px;padding:2px 8px;border-radius:3px;font-weight:700}
+.titlebar .tb-right{margin-left:auto;font-size:11px;color:#c9c9d2}
+/* 조회조건 바 */
+.qbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#fff;flex-wrap:wrap;font-size:12px}
+.qbar .qlabel{font-size:11px;color:var(--ey-gray);font-weight:700}
+.qbar .seg{display:inline-flex;border:1px solid #c9c9d2;border-radius:4px;overflow:hidden}
+.qbar .seg span{padding:3px 10px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;color:#5a5a66}
+.qbar .seg span.on{background:var(--ey-dark);color:var(--ey-yellow)}
+.qbar .qv{display:inline-flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:3px 8px;background:#fff;font-size:12px}
+.qbar .qv.off{background:#F3F3F7;color:#9a9aa4}
+.qbar .navbtn{border:1px solid #c9c9d2;background:#fff;border-radius:3px;padding:2px 7px;font-size:11px;cursor:pointer;font-weight:700}
+.qbar .qright{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+/* 액션바 (우측 정렬) */
+.actionbar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap}
+.abtn{border:1px solid #c9c9d2;background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.abtn.dark{background:var(--ey-dark);color:#fff;border-color:var(--ey-dark)}
+.abtn.red{background:var(--ey-red);color:#fff;border-color:var(--ey-red)}
+.abtn.yellow{background:var(--ey-yellow);color:#1a1a24;border-color:#d9c400;font-weight:700}
+.abtn.ghost{background:#fff}
+.abtn.sm{padding:2px 7px;font-size:11px}
+.ab-right{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+/* 탭 */
+.tabbar{display:flex;gap:2px;padding:8px 12px 0;background:#FCFCFE;border-bottom:1px solid var(--ey-border);flex-wrap:wrap}
+.tab{padding:6px 16px;border:1px solid var(--ey-border);border-bottom:none;border-radius:6px 6px 0 0;background:#EFEFF4;font-size:12px;font-weight:600;color:#5a5a66;cursor:pointer}
+.tab.on{background:#fff;color:var(--ey-text);font-weight:700;border-color:#b9b9c2;border-bottom:2px solid #fff;margin-bottom:-1px}
+.tab .tno{color:#9a9aa4;font-size:10.5px}
+.tabpane{display:none}
+.tabpane.on{display:block}
+/* 폼 */
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;padding:12px}
+.formgrid.c3{grid-template-columns:repeat(3,1fr)}
+.formgrid.c2{grid-template-columns:repeat(2,1fr)}
+.ff{display:flex;flex-direction:column;gap:2px}
+.ff label{font-size:11px;color:var(--ey-gray);font-weight:600}
+.ff .fv{display:flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:4px 8px;background:#fff;font-size:12.5px;min-height:28px}
+.ff .fv.ro{background:#F3F3F7;color:#5a5a66}
+.ff .fv .lens{margin-left:auto;color:#9a9aa4;font-size:11px;cursor:pointer}
+.ff.wide{grid-column:span 2}
+.ff.full{grid-column:span 4}
+.formgrid.c3 .ff.full{grid-column:span 3}
+.formgrid.c2 .ff.full{grid-column:span 2}
+.mock input,.mock select,.mock textarea{border:1px solid #c9c9d2;border-radius:4px;background:#fff;padding:3px 6px;font:inherit;color:var(--ey-text)}
+.mock input,.mock select{height:26px}
+.mock textarea{width:100%;resize:vertical}
+table.grid input,table.grid select{width:100%;min-width:0}
+table.grid input.num{text-align:right;font-family:Consolas,monospace}
+/* 기능바/토글 */
+.fnbar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--ey-border);border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap;font-size:12px}
+.chip{border:1px solid #c9c9d2;background:#fff;border-radius:14px;padding:3px 12px;font-size:11.5px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--ey-dark);color:var(--ey-yellow);border-color:var(--ey-dark)}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.toggle .sw{width:34px;height:18px;border-radius:9px;background:var(--ey-yellow);position:relative;display:inline-block}
+.toggle .sw::after{content:'';position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#1a1a24}
+.sumbox{margin-left:auto;display:flex;gap:14px;font-weight:700;font-size:12px}
+.sumbox .ok{color:var(--ey-green)}
+/* 그리드 */
+table.grid{width:100%;border-collapse:collapse;font-size:12px;background:#fff}
+table.grid th{background:#F3F3F7;border:1px solid var(--ey-border);padding:5px 6px;font-weight:700;color:#44444e;white-space:nowrap}
+table.grid td{border:1px solid var(--ey-border);padding:4px 6px;white-space:nowrap}
+table.grid td .lens{float:right;color:#9a9aa4;margin-left:8px;cursor:pointer}
+table.grid td.num{text-align:right;font-family:Consolas,monospace}
+table.grid td.c{text-align:center}
+table.grid tr.sel td{background:#FFFBE0}
+table.grid tr.empty td{color:#c9c9d2;height:26px}
+table.grid tr.tot td{background:#F3F3F7;font-weight:700}
+table.grid .red{color:var(--ey-red);font-weight:700}
+table.grid .blue{color:var(--ey-blue)}
+table.grid .dr{color:var(--ey-blue);font-weight:700}
+table.grid .cr{color:var(--ey-red);font-weight:700}
+table.grid .dim{color:#9a9aa4}
+.statusbar{display:flex;align-items:center;gap:16px;background:var(--ey-darker);color:#e8e8ee;padding:7px 12px;font-size:11.5px;flex-wrap:wrap}
+.statusbar .okmsg{color:#7ADB8F;font-weight:700}
+.statusbar .warnmsg{color:#FFD666;font-weight:700}
+.statusbar .opts{display:flex;gap:12px}
+.statusbar .cnt{margin-left:auto;color:#b9b9c2}
+/* 좌우 배치 + 패널 */
+.mock-flex{display:flex;gap:0}
+.mock-main{flex:1;min-width:0}
+.lpane{width:280px;flex-shrink:0;border-right:1px solid var(--ey-border);background:#FCFCFE;display:flex;flex-direction:column}
+.lpane .lp-t{background:#F3F3F7;padding:6px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rpanel{width:250px;flex-shrink:0;border-left:1px solid var(--ey-border);background:#FCFCFE;padding:10px;display:flex;flex-direction:column;gap:12px}
+.rp-box{border:1px solid var(--ey-border);border-radius:5px;background:#fff}
+.rp-box .rp-t{background:#F3F3F7;padding:5px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rp-box .rp-b{padding:8px 10px;font-size:11.5px}
+.rp-box .kv{display:flex;justify-content:space-between;margin:3px 0;gap:8px}
+.rp-box .kv .k{color:var(--ey-gray);white-space:nowrap}
+.rp-box .kv .v{font-weight:600;text-align:right}
+.dropzone{border:1.5px dashed #c9c9d2;border-radius:5px;padding:10px;text-align:center;color:#9a9aa4;font-size:11px;margin-bottom:6px}
+.file{display:flex;align-items:center;gap:6px;font-size:11.5px;margin:3px 0;color:#44444e}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+.source-wjv .page-title{flex-wrap:nowrap}
+.source-wjv .titlebar{flex-wrap:nowrap}
+.source-wjv .ab-right{flex-wrap:nowrap}
+.source-wjv .rpanel{width:230px}
+.source-wjv .rp-box .kv{gap:0}
+.source-wjv .statusbar{flex-wrap:nowrap}
+.source-wjv table.grid td,.source-wjv table.grid th{white-space:nowrap}
+/* 트리 */
+.tree{padding:8px 6px;font-size:12px;overflow:auto;max-height:430px}
+.tree .tnode{padding:2px 8px;cursor:pointer;border-radius:3px;white-space:nowrap}
+.tree .tnode:hover{background:#EFEFF4}
+.tree .tnode.on{background:var(--ey-yellow);font-weight:700}
+.tree .lv1{font-weight:700}
+.tree .lv2{padding-left:22px}
+.tree .lv3{padding-left:40px;color:#44444e}
+.tree .cnt{color:#9a9aa4;font-size:10.5px}
+.tree .red{color:var(--ey-red)}
+.note{font-size:11.5px;color:var(--ey-gray);margin:6px 0 14px;padding-left:2px}
+.kbd{display:inline-block;border:1px solid #b9b9c2;border-bottom-width:2px;border-radius:3px;background:#fff;padding:0 5px;font-size:11px;font-family:Consolas,monospace;font-weight:700;color:#44444e}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 16px}
+.flow .st{background:#fff;border:1.5px solid var(--ey-dark);border-radius:4px;padding:4px 10px;font-size:11.5px;font-weight:700}
+.flow .st.hl{background:var(--ey-yellow);border-color:#c9b400}
+.flow .st.end{background:var(--ey-dark);color:#fff}
+.flow .ar{color:#9a9aa4;font-weight:700}
+/* 모달 목업 */
+.modal{max-width:560px;margin:10px auto;border:2px solid var(--ey-dark);border-radius:6px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.modal .m-t{background:var(--ey-darker);color:#fff;padding:8px 12px;font-weight:700;font-size:12.5px;display:flex}
+.modal .m-t .x{margin-left:auto;color:#c9c9d2;cursor:pointer}
+.modal .m-b{padding:12px}
+.modal .m-f{padding:8px 12px;border-top:1px solid var(--ey-border);display:flex;justify-content:flex-end;gap:6px}
+.footer{background:var(--ey-darker);color:#b9b9c2;padding:14px 22px;font-size:11px;display:flex;align-items:center;gap:14px}
+.footer .beamline{width:70px;height:8px;background:var(--ey-yellow);transform:skewX(-30deg)}
+@media(max-width:1100px){.twocol{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,1fr)}.ff.full{grid-column:span 2}.screen-desc-list{grid-template-columns:1fr}.mock-flex{flex-direction:column}.lpane,.rpanel{width:auto;border:none;border-bottom:1px solid var(--ey-border)}}
+</style>
+</head>
+<body>
+
+<!-- ===================== 상단바 ===================== -->
+<header class="topbar">
+  <div class="ey-logo">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="ey-tag">Shape the future<br>with confidence</div>
+  </div>
+  <div class="company-select"><span class="code">1000</span> <b>EY Korea Co., Ltd.</b> <span>&#9662;</span></div>
+  <div class="global-search">&#128269; 메뉴, 기능, 코드 검색 (Ctrl + K)</div>
+  <div class="top-utils">
+    <div class="util">&#128276; 공지사항</div>
+    <div class="util fav"><span class="ico">&#9733;</span> 즐겨찾기</div>
+    <div class="util">? 도움말</div>
+    <div class="util"><span class="avatar">홍</span> 홍길동 대리 &#9662;</div>
+    <div class="util">&#9638;</div>
+  </div>
+</header>
+
+<div class="layout">
+<!-- ===================== 좌측 메뉴 ===================== -->
+<aside class="sidebar">
+  <div class="menu-head">&#9776; Menu — 부가세 주요신고 (P06)</div>
+  <nav>
+    <a class="mitem active" data-sec="home" style="padding-left:16px;font-weight:700">&#127968; 페이즈 개요</a>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>주요 신고서류 (1차)</div>
+      <a class="mitem" data-sec="vat01">부가가치세신고서 <span class="mid">SA-VAT-01</span></a>
+      <a class="mitem" data-sec="vat02">세무리스크 자동검증 MRI <span class="mid">SA-VAT-02</span></a>
+      <a class="mitem" data-sec="vat03">세금계산서합계표 <span class="mid">SA-VAT-03</span></a>
+      <a class="mitem" data-sec="vat04">신용카드매출전표 수령명세서 <span class="mid">SA-VAT-04</span></a>
+      <a class="mitem" data-sec="vat05">신용카드매출전표 발행집계표 <span class="mid">SA-VAT-05</span></a>
+      <a class="mitem" data-sec="vat06">계산서합계표 <span class="mid">SA-VAT-06</span></a>
+      <a class="mitem" data-sec="vat07">부가가치세 전자신고 <span class="mid">SA-VAT-07</span></a>
+      <a class="mitem" data-sec="vat08">부가가치세 납부서 <span class="mid">SA-VAT-08</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>업종별 첨부서류 (1차)</div>
+      <a class="mitem" data-sec="vat09">부동산임대공급가액명세서 <span class="mid">SA-VAT-09</span></a>
+      <a class="mitem" data-sec="vat10">건물관리명세서 <span class="mid">SA-VAT-10</span></a>
+      <a class="mitem" data-sec="vat11">의제매입세액공제신고서 <span class="mid">SA-VAT-11</span></a>
+      <a class="mitem" data-sec="vat12">재활용폐자원세액공제신고서 <span class="mid">SA-VAT-12</span></a>
+      <a class="mitem" data-sec="vat13">구리스크랩등 매입세액공제신고서 <span class="mid">SA-VAT-13</span></a>
+      <a class="mitem" data-sec="vat14">현금매출명세서 <span class="mid">SA-VAT-14</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>업종별 첨부서류 (2차)</div>
+      <a class="mitem" data-sec="vat15">동물진료용역매출명세서 <span class="mid">SA-VAT-15</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>공통 · 횡단</div>
+      <a class="mitem" data-sec="flow">업무 흐름 (E2E) <span class="mid">§3</span></a>
+      <a class="mitem" data-sec="routing">과세유형 라우팅 <span class="mid">§3.1</span></a>
+      <a class="mitem" data-sec="model">데이터 모델·API <span class="mid">§5·6</span></a>
+      <a class="mitem" data-sec="gate">검증·권한·마감 <span class="mid">§8·9</span></a>
+    </div>
+  </nav>
+  <div class="foot">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="txt">Building a better<br>working world</div>
+  </div>
+</aside>
+<!-- ===================== 콘텐츠 ===================== -->
+<main class="content">
+<section class="section visible" id="home">
+  <div class="page-title"><h1>페이즈 06 — 부가가치세 주요신고</h1><span class="chip-id">SA-VAT-01~15</span><span class="badge b-new">v1.0</span></div>
+  <div class="crumb">개발설계 › 페이즈06_부가세_주요신고.md + bk_설계서_v1.1.md(§25.11·§25.12) 기반 화면설계 · 스타일 준거: 페이즈05_화면_v1.0.HTML (EY 레이아웃)</div>
+  <div class="src"><b>범위</b>: 1차 SA-VAT-01~14, 2차 SA-VAT-15. P03 매입매출전표의 과세유형(11~64)·증빙 메타·NTS 전송상태·사업장 차원을 단일 원천으로, 신고서 생성 → MRI 검증 → 합계표/명세서 → 이용회사 승인 → 전자신고 → 납부서·LOCKED까지 하나의 흐름으로 구성한다.</div>
+
+  <h2 class="sec"><span class="no">§3</span>End-to-End 신고 흐름</h2>
+  <div class="flow">
+    <span class="st">P03 전표·수집자료</span><span class="ar">&rarr;</span>
+    <span class="st">부속서류·합계표 작성</span><span class="ar">&rarr;</span>
+    <span class="st hl">신고서 생성(예정/확정)</span><span class="ar">&rarr;</span>
+    <span class="st hl">마감 · MRI 60여 항목</span><span class="ar">&rarr;</span>
+    <span class="st">이용회사 Ack·승인(Step-up)</span><span class="ar">&rarr;</span>
+    <span class="st">전자신고 .101/.102</span><span class="ar">&rarr;</span>
+    <span class="st end">납부서 2D · LOCKED</span>
+  </div>
+  <p class="note">기존 문서형 화면을 P03 전표입력 화면과 동일한 밀도로 재구성했다. 모든 업무 화면에 조회조건(qbar)·액션바·필요 시 탭·대표 데이터 그리드·우측 상태/규칙 패널을 배치하고, 화면 설명은 목업 하단 설계카드로 분리했다.</p>
+
+  <h2 class="sec">핵심 설계 포인트</h2>
+  <div class="screen-desc-list">
+    <div class="screen-desc-item"><span class="desc-label">단일 원천</span><span class="desc-body">P03 매입매출전표 과세유형 11~64가 신고서식 라우팅의 단일 진실원. 매출 11~25 / 매입 51~64 코드별 자동 집계.</span></div>
+    <div class="screen-desc-item"><span class="desc-label">마감 상태머신</span><span class="desc-body">작성중 → 마감 → 첨부서식 조회 → 전자신고여부(0/x) → MRI 검사. 차단 오류는 마감 저지, 유의사항은 강제마감 허용.</span></div>
+    <div class="screen-desc-item"><span class="desc-label">과세단위</span><span class="desc-body">사업장별 / 총괄납부 / 사업자단위 — 6차원 중 사업장 차원이 과세단위 분기 키.</span></div>
+    <div class="screen-desc-item"><span class="desc-label">이용회사 승인</span><span class="desc-body">filingApprovalRequired=Y이면 전자신고 전 Ack·Step-up 인증 필요.</span></div>
+    <div class="screen-desc-item"><span class="desc-label">전자신고</span><span class="desc-body">제출자등록 → 제작(.101 일반/.102 간이) → 검증 → 홈택스 제출(약15단계). 상태머신 6종.</span></div>
+    <div class="screen-desc-item"><span class="desc-label">수정/경정 분기</span><span class="desc-body">추가 차가감납부세액 ≥0 수정신고 · &lt;0 경정청구. 정기신고 마감 후에만 수정 차수 생성.</span></div>
+  </div>
+
+  <h2 class="sec">화면 인벤토리 (15)</h2>
+  <table class="spec">
+    <tr><th class="c">#</th><th>화면 ID</th><th>화면명</th><th class="c">차수</th><th>근거</th><th>특이사항</th></tr>
+    <tr><td class="c">1</td><td>SA-VAT-01</td><td>부가가치세신고서</td><td class="c">1차</td><td>§25.11.1</td><td>신고서 엔진·마감 상태머신</td></tr>
+    <tr><td class="c">2</td><td>SA-VAT-02</td><td>세무리스크 자동검증(부가가치세 MRI)</td><td class="c">1차</td><td>§25.11.2</td><td>60여 항목·업무참고용</td></tr>
+    <tr><td class="c">3</td><td>SA-VAT-03</td><td>세금계산서합계표</td><td class="c">1차</td><td>§25.11.3</td><td>매출·매입 · 전자/전자외</td></tr>
+    <tr><td class="c">4</td><td>SA-VAT-04</td><td>신용카드매출전표등 수령명세서</td><td class="c">1차</td><td>§25.11.4</td><td><span class="badge b-ref">5탭</span></td></tr>
+    <tr><td class="c">5</td><td>SA-VAT-05</td><td>신용카드매출전표 발행집계표</td><td class="c">1차</td><td>§25.11.5</td><td>13/1000 발행세액공제</td></tr>
+    <tr><td class="c">6</td><td>SA-VAT-06</td><td>계산서합계표</td><td class="c">1차</td><td>§25.11.6</td><td>면세 · 정기신고만</td></tr>
+    <tr><td class="c">7</td><td>SA-VAT-07</td><td>부가가치세 전자신고</td><td class="c">1차</td><td>§25.11.7</td><td>.101/.102 제작·제출</td></tr>
+    <tr><td class="c">8</td><td>SA-VAT-08</td><td>부가가치세 납부서</td><td class="c">1차</td><td>§25.11.8</td><td>2D 바코드</td></tr>
+    <tr><td class="c">9</td><td>SA-VAT-09</td><td>부동산임대공급가액명세서</td><td class="c">1차</td><td>§25.12.1</td><td>간주임대료 계산기</td></tr>
+    <tr><td class="c">10</td><td>SA-VAT-10</td><td>건물관리명세서</td><td class="c">1차</td><td>§25.12.2</td><td>건물 마스터·분기 이월</td></tr>
+    <tr><td class="c">11</td><td>SA-VAT-11</td><td>의제매입세액공제신고서</td><td class="c">1차</td><td>§25.12.3</td><td><span class="badge b-ref">2탭</span> 공제율 차등</td></tr>
+    <tr><td class="c">12</td><td>SA-VAT-12</td><td>재활용폐자원세액공제신고서</td><td class="c">1차</td><td>§25.12.4</td><td>중고차 10/110</td></tr>
+    <tr><td class="c">13</td><td>SA-VAT-13</td><td>구리스크랩등 매입세액공제신고서</td><td class="c">1차</td><td>§25.12.5</td><td>매입자 납부특례</td></tr>
+    <tr><td class="c">14</td><td>SA-VAT-14</td><td>현금매출명세서</td><td class="c">1차</td><td>§25.12.6</td><td>전문서비스업</td></tr>
+    <tr><td class="c">15</td><td>SA-VAT-15</td><td>동물진료용역매출명세서</td><td class="c">2차</td><td>§25.12.7</td><td>진료유형 5구분</td></tr>
+  </table>
+</section>
+<section class="section source-vat" id="vat01">
+  <div class="page-title"><h1>부가가치세신고서</h1><span class="chip-id">SA-VAT-01</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 부가가치세신고서 · §25.11.1</div>
+  <div class="src"><b>업무 목적</b>: P03 매입매출전표 과세유형(11~64)을 RLS 격리 부가세 집계 뷰로 자동 집계하여 과세표준·매출세액·매입세액·경감공제·차가감납부세액을 작성한다. 정기/수정신고를 차수로 관리하며, 정기신고 마감 후에만 동일기간 수정신고 작성이 가능하다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-01 — 확정신고(2026-1기) · 신고구분 2.확정 · 사업장별 과세단위 · 작성중 · 매출·매입·경감 자동집계 및 마감게이트</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">부가가치세신고서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-01</span>
+      <span class="tb-right">7기(2026) &middot; <span class="badge b-gray">작성중</span> &middot; &#128100; 홍길동(세무담당)</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">기수</span><span class="qv">2026-1기</span>
+      <span class="qlabel">과세기간</span><span class="qv">2026-01-01~06-30</span>
+      <span class="qlabel">신고구분</span><span class="qv">2.확정 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">과세단위</span><span class="qv">사업장별 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">사업장</span><span class="qv">본점 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">수정차수</span><span class="qv">0</span>
+      <span class="qright"><button class="abtn">조건검색</button><button class="abtn yellow">&#128269; 조회</button></span>
+    </div>
+    <div class="actionbar">
+      <button class="abtn dark">불러오기(자동집계)</button><button class="abtn ghost">작성조회</button><button class="abtn ghost">매출액보기</button><button class="abtn ghost">MRI검사 실행</button><button class="abtn ghost">첨부서식 조회</button>
+      <div class="ab-right"><button class="abtn ghost">전자신고여부 0/x</button><button class="abtn ghost">납부서</button><button class="abtn yellow">마감</button></div>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">① 과세표준·매출세액 (P03 taxType 11~25 자동집계)</div>
+        <table class="grid">
+          <tr><th>란</th><th>구분</th><th>과세유형</th><th class="c">과세표준</th><th class="c">세율</th><th class="c">세액</th><th>연계</th></tr>
+          <tr class="sel"><td class="c">1</td><td>세금계산서 발급분</td><td><span class="red">11 과세</span></td><td class="num">128,500,000</td><td class="c">10/100</td><td class="num">12,850,000</td><td>SA-VAT-03</td></tr>
+          <tr><td class="c">3</td><td>신용카드·현금영수증</td><td><span class="red">17·21·22</span></td><td class="num">42,330,000</td><td class="c">10/100</td><td class="num">4,233,000</td><td>SA-VAT-05</td></tr>
+          <tr><td class="c">4</td><td>기타(정규영수증외)</td><td><span class="red">14 건별</span></td><td class="num">6,780,000</td><td class="c">10/100</td><td class="num">678,000</td><td>매출액보기</td></tr>
+          <tr><td class="c">5</td><td>영세율 세금계산서</td><td><span class="red">12 영세</span></td><td class="num">18,900,000</td><td class="c">0</td><td class="num">0</td><td>영세율첨부(P08)</td></tr>
+          <tr><td class="c">7</td><td>예정신고 누락분</td><td class="dim">확정기간 반영</td><td class="num">1,200,000</td><td class="c">10/100</td><td class="num">120,000</td><td>P03</td></tr>
+          <tr><td class="c">8</td><td>대손세액 가감</td><td class="dim">SA-VAT-24</td><td class="num">&mdash;</td><td class="c">&mdash;</td><td class="num">-320,000</td><td>확정신고만</td></tr>
+          <tr class="tot"><td colspan="3">매출세액 합계 (9)</td><td class="num">197,710,000</td><td class="c"></td><td class="num">17,561,000</td><td class="blue">과표명세 32 대사</td></tr>
+        </table>
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">② 매입세액 (taxType 51~64 · 그밖의공제 41~48 · 불공제 50)</div>
+        <table class="grid">
+          <tr><th>란</th><th>구분</th><th>과세유형</th><th class="c">공급가액</th><th class="c">세액</th><th>연계</th></tr>
+          <tr><td class="c">10</td><td>세금계산서 수취(일반)</td><td><span class="blue">51·52·55</span></td><td class="num">82,100,000</td><td class="num">8,210,000</td><td>SA-VAT-03</td></tr>
+          <tr><td class="c">11</td><td>세금계산서 수취(고정자산)</td><td><span class="blue">51+자산계정</span></td><td class="num">15,000,000</td><td class="num">1,500,000</td><td>SA-VAT-23</td></tr>
+          <tr><td class="c">14</td><td>그밖의 공제매입세액</td><td class="dim">41~48 의제·재활용·카드</td><td class="num">9,420,000</td><td class="num">684,000</td><td>SA-VAT-11/12/04</td></tr>
+          <tr><td class="c">16</td><td>공제받지못할 매입세액</td><td><span class="blue">50 불공</span></td><td class="num">3,600,000</td><td class="num">-360,000</td><td>불공제명세 SA-VAT-22</td></tr>
+          <tr class="tot"><td colspan="3">매입세액 계 (17)</td><td class="num">110,120,000</td><td class="num">10,034,000</td><td class="blue">공제 매입세액</td></tr>
+        </table>
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">③ 경감·공제 및 차가감 납부세액 (54~58 · 발행공제)</div>
+        <table class="grid">
+          <tr><th>구분</th><th>내용</th><th class="c">금액</th><th>비고</th></tr>
+          <tr><td>납부(환급)세액</td><td>매출세액 &minus; 매입세액</td><td class="num">7,527,000</td><td>17,561,000 &minus; 10,034,000</td></tr>
+          <tr><td>경감·공제세액</td><td>전자신고세액공제(54)</td><td class="num">-10,000</td><td>확정·직접신고 10,000</td></tr>
+          <tr><td>신용카드발행공제</td><td>개인 13/1000</td><td class="num">-340,000</td><td>SA-VAT-05 · 연1천만한도</td></tr>
+          <tr><td>예정고지·가산세</td><td>예정고지세액 &minus; / 가산세 +</td><td class="num">+250,000</td><td>직접입력</td></tr>
+          <tr class="tot"><td colspan="2">차가감 납부할세액 (27)</td><td class="num">7,427,000</td><td class="blue">SA-VAT-08 납부서</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 매출합계 = 과세표준명세 32.합계 일치 · 환급 아님</span><span class="warnmsg">마감 전 MRI 필수 · 첨부서식 미마감 3건</span><span class="cnt">차가감 7,427,000 납부 · §25.11.1</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">업무 상태</div><div class="rp-b">
+          <div class="kv"><span class="k">신고상태</span><span class="v">작성중 &rarr; 마감대기</span></div>
+          <div class="kv"><span class="k">신고구분</span><span class="v">2.확정</span></div>
+          <div class="kv"><span class="k">과세단위</span><span class="v">사업장별</span></div>
+          <div class="kv"><span class="k">MRI</span><span class="v">오류 1 · 경고 4</span></div>
+          <div class="kv"><span class="k">승인정책</span><span class="v">filingApprovalRequired=Y</span></div>
+        </div></div>
+        <div class="rp-box"><div class="rp-t">마감 상태머신 (§25.11.1)</div><div class="rp-b">
+          작성중 &rarr; 마감 &rarr; 첨부서식 조회<br>&rarr; 전자신고여부(0/x) &rarr; MRI 60여항목<br><span class="badge b-block">차단오류 마감 저지</span> · 유의사항 강제마감</div></div>
+        <div class="rp-box"><div class="rp-t">마감 게이트</div><div class="rp-b">
+          · 매출합계 ≠ 32.합계 <span class="badge b-block">차단</span><br>· 환급 5천만 초과+계좌미반영 <span class="badge b-block">오류</span><br>· 사업자번호 누락 <span class="badge b-warn">합계표 실패</span></div></div>
+        <div class="rp-box"><div class="rp-t">수정/경정 분기</div><div class="rp-b">
+          차가감 ≥0 &rarr; 수정신고<br>차가감 &lt;0 &rarr; 경정청구<br>수정전(정기·수정불가)/수정후 관리</div></div>
+        <div class="rp-box"><div class="rp-t">산출물·연계</div><div class="rp-b">
+          전자신고 파일(SA-VAT-07)<br>납부서 2D바코드(SA-VAT-08)<br>첨부서식 일괄 인쇄/PDF · 매출액보기</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력조건</span><span class="desc-body">기수·신고구분(1예정/2확정/3영세율조기환급/4기한후)·사업장 과세단위·수정차수를 먼저 고정. 정기신고 마감 전에는 수정차수 생성 불가.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">자동집계</span><span class="desc-body">과세유형 11~64와 증빙·계정·적요 조합으로 본표·부속서류를 동시 갱신. 세액=과세금액×10/100.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">마감게이트</span><span class="desc-body">과표명세 32.합계와 매출합계 불일치, 환급 5천만원 초과 계좌미반영, MRI 차단오류는 마감을 막는다.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">경감·공제</span><span class="desc-body">전자신고세액공제 1만원, 전자세금발급 건당200원(연100만), 신용카드발행공제 개인 13/1000(연1천만·직전 10억초과 불가).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">역추적</span><span class="desc-body">작성서식내역(건수·금액·세액)을 전표내역·전표상세와 대사. 부가율 적용 여부에 따라 계산식 분기.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">후속연계</span><span class="desc-body">SA-VAT-02 MRI, SA-VAT-07 전자신고, SA-VAT-08 납부서, P07 수정/경정/총괄납부.</span></div>
+    </div>
+    <h3 class="sub">입력 필드 · 검증 · 연계 상세</h3>
+    <table class="spec">
+      <tr><th>영역</th><th>내용</th><th>근거</th></tr>
+      <tr><td>조회조건</td><td>기수 · 회계기간 · 신고구분(1~4) · 과세단위(사업장별/총괄/사업자단위) · 수정차수</td><td>§25.11.1</td></tr>
+      <tr><td>매출세액</td><td>11 과세 · 12 영세 · 14 건별/15 종합 · 17/21/22 카드·전자·현금 · 예정누락 · 대손가감</td><td>매입매출전표 taxType</td></tr>
+      <tr><td>매입세액</td><td>51/52/54/55 · 고정자산 별도 · 41~48 그밖의공제 · 50 불공 · 51 공통매입 · 52 대손처분</td><td>부속서류 연동</td></tr>
+      <tr><td>과표명세</td><td>업태·종목·업종코드 · 수입금액제외(고정자산매각·영업외) · 면세수입 · 계산서 발급/수취</td><td>회사등록 반영</td></tr>
+      <tr><td>산출물</td><td>전자신고 파일 · 2D바코드 납부서 · 첨부서식 일괄 인쇄/PDF · 작성조회 · 매출액보기</td><td>§25.11.1</td></tr>
+    </table>
+  </div>
+</section>
+<section class="section source-vat" id="vat02">
+  <div class="page-title"><h1>세무리스크 자동검증 (부가가치세 MRI)</h1><span class="chip-id">SA-VAT-02</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 세무리스크 자동검증 · §25.11.2</div>
+  <div class="src"><b>업무 목적</b>: 입력 전표·신고서·부속서류를 MRI 분석엔진과 자체 DB로 심층 분석해 누락·오류·부당공제를 사전 점검하는 <b>업무참고용</b> 서비스(법적책임 없음). 60여 항목 검사를 전자신고 파이프라인의 사전검증(pre-validation) 단계로 수행한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-02 — 검증기간 선택 → 검증시작 → 항목별 세부내역 · 룰엔진 기반 60여 항목 · 리스크 스코어링</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">부가가치세 MRI</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-02</span>
+      <span class="tb-right">업무참고용 · 법적책임 없음</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">구분(검증기간)</span><span class="qv">2026-1기 확정 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">대상</span><span class="qv">전표+신고서+부속 <span class="lens">&#9662;</span></span>
+      <span class="qright"><button class="abtn ghost">매매기준율 조회</button><button class="abtn ghost">사업자상태 조회</button><button class="abtn ghost">진위확인</button><button class="abtn yellow">검증시작</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">검토항목별 결과 (일부) — 오류/경고/정상 및 조치</div>
+        <table class="grid">
+          <tr><th>#</th><th>검토항목</th><th class="c">결과</th><th class="c">건수</th><th>세부내역</th><th>조치</th></tr>
+          <tr class="sel"><td class="c">1</td><td>세금계산서합계표 적정성</td><td class="c"><span class="badge b-block">오류</span></td><td class="c">1</td><td>사업자번호 누락 매출처 1</td><td>SA-VAT-03 보완</td></tr>
+          <tr><td class="c">2</td><td>고정거래처 증빙 누락</td><td class="c"><span class="badge b-warn">경고</span></td><td class="c">3</td><td>정기거래처 무증빙 매입</td><td>증빙 확인</td></tr>
+          <tr><td class="c">3</td><td>세금계산서 전송 가산세</td><td class="c"><span class="badge b-warn">경고</span></td><td class="c">2</td><td>지연전송 2건</td><td>가산세 검토</td></tr>
+          <tr><td class="c">4</td><td>접대비 매입세액 불공제</td><td class="c"><span class="badge b-ok">정상</span></td><td class="c">0</td><td>&mdash;</td><td>&mdash;</td></tr>
+          <tr><td class="c">5</td><td>현금매출명세서 제출누락</td><td class="c"><span class="badge b-warn">경고</span></td><td class="c">1</td><td>제출대상 업종 미작성</td><td>SA-VAT-14</td></tr>
+          <tr><td class="c">6</td><td>이중·중복 매입세액공제</td><td class="c"><span class="badge b-warn">경고</span></td><td class="c">1</td><td>카드+세금계산서 중복 1</td><td>SA-VAT-04 검토</td></tr>
+          <tr><td class="c">7</td><td>공통매입세액 안분</td><td class="c"><span class="badge b-ok">정상</span></td><td class="c">0</td><td>면세비율 이내</td><td>&mdash;</td></tr>
+          <tr><td class="c">8</td><td>거래처 휴·폐업 상태</td><td class="c"><span class="badge b-ok">정상</span></td><td class="c">0</td><td>국세청 API 대사 완료</td><td>&mdash;</td></tr>
+          <tr class="tot"><td colspan="2">종합 (60여 항목)</td><td class="c"><span class="red">오류 1</span></td><td class="c">8</td><td colspan="2" class="blue">경고 4 · 정상 55 · 리스크 스코어 중</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">권고 리포트 · 강제마감 시 오류 무시 가능(법적책임 없음)</span><span class="cnt">사업장/거래처별 스코어링 · §25.11.2</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">부속 기능</div><div class="rp-b">
+          매매기준율 조회(서울외국환중개·당일 20시 후)<br>사업자등록상태(일반/간이/면세/폐업)<br>사업자정보 진위(번호·대표자·개업일)</div></div>
+        <div class="rp-box"><div class="rp-t">외부 연계</div><div class="rp-b">
+          국세청 사업자상태 API<br>환율(매매기준율) API<br><span class="badge b-warn">토·일·공휴일 제외</span></div></div>
+        <div class="rp-box"><div class="rp-t">호출 지점</div><div class="rp-b">
+          SA-VAT-01 마감 "MRI검사 실행"<br>SA-VAT-07 전자신고 사전검증<br>테넌트별 결과 격리(RLS)</div></div>
+        <div class="rp-box"><div class="rp-t">성격</div><div class="rp-b">
+          <span class="badge b-gray">업무참고용</span> 검토 의견(권고)<br>법적책임 없음 · Smart A 성격 유지</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">검증 실행</span><span class="desc-body">검증기간 선택 후 검증시작 → 검토항목별 세부내역 조회. 룰엔진 기반 항목 카탈로그 실행.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">검토 항목</span><span class="desc-body">합계표 적정성, 증빙 누락, 가산세, 접대비 불공제, 현금매출 누락, 재활용·대리운전·카드 한도, 공통매입 안분, 대손·중복공제, 휴폐업 등.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">부속 조회</span><span class="desc-body">매매기준율, 사업자등록상태(전체·매출·매입처별), 사업자정보 진위여부 확인.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">외부 API</span><span class="desc-body">국세청 사업자상태·환율 외부연계 호출. 테넌트별 검증 결과 격리.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">검토 의견(권고) 리포트, 차원(사업장/거래처)별 리스크 스코어링.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 마감 절차 내 호출, SA-VAT-07 사전검증 단계.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat03">
+  <div class="page-title"><h1>세금계산서합계표</h1><span class="chip-id">SA-VAT-03</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 세금계산서합계표 · §25.11.3</div>
+  <div class="src"><b>업무 목적</b>: 매출처별·매입처별 세금계산서합계표를 예정·확정신고 시 제출. 매출 11 과세/12 영세/25 매세, 매입 51 과세/52 영세/54 불공/55 수입 전표를 집계. 종료일 다음달 11일까지 국세청 전송분은 <b>전자</b>, 이후·종이는 <b>전자외</b>로 판정한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-03 — 매출·매입 동시 마감 · 전자/전자외 판정 · 동일 사업자번호 합산 · 사업자번호 누락 시 마감화일 작성 실패</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">세금계산서합계표</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-03</span>
+      <span class="tb-right">신고일 종료월 다음달 25일</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">과세기간</span><span class="qv">2026-1기 확정</span>
+      <span class="qlabel">유형</span><span class="seg"><span class="on">전자</span><span>전자외</span></span>
+      <span class="qlabel">구분</span><span class="seg"><span class="on">사업자</span><span>주민번호</span></span>
+      <span class="qlabel">국세청신고여부</span><span class="qv">여 <span class="lens">&#9662;</span></span>
+      <span class="qright"><button class="abtn ghost">휴폐업조회</button><button class="abtn yellow">&#128269; 조회</button></span>
+    </div>
+    <div class="actionbar">
+      <button class="abtn dark">불러오기</button><button class="abtn ghost">전표추가(직접·엑셀)</button><button class="abtn ghost">합산</button><button class="abtn ghost">제출용자료조회</button>
+      <div class="ab-right"><button class="abtn ghost">엑셀변환</button><button class="abtn yellow">마감(매출·매입)</button></div>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">매출처별 (11 과세 · 12 영세 · 25 매세)</div>
+        <table class="grid">
+          <tr><th>매출처</th><th>사업자번호</th><th class="c">전자구분</th><th class="c">매수</th><th class="c">공급가액</th><th class="c">세액</th></tr>
+          <tr class="sel"><td>(주)가나상사</td><td>128-81-12345</td><td class="c"><span class="badge b-ok">전자</span></td><td class="c">12</td><td class="num">64,200,000</td><td class="num">6,420,000</td></tr>
+          <tr><td>대한물산(주)</td><td>214-88-55021</td><td class="c"><span class="badge b-ok">전자</span></td><td class="c">8</td><td class="num">38,500,000</td><td class="num">3,850,000</td></tr>
+          <tr><td>서울무역</td><td><span class="red">누락</span></td><td class="c"><span class="badge b-gray">전자외</span></td><td class="c">3</td><td class="num">18,900,000</td><td class="num">0</td></tr>
+          <tr class="tot"><td colspan="3">매출처 계 (84매)</td><td class="c">84</td><td class="num">128,500,000</td><td class="num">12,850,000</td></tr>
+        </table>
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">매입처별 (51 과세 · 52 영세 · 54 불공 · 55 수입)</div>
+        <table class="grid">
+          <tr><th>매입처</th><th>사업자번호</th><th class="c">전자구분</th><th class="c">매수</th><th class="c">공급가액</th><th class="c">세액</th></tr>
+          <tr><td>동방부품(주)</td><td>106-81-33445</td><td class="c"><span class="badge b-ok">전자</span></td><td class="c">21</td><td class="num">52,300,000</td><td class="num">5,230,000</td></tr>
+          <tr><td>한빛전자</td><td>220-81-77120</td><td class="c"><span class="badge b-gray">전자외</span></td><td class="c">9</td><td class="num">29,800,000</td><td class="num">2,980,000</td></tr>
+          <tr class="tot"><td colspan="3">매입처 계 (61매)</td><td class="c">61</td><td class="num">82,100,000</td><td class="num">8,210,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">&#9888; 서울무역 사업자번호 누락 &rarr; 마감화일 작성 실패</span><span class="cnt">전자/전자외 자동 판정 · 휴폐업 매주 월요일 갱신</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">전자/전자외 판정</div><div class="rp-b">
+          종료일 다음달 11일까지 국세청 전송 &rarr; <span class="badge b-ok">전자</span><br>이후·종이 &rarr; <span class="badge b-gray">전자외</span><br>국세청신고여부 1.부 지정 가능</div></div>
+        <div class="rp-box"><div class="rp-t">마감 정합성</div><div class="rp-b">
+          매출·매입 동시 마감<br><span class="badge b-block">사업자번호 누락 시 실패</span><br>전표 불일치 시 마감 실패</div></div>
+        <div class="rp-box"><div class="rp-t">합산·전표추가</div><div class="rp-b">
+          동일 사업자번호 합산<br>직접입력·엑셀업로드 &rarr; 전자외 집계<br>전표전송 &rarr; 매입매출전표 생성</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(11/12/25/51/52/54/55)<br>SA-VAT-01 · SA-VAT-06 공통 파이프라인<br>휴폐업 외부 API</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">조회조건</span><span class="desc-body">유형(전자/전자외) · 구분(사업자/주민번호) · 국세청신고여부 · 주류업종 주류코드 자동 반영 · 단위신고 거래처.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">전자 판정</span><span class="desc-body">과세기간 종료일 다음달 11일까지 전송분은 전자, 이후·종이는 전자외.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">마감</span><span class="desc-body">매출·매입 동시 마감. 사업자번호 누락·전표 불일치 시 마감화일 작성 실패.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">수정</span><span class="desc-body">부가세신고서 수정차수 저장 후 매출/매입 수정전·수정후 관리.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">전자신고·전산매체 제출 파일, 제출용자료조회, 엑셀변환.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01, SA-VAT-06(계산서합계표) 공통 전송상태 판정, 휴폐업 API.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat04">
+  <div class="page-title"><h1>신용카드매출전표등 수령명세서</h1><span class="chip-id">SA-VAT-04</span><span class="badge b-new">1차</span><span class="badge b-ref">5탭</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 신용카드매출전표등 수령명세서 · §25.11.4</div>
+  <div class="src"><b>업무 목적</b>: 일반과세자로부터 부가세 별도구분 신용카드매출전표 등 수취 시 매입세액공제를 받기 위한 부속서류(57 카과/61 현과/63 복지). 목욕·이발·미용·여객운송·입장권은 제외. 현금영수증·화물운전자복지카드·사업용신용카드·기타신용카드 4개 유형을 탭으로 관리하고 합계 탭에서 집계한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-04 — 4개 유형 탭 + 합계 · 카드 증빙 메타 분류 · 의제매입 적요 연동 · 매출·매입 동시 마감</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">신용카드매출전표등 수령명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-04</span>
+      <span class="tb-right">2026-1기 확정 · 카드 마스터(법인/개인)</span>
+    </div>
+    <div class="tabbar">
+      <span class="tab on">현금영수증 <span class="tno">1</span></span>
+      <span class="tab">화물운전자 복지카드 <span class="tno">2</span></span>
+      <span class="tab">사업용신용카드 <span class="tno">3</span></span>
+      <span class="tab">기타신용카드 <span class="tno">4</span></span>
+      <span class="tab">합계 <span class="tno">5</span></span>
+    </div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">유형</span><span class="qv">61 현과 · 62 현면</span><span class="qlabel">의제매입</span><span class="qv">재고자산 14600~17599 · 적요06</span><span class="qright"><button class="abtn ghost">불러오기</button><button class="abtn ghost">휴폐업조회</button></span></div>
+      <table class="grid">
+        <tr><th>거래일</th><th>가맹점</th><th>사업자번호</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">부가세</th><th>비고</th></tr>
+        <tr class="sel"><td class="c">03-12</td><td>가나마트</td><td>128-81-12345</td><td class="c"><span class="blue">61 현과</span></td><td class="num">1,800,000</td><td class="num">180,000</td><td>공제대상</td></tr>
+        <tr><td class="c">04-08</td><td>신선청과</td><td>214-90-11223</td><td class="c"><span class="blue">62 현면</span></td><td class="num">2,400,000</td><td class="num">0</td><td>의제매입 적요06</td></tr>
+        <tr class="tot"><td colspan="4">현금영수증 계</td><td class="num">4,200,000</td><td class="num">180,000</td><td class="blue">공제 180,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 현금영수증 수취분 집계</span><span class="cnt">62 현면 재고자산코드 → 의제매입(SA-VAT-11) 후보</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">유형</span><span class="qv">64 복지 · 57 카과+복지카드</span><span class="qlabel">계정매핑</span><span class="qv">차량유지비 <span class="lens">&#9662;</span></span><span class="qright"><button class="abtn ghost">복지카드 계정설정</button></span></div>
+      <table class="grid">
+        <tr><th>거래일</th><th>가맹점(주유)</th><th class="c">카드</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">부가세</th></tr>
+        <tr class="sel"><td class="c">02-20</td><td>OO주유소</td><td class="c">복지카드</td><td class="c"><span class="blue">64 복지</span></td><td class="num">640,000</td><td class="num">64,000</td></tr>
+        <tr><td class="c">05-11</td><td>XX충전소</td><td class="c">복지카드</td><td class="c"><span class="blue">57 카과</span></td><td class="num">380,000</td><td class="num">38,000</td></tr>
+        <tr class="tot"><td colspan="4">복지카드 계</td><td class="num">1,020,000</td><td class="num">102,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 화물운전자 복지카드 → 차량유지비 매핑</span><span class="cnt">복지카드 계정과목 설정 필요</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">유형</span><span class="qv">57 카과 · 58 카영 · 59 카면</span><span class="qlabel">구분</span><span class="seg"><span class="on">법인</span><span>개인</span></span><span class="qright"><button class="abtn ghost">매입카드 등록</button></span></div>
+      <table class="grid">
+        <tr><th>카드번호(뒤4)</th><th>사용자</th><th class="c">유형</th><th class="c">건수</th><th class="c">공급가액</th><th class="c">부가세</th></tr>
+        <tr class="sel"><td>****-7712</td><td>홍길동</td><td class="c"><span class="blue">57 카과</span></td><td class="c">18</td><td class="num">8,900,000</td><td class="num">890,000</td></tr>
+        <tr><td>****-3340</td><td>김영업</td><td class="c"><span class="blue">57 카과</span></td><td class="c">11</td><td class="num">4,600,000</td><td class="num">460,000</td></tr>
+        <tr><td>****-2201</td><td>박총무</td><td class="c"><span class="blue">59 카면</span></td><td class="c">4</td><td class="num">1,200,000</td><td class="num">0</td></tr>
+        <tr class="tot"><td colspan="4">사업용카드 계</td><td class="num">14,700,000</td><td class="num">1,350,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 법인/개인·매입카드 구분 집계</span><span class="cnt">59 카면 공제대상 아님</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">유형</span><span class="qv">기타 신용카드</span><span class="qlabel">필수</span><span class="qv">가맹점·회원 인적사항</span><span class="qright"><button class="abtn ghost">인적사항 입력</button></span></div>
+      <table class="grid">
+        <tr><th>거래일</th><th>가맹점</th><th>카드번호</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">부가세</th></tr>
+        <tr class="sel"><td class="c">03-30</td><td>OO상회</td><td>제로페이(주민번호)</td><td class="c"><span class="blue">57 카과</span></td><td class="num">520,000</td><td class="num">52,000</td></tr>
+        <tr class="tot"><td colspan="4">기타신용카드 계</td><td class="num">520,000</td><td class="num">52,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="warnmsg">&#9888; 제로페이는 카드번호=주민등록번호 · 가맹점·회원 인적사항 필수</span><span class="cnt">기타신용카드 유형</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">집계</span><span class="qv">4개 유형 합계</span><span class="qlabel">신고서란</span><span class="qv">SA-VAT-01 41/42</span><span class="qright"><button class="abtn ghost">신용카드수령명세서(갑) 인쇄</button></span></div>
+      <table class="grid">
+        <tr><th>유형</th><th class="c">건수</th><th class="c">공급가액</th><th class="c">부가세(공제)</th><th>신고서란</th></tr>
+        <tr><td>현금영수증</td><td class="c">2</td><td class="num">4,200,000</td><td class="num">180,000</td><td>41 일반</td></tr>
+        <tr><td>화물운전자 복지카드</td><td class="c">2</td><td class="num">1,020,000</td><td class="num">102,000</td><td>41 일반</td></tr>
+        <tr><td>사업용신용카드</td><td class="c">33</td><td class="num">14,700,000</td><td class="num">1,350,000</td><td>41/42</td></tr>
+        <tr><td>기타신용카드</td><td class="c">1</td><td class="num">520,000</td><td class="num">52,000</td><td>41 일반</td></tr>
+        <tr class="tot"><td>합계 (수령명세서)</td><td class="c">38</td><td class="num">20,440,000</td><td class="num">1,684,000</td><td class="blue">→ SA-VAT-01</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 4개 유형 합계 = 신용매출전표수취(일반/고정) 41·42란 반영</span><span class="cnt">§25.11.4 · 매입세액 1,684,000</span></div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">탭 구성</span><span class="desc-body">현금영수증(61/62) · 화물운전자 복지카드(64/57) · 사업용신용카드(57/58/59) · 기타신용카드 · 합계.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">증빙 메타</span><span class="desc-body">카드 유형(현금영수증·복지·사업용·기타)을 증빙 메타데이터로 분류, 의제매입 적요06 연동.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">공제 룰</span><span class="desc-body">목욕·이발·미용·여객운송·입장권 제외. 매입세액 공제대상 룰 테넌트별 적용.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">휴폐업조회, 불러오기(기존 삭제 후 재집계), 마감(매출·매입 동시), 예정누락, 복지카드 계정 설정.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">신용카드수령명세서(갑)·관리용 인쇄.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 41/42 신용매출전표수취(일반/고정)란, 매입매출전표(57~64), 휴폐업 API.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat05">
+  <div class="page-title"><h1>신용카드매출전표 발행집계표</h1><span class="chip-id">SA-VAT-05</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 신용카드매출전표 발행집계표 · §25.11.5</div>
+  <div class="src"><b>업무 목적</b>: 법인 제외 사업자가 과세재화·용역 공급 후 신용카드·현금영수증·전자결제로 대금결제 시 발행금액의 <b>13/1000</b>(연 500만원, 가산세 제외 납부세액 한도) 발행세액공제를 받기 위한 부속서류. 세금계산서·계산서 발급 중복분은 차감한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-05 — 결제수단별 공급대가 집계 · 발급 중복분 차감 · 법인/개인 차원 판정 · 발행세액공제 산정</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">신용카드매출전표 발행집계표</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-05</span>
+      <span class="tb-right">개인사업자 · 2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">과세기간</span><span class="qv">2026-1기 확정</span>
+      <span class="qlabel">구분</span><span class="seg"><span class="on">개인</span><span>법인</span></span>
+      <span class="qlabel">봉사료</span><span class="qv">미사용 <span class="lens">&#9662;</span></span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn yellow">&#128269; 조회</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">발행 집계 — 과세/면세 매출분 · 발급 중복 차감</div>
+        <table class="grid">
+          <tr><th>구분</th><th>결제수단</th><th>과세유형</th><th class="c">공급대가</th><th class="c">비고</th></tr>
+          <tr class="sel"><td>과세매출분</td><td>신용·직불·선불카드</td><td><span class="red">17 카과 · 19 카영</span></td><td class="num">42,330,000</td><td class="c">공급대가</td></tr>
+          <tr><td>과세매출분</td><td>현금영수증</td><td><span class="red">22 현과 · 24 현영</span></td><td class="num">9,600,000</td><td class="c">공급대가</td></tr>
+          <tr><td>면세매출분</td><td>카드/현금영수증</td><td><span class="red">18 카면 · 23 현면</span></td><td class="num">3,200,000</td><td class="c">공제 제외</td></tr>
+          <tr><td class="red">(&minus;) 차감</td><td>세금계산서·계산서 발급분</td><td class="dim">4.카드 / 미수금</td><td class="num">-8,100,000</td><td class="c">중복 차감</td></tr>
+          <tr class="tot"><td colspan="3">발행공제 대상 공급대가</td><td class="num">43,830,000</td><td class="c blue">×13/1000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 발행세액공제 340,000 산정 (43,830,000 × 13/1000, 연 500만 한도 이내)</span><span class="cnt">→ SA-VAT-01 발행공제 계 · §25.11.5</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">공제 산식</div><div class="rp-b">
+          발행금액 × 13/1000<br>연 500만원 한도<br>가산세 제외 납부세액 한도<br><span class="badge b-block">법인 제외(개인만)</span></div></div>
+        <div class="rp-box"><div class="rp-t">중복 차감</div><div class="rp-b">
+          동일일자 발급 &rarr; 분개유형 4.카드<br>다른일자 &rarr; 일반전표 미수금+신용카드관리<br>1.세금계산서/2.영세율/3.계산서 교부분</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(17/18/19/22/23/24)<br>일반전표(미수금)<br>SA-VAT-01 발행공제 계</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">과세매출분</span><span class="desc-body">17 카과/19 카영(공급대가), 22 현과/24 현영, 직불·기명식선불 거래처 설정 "여".</span></div>
+      <div class="screen-desc-item"><span class="desc-label">면세매출분</span><span class="desc-body">18 카면, 23 현면 — 발행공제 제외.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">중복 차감</span><span class="desc-body">세금계산서·계산서 발급금액 중복분 차감(발급+카드결제).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">공제 산정</span><span class="desc-body">발행금액 13/1000, 연 500만원·가산세 제외 납부세액 한도, 법인 제외.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">불러오기 시 기존 삭제 후 일반전표·매입매출전표 재집계, 봉사료 팝업.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 발행공제 계, 매입매출전표, 일반전표(미수금).</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat06">
+  <div class="page-title"><h1>계산서합계표</h1><span class="chip-id">SA-VAT-06</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 계산서합계표 · §25.11.6</div>
+  <div class="src"><b>업무 목적</b>: 면세 전자·전자외 계산서 발행·수취분을 사업자·주민번호 구분으로 표시하는 부속서류. 매출 13 면세, 매입 53 면세. <b>정기신고만 가능(수정신고 미지원)</b>. 전자/전자외 판정은 SA-VAT-03과 공통 파이프라인.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-06 — 면세 계산서 매출·매입 · 전자/전자외 판정(종료일 다음달 11일) · 사업자번호 불일치 시 마감 실패</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">계산서합계표</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-06</span>
+      <span class="tb-right"><span class="badge b-warn">정기신고만</span> 2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">과세기간</span><span class="qv">2026-1기 확정</span>
+      <span class="qlabel">유형</span><span class="seg"><span class="on">전자</span><span>전자외</span></span>
+      <span class="qlabel">구분</span><span class="seg"><span class="on">사업자</span><span>주민번호</span></span>
+      <span class="qright"><button class="abtn ghost">휴폐업조회</button><button class="abtn dark">불러오기</button><button class="abtn yellow">마감</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">매출 계산서 (13 면세)</div>
+        <table class="grid">
+          <tr><th>매출처</th><th>사업자번호</th><th class="c">전자구분</th><th class="c">매수</th><th class="c">공급가액</th></tr>
+          <tr class="sel"><td>한빛교육</td><td>201-81-44556</td><td class="c"><span class="badge b-ok">전자</span></td><td class="c">5</td><td class="num">3,200,000</td></tr>
+          <tr><td>도서출판 온</td><td>117-81-90011</td><td class="c"><span class="badge b-gray">전자외</span></td><td class="c">3</td><td class="num">2,300,000</td></tr>
+          <tr class="tot"><td colspan="3">매출 계 (8매)</td><td class="c">8</td><td class="num">5,500,000</td></tr>
+        </table>
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">매입 계산서 (53 면세)</div>
+        <table class="grid">
+          <tr><th>매입처</th><th>사업자번호</th><th class="c">전자구분</th><th class="c">매수</th><th class="c">공급가액</th></tr>
+          <tr><td>그린팜</td><td>514-81-22110</td><td class="c"><span class="badge b-ok">전자</span></td><td class="c">9</td><td class="num">4,800,000</td></tr>
+          <tr><td>제일유통</td><td>128-81-77234</td><td class="c"><span class="badge b-gray">전자외</span></td><td class="c">3</td><td class="num">3,000,000</td></tr>
+          <tr class="tot"><td colspan="3">매입 계 (12매)</td><td class="c">12</td><td class="num">7,800,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 매출·매입 동시 마감 · 사업자번호 정합</span><span class="cnt">면세 계산서 · 신고일 종료월 다음달 25일</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">제약</div><div class="rp-b">
+          <span class="badge b-warn">정기신고만</span> 수정신고 미지원<br>매출 13 면세 · 매입 53 면세</div></div>
+        <div class="rp-box"><div class="rp-t">전자 판정</div><div class="rp-b">
+          종료일 다음달 11일 기준<br>국세청신고여부 1.부 지정<br>SA-VAT-03 공통 파이프라인 재사용</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          휴폐업조회 · 불러오기 · 합산<br>전표추가(직접·엑셀→전자외)<br><span class="badge b-block">사업자번호 불일치 마감 실패</span></div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(13/53)<br>SA-VAT-01 면세 명세<br>SA-VAT-03 전송상태 판정</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">조회조건</span><span class="desc-body">유형(전자/전자외) · 구분(사업자/주민번호) · 국세청신고여부 · 매출·매입처별 매수·공급가액.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">제약</span><span class="desc-body">정기신고만 가능, 수정신고 미지원.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">마감</span><span class="desc-body">매출·매입 동시 마감, 사업자번호 불일치 시 실패.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">전자 판정</span><span class="desc-body">종료일 다음달 11일 기준, SA-VAT-03과 공통 전송상태 판정.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">전자신고·전산매체 제출 파일, 엑셀변환, 제출용자료조회.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(13/53), SA-VAT-01 면세 명세, SA-VAT-03.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat07">
+  <div class="page-title"><h1>부가가치세 전자신고</h1><span class="chip-id">SA-VAT-07</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 부가가치세 전자신고 · §25.11.7</div>
+  <div class="src"><b>업무 목적</b>: 부가세신고서 마감 후 홈택스 신고 전 전자파일을 제작하는 메뉴. 제출자등록 → 데이터(전산매체) 제작 → 검증 → 홈택스 제출(약15단계 자동화)의 상태머신을 BK 전자신고 파이프라인의 핵심으로 구현한다.</div>
+  <div class="flow">
+    <span class="st">마감(SA-VAT-01)</span><span class="ar">&rarr;</span>
+    <span class="st">제출자등록</span><span class="ar">&rarr;</span>
+    <span class="st hl">제작 .101/.102</span><span class="ar">&rarr;</span>
+    <span class="st hl">검증(MRI 사전검증)</span><span class="ar">&rarr;</span>
+    <span class="st">홈택스 제출(15단계)</span><span class="ar">&rarr;</span>
+    <span class="st end">제출확인</span>
+  </div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-07 — 제출자등록 · 데이터제작(.101 일반/.102 간이) · 상태머신 6종 · 홈택스 자동제출</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">부가가치세 전자신고</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-07</span>
+      <span class="tb-right">일반업체 · 2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">신고구분</span><span class="qv">1.정기 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">제출자구분</span><span class="seg"><span>세무대리인</span><span class="on">일반업체</span></span>
+      <span class="qlabel">과세유형</span><span class="qv">일반(.101)</span>
+      <span class="qright"><button class="abtn ghost">제출자등록</button><button class="abtn dark">데이터제작</button><button class="abtn yellow">홈택스 제출</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">제작 대상 · 상태머신</div>
+        <table class="grid">
+          <tr><th>회사</th><th>과세기간</th><th class="c">파일포맷</th><th class="c">신고상태</th><th class="c">홈택스</th><th>비고</th></tr>
+          <tr class="sel"><td>EY Korea Co.</td><td>2026-1기</td><td class="c">제작일.101</td><td class="c"><span class="badge b-ok">검증완료</span></td><td class="c">대기</td><td>일반업체</td></tr>
+          <tr><td>(주)가나상사</td><td>2026-1기</td><td class="c">제작일.102</td><td class="c"><span class="badge b-warn">검증오류</span></td><td class="c">&mdash;</td><td>간이 · 오류 2</td></tr>
+          <tr><td>대한물산(주)</td><td>2026-1기</td><td class="c">제작일.101</td><td class="c"><span class="badge b-ok">제출확인</span></td><td class="c"><span class="badge b-ok">완료</span></td><td>접수번호 발급</td></tr>
+          <tr class="tot"><td colspan="6" class="blue">상태: 제작오류 / 제작완료 / 검증오류 / 검증완료 / 제출오류 / 제출확인 (재마감 시 공란화)</td></tr>
+        </table>
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">제출자 등록 정보</div>
+        <table class="grid">
+          <tr><th>항목</th><th>값</th><th>항목</th><th>값</th></tr>
+          <tr><td>신고구분</td><td>2.일반업체</td><td>전자신고 사용자ID</td><td>홈택스ID(공통/개별)</td></tr>
+          <tr><td>제출자구분</td><td>일반업체</td><td>관리번호</td><td>회사등록 불러오기</td></tr>
+          <tr><td>조정반번호</td><td class="dim">세무대리인만</td><td>전자신고세액공제</td><td><span class="badge b-ok">1만원(확정·일반업체)</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 검증완료 1건 홈택스 제출 대기</span><span class="warnmsg">검증오류 1건 보완 필요</span><span class="cnt">파일 비밀번호 8~15자리 · §25.11.7</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">상태머신</div><div class="rp-b">
+          제작오류 → 제작완료<br>→ 검증오류 → 검증완료<br>→ 제출오류 → <span class="badge b-ok">제출확인</span><br>재마감 시 상태 공란화</div></div>
+        <div class="rp-box"><div class="rp-t">파일 포맷</div><div class="rp-b">
+          .101 일반 / .102 간이<br>파일명 = 제작일<br>비밀번호 8~15자리 암호화</div></div>
+        <div class="rp-box"><div class="rp-t">산출물</div><div class="rp-b">
+          홈택스 자동 전자신고(약15단계)<br>첨부서류제출(세무서코드·신고유형)<br>자료삭제요청서 · 데이터조회</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 마감 · SA-VAT-02 사전검증<br>모든 첨부서식(03~50)<br>전자신고세액공제(SA-VAT-20)<br>국세청 홈택스 API</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">제출자등록</span><span class="desc-body">신고구분(1세무대리인/2일반업체), 홈택스ID(공통/개별), 제출자구분·관리번호·조정반번호. 일반업체여야 확정 전자신고세액공제 1만원.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">데이터제작</span><span class="desc-body">기간·구분(1정기/2기한후/3수정)·과세유형·신고상태·제작제외·홈택스자동신고·사용자ID.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">상태머신</span><span class="desc-body">제작오류/제작완료/검증오류/검증완료/제출오류/제출확인. 재마감 시 공란화, 제작제외는 마감해지 후 유지.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">파일</span><span class="desc-body">암호화·포맷(.101 일반/.102 간이), 파일명 제작일, 비밀번호 8~15자리.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">제출</span><span class="desc-body">홈택스 자동 전자신고(약15단계 자동화), 총괄납부 본·지점 지점회사 권한.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 마감, SA-VAT-02 사전검증, 첨부서식 03~50, SA-VAT-20, 홈택스 API.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat08">
+  <div class="page-title"><h1>부가가치세 납부서</h1><span class="chip-id">SA-VAT-08</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 주요 신고 › 부가가치세 납부서 · §25.11.8</div>
+  <div class="src"><b>업무 목적</b>: 부가가치세신고서의 '납부서 인쇄' 기능으로 2D 바코드 납부서를 출력한다. 신고서 차가감세액과 연동되며, 총괄납부 금액이 있으면 우선 반영한다. 바코드 필수항목 미입력 시 바코드가 반영되지 않는다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-08 — 납부일자(법정신고일 자동) · 차가감 납부할세액 자동 · 2D 바코드 필수항목 검증</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">부가가치세 납부서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-08</span>
+      <span class="tb-right">본점 · 2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">사업장</span><span class="qv">본점 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">납부일자</span><span class="qv">2026-07-25 (법정신고일 자동)</span>
+      <span class="qright"><button class="abtn ghost">미리보기</button><button class="abtn yellow">납부서 인쇄</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">납부서 항목 · 바코드 필수값</div>
+        <table class="grid">
+          <tr><th>항목</th><th>값</th><th class="c">바코드 필수</th><th class="c">상태</th></tr>
+          <tr class="sel"><td>납부금액(차가감 납부할세액)</td><td class="num">7,427,000</td><td class="c">&#9679;</td><td class="c"><span class="badge b-ok">확인</span></td></tr>
+          <tr><td>관할 세무서코드</td><td>217 (강남)</td><td class="c">&#9679;</td><td class="c"><span class="badge b-ok">확인</span></td></tr>
+          <tr><td>납부기한</td><td>2026-07-25</td><td class="c">&#9679;</td><td class="c"><span class="badge b-ok">확인</span></td></tr>
+          <tr><td>사업자등록번호</td><td>128-81-99001</td><td class="c">&#9679;</td><td class="c"><span class="badge b-ok">확인</span></td></tr>
+          <tr><td>총괄납부 금액</td><td class="dim">해당없음</td><td class="c">&mdash;</td><td class="c">우선반영 규칙</td></tr>
+          <tr class="tot"><td colspan="2">2D 바코드 생성</td><td class="c" colspan="2"><span class="badge b-ok">필수항목 완비 → 바코드 반영</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 필수항목 완비 · 2D 바코드 반영 · 국민·신한·우리·하나은행 자동화기기 납부</span><span class="cnt">납부액 7,427,000 · §25.11.8</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">바코드 필수항목</div><div class="rp-b">
+          관할 세무서코드<br>납부기한<br>사업장등록번호 또는 대표자 주민번호<br><span class="badge b-block">미입력 시 바코드 미반영</span></div></div>
+        <div class="rp-box"><div class="rp-t">금액 연동</div><div class="rp-b">
+          차가감 납부할세액 자동<br>총괄납부 금액 우선 반영<br>법정신고일 자동(수정 가능)</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 차가감 납부할세액<br>사업장별 부가세 납부/환급 명세(SA-VAT-25)</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">납부일자(법정신고일 자동·수정가능), 납부금액(차가감 납부할세액 자동, 총괄납부 우선).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">바코드 검증</span><span class="desc-body">관할 세무서코드·납부기한·사업장등록번호(또는 대표자 주민번호) 미입력 시 바코드 미반영.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">2D 바코드 납부서(국민·신한·우리·하나은행 자동화기기 납부).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">차원</span><span class="desc-body">테넌트·사업장 차원별 납부서 생성.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 차가감 납부할세액, SA-VAT-25 총괄납부 금액.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">LOCKED</span><span class="desc-body">전자신고 제출확인 후 기간 LOCKED 전환으로 이어진다.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat09">
+  <div class="page-title"><h1>부동산임대공급가액명세서</h1><span class="chip-id">SA-VAT-09</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 첨부서류 › 부동산임대공급가액명세서 · §25.12.1</div>
+  <div class="src"><b>업무 목적</b>: 부동산임대사업자가 월세·관리비·보증금 간주임대료를 계산해 과세표준으로 신고하는 부속서류. 간주임대료 = 보증금 × 이자율 × 임대일수 ÷ 365(윤년 366). 간주임대료는 자동반영되지 않아 14.건별 입력 후 불러오기 또는 직접입력한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-09 — 간주임대료 자동계산 · 임대물건(층/호/동) 현장·프로젝트 차원 연계 · 사업자단위과세 합산</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">부동산임대공급가액명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-09</span>
+      <span class="tb-right">적용이자율 3.5% (국세청 고시)</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">과세기간</span><span class="qv">2026-1기 확정</span>
+      <span class="qlabel">적용이자율</span><span class="qv">3.5% <span class="lens">&#9662;</span></span>
+      <span class="qlabel">종료 임대기간</span><span class="qv">포함 <span class="lens">&#9662;</span></span>
+      <span class="qright"><button class="abtn dark">전표 불러오기</button><button class="abtn ghost">재계산</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">임대물건별 간주임대료 · 과세표준</div>
+        <table class="grid">
+          <tr><th>상호</th><th class="c">층/호</th><th>임대기간</th><th class="c">보증금</th><th class="c">월세</th><th class="c">관리비</th><th class="c">보증금이자</th><th class="c">계(과세표준)</th></tr>
+          <tr class="sel"><td>가나커피</td><td class="c">1/101</td><td>01-01~06-30</td><td class="num">50,000,000</td><td class="num">6,000,000</td><td class="num">1,200,000</td><td class="num">867,808</td><td class="num">8,067,808</td></tr>
+          <tr><td>온세무사</td><td class="c">2/201</td><td>01-01~06-30</td><td class="num">30,000,000</td><td class="num">4,200,000</td><td class="num">900,000</td><td class="num">520,685</td><td class="num">5,620,685</td></tr>
+          <tr><td>지하창고</td><td class="c">B1/B01</td><td>03-01~06-30</td><td class="num">10,000,000</td><td class="num">800,000</td><td class="num">150,000</td><td class="num">116,712</td><td class="num">1,066,712</td></tr>
+          <tr class="tot"><td colspan="3">합계</td><td class="num">90,000,000</td><td class="num">11,000,000</td><td class="num">2,250,000</td><td class="num">1,505,205</td><td class="num">14,755,205</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 간주임대료 1,505,205 = Σ(보증금×3.5%×임대일수÷365)</span><span class="warnmsg">&#9888; 간주임대료 → 14.건별 수동 입력 후 SA-VAT-01 반영</span><span class="cnt">§25.12.1</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">간주임대료 산식</div><div class="rp-b">
+          보증금 × 이자율 × 임대일수 ÷ 365<br>(윤년 366)<br>이자율=국세청 고시 정기예금</div></div>
+        <div class="rp-box"><div class="rp-t">입력 규칙</div><div class="rp-b">
+          층(B1/1/2 필수)·호수·동·임대면적(소수2)<br>임대기간(간주임대료 핵심)·갱신일·퇴거일<br><span class="badge b-warn">임대기간 누락 자료 불러오기 불가</span></div></div>
+        <div class="rp-box"><div class="rp-t">차원·합산</div><div class="rp-b">
+          임대물건(층/호/동) → 현장/프로젝트 차원<br>사업자단위과세는 주(종)사업장별 작성 후 합산</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(11 과세 부동산임대수입)<br>SA-VAT-01 14.건별 수동연계<br>SA-VAT-10 건물관리명세서</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">적용이자율·상호·층/호/동·사업자번호·임대면적·용도·임대기간·보증금·월세·관리비·갱신일·퇴거일.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">자동계산</span><span class="desc-body">보증금이자 = 보증금×이자율×임대일수÷365(윤366), 계=과세표준.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">불러오기</span><span class="desc-body">11 과세 부동산임대수입 계정 반영. 임대기간 누락 자료는 불러오기 불가.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">합산</span><span class="desc-body">사업자단위과세는 주(종)사업장별 작성 후 합산 조회.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">신고 연계</span><span class="desc-body">간주임대료 자동반영 안됨 → 14.건별 입력 후 불러오기 또는 직접입력.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(11), SA-VAT-01, SA-VAT-10.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat10">
+  <div class="page-title"><h1>건물관리명세서</h1><span class="chip-id">SA-VAT-10</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 첨부서류 › 건물관리명세서 · §25.12.2</div>
+  <div class="src"><b>업무 목적</b>: 부동산관리업(주거용 제외)이 상가·사무실 건물별 상세정보를 작성하는 부속서류. 건물 마스터를 현장 차원과 연계하고, 자료이월(차기·다음분기)을 기간 롤포워드로 구현한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-10 — 건물별 상세 · 주소검색(지번/도로명) · 과세기간 중 변경분 임대기간 · 주민번호 별표 · 분기 이월</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">건물관리명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-10</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">과세기간</span><span class="qv">2026-1기 확정</span>
+      <span class="qlabel">주소구분</span><span class="seg"><span class="on">도로명</span><span>지번</span></span>
+      <span class="qright"><button class="abtn ghost">주소검색</button><button class="abtn ghost">데이터정렬</button><button class="abtn dark">자료이월</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">건물별 명세</div>
+        <table class="grid">
+          <tr><th>건물명</th><th>주소(도로명)</th><th class="c">임차인</th><th class="c">주민/사업자번호</th><th>임대기간</th><th class="c">비고</th></tr>
+          <tr class="sel"><td>가나빌딩</td><td>서울 강남구 테헤란로 123</td><td class="c">가나커피</td><td class="c">128-81-12345</td><td>01-01~06-30</td><td class="c">계속</td></tr>
+          <tr><td>가나빌딩</td><td>서울 강남구 테헤란로 123</td><td class="c">온세무사</td><td class="c">6801**-*******</td><td>01-01~06-30</td><td class="c">계속</td></tr>
+          <tr><td>가나빌딩</td><td>서울 강남구 테헤란로 123</td><td class="c">지하창고</td><td class="c">2205**-*******</td><td>03-01~ (신규)</td><td class="c"><span class="badge b-warn">기중 변경</span></td></tr>
+          <tr class="tot"><td colspan="6" class="blue">과세기간 중 변경분만 표시 · 주민번호 별표 마스킹</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 건물 마스터 현장 차원 연계 · 자료이월(다음분기)</span><span class="cnt">§25.12.2 · 부동산관리업(주거용 제외)</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          건물명 · 도로명(법정동) 주소검색<br>주소구분(지번/도로명)<br>임대기간(과세기간 중 변경분만)</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          건물 마스터 → 현장 차원 연계<br>자료이월(차기·다음분기) 롤포워드<br>주민번호 별표 마스킹 · 데이터정렬</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-09 부동산임대공급가액명세서<br>SA-VAT-01 · 현장 차원 마스터</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">부동산관리업(주거용 제외) 상가·사무실 건물별 상세.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">건물명·도로명(법정동) 주소검색·주소구분(지번/도로명)·임대기간(변경분만).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">건물 마스터 현장 차원 연계, 자료이월 기간 롤포워드, 주민번호 별표.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">건물관리명세서.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-09, SA-VAT-01, 현장 차원 마스터.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">충돌</span><span class="desc-body">신규 기능 화면 · Smart A 분기 이월 반영.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat11">
+  <div class="page-title"><h1>의제매입세액공제신고서</h1><span class="chip-id">SA-VAT-11</span><span class="badge b-new">1차</span><span class="badge b-ref">2탭</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 첨부서류 › 의제매입세액공제신고서 · §25.12.3</div>
+  <div class="src"><b>업무 목적</b>: 면세 농·축·수·임산물을 원재료로 제조·창출한 재화·용역 공급 시 의제매입세액을 매입세액으로 공제받는 부속서류. 관리용 매입처명세에서 집계하고, 확정·폐업신고 시 매입세액정산으로 한도를 정산한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-11 — 관리용 매입처명세 + 매입세액정산 · 업종·법인구분별 공제율 차등 · 면세 원재료 적요06 연동</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">의제매입세액공제신고서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-11</span>
+      <span class="tb-right">2026-1기 확정 · 음식업</span>
+    </div>
+    <div class="tabbar">
+      <span class="tab on">관리용 매입처명세 <span class="tno">1</span></span>
+      <span class="tab">매입세액정산(의제) <span class="tno">2</span></span>
+    </div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">대상</span><span class="qv">53 면세·58 카면·60 면건·62 현면 + 계정146/153/162 + 적요06</span><span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">공제율 일괄변경</button></span></div>
+      <table class="grid">
+        <tr><th>공급자</th><th>사업자/주민번호</th><th class="c">구분</th><th>물품명</th><th class="c">수량</th><th class="c">매입가액</th><th class="c">공제율</th><th class="c">의제매입세액</th></tr>
+        <tr class="sel"><td>신선청과</td><td>214-90-11223</td><td class="c">사업자(계산서)</td><td>농산물(채소)</td><td class="c">120</td><td class="num">12,000,000</td><td class="c">6/106</td><td class="num">679,245</td></tr>
+        <tr><td>바다수산</td><td>128-90-55021</td><td class="c">사업자(신용카드)</td><td>수산물</td><td class="c">40</td><td class="num">4,000,000</td><td class="c">6/106</td><td class="num">226,415</td></tr>
+        <tr><td>김농민</td><td>6805**-*******</td><td class="c">농어민</td><td>축산물</td><td class="c">10</td><td class="num">1,500,000</td><td class="c">2/102</td><td class="num">29,412</td></tr>
+        <tr class="tot"><td colspan="5">합계</td><td class="num">17,500,000</td><td class="c"></td><td class="num">935,072</td></tr>
+      </table>
+      <div class="statusbar"><span class="warnmsg">&#9888; 물품명은 전자신고 필수 항목</span><span class="cnt">면세 원재료 적요06 → 원재료차감 자동집계</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">신고구분</span><span class="qv">확정 (정산)</span><span class="qlabel">한도율</span><span class="qv">50% (음식·법인 외) <span class="lens">&#9662;</span></span><span class="qright"><button class="abtn ghost">과세표준 불러오기(월별조기)</button></span></div>
+      <table class="grid">
+        <tr><th>항목</th><th class="c">금액</th><th>비고</th></tr>
+        <tr class="sel"><td>과세표준 (당기)</td><td class="num">180,000,000</td><td>불러오기</td></tr>
+        <tr><td>한도율</td><td class="num">50%</td><td>업종·법인구분</td></tr>
+        <tr><td>공제대상 한도금액</td><td class="num">90,000,000</td><td>과세표준 × 한도율</td></tr>
+        <tr><td>당기 매입액</td><td class="num">17,500,000</td><td>관리용 명세 합계</td></tr>
+        <tr><td>공제대상금액</td><td class="num">17,500,000</td><td>MIN(한도, 매입액)</td></tr>
+        <tr><td>이미 공제받은 세액</td><td class="num">0</td><td>예정분</td></tr>
+        <tr class="tot"><td>공제(납부)할 세액</td><td class="num">935,072</td><td class="blue">→ SA-VAT-01 14.의제매입</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 한도 이내 · 공제할 세액 935,072</span><span class="cnt">확정·폐업신고 시 정산 · 매입시기 집중제조업 12월 종료</span></div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">탭 구성</span><span class="desc-body">관리용 매입처명세 · 매입세액정산(의제).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">집계</span><span class="desc-body">53/58/60/62 + 계정 146/153/162 + 적요06(원재료차감), 일반전표 거래처코드분.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">공제율</span><span class="desc-body">2/102·6/106·4/104·기타 — 업종·법인/개인·과세유흥(552201~552206)별 차등.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">정산</span><span class="desc-body">과세표준 불러오기·한도율·당기매입액·공제대상금액·이미 공제받은 세액·공제(납부)할 세액.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">단수차이 편집, 일괄삭제, 공제율 일괄변경, 예정누락. 물품명 전자신고 필수.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(53/58/60/62), SA-VAT-01 14.그밖의공제매입세액&gt;의제매입세액.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat12">
+  <div class="page-title"><h1>재활용폐자원세액공제신고서</h1><span class="chip-id">SA-VAT-12</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 첨부서류 › 재활용폐자원세액공제신고서 · §25.12.4</div>
+  <div class="src"><b>업무 목적</b>: 재활용폐자원·중고품을 과세사업자 아닌 자로부터 취득해 제조·가공·공급 시 매입세액공제를 받는 부속서류. 종류별 공제율(기타 3/103, 중고차 10/110)을 적용하고, 매입세액정산으로 한도를 관리한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-12 — 관리용 매입처명세 · 종류별 공제율 · 차대번호(중고차) · 구리스크랩 합산 · 전표전송</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">재활용폐자원세액공제신고서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-12</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">대상</span><span class="qv">53 면세→2.계산서 · 58/60/62·일반전표→1.영수증 · 적요07</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">구리스크랩 불러오기</button><button class="abtn ghost">엑셀 업로드</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">매입처명세 · 종류별 공제율</div>
+        <table class="grid">
+          <tr><th>공급자</th><th class="c">구분</th><th class="c">종류</th><th>차대번호</th><th class="c">매입가액</th><th class="c">공제율</th><th class="c">공제세액</th></tr>
+          <tr class="sel"><td>중고차매매</td><td class="c">1.영수증</td><td class="c">중고자동차</td><td>KMHXX...1234</td><td class="num">8,000,000</td><td class="c">10/110</td><td class="num">727,273</td></tr>
+          <tr><td>재활용상사</td><td class="c">1.영수증</td><td class="c">기타재활용</td><td class="dim">&mdash;</td><td class="num">3,000,000</td><td class="c">3/103</td><td class="num">87,379</td></tr>
+          <tr class="tot"><td colspan="4">합계</td><td class="num">11,000,000</td><td class="c"></td><td class="num">814,652</td></tr>
+        </table>
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">매입세액정산 (중고차 제외)</div>
+        <table class="grid">
+          <tr><th>항목</th><th class="c">금액</th><th>비고</th></tr>
+          <tr><td>매출액 · 당기매입액</td><td class="num">3,000,000</td><td>(14)세금계산서 51+적요07·(15)영수증</td></tr>
+          <tr class="tot"><td>공제할 세액</td><td class="num">87,379</td><td class="blue">→ SA-VAT-01 44.재활용폐자원</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 종류별 공제율 적용 · 중고차 10/110</span><span class="cnt">전기작성 3개년 반영 · 전표전송 파이프라인 · §25.12.4</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">종류·공제율</div><div class="rp-b">
+          중고자동차(501202/519111/501103) 10/110<br>기타재활용폐자원 3/103<br>기타 직접입력</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          차대번호 관리(중고차)<br>매입세액정산 · 단수차이 편집<br>구리스크랩 불러오기 합산<br>매입처명세 복사 · 엑셀 업로드</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(53/58/60/62/51+적요07)<br>SA-VAT-13 구리스크랩<br>SA-VAT-01 44.재활용폐자원등매입세액</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">53 면세→2.계산서, 58/60/62·일반전표→1.영수증, 적요07 재활용폐자원매입세액.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">종류·공제율</span><span class="desc-body">중고차 10/110(차대번호), 기타재활용 3/103, 기타 직접입력.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">정산</span><span class="desc-body">매출액·당기매입액 (14)세금계산서 51+적요07·(15)영수증, 중고차 제외.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">단수차이 편집, 구리스크랩 합산, 전기 3개년 반영, 명세 복사, 엑셀, 전표전송.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">재활용폐자원세액공제신고서, 분개내역.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-13, SA-VAT-01 44란.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat13">
+  <div class="page-title"><h1>구리스크랩등 매입세액공제신고서</h1><span class="chip-id">SA-VAT-13</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 첨부서류 › 구리스크랩등 매입세액공제신고서 · §25.12.5</div>
+  <div class="src"><b>업무 목적</b>: 사업자(간이 포함) 간 구리스크랩 등 거래의 매입세액공제를 위한 부속서류. 매입자 납부특례(조특법 §106조의9 — 지정 금융기관 전용계좌 입금 → 국고 납입)를 증빙 메타로 관리하고, 적요 성격 '5.구리스크랩(부가)'을 기준으로 집계해 재활용폐자원세액공제신고서(SA-VAT-12)에 합산한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-13 — 적요 성격(5.구리스크랩) 기반 집계 · 매입자 납부특례 표시 · 재고자산 146~175 · SA-VAT-12 합산</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">구리스크랩등 매입세액공제신고서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-13</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기 기준</span><span class="seg"><span class="on">적요 성격(5.구리스크랩)</span><span>계정과목</span></span>
+      <span class="qlabel">전표 출처</span><span class="qv">매입 · 일반 · 입력</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">공제율 일괄변경</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">매입처명세 (합산용) · 매입자 납부특례</div>
+        <table class="grid">
+          <tr><th>공급자</th><th>사업자번호</th><th class="c">구분</th><th class="c">전표</th><th class="c">매입가액</th><th class="c">납부특례</th><th class="c">공제세액</th></tr>
+          <tr class="sel"><td>대한금속</td><td>135-81-20114</td><td class="c">1.영수증</td><td class="c">58 카면</td><td class="num">20,000,000</td><td class="c"><span class="badge b-ok">전용계좌</span></td><td class="num">582,524</td></tr>
+          <tr><td>서울스크랩</td><td>214-81-33027</td><td class="c">2.계산서</td><td class="c">53 면세</td><td class="num">10,000,000</td><td class="c"><span class="badge b-ok">전용계좌</span></td><td class="num">291,262</td></tr>
+          <tr class="tot"><td colspan="4">합계</td><td class="num">30,000,000</td><td class="c"></td><td class="num">873,786</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 적요 성격 5.구리스크랩 집계 · 매입자 납부특례(조특법 §106조의9)</span><span class="cnt">→ SA-VAT-12 '구리스크랩 불러오기'로 합산 · §25.12.5</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">집계 기준</div><div class="rp-b">
+          적요 비고(성격) '5.구리스크랩(부가)'<br>재고자산 146~175<br>구분: 계산서 53 / 영수증 58·60·62·일반전표</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          매입자 납부특례 증빙 메타<br>예정누락 · 공제율 일괄변경<br>주민번호 별표 마스킹</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-12 구리스크랩 불러오기(합산)<br>SA-VAT-01 44.재활용폐자원등매입세액</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">사업자(간이 포함) 간 구리스크랩 등 거래. 매입자 납부특례(조특법 §106조의9) 표시.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">집계</span><span class="desc-body">적요 성격 '5.구리스크랩(부가)' 기반, 재고자산 146~175. 구분 계산서(53)/영수증(58·60·62·일반전표).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">예정누락, 공제율 일괄변경, 주민번호 별표.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">구리스크랩등 매입세액공제신고서, 매입처명세(합산용).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-12 구리스크랩 불러오기 합산 → SA-VAT-01 44란.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat14">
+  <div class="page-title"><h1>현금매출명세서</h1><span class="chip-id">SA-VAT-14</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 첨부서류 › 현금매출명세서 · §25.12.6</div>
+  <div class="src"><b>업무 목적</b>: 예식장·부동산중개·보건(병·의원)·변호사·세무사·회계사 등 전문서비스업 사업자가 현금매출을 작성하는 부속서류. 주민번호 기재 세금계산서 발급분(부가세법 §32①2호)도 현금매출란에 포함한다. 제출대상 업종코드 마스터와 현금매출 계정 매핑을 테넌트별 관리한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-14 — 제출대상 업종코드 마스터 · 현금매출 계정 매핑 · 공급가액 입력 시 부가세·공급대가 자동 · MRI 제출누락 검토</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">현금매출명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-14</span>
+      <span class="tb-right">2026-1기 확정 · 세무사</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">제출대상</span><span class="qv">예식장·부동산중개·병의원·변호사·세무사·회계사</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">제출업종안내</button><button class="abtn ghost">엑셀</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">현금매출 명세</div>
+        <table class="grid">
+          <tr><th>거래일자</th><th>성명(상호)</th><th class="c">주민/사업자번호</th><th class="c">공급가액</th><th class="c">부가세</th><th class="c">공급대가</th></tr>
+          <tr class="sel"><td>2026-03-15</td><td>김의뢰</td><td class="c">6805**-*******</td><td class="num">2,000,000</td><td class="num">200,000</td><td class="num">2,200,000</td></tr>
+          <tr><td>2026-04-20</td><td>이납세</td><td class="c">7402**-*******</td><td class="num">1,500,000</td><td class="num">150,000</td><td class="num">1,650,000</td></tr>
+          <tr><td>2026-05-11</td><td>대한상사</td><td class="c">128-81-40551</td><td class="num">3,000,000</td><td class="num">300,000</td><td class="num">3,300,000</td></tr>
+          <tr class="tot"><td colspan="3">합계</td><td class="num">6,500,000</td><td class="num">650,000</td><td class="num">7,150,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 공급가액 입력 시 부가세·공급대가 자동</span><span class="cnt">주민번호 기재 세금계산서 발급분(부가세법 §32①2호) 포함 · §25.12.6</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          구분(현금매출사업자)<br>주민/사업자번호 · 성명(상호)<br>거래일자 · 거래금액(공급가액→부가세·대가 자동)</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          편집(건수·합계) · 일괄삭제<br>불러오기(계정 202~230/401~420/901~930)<br>예정누락 · 제출업종안내 · 엑셀</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 첨부<br>SA-VAT-02 MRI 현금매출명세서 제출누락 검토</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">예식장·부동산중개·병의원·변호사·세무사·회계사 등 전문서비스업.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">주민/사업자번호·성명(상호)·거래일자·거래금액. 공급가액 입력 시 부가세·공급대가 자동.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">포함</span><span class="desc-body">주민번호 기재 세금계산서 발급분(부가세법 §32①2호)도 현금매출란 포함.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">편집(건수·합계), 일괄삭제, 불러오기(202~230/401~420/901~930), 예정누락, 제출업종안내, 엑셀.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 첨부, SA-VAT-02 MRI 제출누락 검토.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat15">
+  <div class="page-title"><h1>동물진료용역매출명세서</h1><span class="chip-id">SA-VAT-15</span><span class="badge b-new">2차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 첨부서류 › 동물진료용역매출명세서 · §25.12.7</div>
+  <div class="src"><b>업무 목적</b>: 동물진료용역 제공 사업자가 작성하는 부속서류. 가축·수산동물·장애인보조견·기초생활수급자 동물진료·질병예방목적 진료는 부가세 적용배제(면세) 대상이다. 진료유형 5구분별 계정 매핑으로 면세 전표(13/18/20/23)를 집계한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-15 — 진료유형 5구분(가축/수산동물/장애인보조견/기초수급자/질병예방) · 유형별 계정 매핑 · 면세 전표 집계</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">동물진료용역매출명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-15</span>
+      <span class="tb-right">2026-1기 확정 · 동물병원</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">매출유형</span><span class="qv">13 면세 · 18 카면 · 20 면건 · 23 현면</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">데이터정렬</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">진료유형별 면세 매출 집계</div>
+        <table class="grid">
+          <tr><th class="c">구분</th><th>진료유형</th><th class="c">계정과목</th><th class="c">건수</th><th class="c">공급가액</th></tr>
+          <tr class="sel"><td class="c">1</td><td>가축</td><td class="c">면세매출(413)</td><td class="c">42</td><td class="num">8,400,000</td></tr>
+          <tr><td class="c">2</td><td>수산동물</td><td class="c">면세매출(413)</td><td class="c">15</td><td class="num">2,250,000</td></tr>
+          <tr><td class="c">3</td><td>장애인보조견</td><td class="c">면세매출(413)</td><td class="c">6</td><td class="num">1,200,000</td></tr>
+          <tr><td class="c">4</td><td>기초수급자 동물진료</td><td class="c">면세매출(413)</td><td class="c">9</td><td class="num">900,000</td></tr>
+          <tr><td class="c">5</td><td>질병예방(접종 등)</td><td class="c">면세매출(413)</td><td class="c">120</td><td class="num">4,800,000</td></tr>
+          <tr class="tot"><td colspan="3">합계</td><td class="c">192</td><td class="num">17,550,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 진료유형별 계정 매핑 · 구분별 자동 분류</span><span class="cnt">부가세 적용배제(면세) 대상 · §25.12.7 · 신규 기능 화면</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">진료유형 5구분</div><div class="rp-b">
+          가축 · 수산동물<br>장애인보조견<br>기초생활수급자 동물진료<br>질병예방목적 진료</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          유형별 계정과목 설정 후 불러오기<br>면세 전표 집계 · 구분별 자동 분류<br>데이터정렬</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(13/18/20/23 면세계열)<br>SA-VAT-01 부가가치세신고서</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">동물진료용역 사업자. 가축·수산동물·장애인보조견·기초수급자 진료·질병예방은 면세.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">구분</span><span class="desc-body">진료유형 5구분별 계정과목 설정 후 불러오기(매출유형 13/18/20/23).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">유형별 계정 매핑, 면세 전표 집계, 구분별 자동 분류.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">동물진료용역매출명세서.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(13/18/20/23), SA-VAT-01. Smart A 진료유형 5구분 반영(신규).</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" id="flow">
+  <div class="page-title"><h1>업무 흐름 (End-to-End)</h1><span class="chip-id">§3</span></div>
+  <div class="crumb">공통 · 횡단 › 업무 흐름 (E2E) · 페이즈06 §3</div>
+  <div class="src"><b>업무 목적</b>: 매입매출전표(P03)의 과세유형 자동 집계 위에서, 부속서류·합계표 작성 → 신고서 생성 → 마감 상태머신 → 이용회사 확인·승인 → 전자신고 → 납부서 출력·LOCKED 전환에 이르는 부가세 신고 전 과정을 정의한다. 신고서 생성·전자신고 전송은 주기장(OPERATOR) 측 수행이 원칙(§11.4·§21.4).</div>
+  <div class="flow">
+    <span class="st hl">① 부속서류·합계표 작성<br><span class="dim">SA-VAT-03~06·09~14</span></span><span class="ar">&#8594;</span>
+    <span class="st">② 신고서 생성<br><span class="dim">SA-VAT-01 자동집계</span></span><span class="ar">&#8594;</span>
+    <span class="st">③ 마감 상태머신<br><span class="dim">MRI 60여 검사</span></span><span class="ar">&#8594;</span>
+    <span class="st">④ 이용회사 확인·승인<br><span class="dim">Ack·Step-up</span></span><span class="ar">&#8594;</span>
+    <span class="st">⑤ 전자신고<br><span class="dim">제작→검증→제출</span></span><span class="ar">&#8594;</span>
+    <span class="st end">⑥ 납부서·LOCKED<br><span class="dim">2D 바코드·아카이브</span></span>
+  </div>
+  <div class="mock">
+    <div class="mock-cap">단계별 상세 · 산출물 · 상태</div>
+    <table class="grid">
+      <tr><th class="c">단계</th><th>내용</th><th>핵심 규칙</th><th class="c">화면</th></tr>
+      <tr><td class="c">①</td><td>부속서류·합계표 작성</td><td>불러오기(전표 자동집계) → 보정 → 마감(매출·매입 동시)</td><td class="c">SA-VAT-03~06·09~14</td></tr>
+      <tr><td class="c">②</td><td>부가가치세신고서 생성</td><td>신고구분(예정/확정/영세율조기환급/기한후)·과세단위 선택 → 자동집계 → 직접입력 보정</td><td class="c">SA-VAT-01</td></tr>
+      <tr class="sel"><td class="c">③</td><td>신고서 마감 상태머신</td><td>마감 → 첨부·전자신고여부(0/x) 지정 → MRI 검사. 오류리스트 &lt;유의사항&gt;은 강제마감 가능</td><td class="c">SA-VAT-02</td></tr>
+      <tr><td class="c">④</td><td>이용회사 확인(Ack)·승인</td><td>filingApprovalRequired=Y(기본): 요약(과세표준·세액) 송부 → Step-up 승인</td><td class="c">§21.4</td></tr>
+      <tr><td class="c">⑤</td><td>전자신고</td><td>제출자등록 → 전산매체 제작(.101/.102, 비밀번호 8~15자리) → 검증 → 홈택스 제출(약 15단계 자동화)</td><td class="c">SA-VAT-07</td></tr>
+      <tr><td class="c">⑥</td><td>납부서 출력·기간 LOCKED</td><td>2D 바코드 + 신고 완료 기간 LOCKED 전환. 수정신고/경정청구 분기(추가 차가감납부세액 ≥0 / &lt;0)</td><td class="c">SA-VAT-08 → P07</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; 신고유형 예정/확정/수정/기한후 + 가산세 지원 · 사업장별 신고 / 사업자단위과세 합산</span><span class="cnt">확정신고 시 예정신고누락분·예정미환급·예정고지 처리 · §25.11.1</span></div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">원천</span><span class="desc-body">매입원장 세무구분(taxCategory)·국세청 전송상태(ntsStatus)가 신고 집계의 원천, 홈택스 수신결과와 주기 대사(§11.4).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">과세단위</span><span class="desc-body">사업장 차원 연계 — 사업장별 신고 / 사업자단위과세 합산.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">확정 처리</span><span class="desc-body">예정신고누락분(1기 4~6월/2기 10~12월)·예정미환급세액·예정고지세액 처리.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">책임</span><span class="desc-body">신고서 생성·전자신고 전송은 주기장 측 수행 원칙(§11.4·§21.4).</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" id="routing">
+  <div class="page-title"><h1>과세유형 → 서식 라우팅</h1><span class="chip-id">§3.1</span></div>
+  <div class="crumb">공통 · 횡단 › 과세유형 라우팅 · 페이즈06 §3.1 · §25.4.2.2</div>
+  <div class="src"><b>업무 목적</b>: 매입매출전표의 과세유형(매출 11~25 · 매입 51~64)이 어떤 신고서식으로 반영되는지를 정의하는 공통 라우팅 규칙. 유형 자체 기반 · 계정 기반 · 적요 기반의 3종 분기(§25.4.2.2)로 신고서(SA-VAT-01) 및 부속서류에 연결한다.</div>
+  <div class="mock">
+    <div class="mock-cap">유형군별 대상 코드 · 반영 서식 (§25.4.2.2)</div>
+    <table class="grid">
+      <tr><th>유형군</th><th class="c">대상 코드</th><th>반영 서식</th></tr>
+      <tr class="sel"><td>세금계산서 과세/영세</td><td class="c">매출 11·12·25 / 매입 51·52·54·55·64</td><td>SA-VAT-01 과세·영세, SA-VAT-03</td></tr>
+      <tr><td>계산서 면세</td><td class="c">13 / 53</td><td>SA-VAT-01 면세수입금액, SA-VAT-06</td></tr>
+      <tr><td>신용카드·현금영수증 매출</td><td class="c">17·18·19·21·22·23·24</td><td>SA-VAT-01 카과/전자/현과, SA-VAT-05</td></tr>
+      <tr><td>신용카드·현금영수증 매입</td><td class="c">57·58·59·61·62·63</td><td>SA-VAT-04 (4개 탭)</td></tr>
+      <tr><td>건별·종합·면건</td><td class="c">14·15·20 / 60</td><td>SA-VAT-01 기타(과세/면세)</td></tr>
+      <tr><td>고정자산 분기 <span class="badge b-gray">계정 기반</span></td><td class="c">51·57·61 + 고정자산 계정</td><td>SA-VAT-01 고정자산매입란 (→P07 SA-VAT-23)</td></tr>
+      <tr><td>의제매입 <span class="badge b-gray">적요 기반</span></td><td class="c">53·58·60·62 + 원재료 계정(146/153/162) + 적요06</td><td>SA-VAT-11 (§25.12.3)</td></tr>
+      <tr><td>재활용폐자원·구리스크랩 <span class="badge b-gray">적요 기반</span></td><td class="c">53·58·60·62·51 + 적요07 / 적요성격 '5.구리스크랩'</td><td>SA-VAT-12·13 (§25.12.4~5)</td></tr>
+      <tr><td>불공제</td><td class="c">54 + 불공제사유</td><td>SA-VAT-01 공제받지못할매입세액 (→P07 SA-VAT-22)</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; 분기 3종 — 유형 자체 / 계정 기반 / 적요 기반</span><span class="cnt">tax_type_master 단일 진실원 · §0.4 P2 · §25.4.2.2</span></div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">분기 방식</span><span class="desc-body">유형 자체(코드→서식), 계정 기반(고정자산 계정), 적요 기반(의제매입 06·재활용 07·구리스크랩 성격).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">진실원</span><span class="desc-body">tax_type_master가 과세유형·세율·부가세계정·신고서식 매핑·증빙요건의 단일 진실원.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">경계</span><span class="desc-body">고정자산·불공제 관련 명세는 P07(SA-VAT-22/23)로 이관, 본 페이즈는 신고서 란 집계까지.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" id="model">
+  <div class="page-title"><h1>데이터 모델 · API</h1><span class="chip-id">§5·6</span></div>
+  <div class="crumb">공통 · 횡단 › 데이터 모델·API · 페이즈06 §5·§6</div>
+  <div class="src"><b>업무 목적</b>: 부가세 신고 도메인의 핵심 엔티티(신고서·부속서류·전자신고 잡·매입원장·기간 상태)와 대표 REST API를 정의한다. 테이블 공통 제약(tenant_id NOT NULL+RLS, 감사 필드, 물리 삭제 금지)은 00_개요 §3을 따른다.</div>
+  <div class="mock">
+    <div class="mock-cap">핵심 엔티티 · 상태·유니크 (§5)</div>
+    <table class="grid">
+      <tr><th>엔티티</th><th>핵심 필드</th><th>PK/유니크·상태</th></tr>
+      <tr class="sel"><td>VatReturn<br><span class="dim">부가세신고서</span></td><td>filingType(1예정/2확정/3영세율조기환급/4기한후), taxUnit, businessPlaceId, amendmentSeq, status, eFilingFlag, forcedCloseFlag</td><td>UQ(tenant, 과세기간, filingType, taxUnit, amendmentSeq). 정기 마감 후 수정</td></tr>
+      <tr><td>VatReturnLine</td><td>lineCode(11~48·50~58), taxBase, taxAmount, sourceType(자동/직접)</td><td>수정전=정기분 자동·수정불가</td></tr>
+      <tr><td>VatAttachmentForm<br><span class="dim">부속 공통헤더</span></td><td>formType(03~15), status, closedAt, 매출·매입 동시마감</td><td>마감 시 사업자번호 정합 검증</td></tr>
+      <tr><td>ElectronicFilingJob</td><td>fileFormat(.101/.102), filePassword(8~15), status(제작오류~제출확인), excludeFlag, hometaxAutoFlag</td><td>재마감 시 상태 공란화·멱등 작업큐</td></tr>
+      <tr><td>tax_type_master</td><td>과세유형(매출11~25/매입51~64), 세율, 부가세계정, 서식매핑, 증빙요건</td><td>단일 진실원</td></tr>
+      <tr><td>PurchaseLedgerLine<br><span class="dim">매입원장</span></td><td>taxCategory, ntsStatus(8종), deductibleType, evidenceStatus</td><td>NOT_TARGET/PENDING/ISSUED/SENT/ACCEPTED/REJECTED/CANCELLED/MANUAL</td></tr>
+      <tr><td>TenantAcknowledgement</td><td>대상(마감/신고), status(PENDING→CONFIRMED/OBJECTED)</td><td>ackPolicy=REQUIRED 시 후속 차단</td></tr>
+      <tr><td>FiscalPeriod</td><td>상태 전이</td><td class="blue">FUTURE→OPEN→TEMP_CLOSED→CLOSED→LOCKED(마감해제 불가)</td></tr>
+    </table>
+    <div class="mock-cap" style="border-top:1px solid #E1E1E6">대표 API (§6)</div>
+    <table class="grid">
+      <tr><th class="c">메서드</th><th>엔드포인트</th><th>설명</th><th class="c">멱등·오류</th></tr>
+      <tr><td class="c">POST</td><td>/api/tenant/vat/returns</td><td>신고서 생성(과세유형 자동집계)</td><td class="c">Idempotency-Key</td></tr>
+      <tr><td class="c">POST</td><td>/vat/returns/{id}/close</td><td>마감(32합계·환급계좌 검증)</td><td class="c">VALIDATION_FAILED</td></tr>
+      <tr><td class="c">POST</td><td>/vat/returns/{id}/mri-check</td><td>MRI 60여 항목 검사</td><td class="c">리스크 스코어</td></tr>
+      <tr class="sel"><td class="c">POST</td><td>/filings/{id}/approve</td><td>이용회사 승인(Step-up)</td><td class="c">FORBIDDEN_SCOPE</td></tr>
+      <tr><td class="c">POST</td><td>/vat/filings/{id}/build·validate·submit</td><td>제작(.101/.102)→검증→홈택스 제출</td><td class="c">EXTERNAL_INTEGRATION_FAILED</td></tr>
+      <tr><td class="c">GET</td><td>/vat/payment-slip/{returnId}</td><td>납부서 생성(2D 바코드)</td><td class="c">바코드 필수검증</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; 오류코드 PERIOD_LOCKED·NOT_PRIMARY_BOOKKEEPER·IDEMPOTENCY_CONFLICT(409)</span><span class="cnt">위험 scope(전송·마감해제·평문조회) Step-up 필수 · §13.3</span></div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">기간 상태</span><span class="desc-body">FiscalPeriod LOCKED는 신고 완료·아카이브 상태로 마감해제 불가, 수정신고 절차로만 대응(§11.9).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">전자신고 잡</span><span class="desc-body">상태 6종(제작오류/제작완료/검증오류/검증완료/제출오류/제출확인), 재마감 시 상태 공란화, 멱등 작업큐.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">공통 제약</span><span class="desc-body">tenant_id NOT NULL+RLS, 감사 필드, 물리 삭제 금지(00_개요 §3).</span></div>
+    </div>
+  </div>
+</section>
+<section class="section" id="gate">
+  <div class="page-title"><h1>검증 · 권한 · 마감</h1><span class="chip-id">§8·9</span></div>
+  <div class="crumb">공통 · 횡단 › 검증·권한·마감 · 페이즈06 §8·§9</div>
+  <div class="src"><b>업무 목적</b>: 부가세 신고의 차단/경고 검증 규칙(22종), 권한·SOD·감사 통제, 그리고 신고 완료 기간의 LOCKED 상태머신을 정의한다. 작성≠승인 SOD, 이용회사 Step-up 승인, 비주기장 신고 차단이 핵심 게이트다.</div>
+  <div class="flow">
+    <span class="st">OPEN</span><span class="ar">&#8594;</span>
+    <span class="st hl">TEMP_CLOSED<br><span class="dim">임시마감</span></span><span class="ar">&#8594;</span>
+    <span class="st">CLOSED<br><span class="dim">마감</span></span><span class="ar">&#8594;</span>
+    <span class="st end">LOCKED<br><span class="dim">신고완료·해제불가</span></span>
+  </div>
+  <div class="mock">
+    <div class="mock-cap">주요 검증 항목 (§8 · 22종 중 대표)</div>
+    <table class="grid">
+      <tr><th class="c">#</th><th>검증 항목</th><th class="c">차단/경고</th></tr>
+      <tr class="sel"><td class="c">1</td><td>매출 합계 ↔ 과세표준명세 32.합계 불일치</td><td class="c red">차단</td></tr>
+      <tr><td class="c">2</td><td>환급액 5천만원 초과 시 환급계좌 입력</td><td class="c red">차단</td></tr>
+      <tr><td class="c">3</td><td>MRI 오류리스트 &lt;유의사항&gt;</td><td class="c">경고(강제마감)</td></tr>
+      <tr><td class="c">6·7·8</td><td>이중공제·증빙 중복사용·세금계산서 후 카드매출 중복</td><td class="c red">차단</td></tr>
+      <tr><td class="c">10</td><td>국세청 전송상태 REJECTED/미수신</td><td class="c">마감 체크리스트·필수거래 차단</td></tr>
+      <tr><td class="c">12</td><td>2D 바코드 필수항목 미입력</td><td class="c">바코드 미반영</td></tr>
+      <tr><td class="c">14</td><td>의제매입 물품명 미입력(전자신고 필수)</td><td class="c red">제작 오류</td></tr>
+      <tr><td class="c">16</td><td>비주기장 측 신고 시도</td><td class="c red">차단 NOT_PRIMARY_BOOKKEEPER</td></tr>
+      <tr><td class="c">17·18</td><td>Ack 미완료·신고 승인 누락·미수임 전송</td><td class="c red">차단(정책=Y)</td></tr>
+      <tr><td class="c">19</td><td>LOCKED 기간 마감해제 시도</td><td class="c red">차단·감사로그</td></tr>
+    </table>
+    <div class="mock-cap" style="border-top:1px solid #E1E1E6">권한 · SOD · 감사 (§9)</div>
+    <table class="grid">
+      <tr><th>행위</th><th>역할·scope</th><th>통제</th></tr>
+      <tr><td>신고서 생성·마감</td><td>주기장 측(BK_PREPARER)</td><td>주기장 권한 검증 공통 인터셉터</td></tr>
+      <tr class="sel"><td>신고 승인</td><td>이용회사 tenant:filing:approve</td><td>요약 송부 → Step-up 승인 → 전송</td></tr>
+      <tr><td>전자신고 전송</td><td>주기장. OPERATOR는 수임(contractRef) 검증</td><td>위험 scope Step-up, 미수임 전송 차단</td></tr>
+      <tr><td>SOD</td><td>작성 ≠ 승인</td><td>작성자·승인자 분리, 겸직 차단</td></tr>
+      <tr><td>감사·마스킹</td><td>DataChangeLog append-only</td><td>전후값·IP·행위자, 주민번호 별표·평문 Step-up</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; LOCKED = 신고 완료·아카이브, 마감해제 불가 — 수정신고 절차로만 대응</span><span class="cnt">§11.9 · §21.4 · §13.3</span></div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">강제마감</span><span class="desc-body">MRI 오류리스트 중 &lt;유의사항&gt;만 강제마감 가능, 그 외 오류는 차단.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">승인 게이트</span><span class="desc-body">filingApprovalRequired=Y(기본): 과세표준·세액 요약 송부 후 Step-up 승인 → 전송. 주기장=OPERATOR 미수임 시 전송 차단.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기간 잠금</span><span class="desc-body">신고 완료 기간 LOCKED 전환, 마감해제 시도는 차단+감사로그, 수정신고 절차 안내.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">멱등</span><span class="desc-body">제작·제출 재호출 멱등키 충돌은 409 IDEMPOTENCY_CONFLICT.</span></div>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<footer class="footer">
+  <div class="beamline"></div>
+  <div>EY BK 회계 플랫폼 — 페이즈06 화면설계 v1.0 · 근거: 페이즈06_부가세_주요신고.md + bk_설계서_v1.1.md · 스타일 준거: 페이즈05_화면_v1.0.HTML (EY 레이아웃)</div>
+</footer>
+
+<script>
+document.querySelectorAll('.mitem').forEach(function(mi){
+  mi.addEventListener('click',function(){
+    document.querySelectorAll('.mitem').forEach(function(x){x.classList.remove('active')});
+    mi.classList.add('active');
+    var sec=mi.getAttribute('data-sec');
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('visible')});
+    var el=document.getElementById(sec);
+    if(el){el.classList.add('visible');window.scrollTo({top:0});}
+  });
+});
+// 로컬 탭 전환 (mock 내부 .tabbar)
+document.querySelectorAll('.mock .tabbar').forEach(function(bar){
+  var mock=bar.closest('.mock');
+  var tabs=Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+  var panes=Array.prototype.slice.call(mock.children).filter(function(c){return c.classList&&c.classList.contains('tabpane')});
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('on')});
+      tab.classList.add('on');
+      if(panes.length){ panes.forEach(function(p){p.classList.remove('on')}); if(panes[i]) panes[i].classList.add('on'); }
+    });
+  });
+});
+</script>
+</body>
+</html>

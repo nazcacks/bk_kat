@@ -6,7 +6,7 @@
 1. 사이드바 메뉴 그룹
 2. #home 개요 섹션
 3. 화면 섹션 (핵심 반복 단위) / 참조 HTML 원형 이식
-4. 목업 내부 부품 (titlebar/qbar/actionbar/tabbar/mock-flex/tree/grid/form/rpanel/statusbar/modal)
+4. 목업 내부 부품 (titlebar/qbar/actionbar/tabbar/상태흐름/mock-flex/tree/grid/form/rpanel/statusbar/modal)
 5. 공통 섹션 (게이트·업로드·데이터모델 등)
 6. 배지·플로우·기타 인라인 요소
 
@@ -191,6 +191,30 @@
 이미 만들어진 단일-뷰 화면에 탭을 뒤늦게 채워 넣을 때: 기존 「탭바 뒤 ~ .mock 닫기 전」 내용을 `<div class="tabpane on">…</div>`로 감싸 1번 패널로 만들고, 나머지 탭마다 `<div class="tabpane">…</div>`를 이어 붙인다.
 
 실제 2탭 화면의 전체 마크업 예시는 `references/tab-example.md` 참고.
+
+### 4.4b 상태 흐름 (state machine / 프로세스 단계)
+상태머신·워크플로우 단계·패키지 진행상태를 가진 화면은 현재 단계를 한눈에 보이게 그린다. 두 가지 위치를 쓴다:
+
+- **섹션 상단(목업 밖) — `.flow`:** 페이즈 전체나 화면군의 End-to-End 흐름. `.st`(단계) / `.st.hl`(강조) / `.st.end`(종료) / `.ar`(화살표). `#home` 개요와 워크플로우 화면 상단에 쓴다.
+  ```html
+  <div class="flow">
+    <span class="st">OPEN</span><span class="ar">→</span>
+    <span class="st hl">TEMP_CLOSED<br><small>가마감</small></span><span class="ar">→</span>
+    <span class="st">CLOSED<br><small>본마감</small></span><span class="ar">→</span>
+    <span class="st end">LOCKED</span>
+  </div>
+  ```
+- **목업 안(titlebar/qbar 아래) — `.fnbar` + `.chip`:** 이 화면이 다루는 대상의 현재 상태를 목업 내부에 배치. 현재 상태 칩만 `.chip.on`(다크+옐로), 나머지는 `.chip`. 상태 사이 `.ar` 화살표.
+  ```html
+  <div class="fnbar">
+    <span class="chip">PENDING</span><span class="ar">→</span>
+    <span class="chip">GENERATED</span><span class="ar">→</span>
+    <span class="chip on">VALIDATED</span><span class="ar">→</span>
+    <span class="chip">DELIVERED</span><span class="ar">→</span>
+    <span class="chip">ACKED</span>
+  </div>
+  ```
+데이터는 그 상태머신의 규칙을 증명하는 실제 상태값으로 채운다(예: 페이즈05 마감 `OPEN→TEMP_CLOSED→CLOSED→LOCKED`, 보고패키지 6상태 `PENDING→…→ACKED`). CSS(`.flow`·`.fnbar`·`.chip`·`.chip.on`·`.ar`)는 template에 이미 있으므로 마크업만 맞춘다.
 
 ### 4.5 mock-flex (좌·중·우 배치)
 `.lpane`(좌측 트리, 선택), `.mock-main`(중앙 본문, 필수), `.rpanel`(우측 검증/연계 패널, 선택).

@@ -55,7 +55,7 @@ CSS는 손대지 않는다. 색·간격·폰트·컴포넌트는 `assets/templat
 `references/components.md`를 읽는다. 모든 섹션·부품의 copy-paste 스니펫과 클래스 규칙이 있다. 목업 부품 순서는 항상: `titlebar → qbar → actionbar → (tabbar) → mock-flex[lpane? · mock-main · rpanel?] → statusbar`. 화면 성격(입력/조회/설정/배치/대시보드)에 맞는 부품만 고른다.
 
 ### 4단계 — 템플릿으로 뼈대를 만든다
-`assets/template.html`을 Read로 읽어 그 내용을 결과 경로에 Write로 **그대로** 옮긴다(파일 시스템 `cp`에 의존하지 말고 Read→Write가 확실하다). 이때 플레이스홀더를 치환한다:
+방식 A(앵커 삽입)면 `assets/template.html`을 Read로 읽어 결과 경로에 Write로 **그대로** 옮긴다(파일 시스템 `cp`에 의존하지 말고 Read→Write가 확실하다). 방식 B(조각파일)면 template를 head/sidebar/foot 3조각으로 나눠 build 폴더에 각각 Write한다. 어느 방식이든 플레이스홀더를 치환한다:
 - `{{DOC_TITLE}}` — 예: `BK 페이즈03 화면설계 — 전표·자동전표 (SA-JE, EY 레이아웃)`
 - `{{MENU_HEAD}}` — 예: `전표관리 · 자동전표 (P03)`
 - `{{FOOTER_TEXT}}` — 예: `EY BK 회계 플랫폼 — 페이즈03 화면설계 v1.0 · 근거: 페이즈03_전표_자동전표.md · 레이아웃 준거: 페이즈01_화면.HTML`
@@ -65,7 +65,18 @@ CSS는 손대지 않는다. 색·간격·폰트·컴포넌트는 `assets/templat
 이모지·기호는 gold reference처럼 **raw 글리프**(🔍 ☰ ★ 🏠 📅 ▸ ▾ ✓)를 그대로 쓴다. 파일이 UTF-8이므로 HTML 엔티티로 바꿀 필요 없다.
 
 ### 5단계 — 섹션을 채운다 (반복 · 반드시 여러 번에 나눠서)
-결과물은 크다(수만 자). 출력 토큰 한계 때문에 한 번의 편집으로 전체를 쓸 수 없으니 **처음부터 6~10회 정도로 쪼개** 앵커에 이어붙일 계획을 세운다. 순서: 먼저 `#home`(개요: 업무흐름 flow + 화면 인벤토리 spec 표 + 선행조건 표) → 화면 섹션을 사이드바 그룹 단위로 여러 번 삽입 → 마지막에 공통 섹션. 마지막 편집에서 `<!-- SECTIONS_ANCHOR -->`를 제거한다. 각 화면 섹션은 반드시 `.mock`(대표 데이터가 든 목업) + `.screen-desc-list`(6칸 카드)를 갖는다.
+결과물은 크다(수만 자). 출력 토큰 한계 때문에 한 번의 편집으로 전체를 쓸 수 없으니 **처음부터 6~10회 정도로 쪼개** 만들 계획을 세운다. 순서: 먼저 `#home`(개요: 업무흐름 flow + 화면 인벤토리 spec 표 + 선행조건 표) → 화면 섹션을 사이드바 그룹 단위로 → 마지막에 공통 섹션. 각 화면 섹션은 반드시 `.mock`(대표 데이터가 든 목업) + `.screen-desc-list`(6칸 카드)를 갖는다.
+
+조립 방식은 두 가지다. 화면 수가 많거나(대략 15개 초과) 결과물이 128KB를 넘을 것으로 예상되면 **방식 B(조각파일 + cat 조립)를 권장**한다 — 페이즈05(32섹션·186KB)에서 잘림 없이 검증됨.
+
+- **방식 A — 앵커 삽입(소·중 규모):** 4단계에서 `<!-- SECTIONS_ANCHOR -->` 한 줄만 남기고, 각 편집에서 앵커를 `새 섹션들 + 앵커`로 치환해 순서대로 이어붙인다. 마지막 편집에서 앵커를 제거한다. Edit 도구가 파일 끝을 잘라내는 위험이 있으므로 매 편집 후 잘림을 확인한다.
+- **방식 B — 조각파일 + cat 조립(대 규모, 권장):** 셸(head+CSS+topbar / sidebar+`<main>` 열기 / footer+JS+`</main></div></body></html>`)과 콘텐츠를 **별도 조각 .html 파일**로 outputs 하위 build 폴더에 각각 Write한 뒤, bash `cat`으로 정해진 순서대로 이어붙여 최종 파일로 만든다. 각 조각은 128KB보다 훨씬 작아 Write 잘림이 원천 차단되고, 재빌드·부분 수정도 조각 단위로 안전하다. 예:
+  ```bash
+  cd <build 폴더>   # 예: outputs/pNNbuild
+  cat 00a_head.html 00b_sidebar.html 10_home.html 20_*.html … 99_foot.html > "<결과 html 경로>"
+  wc -c "<결과 html 경로>"; tail -c 40 "<결과 html 경로>"   # </html> 확인
+  ```
+  조각 파일명은 `00a_head`, `00b_sidebar`, `10_home`, `20_…`, `99_foot`처럼 정렬 가능한 접두어를 붙여 `cat` 순서를 자명하게 한다. 셸 3조각(head/sidebar/foot)은 `assets/template.html`을 플레이스홀더 치환해 나누되, footer·JS·`</html>`가 온전히 살아있는지 반드시 확인한다(잘린 참조 파일에서 셸을 뽑으면 안 됨).
 
 `.screen-desc-list`는 6칸을 유지하되 화면 성격에 맞게 라벨을 조정한다. 프리셋:
 - 입력/등록 화면: 목적 · 입력 필드 · 기능 · 검증 · 산출물 · 연계
@@ -76,7 +87,7 @@ CSS는 손대지 않는다. 색·간격·폰트·컴포넌트는 `assets/templat
 
 **탭 화면은 모든 탭을 그린다.** `.tabbar`에 탭이 여러 개면 각 탭마다 `.tabpane`을 만들어 그 탭의 목업을 채운다(첫 탭만 그리고 나머지를 비워두지 않는다). 탭바 뒤에 `.mock`의 직속 자식으로 패널을 나열하고, 첫 패널만 `class="tabpane on"`, 나머지는 `class="tabpane"`. **탭 개수 = 패널 개수**이며 순서가 인덱스로 매칭된다. 스니펫·규칙은 `references/components.md` §4.4, 실제 2탭 화면의 전체 마크업은 `references/tab-example.md`. template.html의 CSS(`.tabpane`)와 탭 전환 JS가 인덱스 기반 패널 토글을 이미 처리하므로 마크업만 맞추면 된다.
 
-**큰 파일 편집 주의.** 결과물이 수만 자(대략 128KB 초과)로 커지면 Edit/Write 도구가 파일 끝을 잘라내는 경우가 있다(뒷부분 섹션·푸터·스크립트 소실). 파일이 이미 크고 큰 블록을 끼워 넣어야 할 때는 bash의 python(문자열 replace 후 파일 재기록)으로 처리하고, 편집 직후 `wc -c`·`</html>`·마지막 섹션 존재 여부를 확인한다.
+**큰 파일 편집 주의.** 결과물이 수만 자(대략 128KB 초과)로 커지면 Edit/Write 도구가 파일 끝을 잘라내는 경우가 있다(뒷부분 섹션·푸터·스크립트 소실). 이 잘림을 겪었다면 방식 A를 고수하지 말고 방식 B(조각파일 + cat 조립)로 전환하는 게 가장 안전하다 — 각 조각이 작아 Write가 절대 잘리지 않는다. 부득이 단일 대용량 파일을 편집해야 하면 bash의 python(문자열 replace 후 파일 재기록)으로 처리하고, 편집 직후 `wc -c`·`</html>`·마지막 섹션 존재 여부를 확인한다.
 
 ### 6단계 — 검증한다 (필수)
 결과 파일을 bash로 점검한다:
@@ -101,7 +112,10 @@ echo "tabbar / tabpane / tabpane.on:"; grep -c 'class="tabbar"' "$f"; grep -oE '
 # data-sec 중 매칭되는 id가 없는 것 찾기
 for d in $(grep -oE 'data-sec="[a-z0-9]+"' "$f" | sed -E 's/.*"([a-z0-9]+)"/\1/' | sort -u); do
   grep -q "id=\"$d\"" "$f" || echo "MISSING SECTION: $d"; done
+echo "ending:"; tail -c 40 "$f"   # 방식 B(cat 조립) 후 </html> 온전성 확인
 ```
+
+방식 B로 조립했다면 위 검사는 **최종 cat 결과물**에 대해 돌린다(조각 각각이 아니라). 태그 균형·탭=패널·data-sec↔id 매칭이 조각 경계를 넘어 전체에서 맞아야 한다.
 
 ## 산출물 규칙
 - 결과 경로: `D:\bk_kat\설계\페이즈_화면\페이즈NN_화면_vX.Y.html` (사용자가 다른 경로·이름을 주면 그에 따른다).

@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 페이즈07 화면설계 — 부가세 첨부·업종별 서류 (SA-VAT, EY 레이아웃)</title>
+<style>
+:root{
+  --ey-yellow:#FFE600; --ey-dark:#2E2E38; --ey-darker:#1A1A24; --ey-gray:#747480;
+  --ey-light:#F6F6FA; --ey-border:#E1E1E6; --ey-text:#2E2E38; --ey-red:#E0362C;
+  --ey-green:#168736; --ey-blue:#188CE5; --ey-link:#155CB4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ey-text);background:var(--ey-light);font-size:13.5px;line-height:1.55}
+/* ===== 상단바 ===== */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;background:var(--ey-darker);color:#fff;height:54px;padding:0 16px;border-bottom:1px solid #000}
+.ey-logo{display:flex;align-items:center;gap:10px;min-width:210px}
+.ey-mark{position:relative;width:40px;height:40px;background:#000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px}
+.ey-mark .beam{position:absolute;top:4px;left:4px;width:0;height:0;border-left:32px solid transparent;border-bottom:9px solid var(--ey-yellow);transform:skewX(-18deg)}
+.ey-mark .ey{font-weight:800;font-size:19px;color:#fff;line-height:1}
+.ey-tag{font-size:10.5px;line-height:1.25;color:#d9d9e0;font-weight:600}
+.company-select{display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.company-select .code{color:#b9b9c2}
+.global-search{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;color:#8a8a94;font-size:12.5px}
+.top-utils{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12.5px;white-space:nowrap}
+.top-utils .util{display:flex;align-items:center;gap:5px;cursor:pointer;color:#e8e8ee}
+.top-utils .fav .ico{color:var(--ey-yellow)}
+.top-utils .avatar{width:26px;height:26px;border-radius:50%;background:#fff;color:var(--ey-darker);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+/* ===== 레이아웃 ===== */
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:216px;background:var(--ey-dark);color:#d7d7de;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow:auto}
+.sidebar .menu-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #3d3d47;color:#fff;font-weight:700;font-size:13px}
+.sidebar nav{flex:1;overflow:auto;padding:4px 0 8px}
+.mgroup{margin-top:5px}
+.mgroup>.gtitle{display:flex;align-items:center;gap:8px;padding:5px 16px;font-weight:700;font-size:12.5px;color:var(--ey-yellow);cursor:pointer}
+.mgroup>.gtitle .bar{width:3px;height:14px;background:var(--ey-yellow);border-radius:2px}
+.mgroup.plain>.gtitle{color:#fff}
+.mgroup.plain>.gtitle .bar{background:#6a6a75}
+.mitem{display:block;padding:4px 16px 4px 34px;font-size:12.5px;color:#c9c9d2;cursor:pointer;border-left:3px solid transparent;text-decoration:none}
+.mitem:hover{background:#3a3a45;color:#fff}
+.mitem.active{background:var(--ey-yellow);color:#1a1a24;font-weight:700;border-left-color:#c9b400}
+.mitem .mid{float:right;font-size:10px;color:#8a8a94;margin-top:2px}
+.mitem.active .mid{color:#55550a}
+.sidebar .foot{padding:8px 16px;border-top:1px solid #3d3d47;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sidebar .foot .ey-mark{width:30px;height:30px}
+.sidebar .foot .ey-mark .beam{border-left-width:24px;border-bottom-width:7px;top:3px;left:3px}
+.sidebar .foot .ey-mark .ey{font-size:14px}
+.sidebar .foot .txt{font-size:10px;color:#b9b9c2;line-height:1.3;font-weight:600}
+/* ===== 콘텐츠 ===== */
+.content{flex:1;padding:18px 22px 60px;max-width:calc(100% - 216px)}
+.section{display:none}
+.section.visible{display:block}
+.page-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.page-title h1{font-size:20px;font-weight:800}
+.page-title .star{color:var(--ey-yellow);font-size:16px}
+.page-title .chip-id{background:var(--ey-dark);color:var(--ey-yellow);font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700}
+.crumb{font-size:11.5px;color:var(--ey-gray);margin-bottom:12px}
+.src{font-size:11.5px;color:var(--ey-gray);background:#EFEFF4;border-left:3px solid var(--ey-yellow);padding:8px 12px;border-radius:0 4px 4px 0;margin:10px 0 16px}
+.src b{color:var(--ey-text)}
+h2.sec{font-size:15.5px;font-weight:800;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+h2.sec .no{color:#9a9aa4;font-weight:700;margin-right:6px}
+h3.sub{font-size:13.5px;font-weight:700;margin:16px 0 8px;padding-left:8px;border-left:3px solid var(--ey-yellow)}
+p.desc{margin:6px 0 10px;color:#44444e}
+ul.plain{margin:6px 0 12px 18px}
+ul.plain li{margin:3px 0}
+table.spec{width:100%;border-collapse:collapse;margin:8px 0 16px;background:#fff;font-size:12.5px}
+table.spec th{background:var(--ey-dark);color:#fff;padding:6px 10px;text-align:left;font-weight:600;border:1px solid #45454f;font-size:12px}
+table.spec td{padding:5px 10px;border:1px solid var(--ey-border);vertical-align:top}
+table.spec tr:nth-child(even) td{background:#FAFAFD}
+table.spec td.c,table.spec th.c{text-align:center}
+code{background:#EFEFF4;border:1px solid var(--ey-border);border-radius:3px;padding:0 4px;font-family:Consolas,monospace;font-size:12px;color:#7A2E8D}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin:0 2px;vertical-align:1px}
+.b-block{background:#FBE9E7;color:var(--ey-red);border:1px solid #F5C6C0}
+.b-warn{background:#FFF8DC;color:#8a6d00;border:1px solid #EFE0A0}
+.b-ok{background:#E8F5E9;color:var(--ey-green);border:1px solid #BFE3C6}
+.b-new{background:var(--ey-yellow);color:#1a1a24;border:1px solid #d9c400}
+.b-ref{background:#EAF2FB;color:var(--ey-link);border:1px solid #C5DCF5}
+.b-gray{background:#EFEFF4;color:#5a5a66;border:1px solid #d9d9e0}
+/* ===== 목업 공통 ===== */
+.mock{background:#fff;border:1px solid var(--ey-border);border-radius:6px;box-shadow:0 1px 4px rgba(30,30,40,.08);margin:12px 0 20px;overflow:hidden}
+.mock .mock-cap{background:#EFEFF4;border-bottom:1px solid var(--ey-border);padding:5px 12px;font-size:11px;color:var(--ey-gray);font-weight:600}
+.screen-details{margin:2px 0 30px}
+.screen-details .sd-title{font-size:14px;font-weight:800;margin:8px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+.screen-desc-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 14px}
+.screen-desc-item{background:#fff;border:1px solid var(--ey-border);border-left:3px solid var(--ey-yellow);border-radius:0 5px 5px 0;padding:8px 10px;font-size:11.8px;min-height:62px}
+.screen-desc-item .desc-label{display:block;font-weight:800;color:var(--ey-dark);margin-bottom:3px}
+.screen-desc-item .desc-body{color:#4b4b55}
+/* 타이틀바 (EY 다크) */
+.titlebar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--ey-darker);border-bottom:2px solid var(--ey-yellow);flex-wrap:wrap}
+.titlebar .tb-crumb{font-size:12px;color:#b9b9c2;font-weight:600}
+.titlebar .tb-sep{color:#6a6a75;font-weight:700}
+.titlebar .tb-title{font-size:15px;font-weight:800;color:#fff}
+.titlebar .tb-star{color:var(--ey-yellow);font-size:14px;cursor:pointer}
+.titlebar .tb-id{background:var(--ey-yellow);color:#1a1a24;font-size:10.5px;padding:2px 8px;border-radius:3px;font-weight:700}
+.titlebar .tb-right{margin-left:auto;font-size:11px;color:#c9c9d2}
+/* 조회조건 바 */
+.qbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#fff;flex-wrap:wrap;font-size:12px}
+.qbar .qlabel{font-size:11px;color:var(--ey-gray);font-weight:700}
+.qbar .seg{display:inline-flex;border:1px solid #c9c9d2;border-radius:4px;overflow:hidden}
+.qbar .seg span{padding:3px 10px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;color:#5a5a66}
+.qbar .seg span.on{background:var(--ey-dark);color:var(--ey-yellow)}
+.qbar .qv{display:inline-flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:3px 8px;background:#fff;font-size:12px}
+.qbar .qv.off{background:#F3F3F7;color:#9a9aa4}
+.qbar .navbtn{border:1px solid #c9c9d2;background:#fff;border-radius:3px;padding:2px 7px;font-size:11px;cursor:pointer;font-weight:700}
+.qbar .qright{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+/* 액션바 (우측 정렬) */
+.actionbar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap}
+.abtn{border:1px solid #c9c9d2;background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.abtn.dark{background:var(--ey-dark);color:#fff;border-color:var(--ey-dark)}
+.abtn.red{background:var(--ey-red);color:#fff;border-color:var(--ey-red)}
+.abtn.yellow{background:var(--ey-yellow);color:#1a1a24;border-color:#d9c400;font-weight:700}
+.abtn.ghost{background:#fff}
+.abtn.sm{padding:2px 7px;font-size:11px}
+.ab-right{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+/* 탭 */
+.tabbar{display:flex;gap:2px;padding:8px 12px 0;background:#FCFCFE;border-bottom:1px solid var(--ey-border);flex-wrap:wrap}
+.tab{padding:6px 16px;border:1px solid var(--ey-border);border-bottom:none;border-radius:6px 6px 0 0;background:#EFEFF4;font-size:12px;font-weight:600;color:#5a5a66;cursor:pointer}
+.tab.on{background:#fff;color:var(--ey-text);font-weight:700;border-color:#b9b9c2;border-bottom:2px solid #fff;margin-bottom:-1px}
+.tab .tno{color:#9a9aa4;font-size:10.5px}
+.tabpane{display:none}
+.tabpane.on{display:block}
+/* 폼 */
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;padding:12px}
+.formgrid.c3{grid-template-columns:repeat(3,1fr)}
+.formgrid.c2{grid-template-columns:repeat(2,1fr)}
+.ff{display:flex;flex-direction:column;gap:2px}
+.ff label{font-size:11px;color:var(--ey-gray);font-weight:600}
+.ff .fv{display:flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:4px 8px;background:#fff;font-size:12.5px;min-height:28px}
+.ff .fv.ro{background:#F3F3F7;color:#5a5a66}
+.ff .fv .lens{margin-left:auto;color:#9a9aa4;font-size:11px;cursor:pointer}
+.ff.wide{grid-column:span 2}
+.ff.full{grid-column:span 4}
+.formgrid.c3 .ff.full{grid-column:span 3}
+.formgrid.c2 .ff.full{grid-column:span 2}
+.mock input,.mock select,.mock textarea{border:1px solid #c9c9d2;border-radius:4px;background:#fff;padding:3px 6px;font:inherit;color:var(--ey-text)}
+.mock input,.mock select{height:26px}
+.mock textarea{width:100%;resize:vertical}
+table.grid input,table.grid select{width:100%;min-width:0}
+table.grid input.num{text-align:right;font-family:Consolas,monospace}
+/* 기능바/토글 */
+.fnbar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--ey-border);border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap;font-size:12px}
+.chip{border:1px solid #c9c9d2;background:#fff;border-radius:14px;padding:3px 12px;font-size:11.5px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--ey-dark);color:var(--ey-yellow);border-color:var(--ey-dark)}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.toggle .sw{width:34px;height:18px;border-radius:9px;background:var(--ey-yellow);position:relative;display:inline-block}
+.toggle .sw::after{content:'';position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#1a1a24}
+.sumbox{margin-left:auto;display:flex;gap:14px;font-weight:700;font-size:12px}
+.sumbox .ok{color:var(--ey-green)}
+/* 그리드 */
+table.grid{width:100%;border-collapse:collapse;font-size:12px;background:#fff}
+table.grid th{background:#F3F3F7;border:1px solid var(--ey-border);padding:5px 6px;font-weight:700;color:#44444e;white-space:nowrap}
+table.grid td{border:1px solid var(--ey-border);padding:4px 6px;white-space:nowrap}
+table.grid td .lens{float:right;color:#9a9aa4;margin-left:8px;cursor:pointer}
+table.grid td.num{text-align:right;font-family:Consolas,monospace}
+table.grid td.c{text-align:center}
+table.grid tr.sel td{background:#FFFBE0}
+table.grid tr.empty td{color:#c9c9d2;height:26px}
+table.grid tr.tot td{background:#F3F3F7;font-weight:700}
+table.grid .red{color:var(--ey-red);font-weight:700}
+table.grid .blue{color:var(--ey-blue)}
+table.grid .dr{color:var(--ey-blue);font-weight:700}
+table.grid .cr{color:var(--ey-red);font-weight:700}
+table.grid .dim{color:#9a9aa4}
+.statusbar{display:flex;align-items:center;gap:16px;background:var(--ey-darker);color:#e8e8ee;padding:7px 12px;font-size:11.5px;flex-wrap:wrap}
+.statusbar .okmsg{color:#7ADB8F;font-weight:700}
+.statusbar .warnmsg{color:#FFD666;font-weight:700}
+.statusbar .opts{display:flex;gap:12px}
+.statusbar .cnt{margin-left:auto;color:#b9b9c2}
+/* 좌우 배치 + 패널 */
+.mock-flex{display:flex;gap:0}
+.mock-main{flex:1;min-width:0}
+.lpane{width:280px;flex-shrink:0;border-right:1px solid var(--ey-border);background:#FCFCFE;display:flex;flex-direction:column}
+.lpane .lp-t{background:#F3F3F7;padding:6px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rpanel{width:250px;flex-shrink:0;border-left:1px solid var(--ey-border);background:#FCFCFE;padding:10px;display:flex;flex-direction:column;gap:12px}
+.rp-box{border:1px solid var(--ey-border);border-radius:5px;background:#fff}
+.rp-box .rp-t{background:#F3F3F7;padding:5px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rp-box .rp-b{padding:8px 10px;font-size:11.5px}
+.rp-box .kv{display:flex;justify-content:space-between;margin:3px 0;gap:8px}
+.rp-box .kv .k{color:var(--ey-gray);white-space:nowrap}
+.rp-box .kv .v{font-weight:600;text-align:right}
+.dropzone{border:1.5px dashed #c9c9d2;border-radius:5px;padding:10px;text-align:center;color:#9a9aa4;font-size:11px;margin-bottom:6px}
+.file{display:flex;align-items:center;gap:6px;font-size:11.5px;margin:3px 0;color:#44444e}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+.source-wjv .page-title{flex-wrap:nowrap}
+.source-wjv .titlebar{flex-wrap:nowrap}
+.source-wjv .ab-right{flex-wrap:nowrap}
+.source-wjv .rpanel{width:230px}
+.source-wjv .rp-box .kv{gap:0}
+.source-wjv .statusbar{flex-wrap:nowrap}
+.source-wjv table.grid td,.source-wjv table.grid th{white-space:nowrap}
+/* 트리 */
+.tree{padding:8px 6px;font-size:12px;overflow:auto;max-height:430px}
+.tree .tnode{padding:2px 8px;cursor:pointer;border-radius:3px;white-space:nowrap}
+.tree .tnode:hover{background:#EFEFF4}
+.tree .tnode.on{background:var(--ey-yellow);font-weight:700}
+.tree .lv1{font-weight:700}
+.tree .lv2{padding-left:22px}
+.tree .lv3{padding-left:40px;color:#44444e}
+.tree .cnt{color:#9a9aa4;font-size:10.5px}
+.tree .red{color:var(--ey-red)}
+.note{font-size:11.5px;color:var(--ey-gray);margin:6px 0 14px;padding-left:2px}
+.kbd{display:inline-block;border:1px solid #b9b9c2;border-bottom-width:2px;border-radius:3px;background:#fff;padding:0 5px;font-size:11px;font-family:Consolas,monospace;font-weight:700;color:#44444e}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 16px}
+.flow .st{background:#fff;border:1.5px solid var(--ey-dark);border-radius:4px;padding:4px 10px;font-size:11.5px;font-weight:700}
+.flow .st.hl{background:var(--ey-yellow);border-color:#c9b400}
+.flow .st.end{background:var(--ey-dark);color:#fff}
+.flow .ar{color:#9a9aa4;font-weight:700}
+/* 모달 목업 */
+.modal{max-width:560px;margin:10px auto;border:2px solid var(--ey-dark);border-radius:6px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.modal .m-t{background:var(--ey-darker);color:#fff;padding:8px 12px;font-weight:700;font-size:12.5px;display:flex}
+.modal .m-t .x{margin-left:auto;color:#c9c9d2;cursor:pointer}
+.modal .m-b{padding:12px}
+.modal .m-f{padding:8px 12px;border-top:1px solid var(--ey-border);display:flex;justify-content:flex-end;gap:6px}
+.footer{background:var(--ey-darker);color:#b9b9c2;padding:14px 22px;font-size:11px;display:flex;align-items:center;gap:14px}
+.footer .beamline{width:70px;height:8px;background:var(--ey-yellow);transform:skewX(-30deg)}
+@media(max-width:1100px){.twocol{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,1fr)}.ff.full{grid-column:span 2}.screen-desc-list{grid-template-columns:1fr}.mock-flex{flex-direction:column}.lpane,.rpanel{width:auto;border:none;border-bottom:1px solid var(--ey-border)}}
+</style>
+</head>
+<body>
+
+<!-- ===================== 상단바 ===================== -->
+<header class="topbar">
+  <div class="ey-logo">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="ey-tag">Shape the future<br>with confidence</div>
+  </div>
+  <div class="company-select"><span class="code">1000</span> <b>EY Korea Co., Ltd.</b> <span>&#9662;</span></div>
+  <div class="global-search">&#128269; 메뉴, 기능, 코드 검색 (Ctrl + K)</div>
+  <div class="top-utils">
+    <div class="util">&#128276; 공지사항</div>
+    <div class="util fav"><span class="ico">&#9733;</span> 즐겨찾기</div>
+    <div class="util">? 도움말</div>
+    <div class="util"><span class="avatar">홍</span> 홍길동 대리 &#9662;</div>
+    <div class="util">&#9638;</div>
+  </div>
+</header>
+
+<div class="layout">
+<!-- ===================== 좌측 메뉴 ===================== -->
+<aside class="sidebar">
+  <div class="menu-head">&#9776; Menu — 부가세 첨부·업종별 (P07)</div>
+  <nav>
+    <a class="mitem active" data-sec="home" style="padding-left:16px;font-weight:700">&#127968; 페이즈 개요</a>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>매입세액 통제·사후신고 (1차)</div>
+      <a class="mitem" data-sec="vat22">공제받지못할매입세액명세서 <span class="mid">SA-VAT-22</span></a>
+      <a class="mitem" data-sec="vat23">건물등감가상각자산취득명세서 <span class="mid">SA-VAT-23</span></a>
+      <a class="mitem" data-sec="vat24">대손세액공제신고서 <span class="mid">SA-VAT-24</span></a>
+      <a class="mitem" data-sec="vat25">사업장별 부가세 납부/환급 명세 <span class="mid">SA-VAT-25</span></a>
+      <a class="mitem" data-sec="vat26">사업자단위과세 사업장별 부가세 <span class="mid">SA-VAT-26</span></a>
+      <a class="mitem" data-sec="vat27">과표수정 및 추가납부계산서 <span class="mid">SA-VAT-27</span></a>
+      <a class="mitem" data-sec="vat28">과표 및 세액 경정청구서 <span class="mid">SA-VAT-28</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>관세환급·외국인관광객 (1차)</div>
+      <a class="mitem" data-sec="vat33">관세환급금등명세서 <span class="mid">SA-VAT-33</span></a>
+      <a class="mitem" data-sec="vat34">외국인관광객 면세판매·환급명세서 <span class="mid">SA-VAT-34</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>업종별·환급 부속 (2차)</div>
+      <a class="mitem" data-sec="vat16">면세유류공급명세서(갑) <span class="mid">SA-VAT-16</span></a>
+      <a class="mitem" data-sec="vat17">월별판매액합계표 <span class="mid">SA-VAT-17</span></a>
+      <a class="mitem" data-sec="vat18">농어업기자재 부가세환급신청 <span class="mid">SA-VAT-18</span></a>
+      <a class="mitem" data-sec="vat19">전자화폐결제명세서 <span class="mid">SA-VAT-19</span></a>
+      <a class="mitem" data-sec="vat20">전자신고세액공제신청서 <span class="mid">SA-VAT-20</span></a>
+      <a class="mitem" data-sec="vat21">보세판매장 공급실적명세서 <span class="mid">SA-VAT-21</span></a>
+      <a class="mitem" data-sec="vat35">외국인관광객 미용성형 의료용역 <span class="mid">SA-VAT-35</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>공통 · 횡단</div>
+      <a class="mitem" data-sec="flow">업무 흐름 (E2E) <span class="mid">§3</span></a>
+      <a class="mitem" data-sec="mapping">서식→신고서 란 매핑 <span class="mid">§3.1</span></a>
+      <a class="mitem" data-sec="model">데이터 모델·API <span class="mid">§5·6</span></a>
+      <a class="mitem" data-sec="gate">검증·권한·마감 <span class="mid">§8·9</span></a>
+    </div>
+  </nav>
+  <div class="foot">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="txt">Building a better<br>working world</div>
+  </div>
+</aside>
+<!-- ===================== 콘텐츠 ===================== -->
+<main class="content">
+<section class="section visible" id="home">
+  <div class="page-title"><h1>페이즈 07 — 부가세 첨부·업종별 서류</h1><span class="chip-id">SA-VAT-16~28·33~35</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류·업종별 첨부서류 · §25.13 · §25.12.8~13 · §25.14.5~7</div>
+  <div class="src"><b>페이즈 목표</b>: P06 부가가치세신고서(SA-VAT-01)의 첨부·부속서류 중 ① 매입세액 통제(불공제 명세·안분/정산/재계산, 감가상각자산 취득, 대손세액), ② 멀티사업장 신고(총괄납부·사업자단위과세 명세), ③ 사후 신고(과표수정·추가납부, 경정청구), ④ 영세율·환급 부속 2종(관세환급금·외국인관광객), ⑤ 업종별 2차 서식 7종(면세유류~미용성형 의료용역)을 구현한다. 본 페이즈 서식은 전부 SA-VAT-01 신고서 란과 연동된다.</div>
+  <div class="flow">
+    <span class="st">P03 매입매출전표<br><span class="dim">54.불공·고정자산·영세·면세</span></span><span class="ar">&#8594;</span>
+    <span class="st hl">① 매입세액 통제 서식<br><span class="dim">SA-VAT-22/23/24</span></span><span class="ar">&#8594;</span>
+    <span class="st">② SA-VAT-01 자동집계<br><span class="dim">50·11·8·47란</span></span><span class="ar">&#8594;</span>
+    <span class="st">③ 마감·MRI·전자신고<br><span class="dim">SA-VAT-02/07/08</span></span><span class="ar">&#8594;</span>
+    <span class="st end">④ 사후신고·업종별 부속<br><span class="dim">27/28 · 16~21·33~35</span></span>
+  </div>
+  <div class="mock">
+    <div class="mock-cap">핵심 설계 포인트</div>
+    <div class="screen-details" style="border:0;padding:0">
+      <div class="screen-desc-list">
+        <div class="screen-desc-item"><span class="desc-label">불공제 3단계 룰엔진</span><span class="desc-body">SA-VAT-22가 공통매입세액 안분(예정)→정산(확정)→재계산을 룰엔진으로 자동 계산, 카드 VAT 공제 자동 판정(N11)과 연계.</span></div>
+        <div class="screen-desc-item"><span class="desc-label">신고서 란 연동</span><span class="desc-body">전 서식이 SA-VAT-01 특정 란(50.불공/11·42 고정자산/8 대손세액가감/47 변제대손/48 외국인관광객환급/54 전자신고세액공제)에 매핑.</span></div>
+        <div class="screen-desc-item"><span class="desc-label">멀티사업장</span><span class="desc-body">총괄납부(SA-VAT-25)·사업자단위과세(SA-VAT-26)를 사업장 차원 RLS로 본·지점 격리·합산.</span></div>
+        <div class="screen-desc-item"><span class="desc-label">사후신고 자동 분기</span><span class="desc-body">수정신고서 저장 후 추가 차가감납부세액 ≥0 → SA-VAT-27, &lt;0 → SA-VAT-28 자동 판정.</span></div>
+        <div class="screen-desc-item"><span class="desc-label">전자신고 필수 메타</span><span class="desc-body">내국신용장번호(33)·결제처리번호(19)·경정청구이유 중복금지(28) 등 전자신고 제작 필수 검증.</span></div>
+        <div class="screen-desc-item"><span class="desc-label">개발 차수</span><span class="desc-body">1차 9메뉴(22~28·33·34) / 2차 7메뉴(16~21·35). 총 16메뉴 · TN-09 부가세·신고서류.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="mock">
+    <div class="mock-cap">화면 인벤토리 (16화면)</div>
+    <table class="spec">
+      <tr><th>화면 ID</th><th>명칭</th><th class="c">차수</th><th>설계서 근거</th><th>신고서 반영 란</th></tr>
+      <tr><td>SA-VAT-22</td><td>공제받지못할매입세액명세서</td><td class="c">1차</td><td>§25.13.1</td><td>16 &gt; 50.공제받지못할매입세액</td></tr>
+      <tr><td>SA-VAT-23</td><td>건물등감가상각자산취득명세서</td><td class="c">1차</td><td>§25.13.2</td><td>11.고정자산·42.신용매출전표/고정</td></tr>
+      <tr><td>SA-VAT-24</td><td>대손세액공제신고서</td><td class="c">1차</td><td>§25.13.3</td><td>8.대손세액가감·47.변제대손세액</td></tr>
+      <tr><td>SA-VAT-25</td><td>사업장별 부가세 납부/환급 신고명세</td><td class="c">1차</td><td>§25.13.4</td><td>총괄납부사업자 납부할세액(환급)</td></tr>
+      <tr><td>SA-VAT-26</td><td>사업자단위과세 사업장별 부가세</td><td class="c">1차</td><td>§25.13.5</td><td>신고서 통합(주된 사업자번호)</td></tr>
+      <tr><td>SA-VAT-27</td><td>과표수정 및 추가납부계산서</td><td class="c">1차</td><td>§25.13.6</td><td>수정차수(≥0)</td></tr>
+      <tr><td>SA-VAT-28</td><td>과표 및 세액 경정청구서</td><td class="c">1차</td><td>§25.13.7</td><td>수정차수(&lt;0)</td></tr>
+      <tr><td>SA-VAT-33</td><td>관세환급금등명세서</td><td class="c">1차</td><td>§25.14.5</td><td>영세율 과표</td></tr>
+      <tr><td>SA-VAT-34</td><td>외국인관광객 면세판매 및 환급명세서</td><td class="c">1차</td><td>§25.14.6</td><td>48.외국인관광객환급</td></tr>
+      <tr><td>SA-VAT-16</td><td>면세유류공급명세서(갑)</td><td class="c">2차</td><td>§25.12.8</td><td>면세 부속</td></tr>
+      <tr><td>SA-VAT-17</td><td>월별판매액합계표</td><td class="c">2차</td><td>§25.12.9</td><td>영세율 부속(미첨부 가산세 0.5%)</td></tr>
+      <tr><td>SA-VAT-18</td><td>농어업기자재 부가세환급신청</td><td class="c">2차</td><td>§25.12.10</td><td>환급신청(별도 모듈)</td></tr>
+      <tr><td>SA-VAT-19</td><td>전자화폐결제명세서</td><td class="c">2차</td><td>§25.12.11</td><td>신고서 첨부</td></tr>
+      <tr><td>SA-VAT-20</td><td>전자신고세액공제신청서</td><td class="c">2차</td><td>§25.12.12</td><td>54.전자신고세액공제</td></tr>
+      <tr><td>SA-VAT-21</td><td>보세판매장 공급실적명세서</td><td class="c">2차</td><td>§25.12.13</td><td>영세율 부속</td></tr>
+      <tr><td>SA-VAT-35</td><td>외국인관광객 미용성형 의료용역 환급실적명세서</td><td class="c">2차</td><td>§25.14.7</td><td>48.외국인관광객환급</td></tr>
+    </table>
+  </div>
+</section>
+<section class="section source-vat" id="vat22">
+  <div class="page-title"><h1>공제받지못할매입세액명세서</h1><span class="chip-id">SA-VAT-22</span><span class="badge b-new">1차</span><span class="badge b-ref">4탭</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류 › 공제받지못할매입세액명세서 · §25.13.1</div>
+  <div class="src"><b>업무 목적</b>: 매입세액 불공제 대상 내역을 작성하는 부속서류(54.불공+불공제사유 자동반영). BK 공통매입세액 안분·정산·재계산 3단계 룰엔진으로 생성하며, 겸영(과세/면세) 공급가액 비율·감가상각자산 체감률을 룰엔진으로 자동 계산한다. 카드 VAT 공제 자동 추천(N11)과 연계해 공제/불공제/검토필요 3분류한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-22 — 불공제사유 카탈로그 · 안분(예정)→정산(확정)→재계산 룰엔진 · 카드 VAT 자동판정(N11)</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">공제받지못할매입세액명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-22</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="tabbar">
+      <span class="tab on">① 공제받지못할매입세액 <span class="tno">1</span></span>
+      <span class="tab">② 안분계산(예정) <span class="tno">2</span></span>
+      <span class="tab">③ 정산(확정) <span class="tno">3</span></span>
+      <span class="tab">④ 납부/환급 재계산 <span class="tno">4</span></span>
+    </div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">원천</span><span class="qv">54.불공 + 불공제사유(자동) · 직접입력 가능</span><span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">불공제사유 일괄변경</button></span></div>
+      <table class="grid">
+        <tr><th class="c">사유</th><th>불공제사유</th><th class="c">건수</th><th class="c">공급가액</th><th class="c">매입세액</th></tr>
+        <tr class="sel"><td class="c">1</td><td>필요적기재사항 누락</td><td class="c">2</td><td class="num">3,000,000</td><td class="num">300,000</td></tr>
+        <tr><td class="c">3</td><td>비영업용소형승용차 구입·유지</td><td class="c">1</td><td class="num">30,000,000</td><td class="num">3,000,000</td></tr>
+        <tr><td class="c">9</td><td>접대비 관련 매입세액</td><td class="c">5</td><td class="num">2,500,000</td><td class="num">250,000</td></tr>
+        <tr><td class="c">4</td><td>면세사업 관련(공통매입 연동분)</td><td class="c">—</td><td class="num">4,000,000</td><td class="num">400,000</td></tr>
+        <tr class="tot"><td colspan="2">합계</td><td class="c">8</td><td class="num">39,500,000</td><td class="num">3,950,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 사유별 자동집계 · 세액 ÷10% 공급가액 자동 산출</span><span class="warnmsg">&#9888; 예정누락은 이 탭만 허용</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">계산식</span><span class="qv">1.공급가액 <span class="lens">&#9662;</span></span><span class="qlabel">신고구분</span><span class="qv">예정</span></div>
+      <table class="grid">
+        <tr><th>항목</th><th class="c">금액</th><th>비고</th></tr>
+        <tr><td>과세·면세 공통매입세액</td><td class="num">400,000</td><td>54.불공 사유5(공통매입) 집계</td></tr>
+        <tr><td>총공급가액</td><td class="num">200,000,000</td><td>계산식 4·5는 직접입력</td></tr>
+        <tr><td>면세공급가액</td><td class="num">40,000,000</td><td>면세비율 20%</td></tr>
+        <tr class="tot"><td>불공제매입세액</td><td class="num">80,000</td><td class="blue">공통매입세액 × 면세비율</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 계산식 1~5(공급가액/매입가액/예정공급가액/예정사용면적/도축두수)</span><span class="cnt">면세비율 5% 미만 안분 제외</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">정산기준</span><span class="qv">면세공급가액 <span class="lens">&#9662;</span></span><span class="qlabel">신고구분</span><span class="qv">확정</span></div>
+      <table class="grid">
+        <tr><th>항목</th><th class="c">금액</th><th>비고</th></tr>
+        <tr><td>총공통매입세액</td><td class="num">900,000</td><td>과세기간 전체</td></tr>
+        <tr><td>면세 확정비율</td><td class="num">22%</td><td>확정 면세공급가액 ÷ 총공급가액</td></tr>
+        <tr><td>불공제매입세액총액</td><td class="num">198,000</td><td>총액 × 면세확정비율</td></tr>
+        <tr><td>기 불공제 매입세액</td><td class="num">80,000</td><td>예정 안분분(직접입력)</td></tr>
+        <tr class="tot"><td>가산 또는 공제되는 매입세액</td><td class="num">118,000</td><td class="blue">총액 − 기 불공제분</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 확정 정산 · 면세공급가액/면세사용면적 기준</span><span class="cnt">§25.13.1</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">자산구분</span><span class="qv">건물·구축물 (체감률 5%) <span class="lens">&#9662;</span></span></div>
+      <table class="grid">
+        <tr><th>항목</th><th class="c">값</th><th>비고</th></tr>
+        <tr><td>해당재화 매입세액</td><td class="num">5,000,000</td><td>54.불공 사유8 + 계정 20200~25099</td></tr>
+        <tr><td>체감률 / 경과 과세기간수</td><td class="num">5% / 3</td><td>건축·구축물 5% / 기타 25%</td></tr>
+        <tr><td>경감률</td><td class="num">85%</td><td>1 − 체감률 × 경과 과세기간수</td></tr>
+        <tr><td>면세비율 증감</td><td class="num">+8%</td><td>증감 5% 이상만 재계산 대상</td></tr>
+        <tr class="tot"><td>가산 또는 공제되는 매입세액</td><td class="num">340,000</td><td class="blue">매입세액 × 경감률 × 면세비율 증감</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 면세비율 증감 ≥5%인 경우만 재계산</span><span class="cnt">§25.13.1</span></div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">탭 구성</span><span class="desc-body">① 공제받지못할매입세액 · ② 안분계산(예정) · ③ 정산(확정) · ④ 납부/환급 재계산.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">불공제사유</span><span class="desc-body">사유 1/2/3/9/4/0/6/A/B — 54.불공 자동집계. 비영업소형승용차·접대비 등 설정 무관 불공(§25.4.2.2).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">3단계 룰엔진</span><span class="desc-body">안분(예정)·정산(확정)·재계산 자동 계산. 면세비율 5% 미만 안분 제외, 재계산은 면세비율 증감 5% 이상.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">카드 VAT(N11)</span><span class="desc-body">사업 관련성·적격 증빙·법정 불공제·접대비/차량·개인성 지출 신호 결합 → 공제/불공제/검토필요 3분류, 검토 큐 라우팅.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">마감 검증</span><span class="desc-body">면세공급가액=0인데 총공급가액≠0이면 오류. 신고일자 다음달 25일 자동.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(54.불공+불공제사유), SA-VAT-01 16&gt;50란, MRI(SA-VAT-02) 공통매입세액 안분 검토.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat23">
+  <div class="page-title"><h1>건물등감가상각자산취득명세서</h1><span class="chip-id">SA-VAT-23</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류 › 건물등감가상각자산취득명세서 · §25.13.2</div>
+  <div class="src"><b>업무 목적</b>: 사업설비 신설·취득·확장·증축 시 취득내용 부속서류(51.과세/52.영세/54.불공/55.수입/57.카과 + 고정자산 계정 분개분). 부가세·고정자산 모듈 연계로 생성하며, 고정자산매입분이 있으면 미작성 시 신고서 마감 유의사항을 표시한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-23 — 자산구분(건물/기계/차량/기타) · 고정자산 계정 분개 집계 · 신고서 고정자산란 대사</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">건물등감가상각자산취득명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-23</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기</span><span class="qv">51/52/54/55/57 + 고정자산 계정</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">구분별보기</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">취득 명세</div>
+        <table class="grid">
+          <tr><th>취득일자</th><th>상호</th><th class="c">자산구분</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">세액</th></tr>
+          <tr class="sel"><td>2026-02-10</td><td>대한건설</td><td class="c">1.건물·구축물</td><td class="c">1.세금계산서</td><td class="num">300,000,000</td><td class="num">30,000,000</td></tr>
+          <tr><td>2026-03-05</td><td>정밀기계</td><td class="c">2.기계장치</td><td class="c">1.세금계산서</td><td class="num">50,000,000</td><td class="num">5,000,000</td></tr>
+          <tr><td>2026-04-18</td><td>현대상사</td><td class="c">3.차량운반구</td><td class="c">2.신용카드</td><td class="num">40,000,000</td><td class="num">4,000,000</td></tr>
+          <tr class="tot"><td colspan="4">합계</td><td class="num">390,000,000</td><td class="num">39,000,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 자산구분별 집계 · 신고서 고정자산란(11·42) 대사</span><span class="cnt">미작성 시 신고서 마감 유의사항 · §25.13.2</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">자산구분</div><div class="rp-b">
+          1.건물·구축물<br>2.기계장치<br>3.차량운반구<br>4.기타</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          고정자산 구분별 계정 설정 후 불러오기<br>구분별보기·건별 편집<br>신고서 고정자산란 정합성 검증</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(51/52/54/55/57+고정자산계정)<br>고정자산 모듈(P08 SA-FA)<br>SA-VAT-01 고정자산매입·42란</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">취득일자·상호·사업자번호(거래처 반영), 자산구분 1~4, 공급가액·세액·건수(자동), 유형(세금계산서/신용카드).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">집계</span><span class="desc-body">고정자산 계정 분개 전표(51/52/54/55/57 + 고정자산 계정) 계정 기반 분기.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">통제</span><span class="desc-body">고정자산매입분 있으면 작성 필요 — 미작성 시 마감 유의사항. 신고서 고정자산란 대사.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">고정자산 모듈(P08), SA-VAT-01 고정자산매입·42란. 신고일자 다음달 25일 자동.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat24">
+  <div class="page-title"><h1>대손세액공제신고서</h1><span class="chip-id">SA-VAT-24</span><span class="badge b-new">1차</span><span class="badge b-ref">2탭</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류 › 대손세액공제신고서 · §25.13.3</div>
+  <div class="src"><b>업무 목적</b>: 대손·대손변제 발생 시 부속서류(대손발생 탭=공급자, 대손변제 탭=공급받는자, 확정신고 시 직접입력). 대손세액 = 대손금액 × 10/110, 공제 가능기간(공급일로부터 10년) 검증·부호 규칙을 적용하고 거래처(채권) 차원과 연계한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-24 — 대손발생/대손변제 부호 규칙 · 10/110 자동 · 10년 공제기간 검증 · 거래처 차원</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">대손세액공제신고서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-24</span>
+      <span class="tb-right">2026-1기 확정 (직접입력)</span>
+    </div>
+    <div class="tabbar">
+      <span class="tab on">대손발생 (공급자) <span class="tno">1</span></span>
+      <span class="tab">대손변제 (공급받는자) <span class="tno">2</span></span>
+    </div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">신고구분</span><span class="qv">확정 (직접입력)</span><span class="qright"><button class="abtn ghost">거래처 코드도움</button></span></div>
+      <table class="grid">
+        <tr><th>당초공급일</th><th class="c">대손사유</th><th>대손확정일</th><th class="c">거래처</th><th class="c">대손금액</th><th class="c">대손세액</th></tr>
+        <tr class="sel"><td>2024-05-10</td><td class="c">부도</td><td>2026-03-20</td><td class="c">한빛무역</td><td class="num">22,000,000</td><td class="num red">-2,000,000</td></tr>
+        <tr><td>2023-11-02</td><td class="c">파산</td><td>2026-01-15</td><td class="c">대성산업</td><td class="num">11,000,000</td><td class="num red">-1,000,000</td></tr>
+        <tr><td>2022-08-01</td><td class="c">회수</td><td>2026-02-28</td><td class="c">한빛무역</td><td class="num">-5,500,000</td><td class="num blue">+500,000</td></tr>
+        <tr class="tot"><td colspan="4">대손세액 합계 (→ 8.대손세액가감)</td><td class="num">27,500,000</td><td class="num red">-2,500,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 부도는 부도발생일+6개월 자동 산정 · 부호: 발생 양수→(-) / 회수 음수→(+)</span><span class="warnmsg">&#9888; 당초공급일 필수(2022 1기~)</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">신고구분</span><span class="qv">확정 (직접입력)</span></div>
+      <table class="grid">
+        <tr><th>당초 대손확정일</th><th>대손변제일</th><th class="c">변제사유</th><th class="c">변제금액</th><th class="c">변제세액</th></tr>
+        <tr class="sel"><td>2025-06-30</td><td>2026-04-10</td><td class="c">채무변제</td><td class="num">6,600,000</td><td class="num blue">+600,000</td></tr>
+        <tr class="tot"><td colspan="3">변제세액 합계 (→ 47.변제대손세액)</td><td class="num">6,600,000</td><td class="num blue">+600,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 변제세액 = 변제금액 × 10/110 · 부호: 양수→(+)/음수→(-)</span><span class="cnt">§25.13.3</span></div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">탭 구성</span><span class="desc-body">대손발생(공급자) · 대손변제(공급받는자). 확정신고 시 직접입력.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">부호 규칙</span><span class="desc-body">대손발생 양수/회수 음수. 신고서 반영 시 발생→8.대손세액가감(양수→(-)/음수→(+)), 변제→47.변제대손세액(양수→(+)/음수→(-)).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">공급일로부터 10년 내 과세기간, 부도는 부도발생일+6개월 자동, 대손확정일 과세기간 내 입력, 당초공급일 필수.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">거래처(채권) 차원, SA-VAT-01(대손발생분 음수 자동·회수분 양수 직접입력), MRI 대손세액공제 검토, 52.대손처분받은세액.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat25">
+  <div class="page-title"><h1>사업장별 부가세 납부/환급 신고명세</h1><span class="chip-id">SA-VAT-25</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류 › 사업장별 부가세 납부/환급 신고명세 · §25.13.4</div>
+  <div class="src"><b>업무 목적</b>: 총괄납부 승인 사업자가 주된·종된 사업장 신고내역을 통합 작성하는 부속서류(사업장별 부가가치세 과세표준 및 납부(세액)신고서). BK 멀티사업장(총괄납부) 집계 모듈로, 6차원 중 사업장 차원으로 본·지점을 격리·합산하고 권한(RLS)으로 지점 데이터 접근을 제어한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-25 — 본·지점 신고서 "부가가치세 불러오기" 합산 · 사업장 차원 RLS · 총괄납부번호</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">사업장별 부가세 납부/환급 신고명세</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-25</span>
+      <span class="tb-right">총괄납부 · 2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">총괄납부번호</span><span class="qv">2026-강남-0012</span>
+      <span class="qright"><button class="abtn dark">부가가치세 불러오기</button><button class="abtn ghost">사업장 불러오기</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">사업장별 세액 명세</div>
+        <table class="grid">
+          <tr><th>사업장</th><th class="c">사업자등록번호</th><th class="c">매출세액</th><th class="c">매입세액</th><th class="c">차가감세액</th></tr>
+          <tr class="sel"><td>본점(강남)</td><td class="c">128-81-99001</td><td class="num">50,000,000</td><td class="num">32,000,000</td><td class="num">18,000,000</td></tr>
+          <tr><td>지점(부산)</td><td class="c">602-81-33012</td><td class="num">18,000,000</td><td class="num">21,000,000</td><td class="num red">-3,000,000</td></tr>
+          <tr class="tot"><td colspan="2">총괄납부사업자 납부할세액</td><td class="num">68,000,000</td><td class="num">53,000,000</td><td class="num">15,000,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 본·지점 합산 → SA-VAT-01 총괄납부사업자 납부할세액 · SA-VAT-08 우선반영</span><span class="warnmsg">&#9888; 대손·예정미환급·예정고지는 직접 조정(불러오기 불가)</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          사업장명·주소·사업자번호(본지점설정 코드도움)<br>총괄납부번호(승인번호)<br>가산세·공제세액 직접입력</div></div>
+        <div class="rp-box"><div class="rp-t">직접 조정</div><div class="rp-b">
+          대손세액공제<br>예정신고미환급세액<br>예정고지세액 — 불러오기 불가</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 총괄납부사업자 납부할세액(환급)<br>SA-VAT-08 납부서(우선반영)<br>회사등록 본지점설정 · SA-VAT-07 제작권한</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">총괄납부 승인 사업자. 주된·종된 사업장 신고내역 통합 작성.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">합산</span><span class="desc-body">본·지점 신고서를 사업장 차원으로 격리·합산. "부가가치세 불러오기"로 SA-VAT-01 반영, 사업장 불러오기 시 기존 삭제 후 재반영.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">권한</span><span class="desc-body">본지점설정(본점·총괄납부)·지점회사 권한 필요 — 사업장 차원 RLS.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 총괄납부사업자 납부할세액란, SA-VAT-08(총괄납부 금액 우선반영), 회사등록 본지점설정.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat26">
+  <div class="page-title"><h1>사업자단위과세 사업장별 부가세</h1><span class="chip-id">SA-VAT-26</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류 › 사업자단위과세 사업장별 부가세 · §25.13.5</div>
+  <div class="src"><b>업무 목적</b>: 사업자단위과세 승인 사업자(주된 사업장 외 사업자번호 말소, 주된 번호로 발급·수취)의 부속서류. BK 멀티사업장(사업자단위과세) 집계 모듈로, 단일 사업자번호 하의 종사업장 일련번호를 사업장 차원으로 관리·합산한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-26 — 종사업장 적용번호 자동(없으면 0000) · 부가가치세 불러오기 · 주된 사업자번호 통합</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">사업자단위과세 사업장별 부가세</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-26</span>
+      <span class="tb-right">사업자단위과세 · 2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">주된 사업자번호</span><span class="qv">128-81-99001</span>
+      <span class="qright"><button class="abtn dark">부가가치세 불러오기</button><button class="abtn ghost">사업장 불러오기</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">종사업장별 세액 명세</div>
+        <table class="grid">
+          <tr><th>사업장</th><th class="c">적용번호</th><th class="c">매출세액</th><th class="c">매입세액</th><th class="c">차가감세액</th></tr>
+          <tr class="sel"><td>주된 사업장(강남)</td><td class="c">0000</td><td class="num">50,000,000</td><td class="num">32,000,000</td><td class="num">18,000,000</td></tr>
+          <tr><td>종사업장(판교)</td><td class="c">0001</td><td class="num">12,000,000</td><td class="num">8,000,000</td><td class="num">4,000,000</td></tr>
+          <tr class="tot"><td colspan="2">신고서 통합(주된 사업자번호)</td><td class="num">62,000,000</td><td class="num">40,000,000</td><td class="num">22,000,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 종사업장 일련번호 사업장 차원 관리 → SA-VAT-01 통합(주된 사업자번호 단위)</span><span class="warnmsg">&#9888; 대손·예정미환급·예정고지는 직접 조정</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          사업장명·주소(본지점설정 코드도움)<br>적용번호(종사업장번호 자동, 없으면 0000)<br>가산세·공제세액 직접입력</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          종사업장 일련번호 사업장 차원 관리·합산<br>본지점설정·지점 권한 필요<br>사업장/부가세신고서 불러오기</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 통합(주된 사업자번호 단위)<br>회사등록 본지점설정</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">사업자단위과세 승인 사업자. 주된 번호로 발급·수취, 종사업장 번호 말소.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">적용번호</span><span class="desc-body">종사업장번호 자동, 없으면 0000. 매출·매입세액 부가가치세 불러오기, 대손·예정미환급·예정고지 불러오기 불가.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">권한</span><span class="desc-body">본지점설정(본점·사업자단위과세)·지점 권한 필요.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 통합(주된 사업자번호 단위 신고), 회사등록 본지점설정.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat27">
+  <div class="page-title"><h1>과표수정 및 추가납부계산서(부가세)</h1><span class="chip-id">SA-VAT-27</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류 › 과표수정 및 추가납부계산서 · §25.13.6</div>
+  <div class="src"><b>업무 목적</b>: 부가세 수정신고 시 추가납부가 있는 경우 첨부하는 서식(수정신고서 저장 필요). BK 전자신고 파이프라인의 수정신고 부속서식으로, 수정차수 관리·당초/수정 데이터 비교를 신고 이력 모델로 구현한다. 추가 차가감납부세액 ≥0일 때 이 서식으로 자동 분기된다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-27 — 추가 차가감납부세액 ≥0 판정 · 수정차수 연동 · 당초/수정 비교 · 신고인정보 수정불가</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">과표수정 및 추가납부계산서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-27</span>
+      <span class="tb-right">2025-2기 확정 · 수정 1차</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">기간·수정차수</span><span class="qv">2025-2기 확정 · 수정 1차 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">판정</span><span class="qv">추가납부 (≥0)</span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">당초 / 수정 비교</div>
+        <table class="grid">
+          <tr><th>항목</th><th class="c">당초신고</th><th class="c">수정신고</th><th class="c">증감</th></tr>
+          <tr class="sel"><td>과세표준</td><td class="num">300,000,000</td><td class="num">320,000,000</td><td class="num">+20,000,000</td></tr>
+          <tr><td>납부세액</td><td class="num">15,000,000</td><td class="num">17,000,000</td><td class="num">+2,000,000</td></tr>
+          <tr><td>가산세</td><td class="num">0</td><td class="num">120,000</td><td class="num">+120,000</td></tr>
+          <tr class="tot"><td>추가 차가감납부세액</td><td class="c" colspan="2">≥0</td><td class="num">+2,120,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 추가납부 판정(≥0) → SA-VAT-27 · 수정차수 SA-VAT-01 연동</span><span class="warnmsg">&#9888; 정기신고 마감 선행 · 수정신고서 저장 필요</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          기간·수정차수(F2 코드도움)<br>신고인정보(자동·수정불가)<br>신고내용(자동)·수정사유(직접)<br>법정/최초신고일(휴일 시 익일)</div></div>
+        <div class="rp-box"><div class="rp-t">판정</div><div class="rp-b">
+          추가 차가감납부세액 ≥0 → 수정신고<br>&lt;0 → SA-VAT-28 경정청구<br>가산세 = 신고서 가산세액계 정합</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 수정차수<br>SA-VAT-07 전자신고<br>회사등록 신고인정보</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">부가세 수정신고 시 추가납부가 있는 경우. 수정신고서 저장 선행 필요.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">판정</span><span class="desc-body">추가 차가감납부세액 ≥0 수정신고 판정, 수정차수 관리·당초/수정 데이터 비교.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">입력 규칙</span><span class="desc-body">신고인정보 자동·수정불가, 법정신고일이 휴일이면 다음날 입력, 위임장정보는 세무대리인 설정 시.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 수정차수, SA-VAT-07 전자신고, 회사등록 신고인정보. 가산세는 신고서 가산세액계 직접입력과 정합.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat28">
+  <div class="page-title"><h1>과세표준수정 및 경정청구서(부가세)</h1><span class="chip-id">SA-VAT-28</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 부가가치세 첨부서류 › 과세표준수정 및 경정청구서 · §25.13.7</div>
+  <div class="src"><b>업무 목적</b>: 부가세 수정 시 추가 차가감납부세액이 &lt;0(감액)인 경우 첨부하는 경정청구 서식. BK 전자신고 파이프라인의 경정청구 부속서식으로, 당초/경정 데이터 비교·경정청구이유 관리·국세환급금계좌를 신고 이력 모델로 구현한다. 추가 차가감납부세액 &lt;0일 때 이 서식으로 자동 분기된다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-28 — 추가 차가감납부세액 &lt;0 판정 · 경정청구이유 1/2 중복금지 · 국세환급금계좌 · 당초/경정 비교</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">과세표준수정 및 경정청구서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-28</span>
+      <span class="tb-right">2025-2기 확정 · 경정청구</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">기간·수정차수</span><span class="qv">2025-2기 확정 · 경정 1차 <span class="lens">&#9662;</span></span>
+      <span class="qlabel">판정</span><span class="qv">경정청구 (&lt;0)</span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">당초 / 경정 비교</div>
+        <table class="grid">
+          <tr><th>항목</th><th class="c">당초신고</th><th class="c">경정청구</th><th class="c">증감</th></tr>
+          <tr class="sel"><td>과세표준</td><td class="num">300,000,000</td><td class="num">280,000,000</td><td class="num red">-20,000,000</td></tr>
+          <tr><td>납부세액</td><td class="num">15,000,000</td><td class="num">13,000,000</td><td class="num red">-2,000,000</td></tr>
+          <tr class="tot"><td>추가 차가감납부세액</td><td class="c" colspan="2">&lt;0</td><td class="num red">-2,000,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 감액 판정(&lt;0) → SA-VAT-28 경정청구 · 국세환급금계좌 필수</span><span class="warnmsg">&#9888; 경정청구이유 1·2 동일코드 중복입력 금지</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          기간·수정차수(F2 코드도움)<br>신고인정보(자동·수정불가)<br>경정청구이유 1·2(코드도움)<br>국세환급금계좌(은행·계좌)</div></div>
+        <div class="rp-box"><div class="rp-t">판정</div><div class="rp-b">
+          추가 차가감납부세액 &lt;0 → 경정청구<br>≥0 → SA-VAT-27 수정신고<br>이유1=이유2 중복 저장불가</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 수정차수<br>SA-VAT-07 전자신고<br>회사등록 신고인정보·환급계좌</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">대상</span><span class="desc-body">부가세 수정 시 추가 차가감납부세액 &lt;0(감액). 경정청구서 저장 선행 필요.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">판정</span><span class="desc-body">추가 차가감납부세액 &lt;0 경정청구 판정, 당초/경정 데이터 비교.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">입력 규칙</span><span class="desc-body">경정청구이유 1·2 동일코드 중복금지, 국세환급금계좌 필수, 신고인정보 자동·수정불가.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 수정차수, SA-VAT-07 전자신고, 회사등록 신고인정보·국세환급금계좌.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat33">
+  <div class="page-title"><h1>관세환급금 등 명세서</h1><span class="chip-id">SA-VAT-33</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 관세환급·수출 부속 › 관세환급금 등 명세서 · §25.14.5</div>
+  <div class="src"><b>업무 목적</b>: 수출·내국신용장 등에 따른 관세환급금 명세를 작성하는 부속서류. 영세율 매출(12.영세/16.수출)과 연동하여 내국신용장·구매확인서 단위 환급금을 집계하며, 내국신용장번호는 전자신고 시 필수 검증 대상이다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-33 — 내국신용장번호(전자신고 필수) · 12.영세/16.수출 연동 · 환급금 집계</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">관세환급금 등 명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-33</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기</span><span class="qv">12.영세 / 16.수출</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">거래처 코드도움</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">관세환급 명세</div>
+        <table class="grid">
+          <tr><th>일자</th><th>거래처</th><th class="c">내국신용장번호</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">환급금</th></tr>
+          <tr class="sel"><td>2026-02-14</td><td>글로벌무역</td><td class="c">LC-2026-0021</td><td class="c">12.영세</td><td class="num">120,000,000</td><td class="num">3,600,000</td></tr>
+          <tr><td>2026-03-22</td><td>동남상사</td><td class="c">LC-2026-0044</td><td class="c">16.수출</td><td class="num">80,000,000</td><td class="num">2,400,000</td></tr>
+          <tr class="tot"><td colspan="4">합계</td><td class="num">200,000,000</td><td class="num">6,000,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 내국신용장번호 입력분 전자신고 반영</span><span class="warnmsg">&#9888; 내국신용장번호 미입력 시 전자신고 오류</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          일자·거래처(코드도움)<br>내국신용장번호(전자신고 필수)<br>공급가액·환급금</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          12.영세/16.수출 불러오기<br>내국신용장 단위 집계<br>건별 편집</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(12/16)<br>SA-VAT-07 전자신고<br>거래처(수출) 차원</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">일자·거래처·내국신용장번호·공급가액·환급금. 12.영세/16.수출 유형 불러오기.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">내국신용장번호는 전자신고 시 필수 — 미입력 시 전자신고 오류.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(12/16), SA-VAT-07 전자신고, 거래처(수출) 차원.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat34">
+  <div class="page-title"><h1>외국인관광객 면세물품 판매·환급실적 명세서</h1><span class="chip-id">SA-VAT-34</span><span class="badge b-new">1차</span></div>
+  <div class="crumb">부가세·신고서류 › 관세환급·수출 부속 › 외국인관광객 면세물품 판매·환급실적 명세서 · §25.14.6</div>
+  <div class="src"><b>업무 목적</b>: 외국인관광객에게 사후면세로 판매하고 환급·송금한 실적을 세목별로 집계하는 부속서류. 구매일련번호(20자리) 단위로 부가세·개별소비세·교육세·농어촌특별세를 관리하며, 환급세액은 신고서 48.외국인관광객환급란으로 반영된다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-34 — 구매일련번호 20자리 · 세목별(부가세·개소세·교육세·농특세) · →48.외국인관광객환급</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">외국인관광객 면세물품 판매·환급실적</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-34</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기</span><span class="qv">사후면세 판매·환급 실적</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">세목별보기</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">세목별 환급 명세</div>
+        <table class="grid">
+          <tr><th>구매일련번호</th><th class="c">부가세</th><th class="c">개소세</th><th class="c">교육세</th><th class="c">농특세</th><th class="c">환급계</th></tr>
+          <tr class="sel"><td>20260210000000000012</td><td class="num">80,000</td><td class="num">20,000</td><td class="num">6,000</td><td class="num">4,000</td><td class="num">110,000</td></tr>
+          <tr><td>20260315000000000045</td><td class="num">50,000</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">50,000</td></tr>
+          <tr class="tot"><td>합계 (→ 48.외국인관광객환급)</td><td class="num">130,000</td><td class="num">20,000</td><td class="num">6,000</td><td class="num">4,000</td><td class="num">160,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 환급세액 합계 → SA-VAT-01 48.외국인관광객환급</span><span class="warnmsg">&#9888; 구매일련번호 20자리 형식 검증</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          구매일련번호(20자리)<br>세목별 세액(부가세·개소세·교육세·농특세)<br>판매·환급·송금 실적</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          사후면세 실적 불러오기<br>세목별보기·건별 편집<br>구매일련번호 형식 검증</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 48.외국인관광객환급<br>SA-VAT-07 전자신고</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">구매일련번호(20자리), 세목별 세액(부가세·개별소비세·교육세·농어촌특별세), 판매·환급·송금 실적.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">구매일련번호 20자리 형식 검증.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">환급세액 → SA-VAT-01 48.외국인관광객환급, SA-VAT-07 전자신고.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat16">
+  <div class="page-title"><h1>면세유류 공급명세서</h1><span class="chip-id">SA-VAT-16</span><span class="badge b-new">2차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 부속서류 › 면세유류 공급명세서 · §25.12.8</div>
+  <div class="src"><b>업무 목적</b>: 농업·임업용 면세유류를 공급한 사업자의 업종별 부속서류. 유종 5구분(휘발유·경유·등유·중유·LPG) 단위로 공급량·공급가액을 집계하며, 영세율 매출(13/18/23)과 연동한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-16 — 유종 5구분(휘발유/경유/등유/중유/LPG) · 농업·임업 · 13/18/23 연동</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">면세유류 공급명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-16</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기</span><span class="qv">13 / 18 / 23</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">유종별보기</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">유종별 공급 명세</div>
+        <table class="grid">
+          <tr><th>유종</th><th class="c">구분</th><th class="c">공급량(L)</th><th class="c">공급가액</th><th class="c">건수</th></tr>
+          <tr class="sel"><td>경유</td><td class="c">농업</td><td class="num">40,000</td><td class="num">52,000,000</td><td class="c">18</td></tr>
+          <tr><td>휘발유</td><td class="c">임업</td><td class="num">8,000</td><td class="num">13,600,000</td><td class="c">6</td></tr>
+          <tr><td>LPG</td><td class="c">농업</td><td class="num">5,000</td><td class="num">4,500,000</td><td class="c">4</td></tr>
+          <tr class="tot"><td colspan="2">합계</td><td class="num">53,000</td><td class="num">70,100,000</td><td class="c">28</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 유종별 집계 · 13/18/23 영세율 매출 연동</span><span class="cnt">§25.12.8</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">유종</div><div class="rp-b">
+          1.휘발유<br>2.경유<br>3.등유<br>4.중유<br>5.LPG</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          13/18/23 불러오기<br>유종별보기·건별 편집<br>농업·임업 구분 집계</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(13/18/23)<br>SA-VAT-07 전자신고<br>거래처 차원</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">유종 5구분(휘발유·경유·등유·중유·LPG), 농업·임업 구분, 공급량·공급가액.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">집계</span><span class="desc-body">유종별 공급량·공급가액 집계, 13/18/23 영세율 매출 유형 불러오기.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(13/18/23), SA-VAT-07 전자신고, 거래처 차원.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat17">
+  <div class="page-title"><h1>월별 판매액 합계표(영세율)</h1><span class="chip-id">SA-VAT-17</span><span class="badge b-new">2차</span><span class="badge b-ref">2탭</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 부속서류 › 월별 판매액 합계표 · §25.12.9</div>
+  <div class="src"><b>업무 목적</b>: 장애인보장구·농축임업용 재화 등 영세율 판매 실적을 월별로 집계하는 업종별 부속서류(탭1=장애인보장구, 탭2=농축임업용). 12/16/19/24 유형과 연동하며, 미첨부 시 영세율과세표준불성실 가산세 0.5%가 MRI 연계로 경고된다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-17 — 장애인보장구/농축임업용 2탭 · 월별 집계 · 12/16/19/24 · 미첨부 가산세 0.5%(MRI)</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">월별 판매액 합계표</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-17</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="tabbar">
+      <span class="tab on">장애인보장구 <span class="tno">1</span></span>
+      <span class="tab">농축임업용 <span class="tno">2</span></span>
+    </div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">불러오기</span><span class="qv">19.카드영세 / 24 등</span><span class="qright"><button class="abtn dark">불러오기</button></span></div>
+      <table class="grid">
+        <tr><th>월</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">세액</th><th class="c">건수</th></tr>
+        <tr class="sel"><td>2026-01</td><td class="c">19.카드영세</td><td class="num">18,000,000</td><td class="num">0</td><td class="c">12</td></tr>
+        <tr><td>2026-02</td><td class="c">24</td><td class="num">9,000,000</td><td class="num">0</td><td class="c">7</td></tr>
+        <tr class="tot"><td colspan="2">1분기 합계</td><td class="num">27,000,000</td><td class="num">0</td><td class="c">19</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 월별 집계 · 영세율 매출 연동</span><span class="warnmsg">&#9888; 미첨부 시 영세율과세표준불성실 0.5%(MRI 연계)</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">불러오기</span><span class="qv">12.영세 / 16.수출 등</span><span class="qright"><button class="abtn dark">불러오기</button></span></div>
+      <table class="grid">
+        <tr><th>월</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">세액</th><th class="c">건수</th></tr>
+        <tr class="sel"><td>2026-01</td><td class="c">12.영세</td><td class="num">30,000,000</td><td class="num">0</td><td class="c">9</td></tr>
+        <tr><td>2026-03</td><td class="c">16.수출</td><td class="num">22,000,000</td><td class="num">0</td><td class="c">5</td></tr>
+        <tr class="tot"><td colspan="2">1분기 합계</td><td class="num">52,000,000</td><td class="num">0</td><td class="c">14</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 농축임업용 영세율 월별 집계</span><span class="cnt">§25.12.9</span></div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">탭 구성</span><span class="desc-body">장애인보장구 · 농축임업용. 각 탭 월별 판매액 합계 집계.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">집계</span><span class="desc-body">12/16/19/24 유형 불러오기, 월별 공급가액·세액·건수 집계.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">통제</span><span class="desc-body">미첨부 시 영세율과세표준불성실 가산세 0.5% — MRI 연계 경고.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(12/16/19/24), SA-VAT-07 전자신고, MRI.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat18">
+  <div class="page-title"><h1>농·어업용 기자재 환급신청서</h1><span class="chip-id">SA-VAT-18</span><span class="badge b-new">2차</span><span class="badge b-ref">2탭</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 부속서류 › 농·어업용 기자재 환급신청서 · §25.12.10</div>
+  <div class="src"><b>업무 목적</b>: 농·어민이 부담한 농·어업용 기자재 부가세를 환급 신청하는 업종별 부속서류(탭1=환급신청내용, 탭2=매입세금계산서). 직접·대행 구분(0.직접/1.대행)으로 관리하며, 마감 시 수량·사업자번호가 필수이고 마감 후에는 수정이 불가하다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-18 — 환급신청내용/매입세금계산서 2탭 · 직접(0)/대행(1) · 마감시 수량·사업자번호 필수 · 마감 후 수정불가</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">농·어업용 기자재 환급신청서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-18</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="tabbar">
+      <span class="tab on">환급신청내용 <span class="tno">1</span></span>
+      <span class="tab">매입세금계산서 <span class="tno">2</span></span>
+    </div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">직접·대행구분</span><span class="qv">1.대행</span><span class="qright"><button class="abtn ghost">농·어민 코드도움</button></span></div>
+      <table class="grid">
+        <tr><th>농·어민</th><th class="c">주민/사업자번호</th><th class="c">기자재</th><th class="c">수량</th><th class="c">환급신청액</th></tr>
+        <tr class="sel"><td>김농부</td><td class="c">6••••••-•••••••</td><td class="c">비료</td><td class="num">120</td><td class="num">1,200,000</td></tr>
+        <tr><td>이어민</td><td class="c">7••••••-•••••••</td><td class="c">어구</td><td class="num">40</td><td class="num">800,000</td></tr>
+        <tr class="tot"><td colspan="3">환급신청 합계</td><td class="num">160</td><td class="num">2,000,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 직접(0)/대행(1) 구분 관리 · 인적정보 마스킹</span><span class="warnmsg">&#9888; 마감 시 수량·사업자번호 필수 · 마감 후 수정불가</span></div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">불러오기</span><span class="qv">유형 51 (계정 146~175/201~230/801~900)</span><span class="qright"><button class="abtn dark">불러오기</button></span></div>
+      <table class="grid">
+        <tr><th>일자</th><th>공급자</th><th class="c">계정</th><th class="c">공급가액</th><th class="c">세액</th></tr>
+        <tr class="sel"><td>2026-02-05</td><td>농협자재</td><td class="c">146</td><td class="num">12,000,000</td><td class="num">1,200,000</td></tr>
+        <tr><td>2026-03-11</td><td>수협상사</td><td class="c">201</td><td class="num">8,000,000</td><td class="num">800,000</td></tr>
+        <tr class="tot"><td colspan="3">매입 합계</td><td class="num">20,000,000</td><td class="num">2,000,000</td></tr>
+      </table>
+      <div class="statusbar"><span class="okmsg">&#10003; 유형51 계정(146~175/201~230/801~900) 불러오기</span><span class="cnt">§25.12.10</span></div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">탭 구성</span><span class="desc-body">환급신청내용(농·어민별) · 매입세금계산서(유형51 계정 146~175/201~230/801~900).</span></div>
+      <div class="screen-desc-item"><span class="desc-label">구분</span><span class="desc-body">직접대행구분 0.직접 / 1.대행. 인적정보 마스킹.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">통제</span><span class="desc-body">마감 시 수량·사업자번호 필수, 마감 후 수정불가.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(유형51), SA-VAT-07 전자신고, 거래처(농·어민) 차원.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat19">
+  <div class="page-title"><h1>전자화폐 결제명세서</h1><span class="chip-id">SA-VAT-19</span><span class="badge b-new">2차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 부속서류 › 전자화폐 결제명세서 · §25.12.11</div>
+  <div class="src"><b>업무 목적</b>: 전자화폐로 결제받은 매출 실적을 집계하는 업종별 부속서류(21.전자 유형). 가맹점번호(거래처 카드탭)와 결제처리번호 단위로 관리하며, 결제처리번호는 전자신고 시 필수 검증 대상이다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-19 — 가맹점번호(거래처 카드탭) · 결제처리번호(전자신고 필수) · 21.전자 연동</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">전자화폐 결제명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-19</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기</span><span class="qv">21.전자</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">가맹점 코드도움</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">전자화폐 결제 명세</div>
+        <table class="grid">
+          <tr><th>가맹점번호</th><th class="c">결제처리번호</th><th class="c">공급가액</th><th class="c">세액</th><th class="c">건수</th></tr>
+          <tr class="sel"><td>MCT-778812</td><td class="c">PAY-2026-000341</td><td class="num">6,000,000</td><td class="num">600,000</td><td class="c">54</td></tr>
+          <tr><td>MCT-778813</td><td class="c">PAY-2026-000512</td><td class="num">3,000,000</td><td class="num">300,000</td><td class="c">21</td></tr>
+          <tr class="tot"><td colspan="2">합계</td><td class="num">9,000,000</td><td class="num">900,000</td><td class="c">75</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 21.전자 유형 집계 · 결제처리번호 전자신고 반영</span><span class="warnmsg">&#9888; 결제처리번호 미입력 시 전자신고 오류</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          가맹점번호(거래처 카드탭)<br>결제처리번호(전자신고 필수)<br>공급가액·세액</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          21.전자 불러오기<br>가맹점별 집계<br>결제처리번호 검증</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(21.전자)<br>거래처 카드탭(가맹점번호)<br>SA-VAT-07 전자신고</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">가맹점번호(거래처 카드탭 연동), 결제처리번호, 공급가액·세액.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">결제처리번호는 전자신고 시 필수 — 미입력 시 전자신고 오류.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(21.전자), 거래처 카드탭, SA-VAT-07 전자신고.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat20">
+  <div class="page-title"><h1>전자신고세액공제 명세</h1><span class="chip-id">SA-VAT-20</span><span class="badge b-new">2차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 부속서류 › 전자신고세액공제 명세 · §25.12.12</div>
+  <div class="src"><b>업무 목적</b>: 세무대리인이 수임업체의 부가세를 전자신고할 때 적용하는 전자신고세액공제 명세. 수임업체 건수 × 1만원으로 산정하며, 한도(개인 300만·법인 750만)를 초과하지 않도록 멀티테넌트 단위로 관리한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-20 — 수임업체 건수 × 1만원 · 한도 개인300만/법인750만 · 멀티테넌트</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">전자신고세액공제 명세</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-20</span>
+      <span class="tb-right">2026-1기 확정 · 세무대리</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">대리인 구분</span><span class="qv">법인 (한도 750만)</span>
+      <span class="qright"><button class="abtn dark">수임업체 불러오기</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">전자신고세액공제 산정</div>
+        <table class="grid">
+          <tr><th>항목</th><th class="c">값</th><th class="c">비고</th></tr>
+          <tr class="sel"><td>수임업체 전자신고 건수</td><td class="num">210</td><td class="c">2026-1기</td></tr>
+          <tr><td>건당 공제액</td><td class="num">10,000</td><td class="c">건 × 1만원</td></tr>
+          <tr><td>산정 공제액</td><td class="num">2,100,000</td><td class="c">210 × 10,000</td></tr>
+          <tr class="tot"><td>적용 공제액 (한도 750만)</td><td class="num">2,100,000</td><td class="c">한도 내</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 건수×1만원 자동 산정 · 한도(법인 750만) 검증</span><span class="warnmsg">&#9888; 한도 초과분 절사 · 테넌트별 산정</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">산정</div><div class="rp-b">
+          수임업체 전자신고 건수 × 1만원<br>한도: 개인 300만 / 법인 750만<br>초과분 절사</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          수임업체 불러오기<br>테넌트(대리인) 단위 집계<br>한도 검증</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 전자신고세액공제란<br>SA-VAT-07 전자신고<br>멀티테넌트(세무대리인)</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">산정</span><span class="desc-body">수임업체 전자신고 건수 × 1만원. 한도 개인 300만·법인 750만 초과분 절사.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">테넌트</span><span class="desc-body">멀티테넌트(세무대리인) 단위로 수임업체 집계·한도 관리.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">SA-VAT-01 전자신고세액공제란, SA-VAT-07 전자신고.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat21">
+  <div class="page-title"><h1>보세판매장 현황 명세서</h1><span class="chip-id">SA-VAT-21</span><span class="badge b-new">2차</span></div>
+  <div class="crumb">부가세·신고서류 › 업종별 부속서류 › 보세판매장 현황 명세서 · §25.12.13</div>
+  <div class="src"><b>업무 목적</b>: 보세판매장(면세점) 사업자의 영세율 판매 실적을 집계하는 업종별 부속서류(12/19/24 유형). 불러온 데이터·직접입력을 병행하며, 전체삭제 및 불러온 데이터만 삭제 기능으로 재집계를 지원한다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-21 — 12/19/24 연동 · 전체삭제/불러온데이터만 삭제 · 보세판매장 집계</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">보세판매장 현황 명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-21</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기</span><span class="qv">12 / 19 / 24</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn red sm">전체삭제</button><button class="abtn ghost sm">불러온데이터 삭제</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">보세판매장 판매 명세</div>
+        <table class="grid">
+          <tr><th>일자</th><th>품목</th><th class="c">유형</th><th class="c">공급가액</th><th class="c">세액</th></tr>
+          <tr class="sel"><td>2026-02-08</td><td>화장품</td><td class="c">12.영세</td><td class="num">45,000,000</td><td class="num">0</td></tr>
+          <tr><td>2026-03-19</td><td>주류</td><td class="c">19.카드영세</td><td class="num">18,000,000</td><td class="num">0</td></tr>
+          <tr class="tot"><td colspan="3">합계</td><td class="num">63,000,000</td><td class="num">0</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 12/19/24 유형 집계 · 불러오기/직접입력 병행</span><span class="cnt">§25.12.13</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          일자·품목·유형(12/19/24)<br>공급가액·세액<br>직접입력 병행</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          12/19/24 불러오기<br>전체삭제 / 불러온데이터만 삭제<br>재집계</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          매입매출전표(12/19/24)<br>SA-VAT-07 전자신고</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">일자·품목·유형(12/19/24), 공급가액·세액. 불러오기와 직접입력 병행.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">전체삭제 / 불러온 데이터만 삭제로 재집계 지원.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">매입매출전표(12/19/24), SA-VAT-07 전자신고.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-vat" id="vat35">
+  <div class="page-title"><h1>미용·성형 등 의료용역 명세서(외국인환자)</h1><span class="chip-id">SA-VAT-35</span><span class="badge b-new">2차</span></div>
+  <div class="crumb">부가세·신고서류 › 관세환급·수출 부속 › 미용·성형 등 의료용역 명세서 · §25.14.7</div>
+  <div class="src"><b>업무 목적</b>: 외국인환자에게 제공한 미용·성형 등 의료용역의 부가세 환급 실적을 집계하는 부속서류. 의료용역일련번호(20자리 순차)로 관리하며, 외국인환자 인적사항은 마스킹 처리하고 환급세액은 신고서 48.외국인관광객환급란으로 반영된다.</div>
+  <div class="mock">
+    <div class="mock-cap">SA-VAT-35 — 의료용역일련번호(20자리 순차) · 외국인환자 인적사항 마스킹 · →48.외국인관광객환급</div>
+    <div class="titlebar">
+      <span class="tb-crumb">부가세·신고서류</span><span class="tb-sep">&#8250;</span><span class="tb-title">미용·성형 등 의료용역 명세서</span>
+      <span class="tb-star">&#9734;</span><span class="tb-id">SA-VAT-35</span>
+      <span class="tb-right">2026-1기 확정</span>
+    </div>
+    <div class="qbar">
+      <span class="qlabel">불러오기</span><span class="qv">의료용역 환급 실적</span>
+      <span class="qright"><button class="abtn dark">불러오기</button><button class="abtn ghost">일련번호 채번</button></span>
+    </div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="mock-cap" style="border-top:1px solid #E1E1E6">외국인환자 의료용역 명세</div>
+        <table class="grid">
+          <tr><th>의료용역일련번호</th><th class="c">환자(마스킹)</th><th class="c">의료용역</th><th class="c">공급가액</th><th class="c">환급세액</th></tr>
+          <tr class="sel"><td>20260210000000000001</td><td class="c">CHEN ••</td><td class="c">성형</td><td class="num">10,000,000</td><td class="num">1,000,000</td></tr>
+          <tr><td>20260311000000000002</td><td class="c">TANAKA ••</td><td class="c">미용</td><td class="num">4,000,000</td><td class="num">400,000</td></tr>
+          <tr class="tot"><td colspan="3">합계 (→ 48.외국인관광객환급)</td><td class="num">14,000,000</td><td class="num">1,400,000</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">&#10003; 일련번호 20자리 순차 채번 · 환급세액 → 48.외국인관광객환급</span><span class="warnmsg">&#9888; 외국인환자 인적사항 마스킹</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">입력</div><div class="rp-b">
+          의료용역일련번호(20자리 순차)<br>외국인환자 인적사항(마스킹)<br>의료용역·공급가액·환급세액</div></div>
+        <div class="rp-box"><div class="rp-t">기능</div><div class="rp-b">
+          의료용역 실적 불러오기<br>일련번호 순차 채번<br>인적정보 마스킹</div></div>
+        <div class="rp-box"><div class="rp-t">연계</div><div class="rp-b">
+          SA-VAT-01 48.외국인관광객환급<br>SA-VAT-07 전자신고</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details">
+    <div class="sd-title">화면 설명 · 설계 반영 사항</div>
+    <div class="screen-desc-list">
+      <div class="screen-desc-item"><span class="desc-label">입력</span><span class="desc-body">의료용역일련번호(20자리 순차 채번), 외국인환자 인적사항(마스킹), 의료용역·공급가액·환급세액.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">보안</span><span class="desc-body">외국인환자 인적사항 마스킹 처리.</span></div>
+      <div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">환급세액 → SA-VAT-01 48.외국인관광객환급, SA-VAT-07 전자신고.</span></div>
+    </div>
+  </div>
+</section>
+<section class="section source-common" id="flow">
+  <div class="page-title"><h1>E2E 처리 흐름</h1><span class="chip-id">FLOW</span></div>
+  <div class="crumb">공통·횡단 › E2E 처리 흐름 · §3</div>
+  <div class="src"><b>업무 목적</b>: 매입매출전표(P03)에서 생성된 유형별 데이터가 매입세액 통제·업종별 부속서류를 거쳐 SA-VAT-01 신고서에 반영되고, 마감·MRI·전자신고를 지나 사후신고(수정·경정)까지 이어지는 전체 파이프라인을 표현한다.</div>
+  <div class="flow">
+    <span class="st">P03 매입매출전표(유형별)</span><span class="ar">&#8594;</span>
+    <span class="st">부속서류 집계·불러오기</span><span class="ar">&#8594;</span>
+    <span class="st hl">SA-VAT-01 신고서 반영</span><span class="ar">&#8594;</span>
+    <span class="st">마감 · MRI 검토</span><span class="ar">&#8594;</span>
+    <span class="st">SA-VAT-07 전자신고</span><span class="ar">&#8594;</span>
+    <span class="st end">사후신고(수정·경정)</span>
+  </div>
+  <div class="mock">
+    <div class="mock-cap">단계별 서식·통제</div>
+    <table class="grid">
+      <tr><th>단계</th><th>서식</th><th>핵심 통제</th></tr>
+      <tr><td>① 매입세액 통제</td><td>SA-VAT-22·23·24</td><td>불공제·안분·정산·재계산, 고정자산취득, 대손·변제</td></tr>
+      <tr><td>② 신고서 반영</td><td>SA-VAT-01</td><td>부속서류 → 신고서 란 매핑·정합</td></tr>
+      <tr><td>③ 멀티사업장</td><td>SA-VAT-25·26</td><td>총괄납부·사업자단위과세 본·지점 합산</td></tr>
+      <tr><td>④ 마감·전자신고</td><td>SA-VAT-07·MRI</td><td>정합 검증·유의사항·전자신고 제작</td></tr>
+      <tr><td>⑤ 사후신고</td><td>SA-VAT-27·28</td><td>≥0 수정신고 / &lt;0 경정청구 자동분기</td></tr>
+      <tr class="tot"><td>업종별·환급</td><td colspan="2">SA-VAT-16~21·33·34·35 — 업종별 부속·관세환급·외국인 환급</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; 유형별 전표 → 부속서류 → SA-VAT-01 → 마감·전자신고 → 사후신고</span><span class="cnt">§3 E2E</span></div>
+  </div>
+</section>
+<section class="section source-common" id="mapping">
+  <div class="page-title"><h1>서식 → SA-VAT-01 신고서 란 매핑</h1><span class="chip-id">MAP</span></div>
+  <div class="crumb">공통·횡단 › 서식→신고서 란 매핑 · §3.1</div>
+  <div class="src"><b>업무 목적</b>: 각 부속서류가 SA-VAT-01(부가가치세 신고서)의 어느 란으로 반영되는지 정의한다. 부속서류 작성·불러오기 후 신고서 란과 정합 검증이 이루어진다.</div>
+  <div class="mock">
+    <div class="mock-cap">부속서류 → 신고서 반영 란</div>
+    <table class="spec">
+      <tr><th>서식 ID</th><th>서식명</th><th>SA-VAT-01 반영 란</th></tr>
+      <tr><td>SA-VAT-22</td><td>공제받지못할매입세액명세서</td><td>16.공제받지못할매입세액</td></tr>
+      <tr><td>SA-VAT-23</td><td>건물등감가상각자산취득명세서</td><td>11·42.고정자산매입</td></tr>
+      <tr><td>SA-VAT-24</td><td>대손세액공제신고서</td><td>8.대손세액가감 / 47.변제대손세액 / 52.대손처분받은세액</td></tr>
+      <tr><td>SA-VAT-25</td><td>사업장별 부가세 납부/환급 명세</td><td>총괄납부사업자 납부할세액(환급)란</td></tr>
+      <tr><td>SA-VAT-26</td><td>사업자단위과세 사업장별 부가세</td><td>주된 사업자번호 통합란</td></tr>
+      <tr><td>SA-VAT-27</td><td>과표수정 및 추가납부계산서</td><td>수정신고 추가납부(≥0)</td></tr>
+      <tr><td>SA-VAT-28</td><td>과세표준수정 및 경정청구서</td><td>경정청구 감액(&lt;0)</td></tr>
+      <tr><td>SA-VAT-16</td><td>면세유류 공급명세서</td><td>13·18·23</td></tr>
+      <tr><td>SA-VAT-17</td><td>월별 판매액 합계표</td><td>12·16·19·24</td></tr>
+      <tr><td>SA-VAT-18</td><td>농·어업용 기자재 환급신청서</td><td>매입세액(유형51)</td></tr>
+      <tr><td>SA-VAT-19</td><td>전자화폐 결제명세서</td><td>21.전자</td></tr>
+      <tr><td>SA-VAT-20</td><td>전자신고세액공제 명세</td><td>전자신고세액공제란</td></tr>
+      <tr><td>SA-VAT-21</td><td>보세판매장 현황 명세서</td><td>12·19·24</td></tr>
+      <tr><td>SA-VAT-33</td><td>관세환급금 등 명세서</td><td>12.영세·16.수출</td></tr>
+      <tr><td>SA-VAT-34</td><td>외국인관광객 면세물품 판매·환급</td><td>48.외국인관광객환급</td></tr>
+      <tr><td>SA-VAT-35</td><td>미용·성형 의료용역 명세서</td><td>48.외국인관광객환급</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; 16개 부속서류 → SA-VAT-01 란 매핑·정합 검증</span><span class="cnt">§3.1</span></div>
+  </div>
+</section>
+<section class="section source-common" id="model">
+  <div class="page-title"><h1>데이터 모델 · API</h1><span class="chip-id">MODEL</span></div>
+  <div class="crumb">공통·횡단 › 데이터 모델·API · §5·§6</div>
+  <div class="src"><b>업무 목적</b>: 부속서류·사후신고를 지탱하는 핵심 엔티티와 API를 정의한다. 6차원(회사·사업장·기간·거래처·계정·수정차수) 중 사업장 차원 RLS, 신고 이력(수정차수), 유형별 전표 집계를 공통 모델로 구현한다.</div>
+  <div class="mock">
+    <div class="mock-cap">핵심 엔티티</div>
+    <table class="spec">
+      <tr><th>엔티티</th><th>키</th><th>설명</th></tr>
+      <tr><td>vat_return</td><td>company·site·period·revision</td><td>SA-VAT-01 신고서(수정차수 포함)</td></tr>
+      <tr><td>vat_attachment</td><td>return_id·form_id</td><td>부속서류 헤더(서식별)</td></tr>
+      <tr><td>vat_attachment_line</td><td>attachment_id·seq</td><td>부속서류 명세 라인(유형·금액·세액)</td></tr>
+      <tr><td>site</td><td>company·site</td><td>본지점(총괄납부·사업자단위과세)·RLS</td></tr>
+      <tr><td>partner</td><td>company·partner</td><td>거래처(채권·카드가맹점·수출)</td></tr>
+      <tr><td>revision_log</td><td>return_id·revision</td><td>당초/수정·경정 비교 이력</td></tr>
+    </table>
+    <div class="mock-cap" style="border-top:1px solid #E1E1E6">대표 API</div>
+    <table class="grid">
+      <tr><th>메서드</th><th>엔드포인트</th><th>기능</th></tr>
+      <tr><td class="c">POST</td><td>/vat/attachments/{form}/load</td><td>유형별 전표 불러오기·집계</td></tr>
+      <tr><td class="c">GET</td><td>/vat/attachments/{id}/reconcile</td><td>신고서 란 정합 검증</td></tr>
+      <tr><td class="c">POST</td><td>/vat/returns/{id}/revise</td><td>수정차수 생성(≥0 수정/&lt;0 경정 분기)</td></tr>
+      <tr><td class="c">POST</td><td>/vat/returns/{id}/efile</td><td>SA-VAT-07 전자신고 제작</td></tr>
+      <tr class="tot"><td colspan="3">모든 조회·집계는 사업장 차원 RLS 및 테넌트 격리 적용</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; 6차원 모델 · 사업장 RLS · 수정차수 이력</span><span class="cnt">§5·§6</span></div>
+  </div>
+</section>
+<section class="section source-common" id="gate">
+  <div class="page-title"><h1>검증 · 권한 · 마감 게이트</h1><span class="chip-id">GATE</span></div>
+  <div class="crumb">공통·횡단 › 검증·권한·마감 게이트 · §8·§9</div>
+  <div class="src"><b>업무 목적</b>: 부속서류·사후신고의 검증(§8 30항목 중 대표) 및 권한·SOD·마감 상태머신(§9)을 정의한다. 사업장 RLS, 작성≠승인 SOD, 인적정보 마스킹, 마감 후 수정불가를 공통 통제로 적용한다.</div>
+  <div class="flow">
+    <span class="st">작성(draft)</span><span class="ar">&#8594;</span>
+    <span class="st">정합 검증</span><span class="ar">&#8594;</span>
+    <span class="st hl">승인(SOD)</span><span class="ar">&#8594;</span>
+    <span class="st">마감(수정불가)</span><span class="ar">&#8594;</span>
+    <span class="st end">전자신고</span>
+  </div>
+  <div class="mock">
+    <div class="mock-cap">대표 검증 항목 (§8)</div>
+    <table class="grid">
+      <tr><th>#</th><th>항목</th><th>규칙</th></tr>
+      <tr><td class="c">1</td><td>대손 공제기간</td><td>공급일로부터 10년 내 과세기간</td></tr>
+      <tr><td class="c">2</td><td>대손 부호</td><td>발생 양수→8란(-)/회수 음수→(+), 변제→47란</td></tr>
+      <tr><td class="c">3</td><td>안분·재계산</td><td>체감률 건물5%/기타25%, 면세비율증감 ≥5%</td></tr>
+      <tr><td class="c">4</td><td>수정/경정 분기</td><td>추가 차가감납부세액 ≥0 수정 / &lt;0 경정</td></tr>
+      <tr><td class="c">5</td><td>경정청구이유</td><td>이유1·2 동일코드 중복금지</td></tr>
+      <tr><td class="c">6</td><td>전자신고 필수번호</td><td>내국신용장·결제처리·구매/의료용역 일련번호</td></tr>
+      <tr><td class="c">7</td><td>고정자산 미작성</td><td>고정자산매입분 있으면 SA-VAT-23 마감 유의</td></tr>
+      <tr class="tot"><td colspan="3">§8 총 30항목 — 신고서 란 정합·형식·기간·부호 검증</td></tr>
+    </table>
+    <div class="mock-cap" style="border-top:1px solid #E1E1E6">권한 · SOD (§9)</div>
+    <table class="grid">
+      <tr><th>통제</th><th>내용</th></tr>
+      <tr><td>사업장 RLS</td><td>본지점설정·지점 권한 단위 데이터 접근 제어</td></tr>
+      <tr><td>SOD</td><td>작성자 ≠ 승인자 분리</td></tr>
+      <tr><td>마스킹</td><td>농·어민·외국인환자 인적정보 마스킹</td></tr>
+      <tr><td>마감</td><td>마감 후 수정불가(SA-VAT-18 등)</td></tr>
+    </table>
+    <div class="statusbar"><span class="okmsg">&#10003; 검증 30항목 · 사업장 RLS · SOD · 마스킹 · 마감 상태머신</span><span class="cnt">§8·§9</span></div>
+  </div>
+</section>
+</main>
+</div>
+
+<footer class="footer">
+  <div class="beamline"></div>
+  <div>EY BK 회계 플랫폼 — 페이즈07 화면설계 v1.0 · 근거: 페이즈07_부가세_첨부_업종별.md + bk_설계서_v1.1.md · 스타일 준거: 페이즈05_화면_v1.0.HTML (EY 레이아웃)</div>
+</footer>
+
+<script>
+document.querySelectorAll('.mitem').forEach(function(mi){
+  mi.addEventListener('click',function(){
+    document.querySelectorAll('.mitem').forEach(function(x){x.classList.remove('active')});
+    mi.classList.add('active');
+    var sec=mi.getAttribute('data-sec');
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('visible')});
+    var el=document.getElementById(sec);
+    if(el){el.classList.add('visible');window.scrollTo({top:0});}
+  });
+});
+// 로컬 탭 전환 (mock 내부 .tabbar)
+document.querySelectorAll('.mock .tabbar').forEach(function(bar){
+  var mock=bar.closest('.mock');
+  var tabs=Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+  var panes=Array.prototype.slice.call(mock.children).filter(function(c){return c.classList&&c.classList.contains('tabpane')});
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('on')});
+      tab.classList.add('on');
+      if(panes.length){ panes.forEach(function(p){p.classList.remove('on')}); if(panes[i]) panes[i].classList.add('on'); }
+    });
+  });
+});
+</script>
+</body>
+</html>
