@@ -200,6 +200,8 @@ table.grid .dim{color:#9a9aa4}
 .tree .tnode.on{background:var(--ey-yellow);font-weight:700}
 .tree .tnode.lv2{padding-left:18px}
 .tree .tnode.lv3{padding-left:30px}
+.tree .tnode.lv4{padding-left:48px;color:#44444e}
+.tree .tnode.lv5{padding-left:66px;color:#44444e}
 .tree .tnode .twist{display:inline-block;width:14px;color:#6f6f78}
 .tree .tnode .cnt{color:#8a8a94;font-size:10.5px;margin-left:4px}
 .lpane .tree{max-height:620px;overflow:auto;padding:6px}
@@ -207,6 +209,8 @@ table.grid .dim{color:#9a9aa4}
 .tree .lv1{font-weight:700}
 .tree .lv2{padding-left:22px}
 .tree .lv3{padding-left:40px;color:#44444e}
+.tree .lv4{padding-left:58px;color:#44444e}
+.tree .lv5{padding-left:76px;color:#44444e}
 .tree .cnt{color:#9a9aa4;font-size:10.5px}
 .tree .red{color:var(--ey-red)}
 .note{font-size:11.5px;color:var(--ey-gray);margin:6px 0 14px;padding-left:2px}
@@ -430,7 +434,7 @@ table.grid .dim{color:#9a9aa4}
   <div class="mock">
     <div class="mock-cap">OP-06D — OP/TN/CO 메뉴 트리를 버전 관리하고 발행 시 권한 캐시를 무효화한다.</div>
     <div class="titlebar"><span class="tb-crumb">메뉴·권한</span><span class="tb-sep">›</span><span class="tb-title">메뉴 마스터</span><span class="tb-star">☆</span><span class="tb-id">OP-06D</span><span class="tb-right">DRAFT v43 · 기준 PUBLISHED v42</span></div>
-    <div class="qbar"><span class="qlabel">메뉴명</span><span class="qv">코드/국문/영문 <span class="lens">⌕</span></span><span class="qlabel">채널</span><span class="seg"><span class="on">OP</span><span>TN</span><span>CO</span></span><span class="qlabel">유형</span><span class="qv">GROUP/MENU/TAB/ACTION <span class="lens">▾</span></span><span class="qlabel">버전</span><span class="qv">DRAFT v43 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">영향 분석</button><button class="abtn dark">발행</button></span></div>
+    <div class="qbar"><span class="qlabel">메뉴명</span><span class="qv">코드/국문/영문 <span class="lens">⌕</span></span><span class="qlabel">채널</span><span class="seg"><span class="on">OP</span><span>TN</span><span>CO</span></span><span class="qlabel">유형</span><span class="qv">GROUP/MENU/TAB/ACTION <span class="lens">▾</span></span><span class="qlabel">버전</span><span class="qv">DRAFT v43 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">영향 분석</button><button class="abtn ghost" onclick="downloadMenuMasterExcel()">엑셀 다운로드</button><button class="abtn dark">발행</button></span></div>
     <div class="mock-flex menu-master-layout">
       <div class="lpane">
         <div class="lp-t">메뉴 트리 <span id="menuMasterTotal" class="cnt"></span></div>
@@ -610,141 +614,141 @@ var MENU_MASTER_ROWS=[
   ["OP-09-M01","배치·연계 운영","시스템관리자_화면_v1.0.HTML#op09","v1.0 화면 시스템관리자_화면_v1.0.HTML#op09 / 배치·연계 운영 / OP-09","OP-09","OP-09"],
   ["OP-10-M01","보안·감사 운영","시스템관리자_화면_v1.0.HTML#op10","v1.0 화면 시스템관리자_화면_v1.0.HTML#op10 / 보안·감사 운영 / OP-10","OP-10","OP-10"],
   ["OP-07-M01","Break-glass·접근","시스템관리자_화면_v1.0.HTML#op07","v1.0 화면 시스템관리자_화면_v1.0.HTML#op07 / Break-glass·접근 거버넌스 / OP-07","OP-07","OP-07"],
-  ["TN-03-M01","전기분재무상태표","페이즈02_화면_v1.0.html#opn01","v1.0 화면 페이즈02_화면_v1.0.html#opn01 / 전기분재무상태표 / SA-OPN-01","Prior Financial Position","SA-OPN-01"],
-  ["TN-03-M02","전기분손익계산서","페이즈02_화면_v1.0.html#opn02","v1.0 화면 페이즈02_화면_v1.0.html#opn02 / 전기분손익계산서 / SA-OPN-02","Prior Income Statement","SA-OPN-02"],
-  ["TN-03-M03","전기분원가명세서","페이즈02_화면_v1.0.html#opn03","v1.0 화면 페이즈02_화면_v1.0.html#opn03 / 전기분원가명세서 / SA-OPN-03","Prior Cost Statement","SA-OPN-03"],
-  ["TN-03-M04","전기분이익잉여금처분계산서","페이즈02_화면_v1.0.html#opn04","v1.0 화면 페이즈02_화면_v1.0.html#opn04 / 전기분이익잉여금처분계산서 / SA-OPN-04","Prior Retained Earnings Appropriation","SA-OPN-04"],
-  ["TN-03-M05","전기분자본변동표","페이즈02_화면_v1.0.html#opn05","v1.0 화면 페이즈02_화면_v1.0.html#opn05 / 전기분자본변동표 / SA-OPN-05","Prior Equity Changes","SA-OPN-05"],
-  ["TN-03-M06","전기분현금흐름표","페이즈02_화면_v1.0.html#opn06","v1.0 화면 페이즈02_화면_v1.0.html#opn06 / 전기분현금흐름표 / SA-OPN-06","Prior Cash Flow Statement","SA-OPN-06"],
-  ["TN-03-M07","거래처별초기이월","페이즈02_화면_v1.0.html#opn07","v1.0 화면 페이즈02_화면_v1.0.html#opn07 / 거래처별초기이월 / SA-OPN-07","Customer Opening Balance","SA-OPN-07"],
-  ["TN-03-M08","부서/사원별초기이월","페이즈02_화면_v1.0.html#opn08","v1.0 화면 페이즈02_화면_v1.0.html#opn08 / 부서/사원별초기이월 / SA-OPN-08","Department Employee Opening Balance","SA-OPN-08"],
-  ["TN-03-M09","프로젝트초기이월","페이즈02_화면_v1.0.html#opn13","v1.0 화면 페이즈02_화면_v1.0.html#opn13 / 프로젝트초기이월 / SA-OPN-13","Project Opening Balance","SA-OPN-13"],
-  ["TN-03-M10","전기 기간별손익계산서","페이즈02_화면_v1.0.html#opn09","v1.0 화면 페이즈02_화면_v1.0.html#opn09 / 전기 기간별손익계산서 / SA-OPN-09","Prior Period Income Statement","SA-OPN-09"],
-  ["TN-03-M11","전기 기간별원가계산서","페이즈02_화면_v1.0.html#opn10","v1.0 화면 페이즈02_화면_v1.0.html#opn10 / 전기 기간별원가계산서(원가명세서) / SA-OPN-10","Prior Period Cost Statement","SA-OPN-10"],
-  ["TN-03-M12","전기 프로젝트손익현황","페이즈02_화면_v1.0.html#opn11","v1.0 화면 페이즈02_화면_v1.0.html#opn11 / 전기 프로젝트손익현황 / SA-OPN-11","Prior Project Profit Status","SA-OPN-11"],
-  ["TN-03-M13","전기 프로젝트원가현황","페이즈02_화면_v1.0.html#opn12","v1.0 화면 페이즈02_화면_v1.0.html#opn12 / 전기 프로젝트원가현황 / SA-OPN-12","Prior Project Cost Status","SA-OPN-12"],
-  ["TN-03-M14","전기 중단사업손익계산서","페이즈02_화면_v1.0.html#opn14","v1.0 화면 페이즈02_화면_v1.0.html#opn14 / 전기 중단사업손익계산서 / SA-OPN-14","Prior Discontinued Ops Income","SA-OPN-14"],
-  ["TN-03-M15","전기 중단사업원가명세서","페이즈02_화면_v1.0.html#opn15","v1.0 화면 페이즈02_화면_v1.0.html#opn15 / 전기 중단사업원가명세서 / SA-OPN-15","Prior Discontinued Ops Cost","SA-OPN-15"],
-  ["TN-03-M16","중도시산표","페이즈02_화면_v1.0.html#opn16","v1.0 화면 페이즈02_화면_v1.0.html#opn16 / 중도시산표 / SA-OPN-16","Interim Trial Balance","SA-OPN-16"],
-  ["TN-03-M17","미완성공사초기이월","페이즈02_화면_v1.0.html#opn17","v1.0 화면 페이즈02_화면_v1.0.html#opn17 / 미완성공사초기이월 / SA-OPN-17","Unfinished Construction Opening","SA-OPN-17"],
-  ["TN-03-M18","외주처별초기이월","페이즈02_화면_v1.0.html#opn18","v1.0 화면 페이즈02_화면_v1.0.html#opn18 / 외주처별초기이월 / SA-OPN-18","Subcontractor Opening Balance","SA-OPN-18"],
-  ["TN-03-M19","현장별/거래처별초기이월","페이즈02_화면_v1.0.html#opn19","v1.0 화면 페이즈02_화면_v1.0.html#opn19 / 현장별/거래처별초기이월 / SA-OPN-19","Site Customer Opening Balance","SA-OPN-19"],
+  ["TN-03-G01-M01","전기분재무상태표","페이즈02_화면_v1.0.html#opn01","v1.0 화면 페이즈02_화면_v1.0.html#opn01 / 전기분재무상태표 / SA-OPN-01","Prior Financial Position","SA-OPN-01"],
+  ["TN-03-G01-M02","전기분손익계산서","페이즈02_화면_v1.0.html#opn02","v1.0 화면 페이즈02_화면_v1.0.html#opn02 / 전기분손익계산서 / SA-OPN-02","Prior Income Statement","SA-OPN-02"],
+  ["TN-03-G01-M03","전기분원가명세서","페이즈02_화면_v1.0.html#opn03","v1.0 화면 페이즈02_화면_v1.0.html#opn03 / 전기분원가명세서 / SA-OPN-03","Prior Cost Statement","SA-OPN-03"],
+  ["TN-03-G01-M04","전기분이익잉여금처분계산서","페이즈02_화면_v1.0.html#opn04","v1.0 화면 페이즈02_화면_v1.0.html#opn04 / 전기분이익잉여금처분계산서 / SA-OPN-04","Prior Retained Earnings Appropriation","SA-OPN-04"],
+  ["TN-03-G01-M05","전기분자본변동표","페이즈02_화면_v1.0.html#opn05","v1.0 화면 페이즈02_화면_v1.0.html#opn05 / 전기분자본변동표 / SA-OPN-05","Prior Equity Changes","SA-OPN-05"],
+  ["TN-03-G01-M06","전기분현금흐름표","페이즈02_화면_v1.0.html#opn06","v1.0 화면 페이즈02_화면_v1.0.html#opn06 / 전기분현금흐름표 / SA-OPN-06","Prior Cash Flow Statement","SA-OPN-06"],
+  ["TN-03-G02-M01","거래처별초기이월","페이즈02_화면_v1.0.html#opn07","v1.0 화면 페이즈02_화면_v1.0.html#opn07 / 거래처별초기이월 / SA-OPN-07","Customer Opening Balance","SA-OPN-07"],
+  ["TN-03-G02-M02","부서/사원별초기이월","페이즈02_화면_v1.0.html#opn08","v1.0 화면 페이즈02_화면_v1.0.html#opn08 / 부서/사원별초기이월 / SA-OPN-08","Department Employee Opening Balance","SA-OPN-08"],
+  ["TN-03-G02-M03","프로젝트초기이월","페이즈02_화면_v1.0.html#opn13","v1.0 화면 페이즈02_화면_v1.0.html#opn13 / 프로젝트초기이월 / SA-OPN-13","Project Opening Balance","SA-OPN-13"],
+  ["TN-03-G03-M01","전기 기간별손익계산서","페이즈02_화면_v1.0.html#opn09","v1.0 화면 페이즈02_화면_v1.0.html#opn09 / 전기 기간별손익계산서 / SA-OPN-09","Prior Period Income Statement","SA-OPN-09"],
+  ["TN-03-G03-M02","전기 기간별원가계산서","페이즈02_화면_v1.0.html#opn10","v1.0 화면 페이즈02_화면_v1.0.html#opn10 / 전기 기간별원가계산서(원가명세서) / SA-OPN-10","Prior Period Cost Statement","SA-OPN-10"],
+  ["TN-03-G03-M03","전기 프로젝트손익현황","페이즈02_화면_v1.0.html#opn11","v1.0 화면 페이즈02_화면_v1.0.html#opn11 / 전기 프로젝트손익현황 / SA-OPN-11","Prior Project Profit Status","SA-OPN-11"],
+  ["TN-03-G03-M04","전기 프로젝트원가현황","페이즈02_화면_v1.0.html#opn12","v1.0 화면 페이즈02_화면_v1.0.html#opn12 / 전기 프로젝트원가현황 / SA-OPN-12","Prior Project Cost Status","SA-OPN-12"],
+  ["TN-03-G04-M01","전기 중단사업손익계산서","페이즈02_화면_v1.0.html#opn14","v1.0 화면 페이즈02_화면_v1.0.html#opn14 / 전기 중단사업손익계산서 / SA-OPN-14","Prior Discontinued Ops Income","SA-OPN-14"],
+  ["TN-03-G04-M02","전기 중단사업원가명세서","페이즈02_화면_v1.0.html#opn15","v1.0 화면 페이즈02_화면_v1.0.html#opn15 / 전기 중단사업원가명세서 / SA-OPN-15","Prior Discontinued Ops Cost","SA-OPN-15"],
+  ["TN-03-G04-M03","중도시산표","페이즈02_화면_v1.0.html#opn16","v1.0 화면 페이즈02_화면_v1.0.html#opn16 / 중도시산표 / SA-OPN-16","Interim Trial Balance","SA-OPN-16"],
+  ["TN-03-G02-M04","미완성공사초기이월","페이즈02_화면_v1.0.html#opn17","v1.0 화면 페이즈02_화면_v1.0.html#opn17 / 미완성공사초기이월 / SA-OPN-17","Unfinished Construction Opening","SA-OPN-17"],
+  ["TN-03-G02-M05","외주처별초기이월","페이즈02_화면_v1.0.html#opn18","v1.0 화면 페이즈02_화면_v1.0.html#opn18 / 외주처별초기이월 / SA-OPN-18","Subcontractor Opening Balance","SA-OPN-18"],
+  ["TN-03-G02-M06","현장별/거래처별초기이월","페이즈02_화면_v1.0.html#opn19","v1.0 화면 페이즈02_화면_v1.0.html#opn19 / 현장별/거래처별초기이월 / SA-OPN-19","Site Customer Opening Balance","SA-OPN-19"],
   ["TN-04-M01","일반전표입력","페이즈03_화면_v1.0.html#jnl01","v1.0 화면 페이즈03_화면_v1.0.html#jnl01 / 일반전표 / WJV-01","General Journal Entry","SA-JNL-01"],
   ["TN-04-M02","매입매출전표입력","페이즈03_화면_v1.0.html#jnl02","v1.0 화면 페이즈03_화면_v1.0.html#jnl02 / 매입매출전표입력 / SA-JNL-02 · WPV-01","Purchase Sales Journal Entry","SA-JNL-02"],
-  ["TN-06-M01","수집정보등록 — 1차","페이즈03_화면_v1.0.html#atx01","v1.0 화면 페이즈03_화면_v1.0.html#atx01 / 수집정보등록 / SA-ATX-01","Auto Journal Evidence Menu 1","SA-ATX-01"],
-  ["TN-06-M02","홈택스 수집/엑셀업로드","페이즈03_화면_v1.0.html#hometax","v1.0 화면 페이즈03_화면_v1.0.html#hometax / 홈택스 자동수집 · 엑셀 업로드 · 전표 자동생성 / SA-ATX-HOME · SA-JNL-02","SA-ATX-HOME","SA-ATX-HOME"],
-  ["TN-06-M03","전자세금계산서 — 1차","페이즈03_화면_v1.0.html#atx02","v1.0 화면 페이즈03_화면_v1.0.html#atx02 / 전자세금계산서 / SA-ATX-02","Auto Journal Evidence Menu 2","SA-ATX-02"],
-  ["TN-06-M04","전자계산서 — 1차","페이즈03_화면_v1.0.html#atx03","v1.0 화면 페이즈03_화면_v1.0.html#atx03 / 전자계산서 / SA-ATX-03","Auto Journal Evidence Menu 3","SA-ATX-03"],
-  ["TN-06-M05","신용카드 — 1차","페이즈03_화면_v1.0.html#atx04","v1.0 화면 페이즈03_화면_v1.0.html#atx04 / 신용카드 / SA-ATX-04","Auto Journal Evidence Menu 4","SA-ATX-04"],
-  ["TN-06-M06","현금영수증 — 1차","페이즈03_화면_v1.0.html#atx05","v1.0 화면 페이즈03_화면_v1.0.html#atx05 / 현금영수증 / SA-ATX-05","Auto Journal Evidence Menu 5","SA-ATX-05"],
-  ["TN-06-M07","통장 — 1차","페이즈03_화면_v1.0.html#atx06","v1.0 화면 페이즈03_화면_v1.0.html#atx06 / 통장 / SA-ATX-06","Auto Journal Evidence Menu 6","SA-ATX-06"],
-  ["TN-06-M08","자료수집현황 — 1차","페이즈03_화면_v1.0.html#atx07","v1.0 화면 페이즈03_화면_v1.0.html#atx07 / 자료수집현황 / SA-ATX-07","Auto Journal Evidence Menu 7","SA-ATX-07"],
-  ["TN-06-M09","전표전송현황 — 1차","페이즈03_화면_v1.0.html#atx08","v1.0 화면 페이즈03_화면_v1.0.html#atx08 / 전표전송현황 / SA-ATX-08","Auto Journal Evidence Menu 8","SA-ATX-08"],
-  ["TN-06-M10","국세청자료검증 및 사이트비교 — 1차","페이즈03_화면_v1.0.html#atx09","v1.0 화면 페이즈03_화면_v1.0.html#atx09 / 국세청자료검증 및 사이트비교 / SA-ATX-09","Auto Journal Evidence Menu 9","SA-ATX-09"],
+  ["TN-06-G01-M01","수집정보등록 — 1차","페이즈03_화면_v1.0.html#atx01","v1.0 화면 페이즈03_화면_v1.0.html#atx01 / 수집정보등록 / SA-ATX-01","Auto Journal Evidence Menu 1","SA-ATX-01"],
+  ["TN-06-G01-M02","홈택스 수집/엑셀업로드","페이즈03_화면_v1.0.html#hometax","v1.0 화면 페이즈03_화면_v1.0.html#hometax / 홈택스 자동수집 · 엑셀 업로드 · 전표 자동생성 / SA-ATX-HOME · SA-JNL-02","SA-ATX-HOME","SA-ATX-HOME"],
+  ["TN-06-G02-M01","전자세금계산서 — 1차","페이즈03_화면_v1.0.html#atx02","v1.0 화면 페이즈03_화면_v1.0.html#atx02 / 전자세금계산서 / SA-ATX-02","Auto Journal Evidence Menu 2","SA-ATX-02"],
+  ["TN-06-G02-M02","전자계산서 — 1차","페이즈03_화면_v1.0.html#atx03","v1.0 화면 페이즈03_화면_v1.0.html#atx03 / 전자계산서 / SA-ATX-03","Auto Journal Evidence Menu 3","SA-ATX-03"],
+  ["TN-06-G02-M03","신용카드 — 1차","페이즈03_화면_v1.0.html#atx04","v1.0 화면 페이즈03_화면_v1.0.html#atx04 / 신용카드 / SA-ATX-04","Auto Journal Evidence Menu 4","SA-ATX-04"],
+  ["TN-06-G02-M04","현금영수증 — 1차","페이즈03_화면_v1.0.html#atx05","v1.0 화면 페이즈03_화면_v1.0.html#atx05 / 현금영수증 / SA-ATX-05","Auto Journal Evidence Menu 5","SA-ATX-05"],
+  ["TN-06-G02-M05","통장 — 1차","페이즈03_화면_v1.0.html#atx06","v1.0 화면 페이즈03_화면_v1.0.html#atx06 / 통장 / SA-ATX-06","Auto Journal Evidence Menu 6","SA-ATX-06"],
+  ["TN-06-G03-M01","자료수집현황 — 1차","페이즈03_화면_v1.0.html#atx07","v1.0 화면 페이즈03_화면_v1.0.html#atx07 / 자료수집현황 / SA-ATX-07","Auto Journal Evidence Menu 7","SA-ATX-07"],
+  ["TN-06-G03-M02","전표전송현황 — 1차","페이즈03_화면_v1.0.html#atx08","v1.0 화면 페이즈03_화면_v1.0.html#atx08 / 전표전송현황 / SA-ATX-08","Auto Journal Evidence Menu 8","SA-ATX-08"],
+  ["TN-06-G03-M03","국세청자료검증 및 사이트비교 — 1차","페이즈03_화면_v1.0.html#atx09","v1.0 화면 페이즈03_화면_v1.0.html#atx09 / 국세청자료검증 및 사이트비교 / SA-ATX-09","Auto Journal Evidence Menu 9","SA-ATX-09"],
   ["TN-04-M03","정기청구입력 — 2차","페이즈03_화면_v1.0.html#jnl03","v1.0 화면 페이즈03_화면_v1.0.html#jnl03 / 정기청구입력 / SA-JNL-03","Journal Entry Menu 3","SA-JNL-03"],
   ["TN-04-M04","물류전표처리 — 2차","페이즈03_화면_v1.0.html#jnl04","v1.0 화면 페이즈03_화면_v1.0.html#jnl04 / 물류전표처리 / SA-JNL-04","Journal Entry Menu 4","SA-JNL-04"],
-  ["TN-06-M11","ScrappingBoard — 3차","페이즈03_화면_v1.0.html#atx10","v1.0 화면 페이즈03_화면_v1.0.html#atx10 / ScrappingBoard / SA-ATX-10","Auto Journal Evidence Menu 10","SA-ATX-10"],
-  ["TN-05-M01","거래처별 보조원장","페이즈04_화면_v1.0.html#aux01","v1.0 화면 페이즈04_화면_v1.0.html#aux01 / 거래처별 보조원장 / AUX-01","Customer Auxiliary Ledger","AUX-01"],
-  ["TN-05-M02","어음 보조원장","페이즈04_화면_v1.0.html#aux02","v1.0 화면 페이즈04_화면_v1.0.html#aux02 / 어음 보조원장 / AUX-02","Bills Auxiliary Ledger","AUX-02"],
-  ["TN-05-M03","예금 보조원장","페이즈04_화면_v1.0.html#aux03","v1.0 화면 페이즈04_화면_v1.0.html#aux03 / 예금 보조원장 / AUX-03","Deposit Auxiliary Ledger","AUX-03"],
-  ["TN-05-M04","가지급금·가수금 보조원장","페이즈04_화면_v1.0.html#aux05","v1.0 화면 페이즈04_화면_v1.0.html#aux05 / 가지급금·가수금 보조원장 / AUX-05","Advance Receipt Payment Ledger","AUX-05"],
-  ["TN-05-M05","부가세 보조원장","페이즈04_화면_v1.0.html#aux06","v1.0 화면 페이즈04_화면_v1.0.html#aux06 / 부가세 보조원장 / AUX-06","VAT Auxiliary Ledger","AUX-06"],
-  ["TN-05-M06","현금출납장","페이즈04_화면_v1.0.html#aux07","v1.0 화면 페이즈04_화면_v1.0.html#aux07 / 현금출납장(보조부) / AUX-07","Cash Book","AUX-07"],
-  ["TN-05-M07","고정자산대장","페이즈04_화면_v1.0.html#aux09","v1.0 화면 페이즈04_화면_v1.0.html#aux09 / 고정자산대장(기초) / AUX-09","Fixed Asset Ledger","AUX-09"],
-  ["TN-07-M01","전표출력","페이즈04_화면_v1.0.html#ldg01","v1.0 화면 페이즈04_화면_v1.0.html#ldg01 / 전표출력 / SA-LDG-01","Journal Print","SA-LDG-01"],
-  ["TN-07-M02","분개장","페이즈04_화면_v1.0.html#ldg02","v1.0 화면 페이즈04_화면_v1.0.html#ldg02 / 분개장 / SA-LDG-02","Journal Book","SA-LDG-02"],
-  ["TN-07-M03","일/월계표","페이즈04_화면_v1.0.html#ldg03","v1.0 화면 페이즈04_화면_v1.0.html#ldg03 / 일(월)계표 / SA-LDG-03","Daily Monthly Trial Balance","SA-LDG-03"],
-  ["TN-07-M04","총계정원장","페이즈04_화면_v1.0.html#ldg04","v1.0 화면 페이즈04_화면_v1.0.html#ldg04 / 총계정원장 / SA-LDG-04","General Ledger","SA-LDG-04"],
-  ["TN-07-M05","현금출납장","페이즈04_화면_v1.0.html#ldg05","v1.0 화면 페이즈04_화면_v1.0.html#ldg05 / 현금출납장 / SA-LDG-05","Cash Book","SA-LDG-05"],
-  ["TN-07-M06","계정별원장","페이즈04_화면_v1.0.html#ldg06","v1.0 화면 페이즈04_화면_v1.0.html#ldg06 / 계정별원장 / SA-LDG-06","Account Ledger","SA-LDG-06"],
-  ["TN-07-M07","거래처원장","페이즈04_화면_v1.0.html#ldg07","v1.0 화면 페이즈04_화면_v1.0.html#ldg07 / 거래처원장 / SA-LDG-07","Customer Ledger","SA-LDG-07"],
-  ["TN-07-M08","총괄원장","페이즈04_화면_v1.0.html#ldg08","v1.0 화면 페이즈04_화면_v1.0.html#ldg08 / 총괄원장 / SA-LDG-08","Consolidated Ledger","SA-LDG-08"],
-  ["TN-07-M09","매입매출장","페이즈04_화면_v1.0.html#ldg09","v1.0 화면 페이즈04_화면_v1.0.html#ldg09 / 매입매출장 / SA-LDG-09","Purchase Sales Ledger","SA-LDG-09"],
-  ["TN-07-M10","운행기록부","페이즈04_화면_v1.0.html#ldg17","v1.0 화면 페이즈04_화면_v1.0.html#ldg17 / 운행기록부(업무용승용차) / SA-LDG-17","Driving Log","SA-LDG-17"],
-  ["TN-07-M11","차량비용현황","페이즈04_화면_v1.0.html#ldg18","v1.0 화면 페이즈04_화면_v1.0.html#ldg18 / 차량비용현황 / SA-LDG-18","Vehicle Expense Status","SA-LDG-18"],
-  ["TN-05-M08","카드 보조원장","페이즈04_화면_v1.0.html#aux04","v1.0 화면 페이즈04_화면_v1.0.html#aux04 / 카드 보조원장 / AUX-04","Card Auxiliary Ledger","AUX-04"],
-  ["TN-05-M09","재고 수불부","페이즈04_화면_v1.0.html#aux08","v1.0 화면 페이즈04_화면_v1.0.html#aux08 / 재고 수불부 / AUX-08","Inventory Ledger","AUX-08"],
-  ["TN-07-M12","총계정관리원장","페이즈04_화면_v1.0.html#ldg10","v1.0 화면 페이즈04_화면_v1.0.html#ldg10 / 총계정관리원장 / SA-LDG-10","Managed General Ledger","SA-LDG-10"],
-  ["TN-07-M13","세금/계산서 발급 및 수취현황","페이즈04_화면_v1.0.html#ldg11","v1.0 화면 페이즈04_화면_v1.0.html#ldg11 / 세금/계산서 발급 및 수취현황 / SA-LDG-11","Tax Invoice Issue Receipt Status","SA-LDG-11"],
-  ["TN-07-M14","신용카드매출전표 발행현황","페이즈04_화면_v1.0.html#ldg12","v1.0 화면 페이즈04_화면_v1.0.html#ldg12 / 신용카드매출전표 발행현황 / SA-LDG-12","Credit Card Sales Slip Status","SA-LDG-12"],
-  ["TN-07-M15","적요별원장","페이즈04_화면_v1.0.html#ldg13","v1.0 화면 페이즈04_화면_v1.0.html#ldg13 / 적요별원장 / SA-LDG-13","Summary Ledger","SA-LDG-13"],
-  ["TN-07-M16","전도금원장","페이즈04_화면_v1.0.html#ldg14","v1.0 화면 페이즈04_화면_v1.0.html#ldg14 / 전도금원장 / SA-LDG-14","Imprest Fund Ledger","SA-LDG-14"],
-  ["TN-07-M17","공사대장","페이즈04_화면_v1.0.html#ldg15","v1.0 화면 페이즈04_화면_v1.0.html#ldg15 / 공사대장 / SA-LDG-15","Construction Ledger","SA-LDG-15"],
-  ["TN-07-M18","외주대장","페이즈04_화면_v1.0.html#ldg16","v1.0 화면 페이즈04_화면_v1.0.html#ldg16 / 외주대장 / SA-LDG-16","Subcontract Ledger","SA-LDG-16"],
-  ["TN-07-M19","현장/프로젝트/부서 원가안분","페이즈04_화면_v1.0.html#ldg19","v1.0 화면 페이즈04_화면_v1.0.html#ldg19 / 원가안분 / SA-LDG-19","Site Project Cost Allocation","SA-LDG-19"],
-  ["TN-07-M20","현장/프로젝트/부서 원가현황","페이즈04_화면_v1.0.html#ldg20","v1.0 화면 페이즈04_화면_v1.0.html#ldg20 / (차원별) 원가현황 / SA-LDG-20","Ledger Menu 20","SA-LDG-20"],
-  ["TN-07-M21","손익안분","페이즈04_화면_v1.0.html#ldg21","v1.0 화면 페이즈04_화면_v1.0.html#ldg21 / 손익안분 / SA-LDG-21","P&L Allocation","SA-LDG-21"],
-  ["TN-07-M22","손익현황","페이즈04_화면_v1.0.html#ldg22","v1.0 화면 페이즈04_화면_v1.0.html#ldg22 / (차원별) 손익현황 / SA-LDG-22","P&L Status","SA-LDG-22"],
-  ["TN-07-M23","현장/프로젝트/부서 원가손익","페이즈04_화면_v1.0.html#ldg23","v1.0 화면 페이즈04_화면_v1.0.html#ldg23 / (차원별) 원가손익 / SA-LDG-23","Ledger Menu 23","SA-LDG-23"],
-  ["TN-07-M24","현장별 공사원가집계표","페이즈04_화면_v1.0.html#ldg24","v1.0 화면 페이즈04_화면_v1.0.html#ldg24 / 현장별 공사원가집계표 / SA-LDG-24","Site Construction Cost Summary","SA-LDG-24"],
-  ["TN-07-M25","공사비용현황","페이즈04_화면_v1.0.html#ldg25","v1.0 화면 페이즈04_화면_v1.0.html#ldg25 / 현장별 공사비용현황 / SA-LDG-25","Ledger Menu 25","SA-LDG-25"],
-  ["TN-07-M26","현장별 잔액명세서","페이즈04_화면_v1.0.html#ldg26","v1.0 화면 페이즈04_화면_v1.0.html#ldg26 / 현장별 잔액명세서 / SA-LDG-26","Site Balance Statement","SA-LDG-26"],
-  ["TN-07-M27","차원 거래처원장","페이즈04_화면_v1.0.html#ldg27","v1.0 화면 페이즈04_화면_v1.0.html#ldg27 / 차원 거래처원장 / SA-LDG-27","Dimension Customer Ledger","SA-LDG-27"],
-  ["TN-07-M28","프로젝트 누적손익현황","페이즈04_화면_v1.0.html#ldg28","v1.0 화면 페이즈04_화면_v1.0.html#ldg28 / 프로젝트 누적손익현황 / SA-LDG-28","Ledger Menu 28","SA-LDG-28"],
-  ["TN-07-M29","프로젝트 누적원가현황","페이즈04_화면_v1.0.html#ldg29","v1.0 화면 페이즈04_화면_v1.0.html#ldg29 / 프로젝트 누적원가현황 / SA-LDG-29","Project Cumulative Cost Status","SA-LDG-29"],
-  ["TN-08-M01","결산자료입력","페이즈05_화면_v1.0.HTML#cls01","v1.0 화면 페이즈05_화면_v1.0.HTML#cls01 / 결산자료입력 / SA-CLS-01","Closing Data Input","SA-CLS-01"],
-  ["TN-08-M02","합계잔액시산표","페이즈05_화면_v1.0.HTML#cls02","v1.0 화면 페이즈05_화면_v1.0.HTML#cls02 / 합계잔액시산표 / SA-CLS-02","Trial Balance","SA-CLS-02"],
-  ["TN-08-M03","AI 합계잔액시산표","페이즈05_화면_v1.0.HTML#cls12","v1.0 화면 페이즈05_화면_v1.0.HTML#cls12 / AI 합계잔액시산표 / SA-CLS-12","AI Trial Balance","SA-CLS-12"],
-  ["TN-08-M04","재무상태표","페이즈05_화면_v1.0.HTML#cls03","v1.0 화면 페이즈05_화면_v1.0.HTML#cls03 / 재무상태표 (B/S) / SA-CLS-03","Statement of Financial Position","SA-CLS-03"],
-  ["TN-08-M05","손익계산서","페이즈05_화면_v1.0.HTML#cls04","v1.0 화면 페이즈05_화면_v1.0.HTML#cls04 / 손익계산서 (I/S) / SA-CLS-04","Income Statement","SA-CLS-04"],
-  ["TN-08-M06","제조원가명세서","페이즈05_화면_v1.0.HTML#cls05","v1.0 화면 페이즈05_화면_v1.0.HTML#cls05 / 제조원가명세서 (CM) / SA-CLS-05","Manufacturing Cost Statement","SA-CLS-05"],
-  ["TN-08-M07","이익잉여금처분계산서","페이즈05_화면_v1.0.HTML#cls06","v1.0 화면 페이즈05_화면_v1.0.HTML#cls06 / 이익잉여금처분계산서 / SA-CLS-06","Retained Earnings Appropriation","SA-CLS-06"],
-  ["TN-08-M08","자본변동표","페이즈05_화면_v1.0.HTML#cls07","v1.0 화면 페이즈05_화면_v1.0.HTML#cls07 / 자본변동표 (SCE) / SA-CLS-07","Statement of Changes in Equity","SA-CLS-07"],
-  ["TN-08-M09","현금흐름표","페이즈05_화면_v1.0.HTML#cls08","v1.0 화면 페이즈05_화면_v1.0.HTML#cls08 / 현금흐름표 (CF) / SA-CLS-08","Cash Flow Statement","SA-CLS-08"],
-  ["TN-08-M10","결산부속명세서","페이즈05_화면_v1.0.HTML#cls09","v1.0 화면 페이즈05_화면_v1.0.HTML#cls09 / 결산부속명세서 / SA-CLS-09","Closing Supplementary Schedules","SA-CLS-09"],
-  ["TN-08-M11","재무제표 일괄출력","페이즈05_화면_v1.0.HTML#cls13","v1.0 화면 페이즈05_화면_v1.0.HTML#cls13 / 재무제표 일괄출력 / SA-CLS-13","Financial Statement Batch Print","SA-CLS-13"],
-  ["TN-08-M12","경영정보","페이즈05_화면_v1.0.HTML#cls14","v1.0 화면 페이즈05_화면_v1.0.HTML#cls14 / 경영정보 분석 / SA-CLS-14","Management Information","SA-CLS-14"],
-  ["TN-08-M13","영수증수취명세서","페이즈05_화면_v1.0.HTML#cls15","v1.0 화면 페이즈05_화면_v1.0.HTML#cls15 / 영수증수취명세서 / SA-CLS-15","Receipt Collection Statement","SA-CLS-15"],
-  ["TN-08-M14","경비등의송금명세서","페이즈05_화면_v1.0.HTML#cls16","v1.0 화면 페이즈05_화면_v1.0.HTML#cls16 / 경비등의송금명세서 / SA-CLS-16","Expense Remittance Statement","SA-CLS-16"],
-  ["TN-08-M15","지출증명서류합계표","페이즈05_화면_v1.0.HTML#cls17","v1.0 화면 페이즈05_화면_v1.0.HTML#cls17 / 지출증명서류합계표 / SA-CLS-17","Expenditure Evidence Summary","SA-CLS-17"],
-  ["TN-08-M16","기간별손익계산서","페이즈05_화면_v1.0.HTML#cls18","v1.0 화면 페이즈05_화면_v1.0.HTML#cls18 / 기간별손익계산서 / SA-CLS-18","Period Income Statement","SA-CLS-18"],
-  ["TN-08-M17","기간별원가명세서","페이즈05_화면_v1.0.HTML#cls19","v1.0 화면 페이즈05_화면_v1.0.HTML#cls19 / 기간별원가명세서 / SA-CLS-19","Period Cost Statement","SA-CLS-19"],
-  ["TN-08-M18","현금및예금잔액검토","페이즈05_화면_v1.0.HTML#cls10","v1.0 화면 페이즈05_화면_v1.0.HTML#cls10 / 현금및예금잔액검토 / SA-CLS-10","Cash Deposit Balance Review","SA-CLS-10"],
-  ["TN-08-M19","카드·상품권 사용검토","페이즈05_화면_v1.0.HTML#cls11","v1.0 화면 페이즈05_화면_v1.0.HTML#cls11 / 신용카드·상품권 검토서식 / SA-CLS-11","Card Gift Certificate Usage Review","SA-CLS-11"],
-  ["TN-08-M20","중단사업손익계산서","페이즈05_화면_v1.0.HTML#cls20","v1.0 화면 페이즈05_화면_v1.0.HTML#cls20 / 중단사업손익계산서 / SA-CLS-20","Discontinued Ops Income Statement","SA-CLS-20"],
-  ["TN-08-M21","중단사업원가명세서","페이즈05_화면_v1.0.HTML#cls21","v1.0 화면 페이즈05_화면_v1.0.HTML#cls21 / 중단사업원가명세서 / SA-CLS-21","Discontinued Ops Cost Statement","SA-CLS-21"],
-  ["TN-09-M01","신고서 항목 매핑","페이즈06_화면_v1.0.HTML#home","v1.0 화면 페이즈06_화면_v1.0.HTML#home / 페이즈 06 — 부가가치세 주요신고 / SA-VAT-01~15","Return Field Mapping","SA-VAT-01"],
-  ["TN-09-M02","세무리스크 자동검증","페이즈06_화면_v1.0.HTML#vat02","v1.0 화면 페이즈06_화면_v1.0.HTML#vat02 / 세무리스크 자동검증 (부가가치세 MRI) / SA-VAT-02","VAT Filing Menu 2","SA-VAT-02"],
-  ["TN-09-M03","세금계산서합계표","페이즈06_화면_v1.0.HTML#vat03","v1.0 화면 페이즈06_화면_v1.0.HTML#vat03 / 세금계산서합계표 / SA-VAT-03","Tax Invoice Summary","SA-VAT-03"],
-  ["TN-09-M04","신용카드매출전표등 수령명세서","페이즈06_화면_v1.0.HTML#vat04","v1.0 화면 페이즈06_화면_v1.0.HTML#vat04 / 신용카드매출전표등 수령명세서 / SA-VAT-04","Credit Card Sales Receipt Statement","SA-VAT-04"],
-  ["TN-09-M05","신용카드매출전표 발행집계표","페이즈06_화면_v1.0.HTML#vat05","v1.0 화면 페이즈06_화면_v1.0.HTML#vat05 / 신용카드매출전표 발행집계표 / SA-VAT-05","Credit Card Sales Issue Summary","SA-VAT-05"],
-  ["TN-09-M06","계산서합계표","페이즈06_화면_v1.0.HTML#vat06","v1.0 화면 페이즈06_화면_v1.0.HTML#vat06 / 계산서합계표 / SA-VAT-06","Invoice Summary","SA-VAT-06"],
-  ["TN-09-M07","부가가치세 전자신고","페이즈06_화면_v1.0.HTML#vat07","v1.0 화면 페이즈06_화면_v1.0.HTML#vat07 / 부가가치세 전자신고 / SA-VAT-07","VAT E-Filing","SA-VAT-07"],
-  ["TN-09-M08","부가가치세 납부서","페이즈06_화면_v1.0.HTML#vat08","v1.0 화면 페이즈06_화면_v1.0.HTML#vat08 / 부가가치세 납부서 / SA-VAT-08","VAT Payment Form","SA-VAT-08"],
-  ["TN-09-M09","부동산임대공급가액명세서","페이즈06_화면_v1.0.HTML#vat09","v1.0 화면 페이즈06_화면_v1.0.HTML#vat09 / 부동산임대공급가액명세서 / SA-VAT-09","Real Estate Rental Supply Statement","SA-VAT-09"],
-  ["TN-09-M10","건물관리명세서","페이즈06_화면_v1.0.HTML#vat10","v1.0 화면 페이즈06_화면_v1.0.HTML#vat10 / 건물관리명세서 / SA-VAT-10","Building Management Statement","SA-VAT-10"],
-  ["TN-09-M11","의제매입세액공제신고서","페이즈06_화면_v1.0.HTML#vat11","v1.0 화면 페이즈06_화면_v1.0.HTML#vat11 / 의제매입세액공제신고서 / SA-VAT-11","Deemed Input Tax Credit Report","SA-VAT-11"],
-  ["TN-09-M12","재활용폐자원세액공제신고서","페이즈06_화면_v1.0.HTML#vat12","v1.0 화면 페이즈06_화면_v1.0.HTML#vat12 / 재활용폐자원세액공제신고서 / SA-VAT-12","Recycled Resource Tax Credit Report","SA-VAT-12"],
-  ["TN-09-M13","구리스크랩등 매입세액공제신고서","페이즈06_화면_v1.0.HTML#vat13","v1.0 화면 페이즈06_화면_v1.0.HTML#vat13 / 구리스크랩등 매입세액공제신고서 / SA-VAT-13","Copper Scrap Input Tax Credit Report","SA-VAT-13"],
-  ["TN-09-M14","현금매출명세서","페이즈06_화면_v1.0.HTML#vat14","v1.0 화면 페이즈06_화면_v1.0.HTML#vat14 / 현금매출명세서 / SA-VAT-14","Cash Sales Statement","SA-VAT-14"],
-  ["TN-09-M15","동물진료용역매출명세서","페이즈06_화면_v1.0.HTML#vat15","v1.0 화면 페이즈06_화면_v1.0.HTML#vat15 / 동물진료용역매출명세서 / SA-VAT-15","Veterinary Service Sales Statement","SA-VAT-15"],
-  ["TN-09-M16","면세유류공급명세서","페이즈07_화면_v1.0.HTML#home","v1.0 화면 페이즈07_화면_v1.0.HTML#home / 페이즈 07 — 부가세 첨부·업종별 서류 / SA-VAT-16~28·33~35","VAT Filing Menu 16","SA-VAT-16"],
-  ["TN-09-M17","공제받지못할매입세액명세서","페이즈07_화면_v1.0.HTML#vat22","v1.0 화면 페이즈07_화면_v1.0.HTML#vat22 / 공제받지못할매입세액명세서 / SA-VAT-22","Non-deductible Input VAT Statement","SA-VAT-22"],
-  ["TN-09-M18","건물등감가상각자산취득명세서","페이즈07_화면_v1.0.HTML#vat23","v1.0 화면 페이즈07_화면_v1.0.HTML#vat23 / 건물등감가상각자산취득명세서 / SA-VAT-23","Depreciable Asset Acquisition","SA-VAT-23"],
-  ["TN-09-M19","대손세액공제신고서","페이즈07_화면_v1.0.HTML#vat24","v1.0 화면 페이즈07_화면_v1.0.HTML#vat24 / 대손세액공제신고서 / SA-VAT-24","Bad Debt Tax Credit Report","SA-VAT-24"],
-  ["TN-09-M20","사업장별 부가세 납부/환급 신고명세","페이즈07_화면_v1.0.HTML#vat25","v1.0 화면 페이즈07_화면_v1.0.HTML#vat25 / 사업장별 부가세 납부/환급 신고명세 / SA-VAT-25","Workplace VAT Payment Refund Report","SA-VAT-25"],
-  ["TN-09-M21","사업자단위과세 사업장별 부가세","페이즈07_화면_v1.0.HTML#vat26","v1.0 화면 페이즈07_화면_v1.0.HTML#vat26 / 사업자단위과세 사업장별 부가세 / SA-VAT-26","Business Unit VAT by Workplace","SA-VAT-26"],
-  ["TN-09-M22","과표수정 및 추가납부계산서","페이즈07_화면_v1.0.HTML#vat27","v1.0 화면 페이즈07_화면_v1.0.HTML#vat27 / 과표수정 및 추가납부계산서(부가세) / SA-VAT-27","VAT Filing Menu 27","SA-VAT-27"],
-  ["TN-09-M23","과표 및 세액 경정청구서","페이즈07_화면_v1.0.HTML#vat28","v1.0 화면 페이즈07_화면_v1.0.HTML#vat28 / 과세표준수정 및 경정청구서(부가세) / SA-VAT-28","VAT Filing Menu 28","SA-VAT-28"],
-  ["TN-09-M24","관세환급금등명세서","페이즈07_화면_v1.0.HTML#vat33","v1.0 화면 페이즈07_화면_v1.0.HTML#vat33 / 관세환급금 등 명세서 / SA-VAT-33","Customs Refund Statement","SA-VAT-33"],
-  ["TN-09-M25","외국인관광객 면세판매 및 환급명세서","페이즈07_화면_v1.0.HTML#vat34","v1.0 화면 페이즈07_화면_v1.0.HTML#vat34 / 외국인관광객 면세물품 판매·환급실적 명세서 / SA-VAT-34","Foreigner Tax-free Sales Refund","SA-VAT-34"],
-  ["TN-09-M26","월별판매액합계표","페이즈07_화면_v1.0.HTML#vat17","v1.0 화면 페이즈07_화면_v1.0.HTML#vat17 / 월별 판매액 합계표(영세율) / SA-VAT-17","Monthly Sales Summary","SA-VAT-17"],
-  ["TN-09-M27","농어업기자재 부가세환급신청","페이즈07_화면_v1.0.HTML#vat18","v1.0 화면 페이즈07_화면_v1.0.HTML#vat18 / 농·어업용 기자재 환급신청서 / SA-VAT-18","Agricultural Materials VAT Refund","SA-VAT-18"],
-  ["TN-09-M28","전자화폐결제명세서","페이즈07_화면_v1.0.HTML#vat19","v1.0 화면 페이즈07_화면_v1.0.HTML#vat19 / 전자화폐 결제명세서 / SA-VAT-19","Electronic Money Payment Statement","SA-VAT-19"],
-  ["TN-09-M29","전자신고세액공제신청서","페이즈07_화면_v1.0.HTML#vat20","v1.0 화면 페이즈07_화면_v1.0.HTML#vat20 / 전자신고세액공제 명세 / SA-VAT-20","E-Filing Tax Credit Application","SA-VAT-20"],
-  ["TN-09-M30","보세판매장 공급실적","페이즈07_화면_v1.0.HTML#vat21","v1.0 화면 페이즈07_화면_v1.0.HTML#vat21 / 보세판매장 현황 명세서 / SA-VAT-21","Bonded Store Supply Performance","SA-VAT-21"],
-  ["TN-09-M31","외국인 의료용역 환급","페이즈07_화면_v1.0.HTML#vat35","v1.0 화면 페이즈07_화면_v1.0.HTML#vat35 / 미용·성형 등 의료용역 명세서(외국인환자) / SA-VAT-35","Foreigner Medical Service Refund","SA-VAT-35"],
-  ["TN-09-M32","수출실적명세서","페이즈08_화면_v1.0.HTML#vat29","v1.0 화면 페이즈08_화면_v1.0.HTML#vat29 / 수출실적명세서 / SA-VAT-29","Export Performance Statement","SA-VAT-29"],
-  ["TN-09-M33","영세율첨부서류제출명세서","페이즈08_화면_v1.0.HTML#vat30","v1.0 화면 페이즈08_화면_v1.0.HTML#vat30 / 영세율첨부서류제출명세서 / SA-VAT-30","Zero-rated Attachment Statement","SA-VAT-30"],
-  ["TN-09-M34","내국신용장/구매확인서 전자발급","페이즈08_화면_v1.0.HTML#vat31","v1.0 화면 페이즈08_화면_v1.0.HTML#vat31 / 내국신용장/구매확인서 전자발급 / SA-VAT-31","Local LC Purchase Confirmation Issue","SA-VAT-31"],
-  ["TN-09-M35","외화획득명세서","페이즈08_화면_v1.0.HTML#vat32","v1.0 화면 페이즈08_화면_v1.0.HTML#vat32 / 외화획득명세서 / SA-VAT-32","Foreign Currency Earning Statement","SA-VAT-32"],
-  ["TN-09-M36","재화·용역 공급기록표","페이즈08_화면_v1.0.HTML#vat39","v1.0 화면 페이즈08_화면_v1.0.HTML#vat39 / 재화·용역 공급기록표 / SA-VAT-39","Goods Services Supply Record","SA-VAT-39"],
-  ["TN-09-M37","공급가액확정명세서","페이즈08_화면_v1.0.HTML#vat40","v1.0 화면 페이즈08_화면_v1.0.HTML#vat40 / 공급가액확정명세서 / SA-VAT-40","Supply Value Confirmation Statement","SA-VAT-40"],
-  ["TN-09-M38","선박에 의한 운송용역 공급가액일람표","페이즈08_화면_v1.0.HTML#vat41","v1.0 화면 페이즈08_화면_v1.0.HTML#vat41 / 선박에 의한 운송용역 공급가액일람표 / SA-VAT-41","Ship Transport Supply Schedule","SA-VAT-41"],
-  ["TN-09-M39","외항선박등에 제공한 재화·용역 일람표","페이즈08_화면_v1.0.HTML#vat42","v1.0 화면 페이즈08_화면_v1.0.HTML#vat42 / 외항선박등에 제공한 재화·용역 일람표 / SA-VAT-42","Ocean Vessel Supply Schedule","SA-VAT-42"],
-  ["TN-09-M40","영세율매출명세서","페이즈08_화면_v1.0.HTML#vat43","v1.0 화면 페이즈08_화면_v1.0.HTML#vat43 / 영세율매출명세서 / SA-VAT-43","Zero-rated Sales Statement","SA-VAT-43"],
-  ["TN-09-M41","사업용계좌 개설신고서","페이즈08_화면_v1.0.HTML#vat48","v1.0 화면 페이즈08_화면_v1.0.HTML#vat48 / 사업용계좌 개설신고서 / SA-VAT-48","Business Account Opening Report","SA-VAT-48"],
-  ["TN-09-M42","납부서 작성","페이즈08_화면_v1.0.HTML#vat49","v1.0 화면 페이즈08_화면_v1.0.HTML#vat49 / 납부서 작성(전세목) / SA-VAT-49","Payment Form Entry","SA-VAT-49"],
+  ["TN-06-G03-M04","ScrappingBoard — 3차","페이즈03_화면_v1.0.html#atx10","v1.0 화면 페이즈03_화면_v1.0.html#atx10 / ScrappingBoard / SA-ATX-10","Auto Journal Evidence Menu 10","SA-ATX-10"],
+  ["TN-05-G01-M01","거래처별 보조원장","페이즈04_화면_v1.0.html#aux01","v1.0 화면 페이즈04_화면_v1.0.html#aux01 / 거래처별 보조원장 / AUX-01","Customer Auxiliary Ledger","AUX-01"],
+  ["TN-05-G01-M02","어음 보조원장","페이즈04_화면_v1.0.html#aux02","v1.0 화면 페이즈04_화면_v1.0.html#aux02 / 어음 보조원장 / AUX-02","Bills Auxiliary Ledger","AUX-02"],
+  ["TN-05-G01-M03","예금 보조원장","페이즈04_화면_v1.0.html#aux03","v1.0 화면 페이즈04_화면_v1.0.html#aux03 / 예금 보조원장 / AUX-03","Deposit Auxiliary Ledger","AUX-03"],
+  ["TN-05-G01-M04","가지급금·가수금 보조원장","페이즈04_화면_v1.0.html#aux05","v1.0 화면 페이즈04_화면_v1.0.html#aux05 / 가지급금·가수금 보조원장 / AUX-05","Advance Receipt Payment Ledger","AUX-05"],
+  ["TN-05-G01-M05","부가세 보조원장","페이즈04_화면_v1.0.html#aux06","v1.0 화면 페이즈04_화면_v1.0.html#aux06 / 부가세 보조원장 / AUX-06","VAT Auxiliary Ledger","AUX-06"],
+  ["TN-05-G01-M06","현금출납장","페이즈04_화면_v1.0.html#aux07","v1.0 화면 페이즈04_화면_v1.0.html#aux07 / 현금출납장(보조부) / AUX-07","Cash Book","AUX-07"],
+  ["TN-05-G01-M07","고정자산대장","페이즈04_화면_v1.0.html#aux09","v1.0 화면 페이즈04_화면_v1.0.html#aux09 / 고정자산대장(기초) / AUX-09","Fixed Asset Ledger","AUX-09"],
+  ["TN-07-G01-M01","전표출력","페이즈04_화면_v1.0.html#ldg01","v1.0 화면 페이즈04_화면_v1.0.html#ldg01 / 전표출력 / SA-LDG-01","Journal Print","SA-LDG-01"],
+  ["TN-07-G01-M02","분개장","페이즈04_화면_v1.0.html#ldg02","v1.0 화면 페이즈04_화면_v1.0.html#ldg02 / 분개장 / SA-LDG-02","Journal Book","SA-LDG-02"],
+  ["TN-07-G01-M03","일/월계표","페이즈04_화면_v1.0.html#ldg03","v1.0 화면 페이즈04_화면_v1.0.html#ldg03 / 일(월)계표 / SA-LDG-03","Daily Monthly Trial Balance","SA-LDG-03"],
+  ["TN-07-G01-M04","총계정원장","페이즈04_화면_v1.0.html#ldg04","v1.0 화면 페이즈04_화면_v1.0.html#ldg04 / 총계정원장 / SA-LDG-04","General Ledger","SA-LDG-04"],
+  ["TN-07-G01-M05","현금출납장","페이즈04_화면_v1.0.html#ldg05","v1.0 화면 페이즈04_화면_v1.0.html#ldg05 / 현금출납장 / SA-LDG-05","Cash Book","SA-LDG-05"],
+  ["TN-07-G01-M06","계정별원장","페이즈04_화면_v1.0.html#ldg06","v1.0 화면 페이즈04_화면_v1.0.html#ldg06 / 계정별원장 / SA-LDG-06","Account Ledger","SA-LDG-06"],
+  ["TN-07-G01-M07","거래처원장","페이즈04_화면_v1.0.html#ldg07","v1.0 화면 페이즈04_화면_v1.0.html#ldg07 / 거래처원장 / SA-LDG-07","Customer Ledger","SA-LDG-07"],
+  ["TN-07-G01-M08","총괄원장","페이즈04_화면_v1.0.html#ldg08","v1.0 화면 페이즈04_화면_v1.0.html#ldg08 / 총괄원장 / SA-LDG-08","Consolidated Ledger","SA-LDG-08"],
+  ["TN-07-G01-M09","매입매출장","페이즈04_화면_v1.0.html#ldg09","v1.0 화면 페이즈04_화면_v1.0.html#ldg09 / 매입매출장 / SA-LDG-09","Purchase Sales Ledger","SA-LDG-09"],
+  ["TN-07-G02-M01","운행기록부","페이즈04_화면_v1.0.html#ldg17","v1.0 화면 페이즈04_화면_v1.0.html#ldg17 / 운행기록부(업무용승용차) / SA-LDG-17","Driving Log","SA-LDG-17"],
+  ["TN-07-G02-M02","차량비용현황","페이즈04_화면_v1.0.html#ldg18","v1.0 화면 페이즈04_화면_v1.0.html#ldg18 / 차량비용현황 / SA-LDG-18","Vehicle Expense Status","SA-LDG-18"],
+  ["TN-05-G01-M08","카드 보조원장","페이즈04_화면_v1.0.html#aux04","v1.0 화면 페이즈04_화면_v1.0.html#aux04 / 카드 보조원장 / AUX-04","Card Auxiliary Ledger","AUX-04"],
+  ["TN-05-G01-M09","재고 수불부","페이즈04_화면_v1.0.html#aux08","v1.0 화면 페이즈04_화면_v1.0.html#aux08 / 재고 수불부 / AUX-08","Inventory Ledger","AUX-08"],
+  ["TN-07-G02-M03","총계정관리원장","페이즈04_화면_v1.0.html#ldg10","v1.0 화면 페이즈04_화면_v1.0.html#ldg10 / 총계정관리원장 / SA-LDG-10","Managed General Ledger","SA-LDG-10"],
+  ["TN-07-G02-M04","세금/계산서 발급 및 수취현황","페이즈04_화면_v1.0.html#ldg11","v1.0 화면 페이즈04_화면_v1.0.html#ldg11 / 세금/계산서 발급 및 수취현황 / SA-LDG-11","Tax Invoice Issue Receipt Status","SA-LDG-11"],
+  ["TN-07-G02-M05","신용카드매출전표 발행현황","페이즈04_화면_v1.0.html#ldg12","v1.0 화면 페이즈04_화면_v1.0.html#ldg12 / 신용카드매출전표 발행현황 / SA-LDG-12","Credit Card Sales Slip Status","SA-LDG-12"],
+  ["TN-07-G02-M06","적요별원장","페이즈04_화면_v1.0.html#ldg13","v1.0 화면 페이즈04_화면_v1.0.html#ldg13 / 적요별원장 / SA-LDG-13","Summary Ledger","SA-LDG-13"],
+  ["TN-07-G02-M07","전도금원장","페이즈04_화면_v1.0.html#ldg14","v1.0 화면 페이즈04_화면_v1.0.html#ldg14 / 전도금원장 / SA-LDG-14","Imprest Fund Ledger","SA-LDG-14"],
+  ["TN-07-G03-M01","공사대장","페이즈04_화면_v1.0.html#ldg15","v1.0 화면 페이즈04_화면_v1.0.html#ldg15 / 공사대장 / SA-LDG-15","Construction Ledger","SA-LDG-15"],
+  ["TN-07-G03-M02","외주대장","페이즈04_화면_v1.0.html#ldg16","v1.0 화면 페이즈04_화면_v1.0.html#ldg16 / 외주대장 / SA-LDG-16","Subcontract Ledger","SA-LDG-16"],
+  ["TN-07-G03-M03","현장/프로젝트/부서 원가안분","페이즈04_화면_v1.0.html#ldg19","v1.0 화면 페이즈04_화면_v1.0.html#ldg19 / 원가안분 / SA-LDG-19","Site Project Cost Allocation","SA-LDG-19"],
+  ["TN-07-G03-M04","현장/프로젝트/부서 원가현황","페이즈04_화면_v1.0.html#ldg20","v1.0 화면 페이즈04_화면_v1.0.html#ldg20 / (차원별) 원가현황 / SA-LDG-20","Ledger Menu 20","SA-LDG-20"],
+  ["TN-07-G04-M01","손익안분","페이즈04_화면_v1.0.html#ldg21","v1.0 화면 페이즈04_화면_v1.0.html#ldg21 / 손익안분 / SA-LDG-21","P&L Allocation","SA-LDG-21"],
+  ["TN-07-G04-M02","손익현황","페이즈04_화면_v1.0.html#ldg22","v1.0 화면 페이즈04_화면_v1.0.html#ldg22 / (차원별) 손익현황 / SA-LDG-22","P&L Status","SA-LDG-22"],
+  ["TN-07-G03-M05","현장/프로젝트/부서 원가손익","페이즈04_화면_v1.0.html#ldg23","v1.0 화면 페이즈04_화면_v1.0.html#ldg23 / (차원별) 원가손익 / SA-LDG-23","Ledger Menu 23","SA-LDG-23"],
+  ["TN-07-G03-M06","현장별 공사원가집계표","페이즈04_화면_v1.0.html#ldg24","v1.0 화면 페이즈04_화면_v1.0.html#ldg24 / 현장별 공사원가집계표 / SA-LDG-24","Site Construction Cost Summary","SA-LDG-24"],
+  ["TN-07-G03-M07","공사비용현황","페이즈04_화면_v1.0.html#ldg25","v1.0 화면 페이즈04_화면_v1.0.html#ldg25 / 현장별 공사비용현황 / SA-LDG-25","Ledger Menu 25","SA-LDG-25"],
+  ["TN-07-G03-M08","현장별 잔액명세서","페이즈04_화면_v1.0.html#ldg26","v1.0 화면 페이즈04_화면_v1.0.html#ldg26 / 현장별 잔액명세서 / SA-LDG-26","Site Balance Statement","SA-LDG-26"],
+  ["TN-07-G04-M03","차원 거래처원장","페이즈04_화면_v1.0.html#ldg27","v1.0 화면 페이즈04_화면_v1.0.html#ldg27 / 차원 거래처원장 / SA-LDG-27","Dimension Customer Ledger","SA-LDG-27"],
+  ["TN-07-G04-M04","프로젝트 누적손익현황","페이즈04_화면_v1.0.html#ldg28","v1.0 화면 페이즈04_화면_v1.0.html#ldg28 / 프로젝트 누적손익현황 / SA-LDG-28","Ledger Menu 28","SA-LDG-28"],
+  ["TN-07-G04-M05","프로젝트 누적원가현황","페이즈04_화면_v1.0.html#ldg29","v1.0 화면 페이즈04_화면_v1.0.html#ldg29 / 프로젝트 누적원가현황 / SA-LDG-29","Project Cumulative Cost Status","SA-LDG-29"],
+  ["TN-08-G01-M01","결산자료입력","페이즈05_화면_v1.0.HTML#cls01","v1.0 화면 페이즈05_화면_v1.0.HTML#cls01 / 결산자료입력 / SA-CLS-01","Closing Data Input","SA-CLS-01"],
+  ["TN-08-G01-M02","합계잔액시산표","페이즈05_화면_v1.0.HTML#cls02","v1.0 화면 페이즈05_화면_v1.0.HTML#cls02 / 합계잔액시산표 / SA-CLS-02","Trial Balance","SA-CLS-02"],
+  ["TN-08-G01-M03","AI 합계잔액시산표","페이즈05_화면_v1.0.HTML#cls12","v1.0 화면 페이즈05_화면_v1.0.HTML#cls12 / AI 합계잔액시산표 / SA-CLS-12","AI Trial Balance","SA-CLS-12"],
+  ["TN-08-G02-M01","재무상태표","페이즈05_화면_v1.0.HTML#cls03","v1.0 화면 페이즈05_화면_v1.0.HTML#cls03 / 재무상태표 (B/S) / SA-CLS-03","Statement of Financial Position","SA-CLS-03"],
+  ["TN-08-G02-M02","손익계산서","페이즈05_화면_v1.0.HTML#cls04","v1.0 화면 페이즈05_화면_v1.0.HTML#cls04 / 손익계산서 (I/S) / SA-CLS-04","Income Statement","SA-CLS-04"],
+  ["TN-08-G02-M03","제조원가명세서","페이즈05_화면_v1.0.HTML#cls05","v1.0 화면 페이즈05_화면_v1.0.HTML#cls05 / 제조원가명세서 (CM) / SA-CLS-05","Manufacturing Cost Statement","SA-CLS-05"],
+  ["TN-08-G02-M04","이익잉여금처분계산서","페이즈05_화면_v1.0.HTML#cls06","v1.0 화면 페이즈05_화면_v1.0.HTML#cls06 / 이익잉여금처분계산서 / SA-CLS-06","Retained Earnings Appropriation","SA-CLS-06"],
+  ["TN-08-G02-M05","자본변동표","페이즈05_화면_v1.0.HTML#cls07","v1.0 화면 페이즈05_화면_v1.0.HTML#cls07 / 자본변동표 (SCE) / SA-CLS-07","Statement of Changes in Equity","SA-CLS-07"],
+  ["TN-08-G02-M06","현금흐름표","페이즈05_화면_v1.0.HTML#cls08","v1.0 화면 페이즈05_화면_v1.0.HTML#cls08 / 현금흐름표 (CF) / SA-CLS-08","Cash Flow Statement","SA-CLS-08"],
+  ["TN-08-G03-M01","결산부속명세서","페이즈05_화면_v1.0.HTML#cls09","v1.0 화면 페이즈05_화면_v1.0.HTML#cls09 / 결산부속명세서 / SA-CLS-09","Closing Supplementary Schedules","SA-CLS-09"],
+  ["TN-08-G02-M07","재무제표 일괄출력","페이즈05_화면_v1.0.HTML#cls13","v1.0 화면 페이즈05_화면_v1.0.HTML#cls13 / 재무제표 일괄출력 / SA-CLS-13","Financial Statement Batch Print","SA-CLS-13"],
+  ["TN-08-G04-M01","경영정보","페이즈05_화면_v1.0.HTML#cls14","v1.0 화면 페이즈05_화면_v1.0.HTML#cls14 / 경영정보 분석 / SA-CLS-14","Management Information","SA-CLS-14"],
+  ["TN-08-G03-M02","영수증수취명세서","페이즈05_화면_v1.0.HTML#cls15","v1.0 화면 페이즈05_화면_v1.0.HTML#cls15 / 영수증수취명세서 / SA-CLS-15","Receipt Collection Statement","SA-CLS-15"],
+  ["TN-08-G03-M03","경비등의송금명세서","페이즈05_화면_v1.0.HTML#cls16","v1.0 화면 페이즈05_화면_v1.0.HTML#cls16 / 경비등의송금명세서 / SA-CLS-16","Expense Remittance Statement","SA-CLS-16"],
+  ["TN-08-G03-M04","지출증명서류합계표","페이즈05_화면_v1.0.HTML#cls17","v1.0 화면 페이즈05_화면_v1.0.HTML#cls17 / 지출증명서류합계표 / SA-CLS-17","Expenditure Evidence Summary","SA-CLS-17"],
+  ["TN-08-G04-M02","기간별손익계산서","페이즈05_화면_v1.0.HTML#cls18","v1.0 화면 페이즈05_화면_v1.0.HTML#cls18 / 기간별손익계산서 / SA-CLS-18","Period Income Statement","SA-CLS-18"],
+  ["TN-08-G04-M03","기간별원가명세서","페이즈05_화면_v1.0.HTML#cls19","v1.0 화면 페이즈05_화면_v1.0.HTML#cls19 / 기간별원가명세서 / SA-CLS-19","Period Cost Statement","SA-CLS-19"],
+  ["TN-08-G04-M04","현금및예금잔액검토","페이즈05_화면_v1.0.HTML#cls10","v1.0 화면 페이즈05_화면_v1.0.HTML#cls10 / 현금및예금잔액검토 / SA-CLS-10","Cash Deposit Balance Review","SA-CLS-10"],
+  ["TN-08-G04-M05","카드·상품권 사용검토","페이즈05_화면_v1.0.HTML#cls11","v1.0 화면 페이즈05_화면_v1.0.HTML#cls11 / 신용카드·상품권 검토서식 / SA-CLS-11","Card Gift Certificate Usage Review","SA-CLS-11"],
+  ["TN-08-G05-M01","중단사업손익계산서","페이즈05_화면_v1.0.HTML#cls20","v1.0 화면 페이즈05_화면_v1.0.HTML#cls20 / 중단사업손익계산서 / SA-CLS-20","Discontinued Ops Income Statement","SA-CLS-20"],
+  ["TN-08-G05-M02","중단사업원가명세서","페이즈05_화면_v1.0.HTML#cls21","v1.0 화면 페이즈05_화면_v1.0.HTML#cls21 / 중단사업원가명세서 / SA-CLS-21","Discontinued Ops Cost Statement","SA-CLS-21"],
+  ["TN-09-G01-M01","신고서 항목 매핑","페이즈06_화면_v1.0.HTML#home","v1.0 화면 페이즈06_화면_v1.0.HTML#home / 페이즈 06 — 부가가치세 주요신고 / SA-VAT-01~15","Return Field Mapping","SA-VAT-01"],
+  ["TN-09-G01-M02","세무리스크 자동검증","페이즈06_화면_v1.0.HTML#vat02","v1.0 화면 페이즈06_화면_v1.0.HTML#vat02 / 세무리스크 자동검증 (부가가치세 MRI) / SA-VAT-02","VAT Filing Menu 2","SA-VAT-02"],
+  ["TN-09-G02-M01","세금계산서합계표","페이즈06_화면_v1.0.HTML#vat03","v1.0 화면 페이즈06_화면_v1.0.HTML#vat03 / 세금계산서합계표 / SA-VAT-03","Tax Invoice Summary","SA-VAT-03"],
+  ["TN-09-G02-M02","신용카드매출전표등 수령명세서","페이즈06_화면_v1.0.HTML#vat04","v1.0 화면 페이즈06_화면_v1.0.HTML#vat04 / 신용카드매출전표등 수령명세서 / SA-VAT-04","Credit Card Sales Receipt Statement","SA-VAT-04"],
+  ["TN-09-G02-M03","신용카드매출전표 발행집계표","페이즈06_화면_v1.0.HTML#vat05","v1.0 화면 페이즈06_화면_v1.0.HTML#vat05 / 신용카드매출전표 발행집계표 / SA-VAT-05","Credit Card Sales Issue Summary","SA-VAT-05"],
+  ["TN-09-G02-M04","계산서합계표","페이즈06_화면_v1.0.HTML#vat06","v1.0 화면 페이즈06_화면_v1.0.HTML#vat06 / 계산서합계표 / SA-VAT-06","Invoice Summary","SA-VAT-06"],
+  ["TN-09-G01-M03","부가가치세 전자신고","페이즈06_화면_v1.0.HTML#vat07","v1.0 화면 페이즈06_화면_v1.0.HTML#vat07 / 부가가치세 전자신고 / SA-VAT-07","VAT E-Filing","SA-VAT-07"],
+  ["TN-09-G01-M04","부가가치세 납부서","페이즈06_화면_v1.0.HTML#vat08","v1.0 화면 페이즈06_화면_v1.0.HTML#vat08 / 부가가치세 납부서 / SA-VAT-08","VAT Payment Form","SA-VAT-08"],
+  ["TN-09-G04-M01","부동산임대공급가액명세서","페이즈06_화면_v1.0.HTML#vat09","v1.0 화면 페이즈06_화면_v1.0.HTML#vat09 / 부동산임대공급가액명세서 / SA-VAT-09","Real Estate Rental Supply Statement","SA-VAT-09"],
+  ["TN-09-G04-M02","건물관리명세서","페이즈06_화면_v1.0.HTML#vat10","v1.0 화면 페이즈06_화면_v1.0.HTML#vat10 / 건물관리명세서 / SA-VAT-10","Building Management Statement","SA-VAT-10"],
+  ["TN-09-G03-M01","의제매입세액공제신고서","페이즈06_화면_v1.0.HTML#vat11","v1.0 화면 페이즈06_화면_v1.0.HTML#vat11 / 의제매입세액공제신고서 / SA-VAT-11","Deemed Input Tax Credit Report","SA-VAT-11"],
+  ["TN-09-G03-M02","재활용폐자원세액공제신고서","페이즈06_화면_v1.0.HTML#vat12","v1.0 화면 페이즈06_화면_v1.0.HTML#vat12 / 재활용폐자원세액공제신고서 / SA-VAT-12","Recycled Resource Tax Credit Report","SA-VAT-12"],
+  ["TN-09-G03-M03","구리스크랩등 매입세액공제신고서","페이즈06_화면_v1.0.HTML#vat13","v1.0 화면 페이즈06_화면_v1.0.HTML#vat13 / 구리스크랩등 매입세액공제신고서 / SA-VAT-13","Copper Scrap Input Tax Credit Report","SA-VAT-13"],
+  ["TN-09-G02-M05","현금매출명세서","페이즈06_화면_v1.0.HTML#vat14","v1.0 화면 페이즈06_화면_v1.0.HTML#vat14 / 현금매출명세서 / SA-VAT-14","Cash Sales Statement","SA-VAT-14"],
+  ["TN-09-G04-M03","동물진료용역매출명세서","페이즈06_화면_v1.0.HTML#vat15","v1.0 화면 페이즈06_화면_v1.0.HTML#vat15 / 동물진료용역매출명세서 / SA-VAT-15","Veterinary Service Sales Statement","SA-VAT-15"],
+  ["TN-09-G04-M04","면세유류공급명세서","페이즈07_화면_v1.0.HTML#home","v1.0 화면 페이즈07_화면_v1.0.HTML#home / 페이즈 07 — 부가세 첨부·업종별 서류 / SA-VAT-16~28·33~35","VAT Filing Menu 16","SA-VAT-16"],
+  ["TN-09-G03-M04","공제받지못할매입세액명세서","페이즈07_화면_v1.0.HTML#vat22","v1.0 화면 페이즈07_화면_v1.0.HTML#vat22 / 공제받지못할매입세액명세서 / SA-VAT-22","Non-deductible Input VAT Statement","SA-VAT-22"],
+  ["TN-09-G03-M05","건물등감가상각자산취득명세서","페이즈07_화면_v1.0.HTML#vat23","v1.0 화면 페이즈07_화면_v1.0.HTML#vat23 / 건물등감가상각자산취득명세서 / SA-VAT-23","Depreciable Asset Acquisition","SA-VAT-23"],
+  ["TN-09-G03-M06","대손세액공제신고서","페이즈07_화면_v1.0.HTML#vat24","v1.0 화면 페이즈07_화면_v1.0.HTML#vat24 / 대손세액공제신고서 / SA-VAT-24","Bad Debt Tax Credit Report","SA-VAT-24"],
+  ["TN-09-G01-M05","사업장별 부가세 납부/환급 신고명세","페이즈07_화면_v1.0.HTML#vat25","v1.0 화면 페이즈07_화면_v1.0.HTML#vat25 / 사업장별 부가세 납부/환급 신고명세 / SA-VAT-25","Workplace VAT Payment Refund Report","SA-VAT-25"],
+  ["TN-09-G01-M06","사업자단위과세 사업장별 부가세","페이즈07_화면_v1.0.HTML#vat26","v1.0 화면 페이즈07_화면_v1.0.HTML#vat26 / 사업자단위과세 사업장별 부가세 / SA-VAT-26","Business Unit VAT by Workplace","SA-VAT-26"],
+  ["TN-09-G01-M07","과표수정 및 추가납부계산서","페이즈07_화면_v1.0.HTML#vat27","v1.0 화면 페이즈07_화면_v1.0.HTML#vat27 / 과표수정 및 추가납부계산서(부가세) / SA-VAT-27","VAT Filing Menu 27","SA-VAT-27"],
+  ["TN-09-G01-M08","과표 및 세액 경정청구서","페이즈07_화면_v1.0.HTML#vat28","v1.0 화면 페이즈07_화면_v1.0.HTML#vat28 / 과세표준수정 및 경정청구서(부가세) / SA-VAT-28","VAT Filing Menu 28","SA-VAT-28"],
+  ["TN-09-G04-M05","관세환급금등명세서","페이즈07_화면_v1.0.HTML#vat33","v1.0 화면 페이즈07_화면_v1.0.HTML#vat33 / 관세환급금 등 명세서 / SA-VAT-33","Customs Refund Statement","SA-VAT-33"],
+  ["TN-09-G06-M01","외국인관광객 면세판매 및 환급명세서","페이즈07_화면_v1.0.HTML#vat34","v1.0 화면 페이즈07_화면_v1.0.HTML#vat34 / 외국인관광객 면세물품 판매·환급실적 명세서 / SA-VAT-34","Foreigner Tax-free Sales Refund","SA-VAT-34"],
+  ["TN-09-G02-M06","월별판매액합계표","페이즈07_화면_v1.0.HTML#vat17","v1.0 화면 페이즈07_화면_v1.0.HTML#vat17 / 월별 판매액 합계표(영세율) / SA-VAT-17","Monthly Sales Summary","SA-VAT-17"],
+  ["TN-09-G03-M07","농어업기자재 부가세환급신청","페이즈07_화면_v1.0.HTML#vat18","v1.0 화면 페이즈07_화면_v1.0.HTML#vat18 / 농·어업용 기자재 환급신청서 / SA-VAT-18","Agricultural Materials VAT Refund","SA-VAT-18"],
+  ["TN-09-G04-M06","전자화폐결제명세서","페이즈07_화면_v1.0.HTML#vat19","v1.0 화면 페이즈07_화면_v1.0.HTML#vat19 / 전자화폐 결제명세서 / SA-VAT-19","Electronic Money Payment Statement","SA-VAT-19"],
+  ["TN-09-G03-M08","전자신고세액공제신청서","페이즈07_화면_v1.0.HTML#vat20","v1.0 화면 페이즈07_화면_v1.0.HTML#vat20 / 전자신고세액공제 명세 / SA-VAT-20","E-Filing Tax Credit Application","SA-VAT-20"],
+  ["TN-09-G04-M07","보세판매장 공급실적","페이즈07_화면_v1.0.HTML#vat21","v1.0 화면 페이즈07_화면_v1.0.HTML#vat21 / 보세판매장 현황 명세서 / SA-VAT-21","Bonded Store Supply Performance","SA-VAT-21"],
+  ["TN-09-G06-M02","외국인 의료용역 환급","페이즈07_화면_v1.0.HTML#vat35","v1.0 화면 페이즈07_화면_v1.0.HTML#vat35 / 미용·성형 등 의료용역 명세서(외국인환자) / SA-VAT-35","Foreigner Medical Service Refund","SA-VAT-35"],
+  ["TN-09-G05-M01","수출실적명세서","페이즈08_화면_v1.0.HTML#vat29","v1.0 화면 페이즈08_화면_v1.0.HTML#vat29 / 수출실적명세서 / SA-VAT-29","Export Performance Statement","SA-VAT-29"],
+  ["TN-09-G05-M02","영세율첨부서류제출명세서","페이즈08_화면_v1.0.HTML#vat30","v1.0 화면 페이즈08_화면_v1.0.HTML#vat30 / 영세율첨부서류제출명세서 / SA-VAT-30","Zero-rated Attachment Statement","SA-VAT-30"],
+  ["TN-09-G05-M03","내국신용장/구매확인서 전자발급","페이즈08_화면_v1.0.HTML#vat31","v1.0 화면 페이즈08_화면_v1.0.HTML#vat31 / 내국신용장/구매확인서 전자발급 / SA-VAT-31","Local LC Purchase Confirmation Issue","SA-VAT-31"],
+  ["TN-09-G05-M04","외화획득명세서","페이즈08_화면_v1.0.HTML#vat32","v1.0 화면 페이즈08_화면_v1.0.HTML#vat32 / 외화획득명세서 / SA-VAT-32","Foreign Currency Earning Statement","SA-VAT-32"],
+  ["TN-09-G05-M05","재화·용역 공급기록표","페이즈08_화면_v1.0.HTML#vat39","v1.0 화면 페이즈08_화면_v1.0.HTML#vat39 / 재화·용역 공급기록표 / SA-VAT-39","Goods Services Supply Record","SA-VAT-39"],
+  ["TN-09-G05-M06","공급가액확정명세서","페이즈08_화면_v1.0.HTML#vat40","v1.0 화면 페이즈08_화면_v1.0.HTML#vat40 / 공급가액확정명세서 / SA-VAT-40","Supply Value Confirmation Statement","SA-VAT-40"],
+  ["TN-09-G05-M07","선박에 의한 운송용역 공급가액일람표","페이즈08_화면_v1.0.HTML#vat41","v1.0 화면 페이즈08_화면_v1.0.HTML#vat41 / 선박에 의한 운송용역 공급가액일람표 / SA-VAT-41","Ship Transport Supply Schedule","SA-VAT-41"],
+  ["TN-09-G05-M08","외항선박등에 제공한 재화·용역 일람표","페이즈08_화면_v1.0.HTML#vat42","v1.0 화면 페이즈08_화면_v1.0.HTML#vat42 / 외항선박등에 제공한 재화·용역 일람표 / SA-VAT-42","Ocean Vessel Supply Schedule","SA-VAT-42"],
+  ["TN-09-G05-M09","영세율매출명세서","페이즈08_화면_v1.0.HTML#vat43","v1.0 화면 페이즈08_화면_v1.0.HTML#vat43 / 영세율매출명세서 / SA-VAT-43","Zero-rated Sales Statement","SA-VAT-43"],
+  ["TN-09-G06-M03","사업용계좌 개설신고서","페이즈08_화면_v1.0.HTML#vat48","v1.0 화면 페이즈08_화면_v1.0.HTML#vat48 / 사업용계좌 개설신고서 / SA-VAT-48","Business Account Opening Report","SA-VAT-48"],
+  ["TN-09-G01-M09","납부서 작성","페이즈08_화면_v1.0.HTML#vat49","v1.0 화면 페이즈08_화면_v1.0.HTML#vat49 / 납부서 작성(전세목) / SA-VAT-49","Payment Form Entry","SA-VAT-49"],
   ["TN-10-M01","고정자산등록","페이즈08_화면_v1.0.HTML#fa01","v1.0 화면 페이즈08_화면_v1.0.HTML#fa01 / 고정자산등록 / SA-FA-01","Fixed Asset Registration","SA-FA-01"],
   ["TN-10-M02","미상각분 감가상각계산","페이즈08_화면_v1.0.HTML#fa02","v1.0 화면 페이즈08_화면_v1.0.HTML#fa02 / 미상각분 감가상각계산 / SA-FA-02","Undepreciated Asset Depreciation","SA-FA-02"],
   ["TN-10-M03","양도자산 감가상각계산","페이즈08_화면_v1.0.HTML#fa03","v1.0 화면 페이즈08_화면_v1.0.HTML#fa03 / 양도자산 감가상각계산 / SA-FA-03","Transferred Asset Depreciation","SA-FA-03"],
@@ -752,48 +756,120 @@ var MENU_MASTER_ROWS=[
   ["TN-10-M05","고정자산관리대장","페이즈08_화면_v1.0.HTML#fa05","v1.0 화면 페이즈08_화면_v1.0.HTML#fa05 / 고정자산관리대장 / SA-FA-05","Fixed Asset Ledger","SA-FA-05"],
   ["TN-10-M06","현장/프로젝트/부서 자산명세서","페이즈08_화면_v1.0.HTML#fa06","v1.0 화면 페이즈08_화면_v1.0.HTML#fa06 / 현장/프로젝트/부서 자산명세서 / SA-FA-06","Asset Statement by Site Project","SA-FA-06"],
   ["TN-10-M07","월별 감가상각비 계상","페이즈08_화면_v1.0.HTML#fa07","v1.0 화면 페이즈08_화면_v1.0.HTML#fa07 / 월별 감가상각비 계상 / SA-FA-07","Monthly Depreciation Posting","SA-FA-07"],
-  ["TN-09-M43","외국인관광객 숙박용역 환급실적명세서","페이즈08_화면_v1.0.HTML#vat36","v1.0 화면 페이즈08_화면_v1.0.HTML#vat36 / 외국인관광객 숙박용역 환급실적명세서 / SA-VAT-36","Foreigner Lodging Service Refund","SA-VAT-36"],
-  ["TN-09-M44","외국인 즉시환급 판매","페이즈08_화면_v1.0.HTML#vat37","v1.0 화면 페이즈08_화면_v1.0.HTML#vat37 / 외국인관광객 즉시환급 물품판매실적명세서 / SA-VAT-37","Foreigner Instant Refund Sales","SA-VAT-37"],
-  ["TN-09-M45","외국인물품","페이즈08_화면_v1.0.HTML#vat38","v1.0 화면 페이즈08_화면_v1.0.HTML#vat38 / 외국인물품(외교관면세) 판매기록표 / SA-VAT-38","Foreigner Goods Sales","SA-VAT-38"],
-  ["TN-09-M46","일반/간이과세 전환 시 재고품등 신고","페이즈08_화면_v1.0.HTML#vat44","v1.0 화면 페이즈08_화면_v1.0.HTML#vat44 / 일반/간이과세 전환 시 재고품등 신고 / SA-VAT-44","Tax Conversion Inventory Report","SA-VAT-44"],
-  ["TN-09-M47","과세사업전환 감가상각자산 신고서","페이즈08_화면_v1.0.HTML#vat45","v1.0 화면 페이즈08_화면_v1.0.HTML#vat45 / 과세사업전환 감가상각자산 신고서 / SA-VAT-45","Taxable Conversion Asset Report","SA-VAT-45"],
-  ["TN-09-M48","매입자발행세금계산서합계표","페이즈08_화면_v1.0.HTML#vat46","v1.0 화면 페이즈08_화면_v1.0.HTML#vat46 / 매입자발행세금계산서합계표 / SA-VAT-46","Purchaser-issued Tax Invoice Summary","SA-VAT-46"],
-  ["TN-09-M49","과세유흥장소 과표신고서","페이즈08_화면_v1.0.HTML#vat47","v1.0 화면 페이즈08_화면_v1.0.HTML#vat47 / 과세유흥장소 과표신고서(신) / SA-VAT-47","Entertainment Place Tax Base Report","SA-VAT-47"],
-  ["TN-09-M50","사업양도신고서","페이즈08_화면_v1.0.HTML#vat50","v1.0 화면 페이즈08_화면_v1.0.HTML#vat50 / 사업양도신고서 / SA-VAT-50","Business Transfer Report","SA-VAT-50"],
-  ["TN-11-M01","일일자금명세/경리일보","페이즈09_화면_v1.0.HTML#fnd01","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd01 / 일일자금명세/경리일보 / SA-FND-01","Daily Cash Statement","SA-FND-01"],
-  ["TN-11-M02","자금계획입력","페이즈09_화면_v1.0.HTML#fnd02","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd02 / 자금계획입력 / SA-FND-02","Cash Plan Input","SA-FND-02"],
-  ["TN-11-M03","일일자금현황","페이즈09_화면_v1.0.HTML#fnd03","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd03 / 일일자금현황 / SA-FND-03","Daily Cash Status","SA-FND-03"],
-  ["TN-11-M04","자금일월보","페이즈09_화면_v1.0.HTML#fnd04","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd04 / 자금일월보 / SA-FND-04","Cash Daily Monthly Report","SA-FND-04"],
-  ["TN-11-M05","자금입출금내역","페이즈09_화면_v1.0.HTML#fnd05","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd05 / 자금입출금내역 / SA-FND-05","Cash Receipt Payment Details","SA-FND-05"],
-  ["TN-11-M06","자금계획서","페이즈09_화면_v1.0.HTML#fnd06","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd06 / 자금계획서 / SA-FND-06","Cash Plan","SA-FND-06"],
-  ["TN-11-M07","예산입력","페이즈09_화면_v1.0.HTML#fnd07","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd07 / 예산입력 / SA-FND-07","Budget Input","SA-FND-07"],
-  ["TN-11-M08","당기예산 월별 실적현황","페이즈09_화면_v1.0.HTML#fnd08","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd08 / 당기예산 월별 실적현황 / SA-FND-08","Current Budget Monthly Actuals","SA-FND-08"],
-  ["TN-11-M09","당기예산 분기/반기 실적현황","페이즈09_화면_v1.0.HTML#fnd09","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd09 / 당기예산 분기/반기 실적현황 / SA-FND-09","Current Budget Period Actuals","SA-FND-09"],
-  ["TN-11-M10","전기실행액입력","페이즈09_화면_v1.0.HTML#fnd10","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd10 / 전기실행액입력 / SA-FND-10","Prior Execution Amount Input","SA-FND-10"],
-  ["TN-11-M11","전기예산 월별 실적현황","페이즈09_화면_v1.0.HTML#fnd11","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd11 / 전기예산 월별 실적현황 / SA-FND-11","Prior Budget Monthly Actuals","SA-FND-11"],
-  ["TN-11-M12","전기예산 분기/반기 실적현황","페이즈09_화면_v1.0.HTML#fnd12","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd12 / 전기예산 분기/반기 실적현황 / SA-FND-12","Prior Budget Period Actuals","SA-FND-12"],
-  ["TN-11-M13","차기예산입력","페이즈09_화면_v1.0.HTML#fnd13","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd13 / 차기예산입력 / SA-FND-13","Next Budget Input","SA-FND-13"],
-  ["TN-11-M14","추정예산","페이즈09_화면_v1.0.HTML#fnd14","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd14 / 추정예산 / SA-FND-14","Estimated Budget","SA-FND-14"],
-  ["TN-11-M15","예적금현황","페이즈09_화면_v1.0.HTML#dep01","v1.0 화면 페이즈09_화면_v1.0.HTML#dep01 / 예적금현황 / SA-DEP-01","Deposit Balance Status","SA-DEP-01"],
-  ["TN-11-M16","차입금스케줄관리","페이즈09_화면_v1.0.HTML#dep02","v1.0 화면 페이즈09_화면_v1.0.HTML#dep02 / 차입금스케줄관리 / SA-DEP-02","Borrowing Schedule Management","SA-DEP-02"],
-  ["TN-11-M17","차입금현황","페이즈09_화면_v1.0.HTML#dep03","v1.0 화면 페이즈09_화면_v1.0.HTML#dep03 / 차입금현황 / SA-DEP-03","Borrowing Status","SA-DEP-03"],
-  ["TN-11-M18","받을어음현황","페이즈09_화면_v1.0.HTML#bil01","v1.0 화면 페이즈09_화면_v1.0.HTML#bil01 / 받을어음현황 / SA-BIL-01","Notes Receivable Status","SA-BIL-01"],
-  ["TN-11-M19","지급어음현황","페이즈09_화면_v1.0.HTML#bil02","v1.0 화면 페이즈09_화면_v1.0.HTML#bil02 / 지급어음현황 / SA-BIL-02","Notes Payable Status","SA-BIL-02"],
-  ["TN-11-M20","어음집계표","페이즈09_화면_v1.0.HTML#bil03","v1.0 화면 페이즈09_화면_v1.0.HTML#bil03 / 어음집계표 / SA-BIL-03","Bills Summary","SA-BIL-03"],
-  ["TN-11-M21","당좌수표현황","페이즈09_화면_v1.0.HTML#bil04","v1.0 화면 페이즈09_화면_v1.0.HTML#bil04 / 당좌수표현황 / SA-BIL-04","Cashier Check Status","SA-BIL-04"],
+  ["TN-09-G06-M04","외국인관광객 숙박용역 환급실적명세서","페이즈08_화면_v1.0.HTML#vat36","v1.0 화면 페이즈08_화면_v1.0.HTML#vat36 / 외국인관광객 숙박용역 환급실적명세서 / SA-VAT-36","Foreigner Lodging Service Refund","SA-VAT-36"],
+  ["TN-09-G06-M05","외국인 즉시환급 판매","페이즈08_화면_v1.0.HTML#vat37","v1.0 화면 페이즈08_화면_v1.0.HTML#vat37 / 외국인관광객 즉시환급 물품판매실적명세서 / SA-VAT-37","Foreigner Instant Refund Sales","SA-VAT-37"],
+  ["TN-09-G06-M06","외국인물품","페이즈08_화면_v1.0.HTML#vat38","v1.0 화면 페이즈08_화면_v1.0.HTML#vat38 / 외국인물품(외교관면세) 판매기록표 / SA-VAT-38","Foreigner Goods Sales","SA-VAT-38"],
+  ["TN-09-G06-M07","일반/간이과세 전환 시 재고품등 신고","페이즈08_화면_v1.0.HTML#vat44","v1.0 화면 페이즈08_화면_v1.0.HTML#vat44 / 일반/간이과세 전환 시 재고품등 신고 / SA-VAT-44","Tax Conversion Inventory Report","SA-VAT-44"],
+  ["TN-09-G03-M09","과세사업전환 감가상각자산 신고서","페이즈08_화면_v1.0.HTML#vat45","v1.0 화면 페이즈08_화면_v1.0.HTML#vat45 / 과세사업전환 감가상각자산 신고서 / SA-VAT-45","Taxable Conversion Asset Report","SA-VAT-45"],
+  ["TN-09-G02-M07","매입자발행세금계산서합계표","페이즈08_화면_v1.0.HTML#vat46","v1.0 화면 페이즈08_화면_v1.0.HTML#vat46 / 매입자발행세금계산서합계표 / SA-VAT-46","Purchaser-issued Tax Invoice Summary","SA-VAT-46"],
+  ["TN-09-G02-M08","과세유흥장소 과표신고서","페이즈08_화면_v1.0.HTML#vat47","v1.0 화면 페이즈08_화면_v1.0.HTML#vat47 / 과세유흥장소 과표신고서(신) / SA-VAT-47","Entertainment Place Tax Base Report","SA-VAT-47"],
+  ["TN-09-G02-M09","사업양도신고서","페이즈08_화면_v1.0.HTML#vat50","v1.0 화면 페이즈08_화면_v1.0.HTML#vat50 / 사업양도신고서 / SA-VAT-50","Business Transfer Report","SA-VAT-50"],
+  ["TN-11-G01-M01","일일자금명세/경리일보","페이즈09_화면_v1.0.HTML#fnd01","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd01 / 일일자금명세/경리일보 / SA-FND-01","Daily Cash Statement","SA-FND-01"],
+  ["TN-11-G02-M01","자금계획입력","페이즈09_화면_v1.0.HTML#fnd02","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd02 / 자금계획입력 / SA-FND-02","Cash Plan Input","SA-FND-02"],
+  ["TN-11-G01-M02","일일자금현황","페이즈09_화면_v1.0.HTML#fnd03","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd03 / 일일자금현황 / SA-FND-03","Daily Cash Status","SA-FND-03"],
+  ["TN-11-G01-M03","자금일월보","페이즈09_화면_v1.0.HTML#fnd04","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd04 / 자금일월보 / SA-FND-04","Cash Daily Monthly Report","SA-FND-04"],
+  ["TN-11-G01-M04","자금입출금내역","페이즈09_화면_v1.0.HTML#fnd05","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd05 / 자금입출금내역 / SA-FND-05","Cash Receipt Payment Details","SA-FND-05"],
+  ["TN-11-G02-M02","자금계획서","페이즈09_화면_v1.0.HTML#fnd06","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd06 / 자금계획서 / SA-FND-06","Cash Plan","SA-FND-06"],
+  ["TN-11-G02-M03","예산입력","페이즈09_화면_v1.0.HTML#fnd07","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd07 / 예산입력 / SA-FND-07","Budget Input","SA-FND-07"],
+  ["TN-11-G02-M04","당기예산 월별 실적현황","페이즈09_화면_v1.0.HTML#fnd08","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd08 / 당기예산 월별 실적현황 / SA-FND-08","Current Budget Monthly Actuals","SA-FND-08"],
+  ["TN-11-G02-M05","당기예산 분기/반기 실적현황","페이즈09_화면_v1.0.HTML#fnd09","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd09 / 당기예산 분기/반기 실적현황 / SA-FND-09","Current Budget Period Actuals","SA-FND-09"],
+  ["TN-11-G02-M06","전기실행액입력","페이즈09_화면_v1.0.HTML#fnd10","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd10 / 전기실행액입력 / SA-FND-10","Prior Execution Amount Input","SA-FND-10"],
+  ["TN-11-G02-M07","전기예산 월별 실적현황","페이즈09_화면_v1.0.HTML#fnd11","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd11 / 전기예산 월별 실적현황 / SA-FND-11","Prior Budget Monthly Actuals","SA-FND-11"],
+  ["TN-11-G02-M08","전기예산 분기/반기 실적현황","페이즈09_화면_v1.0.HTML#fnd12","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd12 / 전기예산 분기/반기 실적현황 / SA-FND-12","Prior Budget Period Actuals","SA-FND-12"],
+  ["TN-11-G02-M09","차기예산입력","페이즈09_화면_v1.0.HTML#fnd13","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd13 / 차기예산입력 / SA-FND-13","Next Budget Input","SA-FND-13"],
+  ["TN-11-G02-M10","추정예산","페이즈09_화면_v1.0.HTML#fnd14","v1.0 화면 페이즈09_화면_v1.0.HTML#fnd14 / 추정예산 / SA-FND-14","Estimated Budget","SA-FND-14"],
+  ["TN-11-G03-M01","예적금현황","페이즈09_화면_v1.0.HTML#dep01","v1.0 화면 페이즈09_화면_v1.0.HTML#dep01 / 예적금현황 / SA-DEP-01","Deposit Balance Status","SA-DEP-01"],
+  ["TN-11-G03-M02","차입금스케줄관리","페이즈09_화면_v1.0.HTML#dep02","v1.0 화면 페이즈09_화면_v1.0.HTML#dep02 / 차입금스케줄관리 / SA-DEP-02","Borrowing Schedule Management","SA-DEP-02"],
+  ["TN-11-G03-M03","차입금현황","페이즈09_화면_v1.0.HTML#dep03","v1.0 화면 페이즈09_화면_v1.0.HTML#dep03 / 차입금현황 / SA-DEP-03","Borrowing Status","SA-DEP-03"],
+  ["TN-11-G04-M01","받을어음현황","페이즈09_화면_v1.0.HTML#bil01","v1.0 화면 페이즈09_화면_v1.0.HTML#bil01 / 받을어음현황 / SA-BIL-01","Notes Receivable Status","SA-BIL-01"],
+  ["TN-11-G04-M02","지급어음현황","페이즈09_화면_v1.0.HTML#bil02","v1.0 화면 페이즈09_화면_v1.0.HTML#bil02 / 지급어음현황 / SA-BIL-02","Notes Payable Status","SA-BIL-02"],
+  ["TN-11-G04-M03","어음집계표","페이즈09_화면_v1.0.HTML#bil03","v1.0 화면 페이즈09_화면_v1.0.HTML#bil03 / 어음집계표 / SA-BIL-03","Bills Summary","SA-BIL-03"],
+  ["TN-11-G04-M04","당좌수표현황","페이즈09_화면_v1.0.HTML#bil04","v1.0 화면 페이즈09_화면_v1.0.HTML#bil04 / 당좌수표현황 / SA-BIL-04","Cashier Check Status","SA-BIL-04"],
   ["TN-15-M01","전표 삭제 → 복구","페이즈10_화면_v1.0.HTML#dat01","v1.0 화면 페이즈10_화면_v1.0.HTML#dat01 / 삭제전표복구 / SA-DAT-01","Journal Deletion and Recovery","SA-DAT-01"],
   ["TN-15-M02","데이터백업 / 데이터복구","페이즈10_화면_v1.0.HTML#dat02","v1.0 화면 페이즈10_화면_v1.0.HTML#dat02 / 데이터백업 / 데이터복구(기수별) / SA-DAT-02","Data Backup and Recovery","SA-DAT-02"],
   ["TN-15-M03","SmartA로 보낼 데이터 만들기","페이즈10_화면_v1.0.HTML#dat03","v1.0 화면 페이즈10_화면_v1.0.HTML#dat03 / SmartA로 보낼 데이터 만들기(기수별) / SA-DAT-03","Create Data for Smart A Export","SA-DAT-03"],
   ["TN-15-M04","SmartA로 보낼 데이터 만들기","페이즈10_화면_v1.0.HTML#dat04","v1.0 화면 페이즈10_화면_v1.0.HTML#dat04 / SmartA로 보낼 데이터 만들기(월별/분기별) / SA-DAT-04","Create Data for Smart A Export","SA-DAT-04"],
   ["TN-15-M05","SmartA 데이터올리기","페이즈10_화면_v1.0.HTML#dat05","v1.0 화면 페이즈10_화면_v1.0.HTML#dat05 / SmartA 데이터올리기(전체기수) / SA-DAT-05","Smart A Data Upload","SA-DAT-05"],
   ["TN-15-M06","SmartA 데이터올리기","페이즈10_화면_v1.0.HTML#dat06","v1.0 화면 페이즈10_화면_v1.0.HTML#dat06 / SmartA 데이터올리기(월별/분기별) / SA-DAT-06","Smart A Data Upload","SA-DAT-06"],
-  ["TN-15-M07","기수변경","페이즈10_화면_v1.0.HTML#dat07","v1.0 화면 페이즈10_화면_v1.0.HTML#dat07 / 기수변경 / SA-DAT-07","Fiscal Year Change","SA-DAT-07"]
+  ["TN-15-M07","기수변경","페이즈10_화면_v1.0.HTML#dat07","v1.0 화면 페이즈10_화면_v1.0.HTML#dat07 / 기수변경 / SA-DAT-07","Fiscal Year Change","SA-DAT-07"],
+  ["OP-00-M01","이용회사 선택","복구 기존 메뉴","기존 BF-00 복구 / 새 화면 기반 메뉴와 화면·업무 중복 없음","Company Selection","BF-00"],
+  ["OP-02-M01","운영조직 도메인","복구 기존 메뉴","기존 BF-01 복구 / 관리회사 운영조직 도메인 관리","Operations Organization Domain","BF-01"],
+  ["OP-04-M01","구독·청구·결제","복구 기존 메뉴","기존 BF-10 복구 / 구독 상세·사용량·청구·결제 관리","Subscription Billing Payment","BF-10"],
+  ["OP-05-M02","표준 카탈로그 관리","복구 기존 메뉴","기존 BF-08 복구 / 공통코드와 별도인 표준 카탈로그 운영","Standard Catalog Management","BF-08"],
+  ["OP-08-M01","기장 전환 워크플로우","복구 기존 메뉴","기존 BF-03 복구 / 기장 설정·전환 요청 처리","Bookkeeping Transfer Workflow","BF-03"],
+  ["TN-01-M01","차원·조직·사용정책","복구 기존 메뉴","기존 BF-09 복구 / 차원·조직·사용정책 관리","Dimension Organization Policy","BF-09"],
+  ["TN-01-M02","알림 매트릭스 관리","복구 기존 메뉴","기존 BF-11 복구 / 알림 매트릭스 관리","Notification Matrix Management","BF-11"],
+  ["TN-02-G01-M01","회사등록","페이즈01_화면v1.0.HTML#bas01","기존 SA-BAS-01 복구 / 페이즈01 v1.0 화면","Company Registration","SA-BAS-01"],
+  ["TN-02-G01-M02","권한설정","페이즈01_화면v1.0.HTML#bas02","기존 SA-BAS-02 복구 / 페이즈01 v1.0 화면","Permission Settings","SA-BAS-02"],
+  ["TN-02-G01-M03","환경설정","페이즈01_화면v1.0.HTML#bas03","기존 SA-BAS-03 복구 / 페이즈01 v1.0 화면","Environment Settings","SA-BAS-03"],
+  ["TN-02-G02-M01","부서등록","페이즈01_화면v1.0.HTML#bas04","기존 SA-BAS-04 복구 / 페이즈01 v1.0 화면","Department Registration","SA-BAS-04"],
+  ["TN-02-G02-M02","사원등록","페이즈01_화면v1.0.HTML#bas05","기존 SA-BAS-05 복구 / 페이즈01 v1.0 화면","Employee Registration","SA-BAS-05"],
+  ["TN-02-G03-M01","거래처등록","페이즈01_화면v1.0.HTML#bas06","기존 SA-BAS-06 복구 / 페이즈01 v1.0 화면","Customer Vendor Registration","SA-BAS-06"],
+  ["TN-02-G03-M02","계정과목 및 적요등록","페이즈01_화면v1.0.HTML#bas07","기존 SA-BAS-07 복구 / WJV-08·WJV-09 성격 포함","Account Subject and Summary","SA-BAS-07"],
+  ["TN-02-G02-M03","현장등록","페이즈01_화면v1.0.HTML#bas08","기존 SA-BAS-08 복구 / 페이즈01 v1.0 화면","Site Registration","SA-BAS-08"],
+  ["TN-02-G02-M04","프로젝트등록","페이즈01_화면v1.0.HTML#bas09","기존 SA-BAS-09 복구 / 페이즈01 v1.0 화면","Project Registration","SA-BAS-09"],
+  ["TN-02-G04-M01","업무용승용차 등록","페이즈01_화면v1.0.HTML#bas10","기존 SA-BAS-10 복구 / 페이즈01 v1.0 화면","Business Vehicle Registration","SA-BAS-10"],
+  ["TN-02-G03-M03","거래처등코드변환","페이즈01_화면v1.0.HTML#bas13","기존 SA-BAS-13 복구 / 페이즈01 v1.0 화면","Customer Code Conversion","SA-BAS-13"],
+  ["TN-02-G04-M02","마감후이월","페이즈01_화면v1.0.HTML#bas14","기존 SA-BAS-14 복구 / 페이즈01 v1.0 화면","Closing Carryforward","SA-BAS-14"],
+  ["TN-02-G02-M05","외주처등록","페이즈01_화면v1.0.HTML#bas11","기존 SA-BAS-11 복구 / 페이즈01 v1.0 화면","Outsourcer Registration","SA-BAS-11"],
+  ["TN-02-G03-M04","거래처DM인쇄","페이즈01_화면v1.0.HTML#bas12","기존 SA-BAS-12 복구 / 페이즈01 v1.0 화면","Customer DM Printing","SA-BAS-12"],
+  ["TN-05-G02-M01","관리항목 도킹패널","복구 기존 메뉴","기존 WJV-02 복구 / 전표 관리항목 입력 보조 패널","Management Item Docking Panel","WJV-02"],
+  ["TN-05-G02-M02","부가세 부속서류","복구 기존 메뉴","기존 WJV-03 복구 / 웹전표 부가세 증빙 첨부","VAT Attachments","WJV-03"],
+  ["TN-05-G02-M03","받을어음 입력","복구 기존 메뉴","기존 WJV-04 복구 / 웹전표 받을어음 입력","Notes Receivable Entry","WJV-04"],
+  ["TN-05-G02-M04","지급어음 입력","복구 기존 메뉴","기존 WJV-05 복구 / 웹전표 지급어음 입력","Notes Payable Entry","WJV-05"],
+  ["TN-05-G02-M05","차입금 입력","복구 기존 메뉴","기존 WJV-06 복구 / 웹전표 차입금 입력","Borrowing Entry","WJV-06"],
+  ["TN-05-G02-M06","관리항목 통합관리","복구 기존 메뉴","기존 WJV-07 복구 / 관리항목 통합 관리","Management Item Integration","WJV-07"]
 ];
-function menuParentFor(code){
+var MENU_GROUP_RULES=[
+  {parent:'TN-02',code:'TN-02-G01',ko:'회사·권한·환경',en:'Company Authorization Environment',detail:'회사 등록, 권한, 환경 설정',screens:['SA-BAS-01','SA-BAS-02','SA-BAS-03']},
+  {parent:'TN-02',code:'TN-02-G02',ko:'조직·인력·현장',en:'Organization People Site',detail:'부서, 사원, 현장, 프로젝트, 외주처 관리',screens:['SA-BAS-04','SA-BAS-05','SA-BAS-08','SA-BAS-09','SA-BAS-11']},
+  {parent:'TN-02',code:'TN-02-G03',ko:'거래처·계정',en:'Customer Account Setup',detail:'거래처, 계정과목, 코드변환, DM 인쇄',screens:['SA-BAS-06','SA-BAS-07','SA-BAS-13','SA-BAS-12']},
+  {parent:'TN-02',code:'TN-02-G04',ko:'이월·차량',en:'Carryforward Vehicle',detail:'업무용승용차와 마감 후 이월',screens:['SA-BAS-10','SA-BAS-14']},
+  {parent:'TN-03',code:'TN-03-G01',ko:'전기 재무제표',en:'Prior Financial Statements',detail:'전기분 재무제표 초기 입력',screens:['SA-OPN-01','SA-OPN-02','SA-OPN-03','SA-OPN-04','SA-OPN-05','SA-OPN-06']},
+  {parent:'TN-03',code:'TN-03-G02',ko:'초기이월',en:'Opening Carryforward',detail:'거래처, 부서, 프로젝트, 공사 초기이월',screens:['SA-OPN-07','SA-OPN-08','SA-OPN-13','SA-OPN-17','SA-OPN-18','SA-OPN-19']},
+  {parent:'TN-03',code:'TN-03-G03',ko:'기간·프로젝트 손익',en:'Period Project Profit',detail:'기간별 및 프로젝트 손익/원가',screens:['SA-OPN-09','SA-OPN-10','SA-OPN-11','SA-OPN-12']},
+  {parent:'TN-03',code:'TN-03-G04',ko:'중단사업·시산표',en:'Discontinued Trial Balance',detail:'중단사업 손익/원가와 중도시산표',screens:['SA-OPN-14','SA-OPN-15','SA-OPN-16']},
+  {parent:'TN-05',code:'TN-05-G01',ko:'보조원장',en:'Auxiliary Ledgers',detail:'거래처, 어음, 예금, 카드, 재고 등 보조원장',screens:['AUX-01','AUX-02','AUX-03','AUX-05','AUX-06','AUX-07','AUX-09','AUX-04','AUX-08']},
+  {parent:'TN-05',code:'TN-05-G02',ko:'웹전표 입력보조',en:'Web Journal Entry Aids',detail:'웹전표 관리항목, 증빙, 어음, 차입금 입력 보조',screens:['WJV-02','WJV-03','WJV-04','WJV-05','WJV-06','WJV-07']},
+  {parent:'TN-06',code:'TN-06-G01',ko:'수집 설정',en:'Collection Settings',detail:'자료수집 기본정보와 홈택스 업로드',screens:['SA-ATX-01','SA-ATX-HOME']},
+  {parent:'TN-06',code:'TN-06-G02',ko:'증빙 수집',en:'Evidence Collection',detail:'전자세금계산서, 카드, 현금영수증, 통장 자료',screens:['SA-ATX-02','SA-ATX-03','SA-ATX-04','SA-ATX-05','SA-ATX-06']},
+  {parent:'TN-06',code:'TN-06-G03',ko:'검증·전표전송',en:'Validation Transmission',detail:'자료수집현황, 전표전송현황, 검증 보드',screens:['SA-ATX-07','SA-ATX-08','SA-ATX-09','SA-ATX-10']},
+  {parent:'TN-07',code:'TN-07-G01',ko:'기본 장부',en:'Core Ledgers',detail:'전표, 분개장, 일월계표, 총계정, 거래처 장부',screens:['SA-LDG-01','SA-LDG-02','SA-LDG-03','SA-LDG-04','SA-LDG-05','SA-LDG-06','SA-LDG-07','SA-LDG-08','SA-LDG-09']},
+  {parent:'TN-07',code:'TN-07-G02',ko:'차량·관리원장',en:'Vehicle Management Ledgers',detail:'차량, 세금계산서, 적요, 전도금 관련 원장',screens:['SA-LDG-17','SA-LDG-18','SA-LDG-10','SA-LDG-11','SA-LDG-12','SA-LDG-13','SA-LDG-14']},
+  {parent:'TN-07',code:'TN-07-G03',ko:'현장·공사 원장',en:'Site Construction Ledgers',detail:'공사, 외주, 현장 원가와 잔액 명세',screens:['SA-LDG-15','SA-LDG-16','SA-LDG-19','SA-LDG-20','SA-LDG-23','SA-LDG-24','SA-LDG-25','SA-LDG-26']},
+  {parent:'TN-07',code:'TN-07-G04',ko:'손익·차원 분석',en:'Profit Dimension Analysis',detail:'손익안분, 손익현황, 차원/프로젝트 분석',screens:['SA-LDG-21','SA-LDG-22','SA-LDG-27','SA-LDG-28','SA-LDG-29']},
+  {parent:'TN-08',code:'TN-08-G01',ko:'결산 입력·시산표',en:'Closing Input Trial Balance',detail:'결산자료입력과 합계잔액시산표',screens:['SA-CLS-01','SA-CLS-02','SA-CLS-12']},
+  {parent:'TN-08',code:'TN-08-G02',ko:'재무제표',en:'Financial Statements',detail:'재무상태표, 손익계산서, 현금흐름표 등',screens:['SA-CLS-03','SA-CLS-04','SA-CLS-05','SA-CLS-06','SA-CLS-07','SA-CLS-08','SA-CLS-13']},
+  {parent:'TN-08',code:'TN-08-G03',ko:'부속·증빙 명세',en:'Supplement Evidence Statements',detail:'결산부속명세서와 증빙 관련 명세서',screens:['SA-CLS-09','SA-CLS-15','SA-CLS-16','SA-CLS-17']},
+  {parent:'TN-08',code:'TN-08-G04',ko:'경영·기간 분석',en:'Management Period Analysis',detail:'경영정보, 기간별 손익/원가, 잔액 검토',screens:['SA-CLS-14','SA-CLS-18','SA-CLS-19','SA-CLS-10','SA-CLS-11']},
+  {parent:'TN-08',code:'TN-08-G05',ko:'중단사업',en:'Discontinued Operations',detail:'중단사업 손익계산서와 원가명세서',screens:['SA-CLS-20','SA-CLS-21']},
+  {parent:'TN-09',code:'TN-09-G01',ko:'신고·전자신고',en:'VAT Filing E-filing',detail:'부가세 신고, 납부, 경정, 사업장별 신고',screens:['SA-VAT-01','SA-VAT-02','SA-VAT-07','SA-VAT-08','SA-VAT-25','SA-VAT-26','SA-VAT-27','SA-VAT-28','SA-VAT-49']},
+  {parent:'TN-09',code:'TN-09-G02',ko:'매출·매입 합계',en:'Sales Purchase Summaries',detail:'세금계산서, 카드, 현금매출, 월별판매 합계',screens:['SA-VAT-03','SA-VAT-04','SA-VAT-05','SA-VAT-06','SA-VAT-14','SA-VAT-17','SA-VAT-46','SA-VAT-47','SA-VAT-50']},
+  {parent:'TN-09',code:'TN-09-G03',ko:'공제·환급 신고',en:'Deduction Refund Filing',detail:'의제매입, 재활용, 대손, 자산, 세액공제 신고',screens:['SA-VAT-11','SA-VAT-12','SA-VAT-13','SA-VAT-18','SA-VAT-20','SA-VAT-22','SA-VAT-23','SA-VAT-24','SA-VAT-45']},
+  {parent:'TN-09',code:'TN-09-G04',ko:'업종별 부속명세',en:'Industry Attachments',detail:'임대, 건물관리, 동물진료, 면세유, 보세판매 명세',screens:['SA-VAT-09','SA-VAT-10','SA-VAT-15','SA-VAT-16','SA-VAT-19','SA-VAT-21','SA-VAT-33']},
+  {parent:'TN-09',code:'TN-09-G05',ko:'영세율·수출',en:'Zero Rate Export',detail:'수출실적, 영세율 첨부, 외화획득, 공급기록',screens:['SA-VAT-29','SA-VAT-30','SA-VAT-31','SA-VAT-32','SA-VAT-39','SA-VAT-40','SA-VAT-41','SA-VAT-42','SA-VAT-43']},
+  {parent:'TN-09',code:'TN-09-G06',ko:'외국인·기타 신고',en:'Foreign Visitor Misc Filing',detail:'외국인 환급, 즉시환급, 전환 재고, 계좌 신고',screens:['SA-VAT-34','SA-VAT-35','SA-VAT-36','SA-VAT-37','SA-VAT-38','SA-VAT-44','SA-VAT-48']},
+  {parent:'TN-11',code:'TN-11-G01',ko:'일일 자금관리',en:'Daily Cash Management',detail:'일일자금명세, 현황, 일월보, 입출금내역',screens:['SA-FND-01','SA-FND-03','SA-FND-04','SA-FND-05']},
+  {parent:'TN-11',code:'TN-11-G02',ko:'자금계획·예산',en:'Cash Planning Budget',detail:'자금계획, 예산입력, 실적현황, 추정예산',screens:['SA-FND-02','SA-FND-06','SA-FND-07','SA-FND-08','SA-FND-09','SA-FND-10','SA-FND-11','SA-FND-12','SA-FND-13','SA-FND-14']},
+  {parent:'TN-11',code:'TN-11-G03',ko:'예적금·차입금',en:'Deposits Borrowings',detail:'예적금현황, 차입금스케줄, 차입금현황',screens:['SA-DEP-01','SA-DEP-02','SA-DEP-03']},
+  {parent:'TN-11',code:'TN-11-G04',ko:'어음·수표관리',en:'Bills Checks Management',detail:'받을어음, 지급어음, 어음집계, 당좌수표 현황',screens:['SA-BIL-01','SA-BIL-02','SA-BIL-03','SA-BIL-04']}
+];
+var MENU_GROUP_ROWS=MENU_GROUP_RULES.map(function(group){
+  return [group.code,group.ko,'메뉴 자동분류',group.detail,group.en,'-'];
+});
+var MENU_GROUP_PARENT_BY_SCREEN={};
+MENU_GROUP_RULES.forEach(function(group){
+  group.screens.forEach(function(screen){MENU_GROUP_PARENT_BY_SCREEN[screen]=group.code;});
+});
+function menuParentFor(code,row){
+  var screen=row&&row[5];
+  if(screen&&MENU_GROUP_PARENT_BY_SCREEN[screen]){return MENU_GROUP_PARENT_BY_SCREEN[screen];}
   if(code==='OP'||code==='TN'||code==='CO'){return '';}
   if(/^OP-\d{2}$/.test(code)){return 'OP';}
   if(/^TN-\d{2}$/.test(code)){return 'TN';}
   if(/^CO-\d{2}$/.test(code)){return 'CO';}
+  if(/^(OP|TN|CO)-\d{2}-G\d{2}$/.test(code)){return code.slice(0,5);}
+  if(/^(OP|TN|CO)-\d{2}-G\d{2}-M\d{2}$/.test(code)){return code.slice(0,9);}
   if(/^(OP|TN|CO)-\d{2}-M\d{2}$/.test(code)){return code.slice(0,5);}
   if(/^OP-\d{2}[A-Z]$/.test(code)){return code.slice(0,5);}
   var bf={'BF-00':'OP-00','BF-01':'OP-02','BF-02':'OP-03','BF-03':'OP-08','BF-04':'OP-06','BF-05':'OP-06','BF-06':'OP-07','BF-07':'OP-06','BF-08':'OP-05','BF-09':'TN-01','BF-10':'OP-04','BF-11':'TN-01','BF-12':'OP-06'};
@@ -804,9 +880,9 @@ function menuParentFor(code){
   if(code.indexOf('WJV-')===0){if(/WJV-0[1]$/.test(code)){return 'TN-04';} if(/WJV-0[2-7]$/.test(code)){return 'TN-05';} return 'TN-02';}
   return 'TN';
 }
-function menuChannelFor(code){var p=menuParentFor(code);return code==='OP'||p.indexOf('OP')===0?'OP':code==='CO'||p.indexOf('CO')===0?'CO':'TN';}
-function menuLevelFor(code){var p=menuParentFor(code);if(!p){return 1;}return p.length===2?2:3;}
-function menuTypeFor(code){return /^(OP|TN|CO)$/.test(code)||/^(OP|TN|CO)-\d{2}$/.test(code)?'GROUP':'MENU';}
+function menuChannelFor(code,row){var p=menuParentFor(code,row);return code==='OP'||p.indexOf('OP')===0?'OP':code==='CO'||p.indexOf('CO')===0?'CO':'TN';}
+function menuLevelFor(code,row){var p=menuParentFor(code,row);if(!p){return 1;}if(p.length===2){return 2;}return /-G\d{2}$/.test(p)?4:3;}
+function menuTypeFor(code){return /^(OP|TN|CO)$/.test(code)||/^(OP|TN|CO)-\d{2}$/.test(code)||/^(OP|TN|CO)-\d{2}-G\d{2}$/.test(code)?'GROUP':'MENU';}
 function menuEnFor(code,row){
   var en={OP:'Operator Console',TN:'Tenant Workspace',CO:'Common Platform','OP-00':'Operation Entry','OP-01':'Operations Dashboard','OP-02':'Operator Organization','OP-03':'Tenant Operations','OP-04':'Subscription Billing','OP-05':'Common Standards','OP-05C':'System Common Code Management','OP-06':'Users, Authentication and Permissions','OP-06A':'User Management','OP-06B':'Authentication Policy Management','OP-06C':'Role and Permission Management','OP-06D':'Menu Master Management','OP-06G':'User Group Management','OP-07':'Access Governance','OP-08':'Bookkeeping Workbench','OP-09':'Batch and Integration Monitoring','OP-10':'Security and Audit Operations','OP-11':'AI Rule Operations','BF-00':'Tenant Selection','BF-01':'Operator Organization Hierarchy','BF-02':'Tenant List and Infrastructure Operations','BF-03':'Bookkeeping Mode Switch Workflow','BF-04':'User Group Management','BF-05':'Authentication Policy Editing','BF-06':'Access Session and Break-glass Request','BF-07':'Role and Permission Assignment','BF-08':'Standard Catalog Management','BF-09':'Dimension and Organization Management','BF-10':'Subscription Billing and Payment','BF-11':'Notification Matrix Management','BF-12':'Menu Master Management','TN-00':'Home Dashboard','TN-01':'Company Settings','TN-02':'Basic Information','TN-03':'Opening Balance','TN-04':'Journal Entry and Approval','TN-05':'Auxiliary Ledger Management','TN-06':'Auto Journal and Evidence','TN-07':'Ledgers','TN-08':'Closing and Financial Statements','TN-09':'VAT Filing','TN-10':'Tax and Fixed Assets','TN-11':'Treasury, Budget and Bills','TN-12':'FX and Intercompany Management','TN-13':'Cost, Inventory and Manufacturing','TN-14':'Collaboration and AI','TN-15':'Data Migration','JV-01':'General Journal Entry','JV-02':'Cash Receipt and Payment Simple Entry','JV-03':'Payment Simple Entry','JV-04':'Purchase Journal Entry','JV-05':'Sales Journal Entry','JV-06':'Journal Template','JV-07':'Journal Review List','JV-08':'Bulk Journal Entry','WJV-01':'General Journal Entry','WPV-01':'Purchase and Sales Journal Entry','WJV-02':'Management Item Entry Panel','WJV-03':'VAT Attachment','WJV-04':'Notes Receivable Entry','WJV-05':'Notes Payable Entry','WJV-06':'Borrowing Entry','WJV-07':'Management Item Integration','WJV-08':'Account Subject Management','WJV-09':'Foreign Corporation Account Management','AUX-01':'Customer Auxiliary Ledger','AUX-02':'Bills Auxiliary Ledger','AUX-03':'Deposit Auxiliary Ledger','AUX-04':'Card Auxiliary Ledger','AUX-05':'Advance Payment Auxiliary Ledger','AUX-06':'VAT Auxiliary Ledger','AUX-07':'Cash Book','AUX-08':'Inventory Ledger','AUX-09':'Fixed Asset Ledger','SA-LDG-21':'P&L Allocation','SA-LDG-22':'P&L Status','SA-FND-01':'Daily Cash Statement and Calendar','SA-FND-02':'Cash Plan Input','SA-FND-03':'Daily Cash Status','SA-FND-04':'Cash Daily and Monthly Report','SA-FND-05':'Cash Receipt and Payment Details','SA-FND-06':'Cash Plan','SA-FND-07':'Budget Input','SA-FND-08':'Current Budget Monthly Actual Status','SA-FND-09':'Current Budget Quarterly and Semiannual Actual Status','SA-FND-10':'Prior Period Execution Import','SA-FND-11':'Prior Budget Monthly Actual Status','SA-FND-12':'Prior Budget Quarterly and Semiannual Actual Status','SA-FND-13':'Next Budget Input','SA-FND-14':'Estimated Budget','SA-DEP-01':'Deposit Balance Status','SA-DEP-02':'Borrowing Schedule Management','SA-DEP-03':'Borrowing Status','SA-BIL-01':'Notes Receivable Status','SA-BIL-02':'Notes Payable Status','SA-BIL-03':'Bills Summary','SA-BIL-04':'Endorsed Notes Status','SA-FA-01':'Fixed Asset Registration','SA-FA-02':'Undepreciated Asset Depreciation Calculation','SA-FA-03':'Transferred Asset Depreciation Calculation','SA-FA-04':'Depreciation Expense Statement by Cost','SA-FA-05':'Fixed Asset Management Ledger','SA-FA-06':'Asset Statement by Site Project Department','SA-FA-07':'Monthly Depreciation Posting','SA-DAT-01':'Journal Deletion and Recovery','SA-DAT-02':'Data Backup and Recovery','SA-DAT-03':'Create Data for Smart A Export','SA-DAT-04':'Create Data for Smart A Export','SA-DAT-05':'Smart A Data Upload','SA-DAT-06':'Smart A Data Upload','SA-DAT-07':'Fiscal Year Change','CO-01':'Login and My Account','CO-02':'Notification and Communication','CO-03':'API and Service Contract','CO-04':'Validation and Error Handling','CO-05':'Data Model and Status Values','CO-06':'Batch and Schedule','CO-07':'Security and Privacy','CO-08':'System Operations and Infrastructure','CO-09':'Outputs and Reports','CO-10':'Design Appendix Trace'};
   if(en[code]){return en[code];}
@@ -821,9 +897,9 @@ function menuEnFor(code,row){
 function menuRouteFor(code){var ch=menuChannelFor(code);var base=ch==='OP'?'/operator':ch==='CO'?'/common':'/tenant';return base+'/'+code.toLowerCase().replace(/-/g,'/');}
 function menuPhaseFor(source){var m=source.match(/페이즈(\d{2})/);if(m){return 'PHASE'+m[1];}if(source.indexOf('시스템관리')>=0){return 'SYSADMIN';}if(source.indexOf('운영자')>=0){return 'OPERATOR';}return 'CORE';}
 function escapeHtml(value){return String(value==null?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
-var MENU_MASTER_CATALOG=MENU_MASTER_ROWS.map(function(row){
+var MENU_MASTER_CATALOG=MENU_MASTER_ROWS.concat(MENU_GROUP_ROWS).map(function(row){
   var code=row[0];
-  return {code:code,ko:row[1],source:row[2],detail:row[3],parent:menuParentFor(code),channel:menuChannelFor(code),level:menuLevelFor(code),type:menuTypeFor(code),screen:row[5]||(/^(OP|TN|CO)$/.test(code)?'-':code),en:row[4]||menuEnFor(code,row),route:menuRouteFor(code),flag:'feature.menu.'+code.toLowerCase().replace(/-/g,'.'),phase:menuPhaseFor(row[2]),status:'ACTIVE'};
+  return {code:code,ko:row[1],source:row[2],detail:row[3],parent:menuParentFor(code,row),channel:menuChannelFor(code,row),level:menuLevelFor(code,row),type:menuTypeFor(code),screen:row[5]||(/^(OP|TN|CO)$/.test(code)?'-':code),en:row[4]||menuEnFor(code,row),route:menuRouteFor(code),flag:'feature.menu.'+code.toLowerCase().replace(/-/g,'.'),phase:menuPhaseFor(row[2]),status:'ACTIVE'};
 });
 var MENU_TREE_EXPANDED={OP:true,TN:true,CO:true};
 function menuTreeChildrenByParent(){
@@ -859,8 +935,9 @@ function renderMenuMasterTree(selectedCode){
       var children=byParent[item.code]||[];
       var expanded=!!MENU_TREE_EXPANDED[item.code];
       var node=document.createElement('div');
-      var level=Math.min(depth,3);
+      var level=Math.min(depth,5);
       node.className='tnode lv'+level+(item.code===selectedCode?' on':'');
+      node.style.paddingLeft=(8+Math.max(depth-1,0)*18)+'px';
       node.setAttribute('data-code',item.code);
       node.innerHTML='<span class="twist">'+(children.length?(expanded?'▾':'▸'):'•')+'</span>'+escapeHtml(item.code+' '+item.ko)+' <span class="cnt">'+escapeHtml(children.length?children.length+'개':item.type)+'</span>';
       node.addEventListener('click',function(){
@@ -958,6 +1035,55 @@ function selectMenuMaster(code){
   setText('menuDiffText','DRAFT v43 item: '+item.code+' / parent '+(item.parent||'ROOT')+' / '+item.phase);
   setText('menuUsageText','route '+item.route+' ? screen '+item.screen+' ? source '+item.source);
   setText('menuPreviewText',item.channel+' channel bootstrap returns this menu only when Role/UserGroup policy allows it.');
+}
+function menuExcelColumns(){
+  return [
+    ['code','메뉴코드'],
+    ['parent','상위메뉴코드'],
+    ['parentName','상위메뉴명'],
+    ['channel','채널'],
+    ['level','레벨'],
+    ['type','유형'],
+    ['screen','화면ID'],
+    ['ko','국문명'],
+    ['en','영문명'],
+    ['route','경로'],
+    ['flag','기능플래그'],
+    ['phase','페이즈'],
+    ['status','상태'],
+    ['source','출처'],
+    ['detail','설명']
+  ];
+}
+function menuExcelValue(item,key){
+  if(key==='parentName'){
+    return item.parent?(menuByCode(item.parent).ko||''):'';
+  }
+  return item[key]==null?'':item[key];
+}
+function downloadMenuMasterExcel(){
+  var columns=menuExcelColumns();
+  var rows=MENU_MASTER_CATALOG.map(function(item){
+    return columns.map(function(col){return menuExcelValue(item,col[0]);});
+  });
+  var table='<table><thead><tr>'+columns.map(function(col){return '<th>'+escapeHtml(col[1])+'</th>';}).join('')+'</tr></thead><tbody>'+
+    rows.map(function(row){return '<tr>'+row.map(function(value){return '<td>'+escapeHtml(value)+'</td>';}).join('')+'</tr>';}).join('')+
+    '</tbody></table>';
+  var html='<!doctype html><html><head><meta charset="utf-8"><style>table{border-collapse:collapse}th,td{border:1px solid #999;padding:4px;mso-number-format:"\\@";white-space:nowrap}th{background:#f3f3f3;font-weight:bold}</style></head><body>'+
+    '<h3>메뉴마스터 전체 데이터</h3><div>생성일시: '+escapeHtml(new Date().toLocaleString('ko-KR'))+' / 총 '+MENU_MASTER_CATALOG.length+'건</div>'+table+'</body></html>';
+  var blob=new Blob(['\ufeff',html],{type:'application/vnd.ms-excel;charset=utf-8'});
+  var fileName='menu_master_'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'.xls';
+  if(window.navigator&&window.navigator.msSaveOrOpenBlob){
+    window.navigator.msSaveOrOpenBlob(blob,fileName);
+  }else{
+    var link=document.createElement('a');
+    link.href=URL.createObjectURL(blob);
+    link.download=fileName;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(function(){URL.revokeObjectURL(link.href);link.remove();},0);
+  }
+  setText('menuStatusText','엑셀 다운로드 생성 완료: '+fileName);
 }
 /* MENU_MASTER_CATALOG_END */
 function ccItem(code, ko, en, meta, parent, replacement, opt){
