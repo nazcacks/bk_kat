@@ -158,6 +158,7 @@ table.grid td .lens{float:right;color:#9a9aa4;margin-left:8px;cursor:pointer}
 table.grid td.num{text-align:right;font-family:Consolas,monospace}
 table.grid td.c{text-align:center}
 table.grid tr.sel td{background:#FFFBE0}
+table.grid tr[data-user-id]{cursor:pointer}
 table.grid tr.empty td{color:#c9c9d2;height:26px}
 table.grid tr.tot td{background:#F3F3F7;font-weight:700}
 table.grid .red{color:var(--ey-red);font-weight:700}
@@ -379,12 +380,45 @@ table.grid .dim{color:#9a9aa4}
   <div class="mock">
     <div class="mock-cap">OP-06A — 사용자를 초대·수정·잠금·MFA 초기화하고, 그룹/Role 상속 결과를 미리 본다.</div>
     <div class="titlebar"><span class="tb-crumb">사용자·인증·권한</span><span class="tb-sep">›</span><span class="tb-title">사용자 관리</span><span class="tb-star">☆</span><span class="tb-id">OP-06A</span><span class="tb-right"><span class="badge b-gray">Step-up 유효 07:12</span> · 👤 SEC_ADMIN</span></div>
-    <div class="tabbar"><div class="tab on">사용자 목록 <span class="tno">1</span></div><div class="tab">보안·세션 <span class="tno">2</span></div></div>
+    <div class="tabbar"><div class="tab on">사용자 목록·세부정보 <span class="tno">1</span></div><div class="tab">보안·세션 <span class="tno">2</span></div></div>
     <div class="tabpane on">
       <div class="qbar"><span class="qlabel">검색어</span><span class="qv">이름/loginId/소속 <span class="lens">⌕</span></span><span class="qlabel">사용자그룹</span><span class="seg"><span class="on">전체</span><span>OPERATOR</span><span>TENANT</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/LOCKED/DISABLED <span class="lens">▾</span></span><span class="qlabel">MFA</span><span class="qv">미등록 포함 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button></span></div>
       <div class="mock-flex">
-        <div class="mock-main"><table class="grid"><tr><th>구분</th><th>Login ID</th><th>이름</th><th>소속</th><th class="c">상태</th><th class="c">MFA</th><th>그룹/Role</th><th>최근 로그인</th></tr><tr class="sel"><td>OPERATOR</td><td>sec.admin@ey.com</td><td>김시스템</td><td>시스템운영팀</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td class="c"><span class="badge b-ok">WebAuthn</span></td><td>SEC_ADMIN · 보안운영팀</td><td>2026-07-08 13:52</td></tr><tr><td>OPERATOR</td><td>ops.junior@ey.com</td><td>박운영</td><td>고객지원팀</td><td class="c"><span class="badge b-warn">PASSWORD_EXPIRED</span></td><td class="c"><span class="badge b-block">미등록</span></td><td>SUPPORT · 고객지원</td><td>2026-06-21</td></tr><tr><td>TENANT</td><td>acct@kum.co.kr</td><td>이회계</td><td>금명전자</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td class="c"><span class="badge b-ok">TOTP</span></td><td>회계팀 · TENANT_ADMIN</td><td>2026-07-08 09:31</td></tr></table><div class="statusbar"><span class="warnmsg">MFA 미등록 운영자 1명 — D-3 핵심 메뉴 차단 예정</span><span class="cnt">loginId 전역 유일</span></div></div>
-        <div class="rpanel"><div class="rp-box"><div class="rp-t">선택 사용자</div><div class="rp-b"><div class="kv"><span class="k">userGroup</span><span class="v">OPERATOR</span></div><div class="kv"><span class="k">operatorOrgId</span><span class="v">SYS-OPS</span></div><div class="kv"><span class="k">riskScore</span><span class="v">18 / Low</span></div></div></div><div class="rp-box"><div class="rp-t">가능 조치</div><div class="rp-b"><button class="abtn sm">MFA 초기화</button> <button class="abtn sm">세션 종료</button><br><span class="badge b-block">본인 조치 차단</span></div></div></div>
+        <div class="mock-main">
+          <table class="grid" id="userListTable"><tr><th>구분</th><th>Login ID</th><th>이름</th><th>소속</th><th class="c">상태</th><th class="c">MFA</th><th>그룹/Role</th><th>최근 로그인</th></tr><tr class="sel" data-user-id="sec.admin@ey.com"><td>OPERATOR</td><td>sec.admin@ey.com</td><td>김시스템</td><td>시스템운영팀</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td class="c"><span class="badge b-ok">WebAuthn</span></td><td>SEC_ADMIN · 보안운영팀</td><td>2026-07-08 13:52</td></tr><tr data-user-id="ops.junior@ey.com"><td>OPERATOR</td><td>ops.junior@ey.com</td><td>박운영</td><td>고객지원팀</td><td class="c"><span class="badge b-warn">PASSWORD_EXPIRED</span></td><td class="c"><span class="badge b-block">미등록</span></td><td>SUPPORT · 고객지원</td><td>2026-06-21</td></tr><tr data-user-id="acct@kum.co.kr"><td>TENANT</td><td>acct@kum.co.kr</td><td>이회계</td><td>금명전자</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td class="c"><span class="badge b-ok">TOTP</span></td><td>회계팀 · TENANT_ADMIN</td><td>2026-07-08 09:31</td></tr></table>
+          <div class="statusbar"><span class="warnmsg" id="userListStatus">MFA 미등록 운영자 1명 — D-3 핵심 메뉴 차단 예정</span><span class="cnt">목록 선택 시 아래 세부정보 갱신</span></div>
+          <div class="qbar"><span class="qlabel">선택 사용자</span><span class="qv" id="userDetailSelectedLabel">sec.admin@ey.com</span><span class="qlabel">구분</span><span class="qv" id="userDetailTypeLabel">OPERATOR</span><span class="qlabel">상태</span><span class="qv" id="userDetailStatusLabel">ACTIVE</span><span class="qright"><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">초대메일 발송</button></span></div>
+          <div class="formgrid c3 label-left">
+            <div class="ff"><label>사용자ID</label><input class="fv" data-user-field="userId" value="U-OP-00031"></div>
+            <div class="ff"><label>Login ID</label><input class="fv" data-user-field="loginId" value="sec.admin@ey.com"></div>
+            <div class="ff"><label>사용자구분</label><select class="fv" data-user-field="userType"><option>OPERATOR</option><option>TENANT</option></select></div>
+            <div class="ff"><label>상태</label><select class="fv" data-user-field="status"><option>ACTIVE</option><option>INVITED</option><option>LOCKED</option><option>DISABLED</option><option>DORMANT</option><option>PASSWORD_EXPIRED</option></select></div>
+            <div class="ff"><label>성명</label><input class="fv" data-user-field="nameKo" value="김시스템"></div>
+            <div class="ff"><label>영문명</label><input class="fv" data-user-field="nameEn" value="System Kim"></div>
+            <div class="ff"><label>사번/외부ID</label><input class="fv" data-user-field="externalId" value="EY-OPS-0031"></div>
+            <div class="ff"><label>관리회사조직</label><select class="fv" data-user-field="operatorOrg"><option>SYS-OPS · 시스템운영팀</option><option>SUPPORT · 고객지원팀</option><option>AUDIT · 감사팀</option><option>- 해당없음</option></select></div>
+            <div class="ff"><label>이용회사</label><select class="fv" data-user-field="tenant"><option>- 전체/해당없음</option><option>T-10035 · 금명전자</option><option>T-10110 · EDPR Korea</option></select></div>
+            <div class="ff"><label>부서</label><input class="fv" data-user-field="department" value="시스템운영팀"></div>
+            <div class="ff"><label>직위</label><input class="fv" data-user-field="position" value="매니저"></div>
+            <div class="ff"><label>주기장</label><select class="fv" data-user-field="primaryBookkeeper"><option>관리회사</option><option>이용회사</option></select></div>
+            <div class="ff"><label>이메일</label><input class="fv" data-user-field="email" value="sec.admin@ey.com"></div>
+            <div class="ff"><label>휴대폰</label><input class="fv" data-user-field="phone" value="+82-10-0000-3100"></div>
+            <div class="ff"><label>알림채널</label><select class="fv" data-user-field="notify"><option>IN_APP + EMAIL</option><option>IN_APP</option><option>EMAIL</option><option>SMS</option></select></div>
+            <div class="ff"><label>언어</label><select class="fv" data-user-field="locale"><option>ko-KR</option><option>en-US</option></select></div>
+            <div class="ff"><label>시간대</label><select class="fv" data-user-field="timezone"><option>Asia/Seoul</option><option>UTC</option></select></div>
+            <div class="ff"><label>접근범위</label><select class="fv" data-user-field="scope"><option>GLOBAL</option><option>OPERATOR_ORG</option><option>TENANT_ONLY</option></select></div>
+            <div class="ff"><label>시작일</label><input class="fv" data-user-field="startDate" value="2026-01-01"></div>
+            <div class="ff"><label>종료일</label><input class="fv" data-user-field="endDate" value="9999-12-31"></div>
+            <div class="ff"><label>계정만료</label><input class="fv" data-user-field="accountExpire" value="9999-12-31"></div>
+            <div class="ff"><label>기본그룹</label><select class="fv" data-user-field="defaultGroup"><option>보안운영팀</option><option>고객지원팀</option><option>감사팀</option><option>회계팀</option></select></div>
+            <div class="ff"><label>기본Role</label><select class="fv" data-user-field="defaultRole"><option>SEC_ADMIN</option><option>SUPPORT</option><option>AUDITOR</option><option>TENANT_ADMIN</option></select></div>
+            <div class="ff"><label>권한만료</label><input class="fv" data-user-field="roleExpire" value="상시"></div>
+            <div class="ff full"><label>저장사유</label><textarea class="fv" data-user-field="reason" rows="2">정기 권한 점검 결과 유지</textarea></div>
+          </div>
+          <table class="grid"><thead><tr><th>배정유형</th><th>그룹/Role</th><th>데이터범위</th><th>시작일</th><th>종료일</th><th class="c">상태</th></tr></thead><tbody id="userAssignmentRows"></tbody></table>
+          <div class="statusbar"><span class="okmsg">✓ loginId 중복 없음 · 소속/연락처/권한 배정 저장 가능</span><span class="cnt">UserDetail · UserGroupMember · RoleAssignment</span></div>
+        </div>
+        <div class="rpanel"><div class="rp-box"><div class="rp-t">선택 사용자</div><div class="rp-b" id="userSummaryPanel"></div></div><div class="rp-box"><div class="rp-t">저장 검증</div><div class="rp-b" id="userValidationPanel"></div></div><div class="rp-box"><div class="rp-t">변경 이력</div><div class="rp-b" id="userHistoryPanel"></div></div><div class="rp-box"><div class="rp-t">가능 조치</div><div class="rp-b"><button class="abtn sm">MFA 초기화</button> <button class="abtn sm">세션 종료</button><br><span class="badge b-block">본인 조치 차단</span></div></div></div>
       </div>
     </div>
     <div class="tabpane">
@@ -392,7 +426,7 @@ table.grid .dim{color:#9a9aa4}
       <div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>보안 항목</th><th>상태</th><th>상세</th><th>조치</th></tr><tr class="sel"><td>MFA</td><td><span class="badge b-block">미등록</span></td><td>등록 기한 2026-07-11 · 핵심 메뉴 차단 예정</td><td>초기화 링크 발송</td></tr><tr><td>활성 세션</td><td><span class="badge b-warn">2개</span></td><td>Chrome Seoul · Edge Busan</td><td>강제 종료</td></tr><tr><td>신뢰기기</td><td><span class="badge b-ok">1개</span></td><td>Windows Hello 등록</td><td>해제</td></tr><tr><td>로그인 이력</td><td>최근 실패 3회</td><td>비정상 시간대 없음</td><td>감사로그 보기</td></tr></table><div class="statusbar"><span class="warnmsg">MFA 초기화는 Step-up + 승인자 필요</span><span class="cnt">UserSecurityAction 기록</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">상태 전이</div><div class="rp-b"><span class="chip">INVITED</span> → <span class="chip on">ACTIVE</span> → <span class="chip">LOCKED</span> → <span class="chip">DISABLED</span></div></div></div></div>
     </div>
   </div>
-  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">운영자와 이용회사 사용자 계정의 생성, 상태, 인증수단, 그룹·Role 상속을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">loginId, userGroup, operatorOrgId/homeTenantId, 연락처, locale, 초기 그룹.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">초대, 정보수정, 잠금/휴면/비활성, MFA 초기화, 세션 종료, 권한 미리보기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">loginId 중복, 소속 필수, 상태전이, 본인 보안 조치, SCIM 충돌을 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">User, OperatorUser/TenantUser, UserSecurityAction, UserAuditLog.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">UserGroup, RoleAssignment, MfaDevice, UserSession, LoginHistory.</span></div></div></div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">운영자와 이용회사 사용자 계정의 기본정보, 소속, 연락처, 상태, 그룹·Role 상속, 보안 조치를 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">userId, loginId, userType, status, 성명/영문명, 사번/externalId, operatorOrgId/homeTenantId, 부서, 직위, 연락처, locale, timezone, 접근범위, 시작/종료일, 기본그룹, 기본Role, 저장사유.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">사용자 추가·수정·삭제·저장, 초대메일 발송, 그룹/Role 배정, 상태 변경, MFA 초기화, 세션 종료, 권한 미리보기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">loginId 중복, 사용자구분별 소속 필수, 기간 유효성, 상태전이, SOD, 본인 보안 조치, SCIM 충돌을 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">User, UserDetail, OperatorUser/TenantUser, UserGroupMember, RoleAssignment, UserSecurityAction, UserAuditLog.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">UserGroup, RoleAssignment, MfaDevice, UserSession, LoginHistory, PermissionEvaluationCache.</span></div></div></div>
 </section>
 
 <section class="section" id="op06g">
@@ -403,15 +437,15 @@ table.grid .dim{color:#9a9aa4}
     <div class="titlebar"><span class="tb-crumb">사용자·인증·권한</span><span class="tb-sep">›</span><span class="tb-title">사용자그룹 관리</span><span class="tb-star">☆</span><span class="tb-id">OP-06A</span><span class="tb-right">MenuVersion v42 · PUBLISHED</span></div>
     <div class="tabbar"><div class="tab on">그룹·구성원 <span class="tno">1</span></div><div class="tab">메뉴 권한 <span class="tno">2</span></div></div>
     <div class="tabpane on">
-      <div class="qbar"><span class="qlabel">그룹명</span><span class="qv">groupCode/국문/영문 <span class="lens">⌕</span></span><span class="qlabel">그룹 유형</span><span class="seg"><span class="on">전체</span><span>OPERATOR_ORG</span><span>TENANT_ORG</span><span>SECURITY</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/INACTIVE <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button></span></div>
-      <div class="mock-flex"><div class="lpane"><div class="lp-t">그룹 트리</div><div class="tree"><div class="tnode lv1 on">▸ 보안운영팀 <span class="cnt">12명</span></div><div class="tnode lv2">Break-glass 승인자 <span class="cnt">3명</span></div><div class="tnode lv2">감사로그 열람자 <span class="cnt">6명</span></div><div class="tnode lv1">▸ 고객지원팀 <span class="cnt">28명</span></div><div class="tnode lv2">지원 VIEW 전용 <span class="cnt">18명</span></div></div></div><div class="mock-main"><table class="grid"><tr><th>구성원</th><th>userGroup</th><th>상속 Role</th><th>메뉴 정책</th><th>만료</th><th class="c">상태</th></tr><tr class="sel"><td>김시스템</td><td>OPERATOR</td><td>SEC_ADMIN</td><td>OP-10 ALLOW · OP-08 DENY</td><td>상시</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td>정감사</td><td>OPERATOR</td><td>AUDITOR</td><td>OP-10 READ · EXPORT DENY</td><td>2026-12-31</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td>임보안</td><td>OPERATOR</td><td>SEC_ADMIN</td><td>Break-glass review ALLOW</td><td>임시 D+7</td><td class="c"><span class="badge b-warn">TEMP</span></td></tr></table><div class="statusbar"><span class="okmsg">✓ 그룹 구성원 범위 OPERATOR 일치</span><span class="cnt">UserGroupMember 12건</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">상속 요약</div><div class="rp-b"><div class="kv"><span class="k">Role</span><span class="v">SEC_ADMIN</span></div><div class="kv"><span class="k">DataScope</span><span class="v">GLOBAL</span></div><div class="kv"><span class="k">Menu DENY</span><span class="v">OP-08</span></div></div></div></div></div>
+      <div class="qbar"><span class="qlabel">그룹 검색</span><span class="qv">groupCode/국문/영문 <span class="lens">⌕</span></span><span class="qlabel">그룹 유형</span><span class="seg"><span class="on">전체</span><span>OPERATOR_ORG</span><span>TENANT_ORG</span><span>SECURITY</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/INACTIVE <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">그룹 추가</button><button class="abtn ghost">그룹 수정</button><button class="abtn red">그룹 삭제</button><button class="abtn dark">그룹 저장</button></span></div>
+      <div class="mock-flex"><div class="lpane"><div class="lp-t">그룹 트리</div><div class="tree"><div class="tnode lv1 on">▸ 보안운영팀 <span class="cnt">12명</span></div><div class="tnode lv2">Break-glass 승인자 <span class="cnt">3명</span></div><div class="tnode lv2">감사로그 열람자 <span class="cnt">6명</span></div><div class="tnode lv1">▸ 고객지원팀 <span class="cnt">28명</span></div><div class="tnode lv2">지원 VIEW 전용 <span class="cnt">18명</span></div></div></div><div class="mock-main"><div class="qbar"><span class="qlabel">그룹 상세</span><span class="qv">보안운영팀</span><span class="qlabel">작업구분</span><span class="seg"><span class="on">그룹정보</span><span>상위/하위</span><span>Role상속</span></span><span class="qright"><button class="abtn ghost">그룹 복사</button><button class="abtn ghost">그룹 비활성</button></span></div><div class="formgrid c3 label-left"><div class="ff"><label>그룹코드</label><input class="fv" value="SEC-OPS"></div><div class="ff"><label>국문명</label><input class="fv" value="보안운영팀"></div><div class="ff"><label>영문명</label><input class="fv" value="Security Operations"></div><div class="ff"><label>그룹유형</label><select class="fv"><option>SECURITY</option><option>OPERATOR_ORG</option><option>TENANT_ORG</option></select></div><div class="ff"><label>소유범위</label><select class="fv"><option>OPERATOR</option><option>TENANT</option><option>GLOBAL</option></select></div><div class="ff"><label>상태</label><select class="fv"><option>ACTIVE</option><option>INACTIVE</option><option>RETIRED</option></select></div><div class="ff"><label>상위그룹</label><select class="fv"><option>- 루트 그룹</option><option>운영조직</option><option>고객지원팀</option></select></div><div class="ff"><label>기본Role</label><select class="fv"><option>SEC_ADMIN</option><option>AUDITOR</option><option>SUPPORT</option></select></div><div class="ff"><label>유효기간</label><div class="fv">2026-01-01 ~ 9999-12-31</div></div><div class="ff full"><label>그룹설명</label><textarea class="fv" rows="2">보안·감사 운영 및 Break-glass 승인 권한을 가진 운영자 그룹</textarea></div></div><div class="qbar"><span class="qlabel">구성원 검색</span><span class="qv">이름/loginId <span class="lens">⌕</span></span><span class="qlabel">구성원 상태</span><span class="seg"><span class="on">전체</span><span>ACTIVE</span><span>TEMP</span><span>만료예정</span></span><span class="qlabel">Role</span><span class="qv">SEC_ADMIN/AUDITOR <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">구성원 조회</button><button class="abtn ghost">구성원 추가</button><button class="abtn ghost">구성원 수정</button><button class="abtn red">구성원 삭제</button><button class="abtn dark">구성원 저장</button><button class="abtn ghost">일괄 추가</button></span></div><table class="grid"><tr><th class="c">선택</th><th>구성원</th><th>Login ID</th><th>사용자구분</th><th>상속 Role</th><th>메뉴 정책</th><th>시작일</th><th>만료</th><th class="c">상태</th></tr><tr class="sel"><td class="c">✓</td><td>김시스템</td><td>sec.admin@ey.com</td><td>OPERATOR</td><td>SEC_ADMIN</td><td>OP-10 ALLOW · OP-08 DENY</td><td>2026-01-01</td><td>상시</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td class="c">□</td><td>정감사</td><td>auditor@ey.com</td><td>OPERATOR</td><td>AUDITOR</td><td>OP-10 READ · EXPORT DENY</td><td>2026-01-01</td><td>2026-12-31</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td class="c">□</td><td>임보안</td><td>security.temp@ey.com</td><td>OPERATOR</td><td>SEC_ADMIN</td><td>Break-glass review ALLOW</td><td>2026-07-01</td><td>2026-07-31</td><td class="c"><span class="badge b-warn">TEMP</span></td></tr></table><div class="statusbar"><span class="okmsg">✓ 그룹 CRUD와 구성원 CRUD를 별도 저장 단위로 분리</span><span class="cnt">UserGroup 1건 · UserGroupMember 12건</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">그룹 저장 검증</div><div class="rp-b"><div class="kv"><span class="k">groupCode</span><span class="v">UNIQUE</span></div><div class="kv"><span class="k">상위그룹</span><span class="v">순환 없음</span></div><div class="kv"><span class="k">Role</span><span class="v">SEC_ADMIN</span></div></div></div><div class="rp-box"><div class="rp-t">구성원 저장 검증</div><div class="rp-b"><div class="kv"><span class="k">범위</span><span class="v">OPERATOR 일치</span></div><div class="kv"><span class="k">중복</span><span class="v">0건</span></div><div class="kv"><span class="k">만료예정</span><span class="v">1명</span></div></div></div></div></div>
     </div>
     <div class="tabpane">
       <div class="qbar"><span class="qlabel">그룹</span><span class="qv">보안운영팀 <span class="lens">▾</span></span><span class="qlabel">메뉴코드</span><span class="qv">OP-06/OP-10 <span class="lens">⌕</span></span><span class="qlabel">정책</span><span class="seg"><span>INHERIT</span><span>ALLOW</span><span class="on">DENY</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">추가</button><button class="abtn ghost">수정</button><button class="abtn red">삭제</button><button class="abtn dark">저장</button><button class="abtn ghost">영향 분석</button></span></div>
       <div class="mock-flex"><div class="lpane"><div class="lp-t">MenuVersion v42</div><div class="tree"><div class="tnode lv1 on">▸ OP 운영콘솔</div><div class="tnode lv2">OP-06 사용자·권한 <span class="cnt">ALLOW</span></div><div class="tnode lv3">OP-06D 메뉴 마스터 <span class="cnt">ALLOW</span></div><div class="tnode lv2 red">OP-08 기장 워크벤치 <span class="cnt">DENY</span></div><div class="tnode lv2">OP-10 보안·감사 <span class="cnt">ALLOW</span></div></div></div><div class="mock-main"><table class="grid"><tr><th>메뉴</th><th>Role 권한</th><th>그룹 정책</th><th>최종 노출</th><th>진입</th><th>사유</th></tr><tr class="sel"><td>OP-10 보안·감사</td><td>ALLOW</td><td><span class="badge b-ok">ALLOW</span></td><td>보임</td><td>가능</td><td>보안운영팀 기본 메뉴</td></tr><tr><td>OP-08 기장 워크벤치</td><td>ALLOW</td><td><span class="badge b-block">DENY</span></td><td>숨김</td><td>불가</td><td>SEC_ADMIN 기장 업무 분리</td></tr><tr><td>OP-06D 메뉴 마스터</td><td>ALLOW</td><td><span class="badge b-gray">INHERIT</span></td><td>보임</td><td>가능</td><td>RoleMenuPermission 상속</td></tr><tr><td>OP-07 녹화 재생</td><td>READ</td><td><span class="badge b-warn">ALLOW+승인</span></td><td>보임</td><td>승인 후</td><td>2인 승인 필요</td></tr></table><div class="statusbar"><span class="warnmsg">DENY 우선 — 같은 사용자의 다른 그룹 ALLOW가 있어도 OP-08은 미노출</span><span class="cnt">영향 사용자 12명</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">충돌 검증</div><div class="rp-b"><span class="badge b-warn">USER_GROUP_MENU_CONFLICT</span><br>ALLOW 1건 · DENY 1건 → DENY 우선 기록</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>PUT /api/operator/user-groups/{groupId}/menu-permissions</code></div></div></div></div>
     </div>
   </div>
-  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">사용자그룹의 구성원, Role 상속, 메뉴 노출/숨김 정책을 한 곳에서 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">groupCode, groupNameKo/En, groupType, ownerScope, 구성원, Role, 메뉴 permissionMode.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">그룹 생성/폐기, 구성원 일괄 변경, Role 바인딩, 메뉴 INHERIT/ALLOW/DENY 설정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">그룹 범위, 구성원 userGroup, 메뉴 버전, 부모 메뉴 DENY, 다중 그룹 충돌.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">UserGroup, UserGroupMember, UserGroupRoleBinding, UserGroupMenuPermission.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">/api/me/menus bootstrap, PermissionEvaluationCache, RoleMenuPermission, 감사로그.</span></div></div></div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">사용자그룹 자체의 생성·수정·삭제와 그룹 구성원 추가·삭제를 분리해 관리하고, Role 상속과 메뉴 노출 정책을 통제한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">그룹: groupCode, groupNameKo/En, groupType, ownerScope, parentGroup, defaultRole, status, 유효기간. 구성원: userId/loginId, userType, inheritedRole, dataScope, 시작일, 만료일, memberStatus.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">그룹 추가·수정·삭제·저장, 구성원 조회·추가·수정·삭제·저장, 구성원 일괄 추가, Role 바인딩, 메뉴 INHERIT/ALLOW/DENY 설정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">그룹코드 중복, 상위그룹 순환참조, 구성원 범위, 구성원 중복, 만료일, 메뉴 버전, 부모 메뉴 DENY, 다중 그룹 충돌.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">UserGroup, UserGroupHierarchy, UserGroupMember, UserGroupRoleBinding, UserGroupMenuPermission.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">/api/me/menus bootstrap, PermissionEvaluationCache, RoleMenuPermission, UserAuditLog.</span></div></div></div>
 </section>
 
 <section class="section" id="op06b">
@@ -1247,6 +1281,78 @@ function selectCommonCode(code){
   setText('ccDiffText','DRAFT 변경분은 '+group.code+' 마스터 기준으로 비교·발행한다. 현재 '+group.version);
   setText('ccUsageText',group.usage+' · 출처: '+group.source);
 }
+var USER_DETAIL_CATALOG={
+  'sec.admin@ey.com':{
+    userId:'U-OP-00031',loginId:'sec.admin@ey.com',userType:'OPERATOR',status:'ACTIVE',nameKo:'김시스템',nameEn:'System Kim',externalId:'EY-OPS-0031',operatorOrg:'SYS-OPS · 시스템운영팀',tenant:'- 전체/해당없음',department:'시스템운영팀',position:'매니저',primaryBookkeeper:'관리회사',email:'sec.admin@ey.com',phone:'+82-10-0000-3100',notify:'IN_APP + EMAIL',locale:'ko-KR',timezone:'Asia/Seoul',scope:'GLOBAL',startDate:'2026-01-01',endDate:'9999-12-31',accountExpire:'9999-12-31',defaultGroup:'보안운영팀',defaultRole:'SEC_ADMIN',roleExpire:'상시',reason:'정기 권한 점검 결과 유지',risk:'18 / Low',mfa:'WebAuthn',lastLogin:'2026-07-08 13:52',
+    assignments:[['사용자그룹','보안운영팀','GLOBAL','2026-01-01','9999-12-31','ACTIVE'],['Role','SEC_ADMIN','GLOBAL','2026-01-01','9999-12-31','ACTIVE'],['메뉴정책','OP-08 DENY','기장업무 제외','2026-01-01','9999-12-31','SOD']],
+    history:['2026-07-08 Role 유지','2026-06-30 연락처 변경','2026-06-01 그룹 재배정']
+  },
+  'ops.junior@ey.com':{
+    userId:'U-OP-00109',loginId:'ops.junior@ey.com',userType:'OPERATOR',status:'PASSWORD_EXPIRED',nameKo:'박운영',nameEn:'Ops Park',externalId:'EY-OPS-0109',operatorOrg:'SUPPORT · 고객지원팀',tenant:'- 전체/해당없음',department:'고객지원팀',position:'스태프',primaryBookkeeper:'관리회사',email:'ops.junior@ey.com',phone:'+82-10-0000-1090',notify:'IN_APP',locale:'ko-KR',timezone:'Asia/Seoul',scope:'OPERATOR_ORG',startDate:'2026-03-01',endDate:'9999-12-31',accountExpire:'2026-09-30',defaultGroup:'고객지원팀',defaultRole:'SUPPORT',roleExpire:'2026-12-31',reason:'고객지원 담당자 비밀번호 만료 상태 점검',risk:'47 / Medium',mfa:'미등록',lastLogin:'2026-06-21',
+    assignments:[['사용자그룹','고객지원팀','OPERATOR_ORG','2026-03-01','9999-12-31','ACTIVE'],['Role','SUPPORT','OPERATOR_ORG','2026-03-01','2026-12-31','ACTIVE'],['메뉴정책','OP-10 READ','감사로그 조회 제외','2026-03-01','2026-12-31','LIMITED']],
+    history:['2026-07-01 비밀번호 만료','2026-06-21 마지막 로그인','2026-03-01 고객지원팀 배정']
+  },
+  'acct@kum.co.kr':{
+    userId:'U-TN-20451',loginId:'acct@kum.co.kr',userType:'TENANT',status:'ACTIVE',nameKo:'이회계',nameEn:'Accounting Lee',externalId:'KUM-ACC-0451',operatorOrg:'- 해당없음',tenant:'T-10035 · 금명전자',department:'회계팀',position:'대리',primaryBookkeeper:'이용회사',email:'acct@kum.co.kr',phone:'+82-10-0000-0451',notify:'IN_APP + EMAIL',locale:'ko-KR',timezone:'Asia/Seoul',scope:'TENANT_ONLY',startDate:'2026-01-10',endDate:'9999-12-31',accountExpire:'9999-12-31',defaultGroup:'회계팀',defaultRole:'TENANT_ADMIN',roleExpire:'상시',reason:'이용회사 회계팀 관리자 유지',risk:'12 / Low',mfa:'TOTP',lastLogin:'2026-07-08 09:31',
+    assignments:[['사용자그룹','회계팀','T-10035','2026-01-10','9999-12-31','ACTIVE'],['Role','TENANT_ADMIN','T-10035','2026-01-10','9999-12-31','ACTIVE'],['메뉴정책','TN 업무메뉴','테넌트 범위','2026-01-10','9999-12-31','ACTIVE']],
+    history:['2026-07-08 정상 로그인','2026-02-15 TOTP 등록','2026-01-10 회계팀 초대']
+  }
+};
+function setUserField(name,value){
+  var el=document.querySelector('[data-user-field="'+name+'"]');
+  if(!el){return;}
+  var next=value==null?'':String(value);
+  if(el.tagName==='SELECT'){
+    if(!Array.prototype.some.call(el.options,function(opt){return opt.value===next;})){
+      var option=document.createElement('option');
+      option.value=next;
+      option.textContent=next||'-';
+      el.appendChild(option);
+    }
+    el.value=next;
+    return;
+  }
+  el.value=next;
+}
+function userStatusBadge(status){
+  if(status==='ACTIVE'){return 'b-ok';}
+  if(status==='LOCKED'||status==='DISABLED'){return 'b-block';}
+  return 'b-warn';
+}
+function renderUserAssignments(user){
+  var tbody=document.getElementById('userAssignmentRows');
+  if(!tbody){return;}
+  tbody.innerHTML=user.assignments.map(function(row,idx){
+    var badge=row[5]==='ACTIVE'?'b-ok':row[5]==='SOD'?'b-warn':'b-gray';
+    return '<tr'+(idx===0?' class="sel"':'')+'><td>'+escapeHtml(row[0])+'</td><td>'+escapeHtml(row[1])+'</td><td>'+escapeHtml(row[2])+'</td><td>'+escapeHtml(row[3])+'</td><td>'+escapeHtml(row[4])+'</td><td class="c"><span class="badge '+badge+'">'+escapeHtml(row[5])+'</span></td></tr>';
+  }).join('');
+}
+function selectUserDetail(loginId){
+  var user=USER_DETAIL_CATALOG[loginId]||USER_DETAIL_CATALOG['sec.admin@ey.com'];
+  Object.keys(user).forEach(function(key){setUserField(key,user[key]);});
+  setText('userDetailSelectedLabel',user.loginId+' · '+user.nameKo);
+  setText('userDetailTypeLabel',user.userType);
+  setText('userDetailStatusLabel',user.status);
+  setText('userListStatus',user.nameKo+' 선택 · 같은 화면에서 세부정보 수정 가능');
+  renderUserAssignments(user);
+  var summary=document.getElementById('userSummaryPanel');
+  if(summary){summary.innerHTML='<div class="kv"><span class="k">userType</span><span class="v">'+escapeHtml(user.userType)+'</span></div><div class="kv"><span class="k">소속</span><span class="v">'+escapeHtml(user.operatorOrg||user.tenant)+'</span></div><div class="kv"><span class="k">MFA</span><span class="v">'+escapeHtml(user.mfa)+'</span></div><div class="kv"><span class="k">riskScore</span><span class="v">'+escapeHtml(user.risk)+'</span></div>';}
+  var validation=document.getElementById('userValidationPanel');
+  if(validation){validation.innerHTML='<div class="kv"><span class="k">loginId</span><span class="v">UNIQUE</span></div><div class="kv"><span class="k">소속</span><span class="v">필수 충족</span></div><div class="kv"><span class="k">상태</span><span class="v"><span class="badge '+userStatusBadge(user.status)+'">'+escapeHtml(user.status)+'</span></span></div><div class="kv"><span class="k">감사사유</span><span class="v">입력됨</span></div>';}
+  var history=document.getElementById('userHistoryPanel');
+  if(history){history.innerHTML=user.history.map(function(line){return escapeHtml(line);}).join('<br>');}
+  var table=document.getElementById('userListTable');
+  if(table){Array.prototype.forEach.call(table.querySelectorAll('tr[data-user-id]'),function(row){row.classList.toggle('sel',row.getAttribute('data-user-id')===user.loginId);});}
+}
+function bindUserListSelection(){
+  var table=document.getElementById('userListTable');
+  if(!table){return;}
+  Array.prototype.forEach.call(table.querySelectorAll('tr[data-user-id]'),function(row){
+    row.addEventListener('click',function(){selectUserDetail(row.getAttribute('data-user-id'));});
+  });
+  var selected=table.querySelector('tr.sel[data-user-id]')||table.querySelector('tr[data-user-id]');
+  if(selected){selectUserDetail(selected.getAttribute('data-user-id'));}
+}
 document.querySelectorAll('.mitem').forEach(function(mi){
   mi.addEventListener('click',function(){
     document.querySelectorAll('.mitem').forEach(function(x){x.classList.remove('active')});
@@ -1270,6 +1376,7 @@ document.querySelectorAll('.mock .tabbar').forEach(function(bar){
     });
   });
 });
+bindUserListSelection();
 renderMenuMasterTree('OP-06-M04');
 selectMenuMaster('OP-06-M04');
 renderCommonCodeMasters(COMMON_CODE_CATALOG[0]&&COMMON_CODE_CATALOG[0].code);
