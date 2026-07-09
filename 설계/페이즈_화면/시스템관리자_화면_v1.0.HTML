@@ -913,6 +913,18 @@ function menuTreeChildrenByParent(){
   });
   return byParent;
 }
+function menuTreeOrderedItems(){
+  var byParent=menuTreeChildrenByParent();
+  var ordered=[];
+  function walk(parentCode){
+    (byParent[parentCode]||[]).forEach(function(item){
+      ordered.push(item);
+      walk(item.code);
+    });
+  }
+  walk('');
+  return ordered;
+}
 function menuAncestorCodes(code){
   var path=[];
   var item=menuByCode(code);
@@ -1063,14 +1075,15 @@ function menuExcelValue(item,key){
 }
 function downloadMenuMasterExcel(){
   var columns=menuExcelColumns();
-  var rows=MENU_MASTER_CATALOG.map(function(item){
+  var exportItems=menuTreeOrderedItems();
+  var rows=exportItems.map(function(item){
     return columns.map(function(col){return menuExcelValue(item,col[0]);});
   });
   var table='<table><thead><tr>'+columns.map(function(col){return '<th>'+escapeHtml(col[1])+'</th>';}).join('')+'</tr></thead><tbody>'+
     rows.map(function(row){return '<tr>'+row.map(function(value){return '<td>'+escapeHtml(value)+'</td>';}).join('')+'</tr>';}).join('')+
     '</tbody></table>';
   var html='<!doctype html><html><head><meta charset="utf-8"><style>table{border-collapse:collapse}th,td{border:1px solid #999;padding:4px;mso-number-format:"\\@";white-space:nowrap}th{background:#f3f3f3;font-weight:bold}</style></head><body>'+
-    '<h3>메뉴마스터 전체 데이터</h3><div>생성일시: '+escapeHtml(new Date().toLocaleString('ko-KR'))+' / 총 '+MENU_MASTER_CATALOG.length+'건</div>'+table+'</body></html>';
+    '<h3>메뉴마스터 전체 데이터</h3><div>생성일시: '+escapeHtml(new Date().toLocaleString('ko-KR'))+' / 트리 표시 순서 / 총 '+exportItems.length+'건</div>'+table+'</body></html>';
   var blob=new Blob(['\ufeff',html],{type:'application/vnd.ms-excel;charset=utf-8'});
   var fileName='menu_master_'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'.xls';
   if(window.navigator&&window.navigator.msSaveOrOpenBlob){
