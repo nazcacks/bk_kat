@@ -58,7 +58,7 @@ export default function UserGroupsPage() {
                 <ABtn onClick={crud.openCreate}>그룹 추가</ABtn>
                 <ABtn onClick={crud.openEdit}>그룹 수정</ABtn>
                 <ABtn variant="red" onClick={() => void crud.handleDelete()}>그룹 삭제</ABtn>
-                <ABtn variant="dark" onClick={crud.openEdit}>그룹 저장</ABtn>
+                <ABtn variant="dark" onClick={() => void crud.save()}>그룹 저장</ABtn>
               </>
             }
           >
@@ -84,17 +84,7 @@ export default function UserGroupsPage() {
               </div>
             </div>
             <div className="mock-main">
-              <div className="formgrid c3 label-left">
-                <div className="ff"><label>그룹코드</label><div className="fv ro">{sel?.groupCode ?? '-'}</div></div>
-                <div className="ff"><label>국문명</label><div className="fv ro">{sel?.nameKo ?? '-'}</div></div>
-                <div className="ff"><label>영문명</label><div className="fv ro">{sel?.nameEn ?? '-'}</div></div>
-                <div className="ff"><label>그룹유형</label><div className="fv ro">{sel?.groupType ?? '-'}</div></div>
-                <div className="ff"><label>소유범위</label><div className="fv ro">{sel?.ownerScope ?? '-'}</div></div>
-                <div className="ff"><label>상태</label><div className="fv ro">{sel?.status ?? '-'}</div></div>
-                <div className="ff"><label>기본Role</label><div className="fv ro">{sel?.defaultRole ?? '-'}</div></div>
-                <div className="ff"><label>유효기간</label><div className="fv ro">2026-01-01 ~ 9999-12-31</div></div>
-                <div className="ff full"><label>그룹설명</label><div className="fv ro">{sel?.description ?? '-'}</div></div>
-              </div>
+              {crud.form}
               <div className="gridwrap">
                 <table className="grid">
                   <thead>
@@ -188,7 +178,6 @@ export default function UserGroupsPage() {
         </>
       )}
 
-      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: '사용자그룹 자체의 생성·수정·삭제와 그룹 구성원 추가·삭제를 분리해 관리하고, Role 상속과 메뉴 노출 정책을 통제한다.' },

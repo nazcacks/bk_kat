@@ -98,6 +98,7 @@ export default function BatchIntegrationPage() {
               </tbody>
             </table>
           </div>
+          {crud.form}
           <StatusBar tone="warn" message="동일 멱등키 + 동일 요청 해시일 때만 재처리 허용" count={`잡 ${visible.length}건`} />
         </div>
         <RightPanel>
@@ -105,7 +106,6 @@ export default function BatchIntegrationPage() {
           <InfoBox title="커넥터">토큰 만료 D-2 · 평문 secret 조회 금지 · KMS secretRef만 표시</InfoBox>
         </RightPanel>
       </div>
-      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: '운영/회사/기장/보고 배치와 연계 큐의 실패·지연을 관측하고 재처리한다.' },

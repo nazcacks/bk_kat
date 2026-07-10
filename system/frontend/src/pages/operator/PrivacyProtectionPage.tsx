@@ -87,7 +87,7 @@ export default function PrivacyProtectionPage() {
                 <ABtn onClick={crud.openCreate}>정책 추가</ABtn>
                 <ABtn onClick={crud.openEdit}>수정</ABtn>
                 <ABtn variant="red" onClick={() => void crud.handleDelete()}>삭제</ABtn>
-                <ABtn variant="dark" onClick={crud.openEdit}>저장</ABtn>
+                <ABtn variant="dark" onClick={() => void crud.save()}>저장</ABtn>
                 <ABtn>영향 분석</ABtn>
               </>
             }
@@ -124,6 +124,7 @@ export default function PrivacyProtectionPage() {
                   </tbody>
                 </table>
               </div>
+              {crud.form}
               <div className="qbar">
                 <span className="qlabel">시스템 마스킹 정책 (실데이터)</span>
                 <span className="qv">masking_policy 테이블 · GET /api/security/masking-policies</span>
@@ -238,7 +239,6 @@ export default function PrivacyProtectionPage() {
         </>
       )}
 
-      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: '개인정보 카탈로그, 마스킹, 평문 접근, 보존·파기, DLP 정책을 설정하고 실제 실행 이력을 조회한다.' },

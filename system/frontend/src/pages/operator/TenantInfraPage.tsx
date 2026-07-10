@@ -46,7 +46,7 @@ export default function TenantInfraPage() {
             <ABtn onClick={crud.openCreate}>추가</ABtn>
             <ABtn onClick={crud.openEdit}>수정</ABtn>
             <ABtn variant="red" onClick={() => void crud.handleDelete()}>삭제</ABtn>
-            <ABtn variant="dark" onClick={crud.openEdit}>저장</ABtn>
+            <ABtn variant="dark" onClick={() => void crud.save()}>저장</ABtn>
             <ABtn>스냅샷 생성</ABtn>
           </>
         }
@@ -85,6 +85,7 @@ export default function TenantInfraPage() {
               </tbody>
             </table>
           </div>
+          {crud.form}
           <StatusBar message="✓ 평문 데이터 접근 없이 인프라 메타만 조회 · 변경은 감사로그 기록" count={`테넌트 ${visible.length}건`} />
         </div>
         <RightPanel>
@@ -92,7 +93,6 @@ export default function TenantInfraPage() {
           <InfoBox title="차단 조건"><span className="badge b-block">마감/신고 성수기</span><br />스냅샷 없음 · 롤백계획 없음 · checksum 불일치</InfoBox>
         </RightPanel>
       </div>
-      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: '테넌트 격리 티어, 쿼터, 스냅샷, 복구 상태를 기술 관점에서 운영한다.' },

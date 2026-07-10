@@ -49,7 +49,7 @@ export default function AuthPolicyPage() {
             <ABtn onClick={crud.openCreate}>추가</ABtn>
             <ABtn onClick={crud.openEdit}>수정</ABtn>
             <ABtn variant="red" onClick={() => void crud.handleDelete()}>삭제</ABtn>
-            <ABtn variant="dark" onClick={crud.openEdit}>저장</ABtn>
+            <ABtn variant="dark" onClick={() => void crud.save()}>저장</ABtn>
           </>
         }
       >
@@ -83,17 +83,8 @@ export default function AuthPolicyPage() {
           </tbody>
         </table>
       </div>
-      <div className="formgrid c3">
-        <div className="ff"><label>운영자 2FA</label><div className="fv ro">{sel?.mfa ?? '-'}</div></div>
-        <div className="ff"><label>비밀번호</label><div className="fv ro">{sel?.password ?? '-'}</div></div>
-        <div className="ff"><label>실패 잠금</label><div className="fv ro">{sel?.lockout ?? '-'}</div></div>
-        <div className="ff"><label>세션</label><div className="fv ro">{sel?.session ?? '-'}</div></div>
-        <div className="ff"><label>동시 세션</label><div className="fv ro">{sel?.concurrentSessions ?? '-'}</div></div>
-        <div className="ff"><label>휴면</label><div className="fv ro">{sel?.dormant ?? '-'}</div></div>
-        <div className="ff full"><label>SSO/OIDC</label><div className="fv ro">{sel?.sso ?? '-'}</div></div>
-      </div>
+      {crud.form}
       <StatusBar message="✓ 정책 변경은 기존 세션과 신규 로그인에 즉시 반영 · 변경 이력은 감사로그 기록" count={sel ? `AuthPolicy ${sel.version}` : `정책 ${visible.length}건`} />
-      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: '운영 콘솔 인증 강도와 세션/잠금/휴면 정책을 중앙에서 관리한다.' },

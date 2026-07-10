@@ -29,3 +29,8 @@ export function updateUser(id: string, data: Partial<ManagedUser>): Promise<Mana
 export function disableUser(id: string): Promise<{ id: string; status: string }> {
   return apiDelete(`/users/${id}`);
 }
+
+/** 개인정보 평문 조회 — 사유 필수, PersonalDataAccessLog 자동 기록 */
+export function fetchUserPlain(id: string, reason: string): Promise<ManagedUser> {
+  return apiGet(`/users/${id}/plain`, { reason });
+}

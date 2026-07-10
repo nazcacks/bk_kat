@@ -10,6 +10,8 @@ export interface DialogField {
   required?: boolean;
   /** 수정 시 변경 불가 필드 (코드류) */
   readOnlyOnEdit?: boolean;
+  /** 항상 읽기전용 (시스템 부여 값 표시용) */
+  readOnly?: boolean;
   placeholder?: string;
 }
 

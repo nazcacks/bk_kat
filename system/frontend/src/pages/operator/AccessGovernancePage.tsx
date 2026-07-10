@@ -46,7 +46,7 @@ export default function AccessGovernancePage() {
             <ABtn onClick={crud.openCreate}>추가</ABtn>
             <ABtn onClick={crud.openEdit}>수정</ABtn>
             <ABtn variant="red" onClick={() => void crud.handleDelete()}>삭제</ABtn>
-            <ABtn variant="dark" onClick={crud.openEdit}>저장</ABtn>
+            <ABtn variant="dark" onClick={() => void crud.save()}>저장</ABtn>
           </>
         }
       >
@@ -89,6 +89,7 @@ export default function AccessGovernancePage() {
               </tbody>
             </table>
           </div>
+          {crud.form}
           <StatusBar tone="warn" message="녹화 재생은 별도 승인 후 가능 · 세션 변경은 감사로그 기록" count={`세션 ${visible.length}건`} />
         </div>
         <RightPanel>
@@ -96,7 +97,6 @@ export default function AccessGovernancePage() {
           <InfoBox title="사후검토">AdminAccessLog + DataChangeLog + 녹화 타임라인 통합 리포트</InfoBox>
         </RightPanel>
       </div>
-      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: '긴급 접근과 테넌트 지원 세션을 승인·기록·검토한다.' },

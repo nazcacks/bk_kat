@@ -75,6 +75,10 @@ table.grid .blue { color: var(--ey-blue); }
 table.grid .dim { color: #9a9aa4; }
 table.grid .mono { font-family: Consolas, monospace; font-size: 14px; }
 
+/* 인라인 편집 */
+.inline-editing { outline: 2px solid var(--ey-yellow); outline-offset: -2px; }
+.inline-edit-bar { background: #FFF8CC; border-bottom: 1px solid #e8d870; }
+
 /* 상태바 */
 .statusbar { display: flex; align-items: center; gap: 16px; background: var(--ey-darker); color: #e8e8ee; padding: 7px 12px; font-size: 14.5px; flex-wrap: wrap; }
 .statusbar .okmsg { color: #7ADB8F; font-weight: 700; }

@@ -5,7 +5,8 @@ import RightPanel from '../../components/frame/RightPanel';
 import InfoBox from '../../components/frame/InfoBox';
 import StatusBar from '../../components/frame/StatusBar';
 import ScreenDetails from '../../components/frame/ScreenDetails';
-import EditDialog, { type DialogField, type DialogValues } from '../../components/frame/EditDialog';
+import { type DialogField, type DialogValues } from '../../components/frame/EditDialog';
+import EditableForm from '../../components/frame/EditableForm';
 import {
   createCodeGroup, createCodeItem, deleteCodeGroup, deleteCodeItem,
   fetchCommonCodes, updateCodeGroup, updateCodeItem,
@@ -30,15 +31,24 @@ const ITEM_FIELDS: DialogField[] = [
   { name: 'isActive', label: '사용여부', type: 'checkbox' },
 ];
 
-/** OP-05C 시스템 공통코드 관리 — 마스터(코드그룹)/세부(코드항목) CRUD (실제 API) */
+type EditMode = 'create' | 'edit' | null;
+
+/** OP-05C 시스템 공통코드 관리 — 마스터/세부 화면 내 직접 편집 CRUD (실제 API) */
 export default function CommonCodePage() {
   const [groups, setGroups] = useState<CommonCodeGroup[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [domain, setDomain] = useState('전체');
   const [useYn, setUseYn] = useState('전체');
-  const [dialog, setDialog] = useState<'group-create' | 'group-edit' | 'item-create' | 'item-edit' | null>(null);
-  const [initial, setInitial] = useState<DialogValues>({});
+
+  // 마스터/세부 인라인 편집 상태
+  const [groupEditing, setGroupEditing] = useState<EditMode>(null);
+  const [groupDraft, setGroupDraft] = useState<DialogValues>({});
+  const [groupError, setGroupError] = useState<string | null>(null);
+  const [itemEditing, setItemEditing] = useState<EditMode>(null);
+  const [itemDraft, setItemDraft] = useState<DialogValues>({});
+  const [itemError, setItemError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const reload = () => fetchCommonCodes().then(setGroups);
   useEffect(() => {
@@ -52,19 +62,58 @@ export default function CommonCodePage() {
   );
   const selItem = items.find((i) => i.code === selectedItem) ?? items[0];
 
-  const openDialog = (kind: NonNullable<typeof dialog>) => {
-    if (kind === 'group-create') setInitial({ groupCode: '', groupName: '', nameEn: '', domain: 'AUTH', policy: 'ADMIN_MANAGED', description: '' });
-    else if (kind === 'group-edit') {
-      if (!sel) return window.alert('수정할 코드그룹을 선택하세요.');
-      setInitial({ groupCode: sel.groupCode, groupName: sel.groupName, nameEn: sel.nameEn ?? '', domain: sel.domain ?? 'AUTH', policy: sel.policy ?? 'ADMIN_MANAGED', description: sel.description ?? '' });
-    } else if (kind === 'item-create') {
-      if (!sel) return window.alert('코드그룹을 먼저 선택하세요. (COMMON_CODE_GROUP_REQUIRED)');
-      setInitial({ code: '', name: '', sortOrder: items.length + 1, isActive: true });
-    } else {
-      if (!sel || !selItem) return window.alert('수정할 세부 코드를 선택하세요.');
-      setInitial({ code: selItem.code, name: selItem.name, sortOrder: selItem.sortOrder, isActive: selItem.isActive });
+  const cancelAll = () => {
+    setGroupEditing(null);
+    setItemEditing(null);
+    setGroupError(null);
+    setItemError(null);
+  };
+
+  // ── 마스터(코드그룹) 인라인 편집 ─────────────────────────────
+  const startGroupCreate = () => {
+    cancelAll();
+    setGroupDraft({ groupCode: '', groupName: '', nameEn: '', domain: DOMAINS[0], policy: 'ADMIN_MANAGED', description: '' });
+    setGroupEditing('create');
+  };
+
+  const startGroupEdit = () => {
+    if (!sel) return window.alert('수정할 코드그룹을 선택하세요.');
+    cancelAll();
+    setGroupDraft({ groupCode: sel.groupCode, groupName: sel.groupName, nameEn: sel.nameEn ?? '', domain: sel.domain ?? DOMAINS[0], policy: sel.policy ?? 'ADMIN_MANAGED', description: sel.description ?? '' });
+    setGroupEditing('edit');
+  };
+
+  const saveGroup = async () => {
+    if (!groupEditing) return window.alert('[마스터 추가] 또는 [마스터 수정] 으로 편집을 시작한 뒤 저장하세요.');
+    for (const f of GROUP_FIELDS) {
+      if (f.required && !String(groupDraft[f.name] ?? '').trim()) {
+        setGroupError(`'${f.label}' 은(는) 필수 입력입니다.`);
+        return;
+      }
     }
-    setDialog(kind);
+    setSaving(true);
+    setGroupError(null);
+    const payload = {
+      groupName: String(groupDraft.groupName),
+      nameEn: String(groupDraft.nameEn ?? ''),
+      domain: String(groupDraft.domain ?? ''),
+      policy: String(groupDraft.policy ?? ''),
+      description: String(groupDraft.description ?? ''),
+    };
+    try {
+      if (groupEditing === 'create') {
+        await createCodeGroup({ groupCode: String(groupDraft.groupCode), ...payload } as Parameters<typeof createCodeGroup>[0]);
+        setSelectedGroup(String(groupDraft.groupCode));
+      } else if (sel) {
+        await updateCodeGroup(sel.groupCode, payload as Parameters<typeof updateCodeGroup>[1]);
+      }
+      setGroupEditing(null);
+      await reload();
+    } catch (e) {
+      setGroupError(e instanceof Error ? e.message : '마스터 저장에 실패했습니다.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const removeGroup = async () => {
@@ -73,9 +122,51 @@ export default function CommonCodePage() {
     try {
       await deleteCodeGroup(sel.groupCode);
       setSelectedGroup(null);
+      cancelAll();
       await reload();
     } catch (e) {
       window.alert(e instanceof Error ? e.message : '삭제에 실패했습니다.');
+    }
+  };
+
+  // ── 세부(코드항목) 인라인 편집 ───────────────────────────────
+  const startItemCreate = () => {
+    if (!sel) return window.alert('코드그룹을 먼저 선택하세요. (COMMON_CODE_GROUP_REQUIRED)');
+    cancelAll();
+    setItemDraft({ code: '', name: '', sortOrder: items.length + 1, isActive: true });
+    setItemEditing('create');
+  };
+
+  const startItemEdit = () => {
+    if (!sel || !selItem) return window.alert('수정할 세부 코드를 선택하세요.');
+    cancelAll();
+    setItemDraft({ code: selItem.code, name: selItem.name, sortOrder: selItem.sortOrder, isActive: selItem.isActive });
+    setItemEditing('edit');
+  };
+
+  const saveItem = async () => {
+    if (!itemEditing) return window.alert('[세부 추가] 또는 [세부 수정] 으로 편집을 시작한 뒤 저장하세요.');
+    if (!sel) return;
+    for (const f of ITEM_FIELDS) {
+      if (f.required && !String(itemDraft[f.name] ?? '').trim()) {
+        setItemError(`'${f.label}' 은(는) 필수 입력입니다.`);
+        return;
+      }
+    }
+    setSaving(true);
+    setItemError(null);
+    try {
+      if (itemEditing === 'create') {
+        await createCodeItem(sel.groupCode, { code: String(itemDraft.code), name: String(itemDraft.name), sortOrder: Number(itemDraft.sortOrder ?? 0) });
+      } else if (selItem) {
+        await updateCodeItem(sel.groupCode, selItem.code, { name: String(itemDraft.name), sortOrder: Number(itemDraft.sortOrder ?? 0), isActive: !!itemDraft.isActive });
+      }
+      setItemEditing(null);
+      await reload();
+    } catch (e) {
+      setItemError(e instanceof Error ? e.message : '세부 저장에 실패했습니다.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -85,23 +176,11 @@ export default function CommonCodePage() {
     try {
       await deleteCodeItem(sel.groupCode, selItem.code);
       setSelectedItem(null);
+      cancelAll();
       await reload();
     } catch (e) {
       window.alert(e instanceof Error ? e.message : '삭제에 실패했습니다.');
     }
-  };
-
-  const handleSubmit = async (values: DialogValues) => {
-    if (dialog === 'group-create') {
-      await createCodeGroup({ groupCode: String(values.groupCode), groupName: String(values.groupName), nameEn: String(values.nameEn ?? ''), domain: String(values.domain ?? ''), policy: String(values.policy ?? ''), description: String(values.description ?? '') } as Parameters<typeof createCodeGroup>[0]);
-    } else if (dialog === 'group-edit' && sel) {
-      await updateCodeGroup(sel.groupCode, { groupName: String(values.groupName), nameEn: String(values.nameEn ?? ''), domain: String(values.domain ?? ''), policy: String(values.policy ?? ''), description: String(values.description ?? '') } as Parameters<typeof updateCodeGroup>[1]);
-    } else if (dialog === 'item-create' && sel) {
-      await createCodeItem(sel.groupCode, { code: String(values.code), name: String(values.name), sortOrder: Number(values.sortOrder ?? 0) });
-    } else if (dialog === 'item-edit' && sel && selItem) {
-      await updateCodeItem(sel.groupCode, selItem.code, { name: String(values.name), sortOrder: Number(values.sortOrder ?? 0), isActive: !!values.isActive });
-    }
-    await reload();
   };
 
   return (
@@ -115,21 +194,19 @@ export default function CommonCodePage() {
         actions={
           <>
             <ABtn variant="yellow" onClick={() => void reload()}>🔍 조회</ABtn>
-            <ABtn onClick={() => openDialog('group-create')}>마스터 추가</ABtn>
-            <ABtn onClick={() => openDialog('group-edit')}>마스터 수정</ABtn>
+            <ABtn onClick={startGroupCreate}>마스터 추가</ABtn>
+            <ABtn onClick={startGroupEdit}>마스터 수정</ABtn>
             <ABtn variant="red" onClick={() => void removeGroup()}>마스터 삭제</ABtn>
-            <ABtn variant="dark" onClick={() => openDialog('group-edit')}>마스터 저장</ABtn>
+            <ABtn variant="dark" onClick={() => void saveGroup()}>마스터 저장</ABtn>
           </>
         }
       >
         <QLabel>마스터 검색</QLabel>
         <QValue><input placeholder="코드그룹/그룹명" /> <span className="lens">⌕</span></QValue>
         <QLabel>도메인</QLabel>
-        <Seg options={['전체', 'AUTH', 'TENANT', 'MENU', 'BATCH', 'SECURITY', 'JOURNAL', 'VAT', 'REPORT']} value={domain} onChange={(v) => { setDomain(v); setSelectedGroup(null); }} />
+        <Seg options={['전체', 'AUTH', 'TENANT', 'MENU', 'BATCH', 'SECURITY', 'JOURNAL', 'VAT', 'REPORT']} value={domain} onChange={(v) => { setDomain(v); setSelectedGroup(null); cancelAll(); }} />
         <QLabel>적용범위</QLabel>
         <QValue>GLOBAL/PLAN/TENANT <span className="lens">▾</span></QValue>
-        <QLabel>상태</QLabel>
-        <QValue>ACTIVE/RETIRED <span className="lens">▾</span></QValue>
       </QueryBar>
       <div className="mock-flex">
         <div className="lpane">
@@ -139,7 +216,7 @@ export default function CommonCodePage() {
               <div
                 key={g.groupCode}
                 className={`tnode lv1${sel?.groupCode === g.groupCode ? ' on' : ''}`}
-                onClick={() => setSelectedGroup(g.groupCode)}
+                onClick={() => { setSelectedGroup(g.groupCode); cancelAll(); }}
               >
                 {g.groupName} <span className="cnt">{g.groupCode} · {g.items.length}건</span>
               </div>
@@ -147,25 +224,38 @@ export default function CommonCodePage() {
           </div>
         </div>
         <div className="mock-main">
-          <div className="formgrid c3 label-left">
-            <div className="ff"><label>코드그룹</label><div className="fv ro">{sel?.groupCode ?? '-'}</div></div>
-            <div className="ff"><label>그룹 국문명</label><div className="fv ro">{sel?.groupName ?? '-'}</div></div>
-            <div className="ff"><label>도메인</label><div className="fv ro">{sel?.domain ?? '-'}</div></div>
-            <div className="ff"><label>그룹 영문명</label><div className="fv ro">{sel?.nameEn ?? '-'}</div></div>
-            <div className="ff"><label>변경정책</label><div className="fv ro">{sel?.policy ?? '-'}</div></div>
-            <div className="ff"><label>발행버전</label><div className="fv ro">v21</div></div>
-          </div>
+          {groupEditing ? (
+            <EditableForm
+              fields={GROUP_FIELDS}
+              values={groupDraft}
+              mode={groupEditing}
+              onChange={(name, v) => setGroupDraft((prev) => ({ ...prev, [name]: v }))}
+              onSave={() => void saveGroup()}
+              onCancel={cancelAll}
+              error={groupError}
+              saving={saving}
+              columns={3}
+            />
+          ) : (
+            <div className="formgrid c3 label-left">
+              <div className="ff"><label>코드그룹</label><div className="fv ro">{sel?.groupCode ?? '-'}</div></div>
+              <div className="ff"><label>그룹 국문명</label><div className="fv ro">{sel?.groupName ?? '-'}</div></div>
+              <div className="ff"><label>도메인</label><div className="fv ro">{sel?.domain ?? '-'}</div></div>
+              <div className="ff"><label>그룹 영문명</label><div className="fv ro">{sel?.nameEn ?? '-'}</div></div>
+              <div className="ff"><label>변경정책</label><div className="fv ro">{sel?.policy ?? '-'}</div></div>
+              <div className="ff"><label>발행버전</label><div className="fv ro">v21</div></div>
+            </div>
+          )}
           <div className="qbar">
             <span className="qlabel">세부 검색</span>
             <span className="qv"><input placeholder="코드/국문명" /> <span className="lens">⌕</span></span>
             <span className="qlabel">사용여부</span>
             <Seg options={['전체', 'Y', 'N']} value={useYn} onChange={setUseYn} />
             <span className="qright">
-              <ABtn variant="yellow" onClick={() => void reload()}>🔍 조회</ABtn>
-              <ABtn onClick={() => openDialog('item-create')}>세부 추가</ABtn>
-              <ABtn onClick={() => openDialog('item-edit')}>세부 수정</ABtn>
+              <ABtn onClick={startItemCreate}>세부 추가</ABtn>
+              <ABtn onClick={startItemEdit}>세부 수정</ABtn>
               <ABtn variant="red" onClick={() => void removeItem()}>세부 삭제</ABtn>
-              <ABtn variant="dark" onClick={() => openDialog('item-edit')}>세부 저장</ABtn>
+              <ABtn variant="dark" onClick={() => void saveItem()}>세부 저장</ABtn>
               <ABtn>영향 분석</ABtn>
               <ABtn variant="dark">발행</ABtn>
             </span>
@@ -178,7 +268,7 @@ export default function CommonCodePage() {
                   <tr
                     key={item.code}
                     className={`clickable${selItem?.code === item.code ? ' sel' : ''}`}
-                    onClick={() => setSelectedItem(item.code)}
+                    onClick={() => { setSelectedItem(item.code); setItemEditing(null); setItemError(null); }}
                   >
                     <td className="mono">{item.code}</td>
                     <td>{sel?.groupCode}</td>
@@ -195,6 +285,19 @@ export default function CommonCodePage() {
               </tbody>
             </table>
           </div>
+          {itemEditing && (
+            <EditableForm
+              fields={ITEM_FIELDS}
+              values={itemDraft}
+              mode={itemEditing}
+              onChange={(name, v) => setItemDraft((prev) => ({ ...prev, [name]: v }))}
+              onSave={() => void saveItem()}
+              onCancel={cancelAll}
+              error={itemError}
+              saving={saving}
+              columns={3}
+            />
+          )}
           <StatusBar
             message={sel ? `✓ ${sel.groupCode} 선택됨` : '✓ 마스터 선택 대기'}
             count={`세부 ${items.length}건`}
@@ -206,15 +309,6 @@ export default function CommonCodePage() {
           <InfoBox title="사용처 영향">문서 검토 출처와 사용처가 표시된다.</InfoBox>
         </RightPanel>
       </div>
-      <EditDialog
-        open={dialog !== null}
-        mode={dialog?.endsWith('create') ? 'create' : 'edit'}
-        title={dialog?.startsWith('group') ? '코드그룹' : '세부 코드'}
-        fields={dialog?.startsWith('group') ? GROUP_FIELDS : ITEM_FIELDS}
-        initial={initial}
-        onClose={() => setDialog(null)}
-        onSubmit={handleSubmit}
-      />
       <ScreenDetails
         items={[
           { label: '목적', body: '공통코드를 마스터(코드그룹)와 세부(코드항목) 관계로 관리하고 런타임에 일관된 정의를 제공한다.' },

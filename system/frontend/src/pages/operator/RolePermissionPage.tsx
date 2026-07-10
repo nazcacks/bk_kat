@@ -46,7 +46,7 @@ export default function RolePermissionPage() {
             <ABtn onClick={crud.openCreate}>추가</ABtn>
             <ABtn onClick={crud.openEdit}>수정</ABtn>
             <ABtn variant="red" onClick={() => void crud.handleDelete()}>삭제</ABtn>
-            <ABtn variant="dark" onClick={crud.openEdit}>저장</ABtn>
+            <ABtn variant="dark" onClick={() => void crud.save()}>저장</ABtn>
             <ABtn>시뮬레이션</ABtn>
           </>
         }
@@ -74,12 +74,7 @@ export default function RolePermissionPage() {
           </div>
         </div>
         <div className="mock-main">
-          <div className="formgrid c3 label-left">
-            <div className="ff"><label>Role 코드</label><div className="fv ro">{sel?.roleCode ?? '-'}</div></div>
-            <div className="ff"><label>Role 명</label><div className="fv ro">{sel?.name ?? '-'}</div></div>
-            <div className="ff"><label>범위</label><div className="fv ro">{sel?.scope ?? '-'}</div></div>
-            <div className="ff full"><label>설명</label><div className="fv ro">{sel?.description ?? '-'}</div></div>
-          </div>
+          {crud.form}
           <div className="qbar">
             <span className="qlabel">권한 평가 시뮬레이션</span>
             <span className="qv">{sel?.roleCode ?? 'SEC_ADMIN'} · 김시스템/보안운영팀 · {mode}</span>
@@ -106,7 +101,6 @@ export default function RolePermissionPage() {
           <InfoBox title="캐시 키"><code>userId+roleHash+groupHash+menuVersion</code></InfoBox>
         </RightPanel>
       </div>
-      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: 'Role과 사용자그룹 권한을 합산해 실제 메뉴·ACTION·데이터 접근을 통제한다.' },

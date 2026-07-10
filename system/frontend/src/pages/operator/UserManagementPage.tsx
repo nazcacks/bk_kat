@@ -5,22 +5,31 @@ import RightPanel from '../../components/frame/RightPanel';
 import InfoBox, { KV } from '../../components/frame/InfoBox';
 import StatusBar from '../../components/frame/StatusBar';
 import ScreenDetails from '../../components/frame/ScreenDetails';
-import EditDialog, { type DialogField, type DialogValues } from '../../components/frame/EditDialog';
-import { createUser, disableUser, fetchUsers, updateUser } from '../../api/users';
+import { type DialogField, type DialogValues } from '../../components/frame/EditDialog';
+import EditableForm from '../../components/frame/EditableForm';
+import { createUser, disableUser, fetchUserPlain, fetchUsers, updateUser } from '../../api/users';
 import { userSecurityRows } from '../../api/mock/operator';
 import type { ManagedUser, UserDetailProfile } from '../../types';
 
 const statusTone = (s: string) =>
   s === 'ACTIVE' ? 'b-ok' : s === 'LOCKED' || s === 'DISABLED' ? 'b-block' : 'b-warn';
 
-/** 확장 프로필 필드 (설계 OP-06A data-user-field 전체) — 다이얼로그 공용 */
-const DETAIL_FIELD_DEFS: DialogField[] = [
+/** 사용자 폼 필드 — 조회/수정 공용, 설계 OP-06A 화면 순서와 동일 */
+const USER_FIELDS: DialogField[] = [
+  { name: 'userIdCode', label: '사용자ID', readOnly: true },
+  { name: 'loginId', label: 'Login ID', required: true, readOnlyOnEdit: true, placeholder: 'user@example.com' },
+  { name: 'userGroup', label: '사용자구분', type: 'select', options: ['TENANT', 'OPERATOR'] },
+  { name: 'status', label: '상태', type: 'select', options: ['ACTIVE', 'INVITED', 'LOCKED', 'SUSPENDED', 'DORMANT', 'DISABLED', 'PASSWORD_EXPIRED'] },
+  { name: 'name', label: '성명', required: true },
   { name: 'nameEn', label: '영문명' },
   { name: 'externalId', label: '사번/외부ID', placeholder: 'EY-OPS-0000' },
   { name: 'operatorOrg', label: '관리회사조직', type: 'select', options: ['SYS-OPS · 시스템운영팀', 'SUPPORT · 고객지원팀', 'BK-OPS · 기장운영팀', 'AUDIT · 감사팀', '- 해당없음'] },
+  { name: 'tenantId', label: '이용회사', placeholder: 'T0001 (운영자는 공백)' },
   { name: 'department', label: '부서' },
   { name: 'position', label: '직위' },
   { name: 'primaryBookkeeper', label: '주기장', type: 'select', options: ['관리회사', '이용회사'] },
+  { name: 'email', label: '이메일' },
+  { name: 'phone', label: '휴대폰', placeholder: '010-0000-0000' },
   { name: 'notify', label: '알림채널', type: 'select', options: ['IN_APP + EMAIL', 'IN_APP', 'EMAIL', 'SMS'] },
   { name: 'locale', label: '언어', type: 'select', options: ['ko-KR', 'en-US'] },
   { name: 'timezone', label: '시간대', type: 'select', options: ['Asia/Seoul', 'UTC'] },
@@ -31,22 +40,16 @@ const DETAIL_FIELD_DEFS: DialogField[] = [
   { name: 'defaultGroup', label: '기본그룹', type: 'select', options: ['보안운영팀', '고객지원팀', '기장운영팀', '감사팀', '회계팀', '재무팀'] },
   { name: 'defaultRole', label: '기본Role', type: 'select', options: ['SEC_ADMIN', 'SUPPORT', 'AUDITOR', 'BK_MANAGER', 'BK_PREPARER', 'TENANT_ADMIN', 'VIEWER'] },
   { name: 'roleExpire', label: '권한만료', placeholder: '상시 / 2026-12-31' },
+  { name: 'roles', label: 'Role (콤마 구분)', placeholder: 'TENANT_ADMIN,VIEWER' },
+  { name: 'lastLogin', label: '최근 로그인', readOnly: true },
   { name: 'reason', label: '저장사유', type: 'textarea' },
 ];
 
-const USER_FIELDS: DialogField[] = [
-  { name: 'loginId', label: 'Login ID', required: true, readOnlyOnEdit: true, placeholder: 'user@example.com' },
-  { name: 'name', label: '성명', required: true },
-  { name: 'email', label: '이메일' },
-  { name: 'phone', label: '휴대폰', placeholder: '010-0000-0000' },
-  { name: 'userGroup', label: '사용자구분', type: 'select', options: ['TENANT', 'OPERATOR'] },
-  { name: 'tenantId', label: '이용회사(테넌트)', placeholder: 'T0001 (운영자는 공백)' },
-  { name: 'status', label: '상태', type: 'select', options: ['ACTIVE', 'INVITED', 'LOCKED', 'SUSPENDED', 'DORMANT', 'DISABLED', 'PASSWORD_EXPIRED'] },
-  { name: 'roles', label: 'Role (콤마 구분)', placeholder: 'TENANT_ADMIN,VIEWER' },
-  ...DETAIL_FIELD_DEFS,
+const DETAIL_KEYS: (keyof UserDetailProfile)[] = [
+  'userIdCode', 'nameEn', 'externalId', 'operatorOrg', 'department', 'position',
+  'primaryBookkeeper', 'notify', 'locale', 'timezone', 'scope', 'startDate', 'endDate',
+  'accountExpire', 'defaultGroup', 'defaultRole', 'roleExpire', 'reason',
 ];
-
-const DETAIL_KEYS = DETAIL_FIELD_DEFS.map((f) => f.name) as (keyof UserDetailProfile)[];
 
 /** OP-06A 사용자 관리 — 좌측 목록 / 우측 세부(설계 전체 필드) CRUD (실제 API, 마스킹) */
 export default function UserManagementPage() {
@@ -54,9 +57,10 @@ export default function UserManagementPage() {
   const [group, setGroup] = useState('전체');
   const [users, setUsers] = useState<ManagedUser[]>([]);
   const [selected, setSelected] = useState(0);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create');
-  const [initial, setInitial] = useState<DialogValues>({});
+  const [editing, setEditing] = useState<'create' | 'edit' | null>(null);
+  const [draft, setDraft] = useState<DialogValues>({});
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const reload = useCallback(() => fetchUsers(1, 50).then((res) => setUsers(res.items)), []);
   useEffect(() => {
@@ -67,34 +71,64 @@ export default function UserManagementPage() {
   const sel = rows[selected] ?? rows[0];
   const d: UserDetailProfile = sel?.detail ?? {};
 
+  /** 조회 모드 표시 값 — 수정 폼과 동일한 필드 구성 (이메일/휴대폰은 마스킹) */
+  const viewValues: DialogValues = sel
+    ? {
+        ...Object.fromEntries(DETAIL_KEYS.map((k) => [k, (d[k] as string) ?? ''])),
+        userIdCode: d.userIdCode ?? sel.id,
+        loginId: sel.loginId,
+        userGroup: sel.userGroup,
+        status: sel.status,
+        name: sel.name,
+        email: sel.email,
+        phone: sel.phone,
+        tenantId: sel.tenantId ?? '- 전체/해당없음',
+        defaultRole: d.defaultRole ?? sel.roles.join(', '),
+        roles: sel.roles.join(', '),
+        lastLogin: sel.lastLoginAt ? String(sel.lastLoginAt).slice(0, 16).replace('T', ' ') : '-',
+      }
+    : {};
+
   const openCreate = () => {
-    setDialogMode('create');
-    const init: DialogValues = {
-      loginId: '', name: '', email: '', phone: '', userGroup: 'TENANT', tenantId: 'T0001', status: 'ACTIVE', roles: '',
-    };
-    DETAIL_FIELD_DEFS.forEach((f) => {
+    const init: DialogValues = { userIdCode: '(자동 부여)', lastLogin: '-' };
+    USER_FIELDS.forEach((f) => {
+      if (f.readOnly) return;
       init[f.name] = f.type === 'select' ? (f.options?.[0] ?? '') : '';
     });
-    init.startDate = '2026-01-01';
-    init.endDate = '9999-12-31';
-    init.accountExpire = '9999-12-31';
-    init.roleExpire = '상시';
-    setInitial(init);
-    setDialogOpen(true);
+    Object.assign(init, {
+      userGroup: 'TENANT', tenantId: 'T0001', status: 'ACTIVE',
+      startDate: '2026-01-01', endDate: '9999-12-31', accountExpire: '9999-12-31', roleExpire: '상시',
+    });
+    setDraft(init);
+    setEditing('create');
+    setError(null);
   };
 
-  const openEdit = () => {
+  const openEdit = async () => {
     if (!sel) return window.alert('수정할 사용자를 선택하세요.');
-    setDialogMode('edit');
+    // 평문 조회 (사유 필수 → PersonalDataAccessLog 자동 기록) — 실패 시 마스킹 값 유지
+    let email = sel.email;
+    let phone = sel.phone;
+    try {
+      const plain = await fetchUserPlain(sel.id, '사용자 정보 수정');
+      email = plain.email ?? '';
+      phone = plain.phone ?? '';
+    } catch (e) {
+      console.warn('평문 조회 실패 — 마스킹 값으로 표시합니다.', e);
+    }
     const init: DialogValues = {
-      loginId: sel.loginId, name: sel.name, email: '', phone: '',
+      userIdCode: (sel.detail?.userIdCode as string) ?? sel.id,
+      loginId: sel.loginId, name: sel.name, email, phone,
       userGroup: sel.userGroup, tenantId: sel.tenantId ?? '', status: sel.status, roles: sel.roles.join(','),
+      lastLogin: sel.lastLoginAt ? String(sel.lastLoginAt).slice(0, 16).replace('T', ' ') : '-',
     };
     DETAIL_KEYS.forEach((k) => {
+      if (k === 'userIdCode') return;
       init[k] = (sel.detail?.[k] as string) ?? '';
     });
-    setInitial(init);
-    setDialogOpen(true);
+    setDraft(init);
+    setEditing('edit');
+    setError(null);
   };
 
   const handleDelete = async () => {
@@ -108,25 +142,43 @@ export default function UserManagementPage() {
     }
   };
 
-  const handleSubmit = async (values: DialogValues) => {
+  const save = async () => {
+    if (!editing) return window.alert('[추가] 또는 [수정] 으로 편집을 시작한 뒤 저장하세요.');
+    for (const f of USER_FIELDS) {
+      if (f.required && !String(draft[f.name] ?? '').trim()) {
+        setError(`'${f.label}' 은(는) 필수 입력입니다.`);
+        return;
+      }
+    }
     const detail: Record<string, unknown> = {};
     DETAIL_KEYS.forEach((k) => {
-      if (String(values[k] ?? '').trim()) detail[k] = String(values[k]);
+      if (String(draft[k] ?? '').trim()) detail[k] = String(draft[k]);
     });
     const payload: Partial<ManagedUser> = {
-      loginId: String(values.loginId),
-      name: String(values.name),
-      userGroup: String(values.userGroup),
-      tenantId: String(values.tenantId ?? '') || undefined,
-      status: String(values.status),
-      roles: String(values.roles ?? '').split(',').map((r) => r.trim()).filter(Boolean),
+      loginId: String(draft.loginId),
+      name: String(draft.name),
+      userGroup: String(draft.userGroup),
+      tenantId: String(draft.tenantId ?? '') || undefined,
+      status: String(draft.status),
+      roles: String(draft.roles ?? '').split(',').map((r) => r.trim()).filter(Boolean),
       detail: detail as UserDetailProfile,
     };
-    if (String(values.email ?? '').trim()) payload.email = String(values.email);
-    if (String(values.phone ?? '').trim()) payload.phone = String(values.phone);
-    if (dialogMode === 'create') await createUser(payload);
-    else if (sel) await updateUser(sel.id, payload);
-    await reload();
+    const emailVal = String(draft.email ?? '').trim();
+    const phoneVal = String(draft.phone ?? '').trim();
+    if (emailVal && !emailVal.includes('*')) payload.email = emailVal;
+    if (phoneVal && !phoneVal.includes('*')) payload.phone = phoneVal;
+    setSaving(true);
+    setError(null);
+    try {
+      if (editing === 'create') await createUser(payload);
+      else if (sel) await updateUser(sel.id, payload);
+      setEditing(null);
+      await reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '저장에 실패했습니다.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -148,9 +200,9 @@ export default function UserManagementPage() {
               <>
                 <ABtn variant="yellow" onClick={() => void reload()}>🔍 조회</ABtn>
                 <ABtn onClick={openCreate}>추가</ABtn>
-                <ABtn onClick={openEdit}>수정</ABtn>
+                <ABtn onClick={() => void openEdit()}>수정</ABtn>
                 <ABtn variant="red" onClick={() => void handleDelete()}>삭제</ABtn>
-                <ABtn variant="dark" onClick={openEdit}>저장</ABtn>
+                <ABtn variant="dark" onClick={() => void save()}>저장</ABtn>
                 <ABtn>초대메일 발송</ABtn>
               </>
             }
@@ -172,7 +224,7 @@ export default function UserManagementPage() {
                   </thead>
                   <tbody>
                     {rows.map((u, i) => (
-                      <tr key={u.id} className={`clickable${i === selected ? ' sel' : ''}`} onClick={() => setSelected(i)}>
+                      <tr key={u.id} className={`clickable${i === selected ? ' sel' : ''}`} onClick={() => { setSelected(i); setEditing(null); setError(null); }}>
                         <td>{u.name}</td>
                         <td>{u.loginId}</td>
                         <td>{u.userGroup}</td>
@@ -193,36 +245,27 @@ export default function UserManagementPage() {
                 <span className="qlabel">상태</span>
                 <span className="qv">{sel?.status ?? '-'}</span>
               </div>
-              {sel ? (
+              {editing ? (
+                <EditableForm
+                  fields={USER_FIELDS}
+                  values={draft}
+                  mode={editing}
+                  onChange={(name, v) => setDraft((prev) => ({ ...prev, [name]: v }))}
+                  onSave={() => void save()}
+                  onCancel={() => { setEditing(null); setError(null); }}
+                  error={error}
+                  saving={saving}
+                  columns={3}
+                />
+              ) : sel ? (
                 <>
-                  <div className="formgrid c3 label-left">
-                    <div className="ff"><label>사용자ID</label><div className="fv ro">{d.userIdCode ?? sel.id}</div></div>
-                    <div className="ff"><label>Login ID</label><div className="fv ro">{sel.loginId}</div></div>
-                    <div className="ff"><label>사용자구분</label><div className="fv ro">{sel.userGroup}</div></div>
-                    <div className="ff"><label>상태</label><div className="fv ro">{sel.status}</div></div>
-                    <div className="ff"><label>성명</label><div className="fv ro">{sel.name}</div></div>
-                    <div className="ff"><label>영문명</label><div className="fv ro">{d.nameEn ?? '-'}</div></div>
-                    <div className="ff"><label>사번/외부ID</label><div className="fv ro">{d.externalId ?? '-'}</div></div>
-                    <div className="ff"><label>관리회사조직</label><div className="fv ro">{d.operatorOrg ?? '-'}</div></div>
-                    <div className="ff"><label>이용회사</label><div className="fv ro">{sel.tenantId ?? '- 전체/해당없음'}</div></div>
-                    <div className="ff"><label>부서</label><div className="fv ro">{d.department ?? '-'}</div></div>
-                    <div className="ff"><label>직위</label><div className="fv ro">{d.position ?? '-'}</div></div>
-                    <div className="ff"><label>주기장</label><div className="fv ro">{d.primaryBookkeeper ?? '-'}</div></div>
-                    <div className="ff"><label>이메일</label><div className="fv ro">{sel.email}</div></div>
-                    <div className="ff"><label>휴대폰</label><div className="fv ro">{sel.phone}</div></div>
-                    <div className="ff"><label>알림채널</label><div className="fv ro">{d.notify ?? '-'}</div></div>
-                    <div className="ff"><label>언어</label><div className="fv ro">{d.locale ?? '-'}</div></div>
-                    <div className="ff"><label>시간대</label><div className="fv ro">{d.timezone ?? '-'}</div></div>
-                    <div className="ff"><label>접근범위</label><div className="fv ro">{d.scope ?? '-'}</div></div>
-                    <div className="ff"><label>시작일</label><div className="fv ro">{d.startDate ?? '-'}</div></div>
-                    <div className="ff"><label>종료일</label><div className="fv ro">{d.endDate ?? '-'}</div></div>
-                    <div className="ff"><label>계정만료</label><div className="fv ro">{d.accountExpire ?? '-'}</div></div>
-                    <div className="ff"><label>기본그룹</label><div className="fv ro">{d.defaultGroup ?? '-'}</div></div>
-                    <div className="ff"><label>기본Role</label><div className="fv ro">{d.defaultRole ?? sel.roles.join(', ')}</div></div>
-                    <div className="ff"><label>권한만료</label><div className="fv ro">{d.roleExpire ?? '-'}</div></div>
-                    <div className="ff"><label>최근 로그인</label><div className="fv ro">{sel.lastLoginAt ? String(sel.lastLoginAt).slice(0, 16).replace('T', ' ') : '-'}</div></div>
-                    <div className="ff full"><label>저장사유</label><div className="fv ro">{d.reason ?? '-'}</div></div>
-                  </div>
+                  <EditableForm
+                    fields={USER_FIELDS}
+                    values={viewValues}
+                    mode={null}
+                    onChange={() => undefined}
+                    columns={3}
+                  />
                   <div className="gridwrap">
                     <table className="grid">
                       <thead>
@@ -319,15 +362,6 @@ export default function UserManagementPage() {
         </>
       )}
 
-      <EditDialog
-        open={dialogOpen}
-        mode={dialogMode}
-        title="사용자"
-        fields={USER_FIELDS}
-        initial={initial}
-        onClose={() => setDialogOpen(false)}
-        onSubmit={handleSubmit}
-      />
       <ScreenDetails
         items={[
           { label: '목적', body: '운영자와 이용회사 사용자 계정의 기본정보, 소속, 연락처, 상태, 그룹·Role 상속, 보안 조치를 관리한다.' },

@@ -5,7 +5,8 @@ import RightPanel from '../../components/frame/RightPanel';
 import InfoBox from '../../components/frame/InfoBox';
 import StatusBar from '../../components/frame/StatusBar';
 import ScreenDetails from '../../components/frame/ScreenDetails';
-import EditDialog, { type DialogField, type DialogValues } from '../../components/frame/EditDialog';
+import { type DialogField, type DialogValues } from '../../components/frame/EditDialog';
+import EditableForm from '../../components/frame/EditableForm';
 import { createMenu, deleteMenu, fetchFlatMenus, updateMenu } from '../../api/menus';
 import type { FlatMenu } from '../../types';
 
@@ -35,9 +36,10 @@ export default function MenuMasterPage() {
   const [channel, setChannel] = useState('OP');
   const [filter, setFilter] = useState('');
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create');
-  const [initial, setInitial] = useState<DialogValues>({});
+  const [editing, setEditing] = useState<'create' | 'edit' | null>(null);
+  const [draft, setDraft] = useState<DialogValues>({});
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const reload = () => fetchFlatMenus().then(setMenus);
   useEffect(() => {
@@ -61,24 +63,24 @@ export default function MenuMasterPage() {
   const sel = menus.find((m) => m.menuCode === selectedCode) ?? channelMenus[0];
 
   const openCreate = () => {
-    setDialogMode('create');
-    setInitial({
+    setDraft({
       menuCode: '', parentCode: sel?.menuType === 'GROUP' ? sel.menuCode : sel?.parentCode ?? '',
       channel, menuType: 'MENU', name: '', nameEn: '', path: '', screenId: '',
       sortOrder: (sel?.sortOrder ?? 0) + 1, requiresStepUp: false,
     });
-    setDialogOpen(true);
+    setEditing('create');
+    setError(null);
   };
 
   const openEdit = () => {
     if (!sel) return window.alert('수정할 메뉴를 선택하세요.');
-    setDialogMode('edit');
-    setInitial({
+    setDraft({
       menuCode: sel.menuCode, parentCode: sel.parentCode ?? '', channel: sel.channel,
       menuType: sel.menuType, name: sel.name, nameEn: '', path: sel.path ?? '',
       screenId: sel.screenId ?? '', sortOrder: sel.sortOrder, requiresStepUp: sel.requiresStepUp,
     });
-    setDialogOpen(true);
+    setEditing('edit');
+    setError(null);
   };
 
   const handleDelete = async () => {
@@ -93,21 +95,37 @@ export default function MenuMasterPage() {
     }
   };
 
-  const handleSubmit = async (values: DialogValues) => {
+  const save = async () => {
+    if (!editing) return window.alert('[추가] 또는 [수정] 으로 편집을 시작한 뒤 저장하세요.');
+    for (const f of MENU_FIELDS) {
+      if (f.required && !String(draft[f.name] ?? '').trim()) {
+        setError(`'${f.label}' 은(는) 필수 입력입니다.`);
+        return;
+      }
+    }
     const payload: Partial<FlatMenu> = {
-      menuCode: String(values.menuCode),
-      parentCode: String(values.parentCode ?? '') || null,
-      channel: String(values.channel),
-      menuType: values.menuType as FlatMenu['menuType'],
-      name: String(values.name),
-      path: String(values.path ?? '') || null,
-      screenId: String(values.screenId ?? '') || null,
-      sortOrder: Number(values.sortOrder ?? 9999),
-      requiresStepUp: !!values.requiresStepUp,
+      menuCode: String(draft.menuCode),
+      parentCode: String(draft.parentCode ?? '') || null,
+      channel: String(draft.channel),
+      menuType: draft.menuType as FlatMenu['menuType'],
+      name: String(draft.name),
+      path: String(draft.path ?? '') || null,
+      screenId: String(draft.screenId ?? '') || null,
+      sortOrder: Number(draft.sortOrder ?? 9999),
+      requiresStepUp: !!draft.requiresStepUp,
     };
-    if (dialogMode === 'create') await createMenu(payload);
-    else if (sel) await updateMenu(sel.id, payload);
-    await reload();
+    setSaving(true);
+    setError(null);
+    try {
+      if (editing === 'create') await createMenu(payload);
+      else if (sel) await updateMenu(sel.id, payload);
+      setEditing(null);
+      await reload();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '저장에 실패했습니다.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const validations = sel
@@ -133,7 +151,7 @@ export default function MenuMasterPage() {
             <ABtn onClick={openCreate}>추가</ABtn>
             <ABtn onClick={openEdit}>수정</ABtn>
             <ABtn variant="red" onClick={() => void handleDelete()}>삭제</ABtn>
-            <ABtn variant="dark" onClick={openEdit}>저장</ABtn>
+            <ABtn variant="dark" onClick={() => void save()}>저장</ABtn>
             <ABtn>영향 분석</ABtn>
             <ABtn variant="dark">발행</ABtn>
           </>
@@ -156,7 +174,7 @@ export default function MenuMasterPage() {
               <div
                 key={m.menuCode}
                 className={`tnode lv${levelOf(m)}${sel?.menuCode === m.menuCode ? ' on' : ''}`}
-                onClick={() => setSelectedCode(m.menuCode)}
+                onClick={() => { setSelectedCode(m.menuCode); setEditing(null); setError(null); }}
               >
                 {m.menuType === 'GROUP' ? '▸ ' : ''}{m.name}
                 <span className="cnt">{m.screenId ?? m.menuCode}</span>
@@ -166,6 +184,19 @@ export default function MenuMasterPage() {
           </div>
         </div>
         <div className="mock-main">
+          {editing ? (
+            <EditableForm
+              fields={MENU_FIELDS}
+              values={draft}
+              mode={editing}
+              onChange={(name, v) => setDraft((prev) => ({ ...prev, [name]: v }))}
+              onSave={() => void save()}
+              onCancel={() => { setEditing(null); setError(null); }}
+              error={error}
+              saving={saving}
+              columns={3}
+            />
+          ) : (
           <div className="formgrid c3 label-left">
             <div className="ff"><label>메뉴코드</label><div className="fv ro">{sel?.menuCode ?? '-'}</div></div>
             <div className="ff"><label>채널</label><div className="fv ro">{sel?.channel ?? '-'}</div></div>
@@ -180,6 +211,7 @@ export default function MenuMasterPage() {
             <div className="ff"><label>기능플래그</label><div className="fv ro">{sel ? `feature.menu.${sel.menuCode.toLowerCase().replace(/-/g, '.')}` : '-'}</div></div>
             <div className="ff"><label>상태</label><div className="fv ro">ACTIVE</div></div>
           </div>
+          )}
           <div className="gridwrap">
             <table className="grid">
               <thead><tr><th>검증</th><th>결과</th><th>설명</th></tr></thead>
@@ -206,15 +238,6 @@ export default function MenuMasterPage() {
           <InfoBox title="권한 미리보기">권한 없는 메뉴는 비활성이 아니라 미노출한다.</InfoBox>
         </RightPanel>
       </div>
-      <EditDialog
-        open={dialogOpen}
-        mode={dialogMode}
-        title="메뉴"
-        fields={MENU_FIELDS}
-        initial={initial}
-        onClose={() => setDialogOpen(false)}
-        onSubmit={handleSubmit}
-      />
       <ScreenDetails
         items={[
           { label: '목적', body: 'OP/TN/CO 메뉴 구조를 중앙에서 등록·수정·버전 발행한다.' },
