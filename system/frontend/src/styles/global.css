@@ -152,7 +152,7 @@ a { color: var(--ey-link); text-decoration: none; }
   background: #24242e;
   border: none;
   border-bottom: 2px solid transparent;
-  color: #9a9aa4;
+  color: #fff;
   font-size: 13.5px;
   font-weight: 700;
   padding: 8px 2px 7px;
@@ -161,14 +161,14 @@ a { color: var(--ey-link); text-decoration: none; }
   align-items: center;
   gap: 1px;
 }
-.sidebar .channel-tab .ch-code { font-size: 11.5px; font-weight: 600; color: #6a6a75; font-family: Consolas, monospace; }
+.sidebar .channel-tab .ch-code { font-size: 11.5px; font-weight: 600; color: #fff; font-family: Consolas, monospace; }
 .sidebar .channel-tab:hover { color: #e8e8ee; }
 .sidebar .channel-tab.on {
   background: var(--ey-dark);
-  color: var(--ey-yellow);
-  border-bottom-color: var(--ey-yellow);
+  color: #fff;
+  border-bottom-color: #fff;
 }
-.sidebar .channel-tab.on .ch-code { color: #b3a200; }
+.sidebar .channel-tab.on .ch-code { color: #fff; }
 /* 메뉴 필터 입력 */
 .sidebar .menu-filter { position: relative; padding: 8px 10px 6px; flex-shrink: 0; }
 .sidebar .menu-filter input {
@@ -176,48 +176,48 @@ a { color: var(--ey-link); text-decoration: none; }
   background: #24242e;
   border: 1px solid #3d3d47;
   border-radius: 4px;
-  color: #e8e8ee;
+  color: #fff;
   font-size: 14px;
   padding: 5px 24px 5px 8px;
   outline: none;
 }
-.sidebar .menu-filter input::placeholder { color: #6a6a75; }
+.sidebar .menu-filter input::placeholder { color: #d9d9e0; }
 .sidebar .menu-filter input:focus { border-color: var(--ey-yellow); }
 .sidebar .menu-filter .clear {
   position: absolute; right: 16px; top: 13px;
   background: none; border: none; color: #8a8a96; font-size: 13px; padding: 0 2px;
 }
 .sidebar .sb-scroll { flex: 1; overflow-y: auto; padding-bottom: 10px; }
-.sidebar .sb-empty { color: #8a8a96; font-size: 14px; padding: 14px 16px; }
+.sidebar .sb-empty { color: #fff; font-size: 14px; padding: 14px 16px; }
 /* 업무영역 GROUP (노랑 타이틀 + 3px 바) */
 .sidebar .sb-group-title {
   display: flex; align-items: center; gap: 8px;
   width: 100%;
   background: none; border: none;
-  color: var(--ey-yellow);
+  color: #fff;
   font-size: 14.5px; font-weight: 700;
   padding: 7px 12px 7px 10px;
   text-align: left;
   margin-top: 5px;
 }
-.sidebar .sb-group-title .bar { width: 3px; height: 14px; background: var(--ey-yellow); border-radius: 2px; flex-shrink: 0; }
+.sidebar .sb-group-title .bar { width: 3px; height: 14px; background: #fff; border-radius: 2px; flex-shrink: 0; }
 .sidebar .sb-group-title:hover { background: #3a3a45; }
 /* 자동분류 GROUP (G코드 — 들여쓰기 + 회색 볼드) */
 .sidebar .sb-subgroup-title {
   display: flex; align-items: center; gap: 6px;
   width: 100%;
   background: none; border: none;
-  color: #b9b9c2;
+  color: #fff;
   font-size: 14.5px; font-weight: 700;
   padding: 5px 12px;
   text-align: left;
 }
 .sidebar .sb-subgroup-title:hover { background: #3a3a45; color: #fff; }
 .sidebar .sb-group-title .gname, .sidebar .sb-subgroup-title .gname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.sidebar .sb-group-title .chev, .sidebar .sb-subgroup-title .chev { font-size: 12px; color: #8a8a96; flex-shrink: 0; }
+.sidebar .sb-group-title .chev, .sidebar .sb-subgroup-title .chev { font-size: 12px; color: #fff; flex-shrink: 0; }
 .sidebar .menu-item {
   display: flex; align-items: center; gap: 5px;
-  color: #c9c9d2;
+  color: #fff;
   font-size: 14.5px;
   padding: 5px 12px 5px 30px;
   border-left: 3px solid transparent;
@@ -233,7 +233,7 @@ a { color: var(--ey-link); text-decoration: none; }
 .sidebar .menu-item .screen-id {
   margin-left: auto;
   font-size: 12px;
-  color: #8a8a96;
+  color: #fff;
   font-family: Consolas, monospace;
   flex-shrink: 0;
 }

@@ -11,6 +11,7 @@ import OperationsDashboardPage from './pages/operator/OperationsDashboardPage';
 import TenantInfraPage from './pages/operator/TenantInfraPage';
 import UserManagementPage from './pages/operator/UserManagementPage';
 import UserGroupsPage from './pages/operator/UserGroupsPage';
+import GroupMenuPermissionPage from './pages/operator/GroupMenuPermissionPage';
 import AuthPolicyPage from './pages/operator/AuthPolicyPage';
 import MenuMasterPage from './pages/operator/MenuMasterPage';
 import RolePermissionPage from './pages/operator/RolePermissionPage';
@@ -43,6 +44,7 @@ const implementedPages: Record<string, ReactNode> = {
   '/operator/op/06/m03': <AuthPolicyPage />,
   '/operator/op/06/m04': <MenuMasterPage />,
   '/operator/op/06/m05': <RolePermissionPage />,
+  '/operator/op/06/m06': <GroupMenuPermissionPage />,
   '/operator/op/07/m01': <AccessGovernancePage />,
   '/operator/op/09/m01': <BatchIntegrationPage />,
   '/operator/op/10/m01': <LogManagementPage />,

@@ -26,6 +26,7 @@ export const MENU_SEED: MenuSeed[] = [
   { menuCode: 'OP-06', parentCode: 'OP', channel: 'OP', menuType: 'GROUP', name: '사용자·인증·권한', nameEn: 'Users, Authentication and Permissions', screenId: 'OP-06', sortOrder: 150 },
   { menuCode: 'OP-06-M01', parentCode: 'OP-06', channel: 'OP', menuType: 'MENU', name: '사용자 관리', nameEn: 'User Management', path: '/operator/op/06/m01', screenId: 'OP-06A', sortOrder: 160 },
   { menuCode: 'OP-06-M02', parentCode: 'OP-06', channel: 'OP', menuType: 'MENU', name: '사용자그룹 관리', nameEn: 'User Group Management', path: '/operator/op/06/m02', screenId: 'OP-06G', sortOrder: 170 },
+  { menuCode: 'OP-06-M06', parentCode: 'OP-06', channel: 'OP', menuType: 'MENU', name: '그룹별 메뉴권한', nameEn: 'Group Menu Permission', path: '/operator/op/06/m06', screenId: 'OP-06P', sortOrder: 175 },
   { menuCode: 'OP-06-M03', parentCode: 'OP-06', channel: 'OP', menuType: 'MENU', name: '인증 정책 관리', nameEn: 'Authentication Policy Management', path: '/operator/op/06/m03', screenId: 'OP-06B', sortOrder: 180 },
   { menuCode: 'OP-06-M04', parentCode: 'OP-06', channel: 'OP', menuType: 'MENU', name: '메뉴 마스터 관리', nameEn: 'Menu Master Management', path: '/operator/op/06/m04', screenId: 'OP-06D', sortOrder: 190 },
   { menuCode: 'OP-06-M05', parentCode: 'OP-06', channel: 'OP', menuType: 'MENU', name: 'Role·권한 관리', nameEn: 'Role and Permission Management', path: '/operator/op/06/m05', screenId: 'OP-06C', sortOrder: 200 },

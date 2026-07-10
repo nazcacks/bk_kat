@@ -31,6 +31,10 @@ export const RESOURCE_SEED: Record<string, Record<string, unknown>[]> = {
     { session: 'BG-20260708-014', tenant: 'T-10035', mode: 'BREAK_GLASS', reason: '신고마감 전 DB 라우팅 장애', recording: 'ON · 마스킹', approval: '2/2', status: 'ACTIVE' },
     { session: 'AS-20260708-221', tenant: 'T-10201', mode: 'SUPPORT_SESSION', reason: 'SSO 설정 지원', recording: 'OFF', approval: '1/1', status: 'REVIEWED' },
   ],
+  'group-menu-permission': [
+    { groupCode: 'SEC-OPS', permissions: { 'OP-06': 'ALLOW', 'OP-07': 'ALLOW', 'OP-08': 'DENY', 'OP-10': 'ALLOW', 'OP-12': 'ALLOW' } },
+    { groupCode: 'CS-TEAM', permissions: { 'OP-00': 'ALLOW', 'OP-01': 'ALLOW', 'OP-08': 'DENY', 'OP-10': 'DENY', 'OP-12': 'DENY' } },
+  ],
   'privacy-policy': [
     { policyId: 'PDC-001', kind: '카탈로그', target: 'employee.rrn', purpose: '원천세·4대보험 신고', protection: '암호화+마스킹', approval: '2인', status: 'ACTIVE' },
     { policyId: 'MSK-001', kind: '마스킹', target: 'employee.rrn · 전 화면', purpose: '목록·보고서 보호', protection: '앞 6자리 + ******', approval: '평문 Step-up', status: 'ACTIVE' },

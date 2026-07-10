@@ -214,6 +214,18 @@ export const mockMenuTree: MenuNode[] = [
             "children": []
           },
           {
+            "menuCode": "OP-06-M06",
+            "name": "그룹별 메뉴권한",
+            "nameEn": "Group Menu Permission",
+            "menuType": "MENU",
+            "channel": "OP",
+            "path": "/operator/op/06/m06",
+            "screenId": "OP-06P",
+            "sortOrder": 175,
+            "requiresStepUp": false,
+            "children": []
+          },
+          {
             "menuCode": "OP-06-M03",
             "name": "인증 정책 관리",
             "nameEn": "Authentication Policy Management",

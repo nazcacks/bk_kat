@@ -6,13 +6,11 @@ import InfoBox, { KV } from '../../components/frame/InfoBox';
 import StatusBar from '../../components/frame/StatusBar';
 import ScreenDetails from '../../components/frame/ScreenDetails';
 import { useResourceCrud } from '../../hooks/useResourceCrud';
-import { groupMemberRows, groupMenuPolicyRows } from '../../api/mock/operator';
+import { groupMemberRows } from '../../api/mock/operator';
 
 /** OP-06G 사용자그룹 관리 — 그룹 CRUD + Role 상속 + 그룹별 메뉴 INHERIT/ALLOW/DENY */
 export default function UserGroupsPage() {
-  const [tab, setTab] = useState(0);
   const [groupType, setGroupType] = useState('전체');
-  const [policy, setPolicy] = useState('DENY');
 
   const crud = useResourceCrud({
     type: 'user-group',
@@ -44,14 +42,8 @@ export default function UserGroupsPage() {
       breadcrumb={['운영콘솔', '사용자·인증·권한', '사용자그룹 관리']}
       titleRight={<>MenuVersion v42 · PUBLISHED</>}
     >
-      <div className="tabbar">
-        <div className={`tab${tab === 0 ? ' on' : ''}`} onClick={() => setTab(0)}>그룹·구성원 <span className="tno">1</span></div>
-        <div className={`tab${tab === 1 ? ' on' : ''}`} onClick={() => setTab(1)}>메뉴 권한 <span className="tno">2</span></div>
-      </div>
 
-      {tab === 0 && (
-        <>
-          <QueryBar
+      <QueryBar
             actions={
               <>
                 <ABtn variant="yellow" onClick={() => void crud.reload()}>🔍 조회</ABtn>
@@ -114,69 +106,6 @@ export default function UserGroupsPage() {
               <InfoBox title="구성원 저장 검증"><KV k="범위" v="OPERATOR 일치" /><KV k="중복" v="0건" /><KV k="만료예정" v="1명" /></InfoBox>
             </RightPanel>
           </div>
-        </>
-      )}
-
-      {tab === 1 && (
-        <>
-          <QueryBar
-            actions={
-              <>
-                <ABtn variant="yellow">🔍 조회</ABtn>
-                <ABtn>추가</ABtn>
-                <ABtn>수정</ABtn>
-                <ABtn variant="red">삭제</ABtn>
-                <ABtn variant="dark">저장</ABtn>
-                <ABtn>영향 분석</ABtn>
-              </>
-            }
-          >
-            <QLabel>그룹</QLabel>
-            <QValue>{sel?.nameKo ?? '보안운영팀'} <span className="lens">▾</span></QValue>
-            <QLabel>메뉴코드</QLabel>
-            <QValue><input placeholder="OP-06/OP-10" /> <span className="lens">⌕</span></QValue>
-            <QLabel>정책</QLabel>
-            <Seg options={['INHERIT', 'ALLOW', 'DENY']} value={policy} onChange={setPolicy} />
-          </QueryBar>
-          <div className="mock-flex">
-            <div className="lpane">
-              <div className="lp-t">MenuVersion v42</div>
-              <div className="ptree">
-                <div className="tnode lv1 on">▸ OP 운영콘솔</div>
-                <div className="tnode lv2">OP-06 사용자·권한 <span className="cnt">ALLOW</span></div>
-                <div className="tnode lv3">OP-06D 메뉴 마스터 <span className="cnt">ALLOW</span></div>
-                <div className="tnode lv2 red">OP-08 기장 워크벤치 <span className="cnt">DENY</span></div>
-                <div className="tnode lv2">OP-10 로그 관리 <span className="cnt">ALLOW</span></div>
-                <div className="tnode lv2">OP-12 개인정보보호 <span className="cnt">ALLOW</span></div>
-              </div>
-            </div>
-            <div className="mock-main">
-              <div className="gridwrap">
-                <table className="grid">
-                  <thead><tr><th>메뉴</th><th>Role 권한</th><th>그룹 정책</th><th>최종 노출</th><th>진입</th><th>사유</th></tr></thead>
-                  <tbody>
-                    {groupMenuPolicyRows.map((r, i) => (
-                      <tr key={r.menu} className={i === 0 ? 'sel' : ''}>
-                        <td>{r.menu}</td>
-                        <td>{r.rolePerm}</td>
-                        <td><span className={`badge ${r.tone}`}>{r.policy}</span></td>
-                        <td>{r.visible}</td>
-                        <td>{r.enter}</td>
-                        <td>{r.reason}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <StatusBar tone="warn" message="DENY 우선 — 같은 사용자의 다른 그룹 ALLOW가 있어도 OP-08은 미노출" count="영향 사용자 12명" />
-            </div>
-            <RightPanel>
-              <InfoBox title="충돌 검증"><span className="badge b-warn">USER_GROUP_MENU_CONFLICT</span><br />ALLOW 1건 · DENY 1건 → DENY 우선 기록</InfoBox>
-              <InfoBox title="API"><code>PUT /api/operator/user-groups/{'{groupId}'}/menu-permissions</code></InfoBox>
-            </RightPanel>
-          </div>
-        </>
-      )}
 
       <ScreenDetails
         items={[
