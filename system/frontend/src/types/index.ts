@@ -118,6 +118,31 @@ export interface MaskingPolicy {
 
 // ── 시스템 관리 ───────────────────────────────────────────────
 
+/** 확장 프로필 (설계 OP-06A UserDetail) */
+export interface UserDetailProfile {
+  userIdCode?: string;
+  nameEn?: string;
+  externalId?: string;
+  operatorOrg?: string;
+  department?: string;
+  position?: string;
+  primaryBookkeeper?: string;
+  notify?: string;
+  locale?: string;
+  timezone?: string;
+  scope?: string;
+  startDate?: string;
+  endDate?: string;
+  accountExpire?: string;
+  defaultGroup?: string;
+  defaultRole?: string;
+  roleExpire?: string;
+  reason?: string;
+  /** [배정유형, 그룹/Role, 데이터범위, 시작일, 종료일, 상태] */
+  assignments?: string[][];
+  history?: string[];
+}
+
 export interface ManagedUser {
   id: string;
   loginId: string;
@@ -129,6 +154,7 @@ export interface ManagedUser {
   status: string;
   roles: string[];
   lastLoginAt: string | null;
+  detail?: UserDetailProfile | null;
 }
 
 export interface FlatMenu {
@@ -148,12 +174,17 @@ export interface FlatMenu {
 export interface CommonCodeGroup {
   groupCode: string;
   groupName: string;
+  nameEn?: string | null;
+  domain?: string | null;
+  policy?: string | null;
+  description?: string | null;
   items: CommonCodeItem[];
 }
 
 export interface CommonCodeItem {
   code: string;
   name: string;
+  nameEn?: string | null;
   sortOrder: number;
   isActive: boolean;
 }

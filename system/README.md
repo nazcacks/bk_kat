@@ -93,6 +93,17 @@ OP/TN/CO + 다단 트리 + 메뉴 필터) + 접근모드 배너.
 기준으로 자동 생성 — 3채널(OP/TN/CO) × 4단, 총 292건. 설계 HTML 변경 시 재생성:
 `extract-menus.js → gen-seed.js` (스크립트는 시드 파일 주석 참고) → 백엔드 `menu` 테이블 TRUNCATE 후 재기동.
 
+## CRUD 체계 (v0.3)
+
+- **실 엔티티 CRUD**: 사용자(`/api/users`, 삭제=DISABLED 소프트), 메뉴(`/api/menus`, 하위 존재 시 삭제 차단),
+  공통코드(`/api/common-codes/groups`·`/:group/items`), 마스킹정책(`/api/security/masking-policies`)
+- **공통 리소스 CRUD**(`/api/resources/:type`, `admin_resource` jsonb 테이블): 테넌트·사용자그룹·인증정책·
+  Role·배치잡·접근세션·개인정보정책 — 정식 스키마 확정 전 운영 리소스의 프레임워크 공통 CRUD.
+  삭제는 비활성 처리(감사 추적 보존). 정식 페이즈에서 개별 테이블로 승격.
+- 모든 변경(POST/PUT/DELETE)은 감사로그 인터셉터가 **해시체인 감사로그에 자동 기록**
+- 프론트 공통: `components/frame/EditDialog`(필드 정의 → 등록/수정 폼) + `hooks/useResourceCrud`
+  (목록+선택+다이얼로그+삭제확인 일괄 제공) — 신규 화면은 필드 정의만으로 CRUD 구성
+
 ## 구현 화면 (v0.2)
 
 - 로그인 (CO-01) / 회사 대시보드 (TN-00)

@@ -6,9 +6,12 @@ import type { MenuNode } from '../types';
 interface MenuState {
   tree: MenuNode[];
   loaded: boolean;
+  /** 메뉴 사이드바 표시 여부 — 기본 숨김, 헤더 ☰ 버튼으로 토글 */
+  sidebarOpen: boolean;
   /** 그룹 펼침 상태 — 기본 접힘(undefined/false = 접힘) */
   expandedGroups: Record<string, boolean>;
   loadMenus: () => Promise<void>;
+  toggleSidebar: () => void;
   toggleGroup: (menuCode: string) => void;
   /** 여러 그룹을 한 번에 펼침 (활성 경로 조상 자동 펼침용) */
   expandGroups: (menuCodes: string[]) => void;
@@ -17,7 +20,9 @@ interface MenuState {
 export const useMenuStore = create<MenuState>()((set, get) => ({
   tree: mockMenuTree,
   loaded: false,
+  sidebarOpen: false,
   expandedGroups: {},
+  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   loadMenus: async () => {
     if (get().loaded) return;
     const tree = await fetchMenuTree();

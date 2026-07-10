@@ -114,8 +114,31 @@ export class SecurityService {
     return this.maskingRepo.find({ order: { dataType: 'ASC', fieldName: 'ASC' } });
   }
 
-  async updateMaskingPolicy(id: string, isActive: boolean): Promise<MaskingPolicy | null> {
-    await this.maskingRepo.update(id, { isActive });
+  async createMaskingPolicy(data: Partial<MaskingPolicy>): Promise<MaskingPolicy> {
+    return this.maskingRepo.save(
+      this.maskingRepo.create({
+        dataType: data.dataType ?? 'GENERAL',
+        fieldName: data.fieldName ?? '',
+        maskPattern: data.maskPattern ?? 'name',
+        description: data.description ?? null,
+        requiredGrant: data.requiredGrant ?? null,
+        isActive: data.isActive ?? true,
+      }),
+    );
+  }
+
+  async updateMaskingPolicy(id: string, data: Partial<MaskingPolicy>): Promise<MaskingPolicy | null> {
+    const allowed: Partial<MaskingPolicy> = {};
+    if (data.isActive !== undefined) allowed.isActive = data.isActive;
+    if (data.maskPattern !== undefined) allowed.maskPattern = data.maskPattern;
+    if (data.description !== undefined) allowed.description = data.description;
+    if (data.requiredGrant !== undefined) allowed.requiredGrant = data.requiredGrant;
+    await this.maskingRepo.update(id, allowed);
     return this.maskingRepo.findOneBy({ id });
+  }
+
+  async removeMaskingPolicy(id: string): Promise<{ id: string; deleted: boolean }> {
+    await this.maskingRepo.delete(id);
+    return { id, deleted: true };
   }
 }

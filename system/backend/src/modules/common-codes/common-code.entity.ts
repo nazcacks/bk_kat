@@ -11,7 +11,18 @@ export class CommonCodeGroup extends BaseEntity {
   @Column({ name: 'group_name', type: 'varchar', length: 100 })
   groupName: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ name: 'name_en', type: 'varchar', length: 100, nullable: true })
+  nameEn: string | null;
+
+  /** AUTH / TENANT / MENU / BATCH / SECURITY / JOURNAL ... (설계 OP-05C 도메인) */
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  domain: string | null;
+
+  /** SYSTEM_LOCKED(예약, 변경금지) / ADMIN_MANAGED / STANDARD_MANAGED */
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  policy: string | null;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
   description: string | null;
 
   @Column({ name: 'is_active', type: 'boolean', default: true })

@@ -39,6 +39,13 @@ instance.interceptors.response.use(
         window.location.href = '/login';
       }
     }
+    // 백엔드 표준 오류 봉투의 메시지를 그대로 표면화 (예: 중복 코드, 하위 메뉴 존재)
+    if (axios.isAxiosError(error)) {
+      const envelope = error.response?.data as Envelope<unknown> | undefined;
+      if (envelope?.error?.message) {
+        return Promise.reject(new Error(`[${envelope.error.code}] ${envelope.error.message}`));
+      }
+    }
     return Promise.reject(error);
   },
 );
@@ -51,6 +58,16 @@ export async function apiGet<T>(url: string, params?: Record<string, unknown>): 
 
 export async function apiPost<T>(url: string, body?: unknown): Promise<T> {
   const res = await instance.post(url, body);
+  return res as unknown as T;
+}
+
+export async function apiPut<T>(url: string, body?: unknown): Promise<T> {
+  const res = await instance.put(url, body);
+  return res as unknown as T;
+}
+
+export async function apiDelete<T>(url: string): Promise<T> {
+  const res = await instance.delete(url);
   return res as unknown as T;
 }
 

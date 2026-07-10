@@ -43,4 +43,13 @@ export class User extends BaseEntity {
 
   @Column({ name: 'is_external_partner', type: 'boolean', default: false })
   isExternalPartner: boolean;
+
+  /**
+   * 확장 프로필 (설계 OP-06A UserDetail: 영문명, 사번, 조직, 부서, 직위, 주기장,
+   * 알림채널, locale, timezone, 접근범위, 시작/종료일, 계정만료, 기본그룹/Role,
+   * 권한만료, 저장사유, assignments[], history[] ...)
+   * 정식 페이즈에서 UserDetail/RoleAssignment 테이블로 정규화한다.
+   */
+  @Column({ type: 'jsonb', nullable: true })
+  detail: Record<string, unknown> | null;
 }

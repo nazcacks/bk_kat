@@ -5,8 +5,22 @@ import RightPanel from '../../components/frame/RightPanel';
 import InfoBox from '../../components/frame/InfoBox';
 import StatusBar from '../../components/frame/StatusBar';
 import ScreenDetails from '../../components/frame/ScreenDetails';
-import { fetchFlatMenus } from '../../api/menus';
+import EditDialog, { type DialogField, type DialogValues } from '../../components/frame/EditDialog';
+import { createMenu, deleteMenu, fetchFlatMenus, updateMenu } from '../../api/menus';
 import type { FlatMenu } from '../../types';
+
+const MENU_FIELDS: DialogField[] = [
+  { name: 'menuCode', label: '메뉴코드', required: true, readOnlyOnEdit: true, placeholder: 'TN-04-M09' },
+  { name: 'parentCode', label: '상위메뉴 코드', placeholder: 'TN-04 (GROUP 코드)' },
+  { name: 'channel', label: '채널', type: 'select', options: ['TN', 'OP', 'CO'] },
+  { name: 'menuType', label: '유형', type: 'select', options: ['MENU', 'GROUP'] },
+  { name: 'name', label: '국문명', required: true },
+  { name: 'nameEn', label: '영문명' },
+  { name: 'path', label: '경로', placeholder: '/tenant/tn/04/m09' },
+  { name: 'screenId', label: '화면ID', placeholder: 'SA-JNL-09' },
+  { name: 'sortOrder', label: '정렬순서', type: 'number' },
+  { name: 'requiresStepUp', label: 'Step-up 필요', type: 'checkbox' },
+];
 
 /** 메뉴 코드 계층 깊이 (채널 1 / 업무영역 2 / G그룹 3 / 메뉴 3~4) */
 function levelOf(m: FlatMenu): number {
@@ -21,9 +35,13 @@ export default function MenuMasterPage() {
   const [channel, setChannel] = useState('OP');
   const [filter, setFilter] = useState('');
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create');
+  const [initial, setInitial] = useState<DialogValues>({});
 
+  const reload = () => fetchFlatMenus().then(setMenus);
   useEffect(() => {
-    void fetchFlatMenus().then(setMenus);
+    void reload();
   }, []);
 
   const channelMenus = useMemo(
@@ -41,6 +59,56 @@ export default function MenuMasterPage() {
   );
 
   const sel = menus.find((m) => m.menuCode === selectedCode) ?? channelMenus[0];
+
+  const openCreate = () => {
+    setDialogMode('create');
+    setInitial({
+      menuCode: '', parentCode: sel?.menuType === 'GROUP' ? sel.menuCode : sel?.parentCode ?? '',
+      channel, menuType: 'MENU', name: '', nameEn: '', path: '', screenId: '',
+      sortOrder: (sel?.sortOrder ?? 0) + 1, requiresStepUp: false,
+    });
+    setDialogOpen(true);
+  };
+
+  const openEdit = () => {
+    if (!sel) return window.alert('수정할 메뉴를 선택하세요.');
+    setDialogMode('edit');
+    setInitial({
+      menuCode: sel.menuCode, parentCode: sel.parentCode ?? '', channel: sel.channel,
+      menuType: sel.menuType, name: sel.name, nameEn: '', path: sel.path ?? '',
+      screenId: sel.screenId ?? '', sortOrder: sel.sortOrder, requiresStepUp: sel.requiresStepUp,
+    });
+    setDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!sel) return window.alert('삭제할 메뉴를 선택하세요.');
+    if (!window.confirm(`메뉴 '${sel.menuCode} ${sel.name}' 를 삭제하시겠습니까?\n하위 메뉴가 있으면 차단되며, 삭제는 감사로그에 기록됩니다.`)) return;
+    try {
+      await deleteMenu(sel.id);
+      setSelectedCode(null);
+      await reload();
+    } catch (e) {
+      window.alert(e instanceof Error ? e.message : '삭제에 실패했습니다.');
+    }
+  };
+
+  const handleSubmit = async (values: DialogValues) => {
+    const payload: Partial<FlatMenu> = {
+      menuCode: String(values.menuCode),
+      parentCode: String(values.parentCode ?? '') || null,
+      channel: String(values.channel),
+      menuType: values.menuType as FlatMenu['menuType'],
+      name: String(values.name),
+      path: String(values.path ?? '') || null,
+      screenId: String(values.screenId ?? '') || null,
+      sortOrder: Number(values.sortOrder ?? 9999),
+      requiresStepUp: !!values.requiresStepUp,
+    };
+    if (dialogMode === 'create') await createMenu(payload);
+    else if (sel) await updateMenu(sel.id, payload);
+    await reload();
+  };
 
   const validations = sel
     ? [
@@ -61,11 +129,11 @@ export default function MenuMasterPage() {
       <QueryBar
         actions={
           <>
-            <ABtn variant="yellow">🔍 조회</ABtn>
-            <ABtn>추가</ABtn>
-            <ABtn>수정</ABtn>
-            <ABtn variant="red">삭제</ABtn>
-            <ABtn variant="dark">저장</ABtn>
+            <ABtn variant="yellow" onClick={() => void reload()}>🔍 조회</ABtn>
+            <ABtn onClick={openCreate}>추가</ABtn>
+            <ABtn onClick={openEdit}>수정</ABtn>
+            <ABtn variant="red" onClick={() => void handleDelete()}>삭제</ABtn>
+            <ABtn variant="dark" onClick={openEdit}>저장</ABtn>
             <ABtn>영향 분석</ABtn>
             <ABtn variant="dark">발행</ABtn>
           </>
@@ -138,6 +206,15 @@ export default function MenuMasterPage() {
           <InfoBox title="권한 미리보기">권한 없는 메뉴는 비활성이 아니라 미노출한다.</InfoBox>
         </RightPanel>
       </div>
+      <EditDialog
+        open={dialogOpen}
+        mode={dialogMode}
+        title="메뉴"
+        fields={MENU_FIELDS}
+        initial={initial}
+        onClose={() => setDialogOpen(false)}
+        onSubmit={handleSubmit}
+      />
       <ScreenDetails
         items={[
           { label: '목적', body: 'OP/TN/CO 메뉴 구조를 중앙에서 등록·수정·버전 발행한다.' },

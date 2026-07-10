@@ -1,10 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { useMenuStore } from '../stores/menuStore';
 
 export default function Header() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const sidebarOpen = useMenuStore((s) => s.sidebarOpen);
+  const toggleSidebar = useMenuStore((s) => s.toggleSidebar);
 
   const handleLogout = () => {
     logout();
@@ -13,6 +16,13 @@ export default function Header() {
 
   return (
     <header className="app-header">
+      <button
+        className={`menu-toggle${sidebarOpen ? ' on' : ''}`}
+        onClick={toggleSidebar}
+        title={sidebarOpen ? '메뉴 숨기기' : '메뉴 보기'}
+      >
+        ☰ <span className="mt-label">{sidebarOpen ? '메뉴 숨기기' : '메뉴 보기'}</span>
+      </button>
       <div className="brand">
         <div className="ey-logo">
           <span>EY</span>

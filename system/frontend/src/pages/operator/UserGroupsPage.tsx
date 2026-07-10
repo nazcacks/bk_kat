@@ -5,13 +5,37 @@ import RightPanel from '../../components/frame/RightPanel';
 import InfoBox, { KV } from '../../components/frame/InfoBox';
 import StatusBar from '../../components/frame/StatusBar';
 import ScreenDetails from '../../components/frame/ScreenDetails';
-import { userGroupTree, groupMemberRows, groupMenuPolicyRows } from '../../api/mock/operator';
+import { useResourceCrud } from '../../hooks/useResourceCrud';
+import { groupMemberRows, groupMenuPolicyRows } from '../../api/mock/operator';
 
-/** OP-06G 사용자그룹 관리 — 구성원, Role 상속, 그룹별 메뉴 INHERIT/ALLOW/DENY */
+/** OP-06G 사용자그룹 관리 — 그룹 CRUD + Role 상속 + 그룹별 메뉴 INHERIT/ALLOW/DENY */
 export default function UserGroupsPage() {
   const [tab, setTab] = useState(0);
   const [groupType, setGroupType] = useState('전체');
   const [policy, setPolicy] = useState('DENY');
+
+  const crud = useResourceCrud({
+    type: 'user-group',
+    title: '사용자그룹',
+    fields: [
+      { name: 'groupCode', label: '그룹코드', required: true, readOnlyOnEdit: true, placeholder: 'SEC-OPS' },
+      { name: 'nameKo', label: '국문명', required: true },
+      { name: 'nameEn', label: '영문명' },
+      { name: 'groupType', label: '그룹유형', type: 'select', options: ['OPERATOR_ORG', 'TENANT_ORG', 'FUNCTIONAL', 'SECURITY', 'EXTERNAL'] },
+      { name: 'ownerScope', label: '소유범위', type: 'select', options: ['OPERATOR', 'TENANT', 'GLOBAL'] },
+      { name: 'status', label: '상태', type: 'select', options: ['ACTIVE', 'INACTIVE', 'RETIRED'] },
+      { name: 'defaultRole', label: '기본Role', type: 'select', options: ['SEC_ADMIN', 'AUDITOR', 'SUPPORT', 'TENANT_ADMIN'] },
+      { name: 'description', label: '그룹설명', type: 'textarea' },
+    ],
+    fallback: [
+      { groupCode: 'SEC-OPS', nameKo: '보안운영팀', nameEn: 'Security Operations', groupType: 'SECURITY', ownerScope: 'OPERATOR', status: 'ACTIVE', defaultRole: 'SEC_ADMIN', memberCount: 12, description: '보안·감사 운영 및 Break-glass 승인 권한을 가진 운영자 그룹' },
+      { groupCode: 'CS-TEAM', nameKo: '고객지원팀', nameEn: 'Customer Support', groupType: 'OPERATOR_ORG', ownerScope: 'OPERATOR', status: 'ACTIVE', defaultRole: 'SUPPORT', memberCount: 28, description: '이용회사 지원 세션을 수행하는 운영자 그룹' },
+    ],
+    labelOf: (d) => `${d.groupCode} ${d.nameKo}`,
+  });
+
+  const visible = crud.rows.filter((r) => groupType === '전체' || r.data.groupType === groupType);
+  const sel = crud.selectedRow?.data as Record<string, string> | undefined;
 
   return (
     <ScreenShell
@@ -30,11 +54,11 @@ export default function UserGroupsPage() {
           <QueryBar
             actions={
               <>
-                <ABtn variant="yellow">🔍 조회</ABtn>
-                <ABtn>그룹 추가</ABtn>
-                <ABtn>그룹 수정</ABtn>
-                <ABtn variant="red">그룹 삭제</ABtn>
-                <ABtn variant="dark">그룹 저장</ABtn>
+                <ABtn variant="yellow" onClick={() => void crud.reload()}>🔍 조회</ABtn>
+                <ABtn onClick={crud.openCreate}>그룹 추가</ABtn>
+                <ABtn onClick={crud.openEdit}>그룹 수정</ABtn>
+                <ABtn variant="red" onClick={() => void crud.handleDelete()}>그룹 삭제</ABtn>
+                <ABtn variant="dark" onClick={crud.openEdit}>그룹 저장</ABtn>
               </>
             }
           >
@@ -42,32 +66,34 @@ export default function UserGroupsPage() {
             <QValue><input placeholder="groupCode/국문/영문" /> <span className="lens">⌕</span></QValue>
             <QLabel>그룹 유형</QLabel>
             <Seg options={['전체', 'OPERATOR_ORG', 'TENANT_ORG', 'SECURITY']} value={groupType} onChange={setGroupType} />
-            <QLabel>상태</QLabel>
-            <QValue>ACTIVE/INACTIVE <span className="lens">▾</span></QValue>
           </QueryBar>
           <div className="mock-flex">
             <div className="lpane">
-              <div className="lp-t">그룹 트리</div>
+              <div className="lp-t">그룹 트리 <span className="cnt">{visible.length}건</span></div>
               <div className="ptree">
-                {userGroupTree.map((n) => (
-                  <div key={n.label} className={`tnode lv${n.level}${n.on ? ' on' : ''}`}>
-                    {n.level === 1 ? '▸ ' : ''}{n.label} <span className="cnt">{n.count}</span>
-                  </div>
-                ))}
+                {visible.map((row) => {
+                  const d = row.data as Record<string, string>;
+                  const idx = crud.rows.indexOf(row);
+                  return (
+                    <div key={row.id} className={`tnode lv1${crud.selected === idx ? ' on' : ''}`} onClick={() => crud.setSelected(idx)}>
+                      ▸ {d.nameKo} <span className="cnt">{String(row.data.memberCount ?? 0)}명 · {d.groupType}</span>
+                    </div>
+                  );
+                })}
+                {visible.length === 0 && <div className="tnode dim">그룹이 없습니다</div>}
               </div>
             </div>
             <div className="mock-main">
               <div className="formgrid c3 label-left">
-                <div className="ff"><label>그룹코드</label><div className="fv">SEC-OPS</div></div>
-                <div className="ff"><label>국문명</label><div className="fv">보안운영팀</div></div>
-                <div className="ff"><label>영문명</label><div className="fv">Security Operations</div></div>
-                <div className="ff"><label>그룹유형</label><div className="fv">SECURITY</div></div>
-                <div className="ff"><label>소유범위</label><div className="fv">OPERATOR</div></div>
-                <div className="ff"><label>상태</label><div className="fv">ACTIVE</div></div>
-                <div className="ff"><label>상위그룹</label><div className="fv">- 루트 그룹</div></div>
-                <div className="ff"><label>기본Role</label><div className="fv">SEC_ADMIN</div></div>
-                <div className="ff"><label>유효기간</label><div className="fv">2026-01-01 ~ 9999-12-31</div></div>
-                <div className="ff full"><label>그룹설명</label><div className="fv">보안·감사 운영 및 Break-glass 승인 권한을 가진 운영자 그룹</div></div>
+                <div className="ff"><label>그룹코드</label><div className="fv ro">{sel?.groupCode ?? '-'}</div></div>
+                <div className="ff"><label>국문명</label><div className="fv ro">{sel?.nameKo ?? '-'}</div></div>
+                <div className="ff"><label>영문명</label><div className="fv ro">{sel?.nameEn ?? '-'}</div></div>
+                <div className="ff"><label>그룹유형</label><div className="fv ro">{sel?.groupType ?? '-'}</div></div>
+                <div className="ff"><label>소유범위</label><div className="fv ro">{sel?.ownerScope ?? '-'}</div></div>
+                <div className="ff"><label>상태</label><div className="fv ro">{sel?.status ?? '-'}</div></div>
+                <div className="ff"><label>기본Role</label><div className="fv ro">{sel?.defaultRole ?? '-'}</div></div>
+                <div className="ff"><label>유효기간</label><div className="fv ro">2026-01-01 ~ 9999-12-31</div></div>
+                <div className="ff full"><label>그룹설명</label><div className="fv ro">{sel?.description ?? '-'}</div></div>
               </div>
               <div className="gridwrap">
                 <table className="grid">
@@ -91,10 +117,10 @@ export default function UserGroupsPage() {
                   </tbody>
                 </table>
               </div>
-              <StatusBar message="✓ 그룹 CRUD와 구성원 CRUD를 별도 저장 단위로 분리" count="UserGroup 1건 · UserGroupMember 12건" />
+              <StatusBar message="✓ 그룹 CRUD와 구성원 CRUD를 별도 저장 단위로 분리 · 그룹 변경은 감사로그 기록" count={`UserGroup ${visible.length}건`} />
             </div>
             <RightPanel>
-              <InfoBox title="그룹 저장 검증"><KV k="groupCode" v="UNIQUE" /><KV k="상위그룹" v="순환 없음" /><KV k="Role" v="SEC_ADMIN" /></InfoBox>
+              <InfoBox title="그룹 저장 검증"><KV k="groupCode" v="UNIQUE" /><KV k="상위그룹" v="순환 없음" /><KV k="Role" v={sel?.defaultRole ?? '-'} /></InfoBox>
               <InfoBox title="구성원 저장 검증"><KV k="범위" v="OPERATOR 일치" /><KV k="중복" v="0건" /><KV k="만료예정" v="1명" /></InfoBox>
             </RightPanel>
           </div>
@@ -116,7 +142,7 @@ export default function UserGroupsPage() {
             }
           >
             <QLabel>그룹</QLabel>
-            <QValue>보안운영팀 <span className="lens">▾</span></QValue>
+            <QValue>{sel?.nameKo ?? '보안운영팀'} <span className="lens">▾</span></QValue>
             <QLabel>메뉴코드</QLabel>
             <QValue><input placeholder="OP-06/OP-10" /> <span className="lens">⌕</span></QValue>
             <QLabel>정책</QLabel>
@@ -162,6 +188,7 @@ export default function UserGroupsPage() {
         </>
       )}
 
+      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: '사용자그룹 자체의 생성·수정·삭제와 그룹 구성원 추가·삭제를 분리해 관리하고, Role 상속과 메뉴 노출 정책을 통제한다.' },

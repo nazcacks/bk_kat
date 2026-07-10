@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -48,6 +48,7 @@ export class UsersService {
       status: u.status,
       roles: u.roles,
       lastLoginAt: u.lastLoginAt,
+      detail: u.detail,
     }));
     return toPage(masked, total, req);
   }
@@ -97,5 +98,57 @@ export class UsersService {
 
   count(): Promise<number> {
     return this.userRepo.count();
+  }
+
+  // ── CRUD (설계 4장: loginId 전역 유일, 계정 상태머신) ─────────────
+
+  async createUser(data: Partial<User>): Promise<User> {
+    if (!data.loginId || !data.name) {
+      throw new BadRequestException('loginId 와 name 은 필수입니다.');
+    }
+    const dup = await this.userRepo.findOneBy({ loginId: data.loginId });
+    if (dup) {
+      throw new ConflictException({
+        code: ErrorCodes.DUPLICATE_RESOURCE,
+        message: `USER_LOGIN_ID_DUPLICATED: '${data.loginId}' 는 이미 존재합니다.`,
+      });
+    }
+    return this.userRepo.save(
+      this.userRepo.create({
+        loginId: data.loginId,
+        name: data.name,
+        email: data.email ?? null,
+        phone: data.phone ?? null,
+        userGroup: data.userGroup === 'OPERATOR' ? 'OPERATOR' : 'TENANT',
+        tenantId: data.tenantId ?? null,
+        status: data.status ?? 'ACTIVE',
+        roles: data.roles ?? [],
+        detail: data.detail ?? null,
+      }),
+    );
+  }
+
+  async updateUser(id: string, data: Partial<User>): Promise<User> {
+    const user = await this.userRepo.findOneBy({ id });
+    if (!user) throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    // loginId 는 변경 불가(전역 식별자), 허용 필드만 갱신
+    const allowed: (keyof User)[] = ['name', 'email', 'phone', 'userGroup', 'tenantId', 'status', 'roles', 'detail'];
+    // detail 은 병합 (부분 갱신 허용)
+    if (data.detail !== undefined && user.detail) {
+      data.detail = { ...user.detail, ...data.detail };
+    }
+    for (const key of allowed) {
+      if (data[key] !== undefined) (user as unknown as Record<string, unknown>)[key] = data[key];
+    }
+    return this.userRepo.save(user);
+  }
+
+  /** 삭제 = 비활성(DISABLED) 처리 — 계정 이력·감사 추적 보존 (물리 삭제 금지) */
+  async disableUser(id: string): Promise<{ id: string; status: string }> {
+    const user = await this.userRepo.findOneBy({ id });
+    if (!user) throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    user.status = 'DISABLED';
+    await this.userRepo.save(user);
+    return { id, status: 'DISABLED' };
   }
 }

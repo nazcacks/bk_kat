@@ -1,4 +1,4 @@
-import { apiGet } from './client';
+import { apiDelete, apiGet, apiPost, apiPut } from './client';
 import {
   mockAuditLogs,
   mockLoginHistories,
@@ -41,4 +41,17 @@ export async function fetchMaskingPolicies(): Promise<MaskingPolicy[]> {
     console.warn('[security] masking-policies 실패 — mock으로 폴백합니다.', e);
     return mockMaskingPolicies;
   }
+}
+
+// ── 마스킹 정책 CRUD ─────────────────────────────────────────
+export function createMaskingPolicy(data: Partial<MaskingPolicy>): Promise<MaskingPolicy> {
+  return apiPost('/security/masking-policies', data);
+}
+
+export function updateMaskingPolicy(id: string, data: Partial<MaskingPolicy>): Promise<MaskingPolicy> {
+  return apiPut(`/security/masking-policies/${id}`, data);
+}
+
+export function deleteMaskingPolicy(id: string): Promise<{ id: string; deleted: boolean }> {
+  return apiDelete(`/security/masking-policies/${id}`);
 }

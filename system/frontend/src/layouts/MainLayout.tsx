@@ -7,6 +7,7 @@ import { useMenuStore } from '../stores/menuStore';
 
 export default function MainLayout() {
   const loadMenus = useMenuStore((s) => s.loadMenus);
+  const sidebarOpen = useMenuStore((s) => s.sidebarOpen);
 
   useEffect(() => {
     void loadMenus();
@@ -17,7 +18,7 @@ export default function MainLayout() {
       <Header />
       <AccessModeBanner />
       <div className="app-body">
-        <Sidebar />
+        {sidebarOpen && <Sidebar />}
         <main className="app-content">
           <Outlet />
         </main>

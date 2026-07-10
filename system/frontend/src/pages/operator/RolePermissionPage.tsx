@@ -5,11 +5,32 @@ import RightPanel from '../../components/frame/RightPanel';
 import InfoBox from '../../components/frame/InfoBox';
 import StatusBar from '../../components/frame/StatusBar';
 import ScreenDetails from '../../components/frame/ScreenDetails';
+import { useResourceCrud } from '../../hooks/useResourceCrud';
 import { permissionEvalRows } from '../../api/mock/operator';
 
-/** OP-06C Role·권한 관리 — 권한 평가 시뮬레이션 (DENY 우선) */
+/** OP-06C Role·권한 관리 — Role CRUD + 권한 평가 시뮬레이션 (DENY 우선) */
 export default function RolePermissionPage() {
   const [mode, setMode] = useState('VIEW');
+
+  const crud = useResourceCrud({
+    type: 'role',
+    title: 'Role',
+    fields: [
+      { name: 'roleCode', label: 'Role 코드', required: true, readOnlyOnEdit: true, placeholder: 'SEC_ADMIN' },
+      { name: 'name', label: 'Role 명', required: true },
+      { name: 'scope', label: '범위', type: 'select', options: ['OPERATOR', 'TENANT', 'GLOBAL'] },
+      { name: 'description', label: '설명', type: 'textarea' },
+    ],
+    fallback: [
+      { roleCode: 'SEC_ADMIN', name: '시스템 관리자', scope: 'OPERATOR', description: '인프라·인증·보안·감사 운영. 기장 ACTION 불가(SOD)' },
+      { roleCode: 'AUDITOR', name: '감사자', scope: 'OPERATOR', description: '로그·리포트 열람 전용' },
+      { roleCode: 'SUPPORT', name: '고객 지원', scope: 'OPERATOR', description: 'SUPPORT_SESSION 기반 설정 지원' },
+      { roleCode: 'TENANT_ADMIN', name: '회사관리자', scope: 'TENANT', description: '자사 사용자·Role·결재선 관리' },
+    ],
+    labelOf: (d) => String(d.roleCode),
+  });
+
+  const sel = crud.selectedRow?.data as Record<string, string> | undefined;
 
   return (
     <ScreenShell
@@ -21,26 +42,48 @@ export default function RolePermissionPage() {
       <QueryBar
         actions={
           <>
-            <ABtn variant="yellow">🔍 조회</ABtn>
-            <ABtn>추가</ABtn>
-            <ABtn>수정</ABtn>
-            <ABtn variant="red">삭제</ABtn>
-            <ABtn variant="dark">저장</ABtn>
+            <ABtn variant="yellow" onClick={() => void crud.reload()}>🔍 조회</ABtn>
+            <ABtn onClick={crud.openCreate}>추가</ABtn>
+            <ABtn onClick={crud.openEdit}>수정</ABtn>
+            <ABtn variant="red" onClick={() => void crud.handleDelete()}>삭제</ABtn>
+            <ABtn variant="dark" onClick={crud.openEdit}>저장</ABtn>
             <ABtn>시뮬레이션</ABtn>
           </>
         }
       >
         <QLabel>Role</QLabel>
-        <QValue>SEC_ADMIN <span className="lens">▾</span></QValue>
+        <QValue>{sel?.roleCode ?? '-'} <span className="lens">▾</span></QValue>
         <QLabel>사용자/그룹</QLabel>
         <QValue>김시스템/보안운영팀 <span className="lens">⌕</span></QValue>
-        <QLabel>권한유형</QLabel>
-        <QValue>메뉴/ACTION/데이터/민감정보 <span className="lens">▾</span></QValue>
         <QLabel>접근모드</QLabel>
         <Seg options={['VIEW', 'SUPPORT', 'BREAK']} value={mode} onChange={setMode} />
       </QueryBar>
       <div className="mock-flex">
+        <div className="lpane">
+          <div className="lp-t">Role 목록 <span className="cnt">{crud.rows.length}건</span></div>
+          <div className="ptree">
+            {crud.rows.map((row, idx) => {
+              const d = row.data as Record<string, string>;
+              return (
+                <div key={row.id} className={`tnode lv1${crud.selected === idx ? ' on' : ''}`} onClick={() => crud.setSelected(idx)}>
+                  {d.roleCode} <span className="cnt">{d.name} · {d.scope}</span>
+                </div>
+              );
+            })}
+            {crud.rows.length === 0 && <div className="tnode dim">Role 이 없습니다</div>}
+          </div>
+        </div>
         <div className="mock-main">
+          <div className="formgrid c3 label-left">
+            <div className="ff"><label>Role 코드</label><div className="fv ro">{sel?.roleCode ?? '-'}</div></div>
+            <div className="ff"><label>Role 명</label><div className="fv ro">{sel?.name ?? '-'}</div></div>
+            <div className="ff"><label>범위</label><div className="fv ro">{sel?.scope ?? '-'}</div></div>
+            <div className="ff full"><label>설명</label><div className="fv ro">{sel?.description ?? '-'}</div></div>
+          </div>
+          <div className="qbar">
+            <span className="qlabel">권한 평가 시뮬레이션</span>
+            <span className="qv">{sel?.roleCode ?? 'SEC_ADMIN'} · 김시스템/보안운영팀 · {mode}</span>
+          </div>
           <div className="gridwrap">
             <table className="grid">
               <thead><tr><th>평가 단계</th><th>대상</th><th>결과</th><th>근거</th></tr></thead>
@@ -63,6 +106,7 @@ export default function RolePermissionPage() {
           <InfoBox title="캐시 키"><code>userId+roleHash+groupHash+menuVersion</code></InfoBox>
         </RightPanel>
       </div>
+      {crud.dialog}
       <ScreenDetails
         items={[
           { label: '목적', body: 'Role과 사용자그룹 권한을 합산해 실제 메뉴·ACTION·데이터 접근을 통제한다.' },

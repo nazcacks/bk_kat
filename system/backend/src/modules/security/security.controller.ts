@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { SecurityService } from './security.service';
+import { MaskingPolicy } from './entities/masking-policy.entity';
 import { PageRequestDto } from '../../common/dto/page.dto';
 import { Audit } from '../../common/decorators/audit.decorator';
 
@@ -32,9 +33,21 @@ export class SecurityController {
     return this.securityService.findMaskingPolicies();
   }
 
+  @Post('masking-policies')
+  @Audit('MASKING_POLICY', 'CREATE')
+  createMaskingPolicy(@Body() body: Partial<MaskingPolicy>) {
+    return this.securityService.createMaskingPolicy(body);
+  }
+
   @Put('masking-policies/:id')
   @Audit('MASKING_POLICY', 'UPDATE')
-  updateMaskingPolicy(@Param('id') id: string, @Body('isActive') isActive: boolean) {
-    return this.securityService.updateMaskingPolicy(id, isActive);
+  updateMaskingPolicy(@Param('id') id: string, @Body() body: Partial<MaskingPolicy>) {
+    return this.securityService.updateMaskingPolicy(id, body);
+  }
+
+  @Delete('masking-policies/:id')
+  @Audit('MASKING_POLICY', 'DELETE')
+  removeMaskingPolicy(@Param('id') id: string) {
+    return this.securityService.removeMaskingPolicy(id);
   }
 }

@@ -12,11 +12,13 @@ import { MenusModule } from './modules/menus/menus.module';
 import { CommonCodesModule } from './modules/common-codes/common-codes.module';
 import { SecurityModule } from './modules/security/security.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { ResourcesModule } from './modules/resources/resources.module';
 import { SeedService } from './database/seed/seed.service';
 import { Menu } from './modules/menus/menu.entity';
 import { User } from './modules/users/user.entity';
 import { CommonCodeGroup, CommonCodeItem } from './modules/common-codes/common-code.entity';
 import { MaskingPolicy } from './modules/security/entities/masking-policy.entity';
+import { AdminResource } from './modules/resources/admin-resource.entity';
 
 @Module({
   imports: [
@@ -37,13 +39,14 @@ import { MaskingPolicy } from './modules/security/entities/masking-policy.entity
         retryDelay: 2000,
       }),
     }),
-    TypeOrmModule.forFeature([Menu, User, CommonCodeGroup, CommonCodeItem, MaskingPolicy]),
+    TypeOrmModule.forFeature([Menu, User, CommonCodeGroup, CommonCodeItem, MaskingPolicy, AdminResource]),
     SecurityModule,
     AuthModule,
     UsersModule,
     MenusModule,
     CommonCodesModule,
     DashboardModule,
+    ResourcesModule,
   ],
   providers: [
     SeedService,
