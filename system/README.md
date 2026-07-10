@@ -34,6 +34,19 @@ npm run dev
 - 시드 계정: `admin`(운영자·SEC_ADMIN), `tenant_admin`(이용회사), `bk_preparer`, `viewer`
 - 백엔드가 꺼져 있어도 프론트엔드는 mock 데이터로 동작합니다 (오프라인 폴백).
 
+## 데이터베이스 백업 / 복원
+
+```bash
+# 백업 (system/backup/ 에 저장)
+docker exec bk-postgres pg_dump -U bk_app -d bk_dev --format=custom --file=/tmp/bk.dump
+docker cp bk-postgres:/tmp/bk.dump system/backup/bk_dev_$(date +%Y%m%d).dump
+
+# 복원 (기존 객체 삭제 후 재생성)
+docker cp system/backup/bk_dev_YYYYMMDD.dump bk-postgres:/tmp/restore.dump
+docker exec bk-postgres pg_restore -U bk_app -d bk_dev --clean --if-exists /tmp/restore.dump
+```
+git-bash 에서는 컨테이너 경로 변환 방지를 위해 `export MSYS_NO_PATHCONV=1` 후 실행.
+
 ## 인증 정책 (개발 → 운영 전환)
 
 `backend/.env` 의 `AUTH_BYPASS=true` 가 개발 모드입니다.
