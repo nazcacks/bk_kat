@@ -1,0 +1,12 @@
+import type { ReactNode } from 'react';
+
+export type BadgeVariant = 'green' | 'red' | 'blue' | 'yellow' | 'gray';
+
+interface BadgeProps {
+  variant?: BadgeVariant;
+  children: ReactNode;
+}
+
+export default function Badge({ variant = 'gray', children }: BadgeProps) {
+  return <span className={`badge badge-${variant}`}>{children}</span>;
+}
