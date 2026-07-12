@@ -373,7 +373,20 @@ export const mockMenuTree: MenuNode[] = [
         "screenId": "OP-11",
         "sortOrder": 290,
         "requiresStepUp": false,
-        "children": []
+        "children": [
+        {
+          "menuCode": "OP-11-M01",
+          "name": "AI·규칙 운영",
+          "nameEn": "AI Rule Operations",
+          "menuType": "MENU",
+          "channel": "OP",
+          "path": "/operator/op/11/m01",
+          "screenId": "OP-11",
+          "sortOrder": 295,
+          "requiresStepUp": false,
+          "children": []
+        }
+      ]
       },
       {
         "menuCode": "OP-12",

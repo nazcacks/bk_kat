@@ -39,6 +39,7 @@ export const MENU_SEED: MenuSeed[] = [
   { menuCode: 'OP-10', parentCode: 'OP', channel: 'OP', menuType: 'GROUP', name: '로그 관리', nameEn: 'Log Management', screenId: 'OP-10', sortOrder: 270 },
   { menuCode: 'OP-10-M01', parentCode: 'OP-10', channel: 'OP', menuType: 'MENU', name: '로그 관리', nameEn: 'Log Management', path: '/operator/op/10/m01', screenId: 'OP-10', sortOrder: 280 },
   { menuCode: 'OP-11', parentCode: 'OP', channel: 'OP', menuType: 'GROUP', name: 'AI·규칙 운영 [AI]', nameEn: 'AI Rule Operations', screenId: 'OP-11', sortOrder: 290 },
+  { menuCode: 'OP-11-M01', parentCode: 'OP-11', channel: 'OP', menuType: 'MENU', name: 'AI·규칙 운영', nameEn: 'AI Rule Operations', path: '/operator/op/11/m01', screenId: 'OP-11', sortOrder: 295 },
   { menuCode: 'OP-12', parentCode: 'OP', channel: 'OP', menuType: 'GROUP', name: '개인정보보호', nameEn: 'Privacy Protection', screenId: 'OP-12', sortOrder: 300 },
   { menuCode: 'OP-12-M01', parentCode: 'OP-12', channel: 'OP', menuType: 'MENU', name: '개인정보보호', nameEn: 'Privacy Protection', path: '/operator/op/12/m01', screenId: 'OP-12', sortOrder: 310 },
   { menuCode: 'TN', channel: 'TN', menuType: 'GROUP', name: '업무화면', nameEn: 'Tenant Workspace', sortOrder: 320 },

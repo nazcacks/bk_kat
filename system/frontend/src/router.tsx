@@ -20,6 +20,12 @@ import BatchIntegrationPage from './pages/operator/BatchIntegrationPage';
 import LogManagementPage from './pages/operator/LogManagementPage';
 import PrivacyProtectionPage from './pages/operator/PrivacyProtectionPage';
 import AccessGovernancePage from './pages/operator/AccessGovernancePage';
+import OperationEntryPage from './pages/operator/OperationEntryPage';
+import OperatorOrgPage from './pages/operator/OperatorOrgPage';
+import SubscriptionBillingPage from './pages/operator/SubscriptionBillingPage';
+import StandardCatalogPage from './pages/operator/StandardCatalogPage';
+import BookkeepingWorkbenchPage from './pages/operator/BookkeepingWorkbenchPage';
+import AiRuleOpsPage from './pages/operator/AiRuleOpsPage';
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const token = useAuthStore((s) => s.accessToken);
@@ -36,9 +42,13 @@ function RequireAuth({ children }: { children: ReactNode }) {
  */
 const implementedPages: Record<string, ReactNode> = {
   '/dashboard': <DashboardPage />,
+  '/operator/op/00/m01': <OperationEntryPage />,
   '/operator/op/01/m01': <OperationsDashboardPage />,
+  '/operator/op/02/m01': <OperatorOrgPage />,
   '/operator/op/03/m01': <TenantInfraPage />,
+  '/operator/op/04/m01': <SubscriptionBillingPage />,
   '/operator/op/05/m01': <CommonCodePage />,
+  '/operator/op/05/m02': <StandardCatalogPage />,
   '/operator/op/06/m01': <UserManagementPage />,
   '/operator/op/06/m02': <UserGroupsPage />,
   '/operator/op/06/m03': <AuthPolicyPage />,
@@ -46,8 +56,10 @@ const implementedPages: Record<string, ReactNode> = {
   '/operator/op/06/m05': <RolePermissionPage />,
   '/operator/op/06/m06': <GroupMenuPermissionPage />,
   '/operator/op/07/m01': <AccessGovernancePage />,
+  '/operator/op/08/m01': <BookkeepingWorkbenchPage />,
   '/operator/op/09/m01': <BatchIntegrationPage />,
   '/operator/op/10/m01': <LogManagementPage />,
+  '/operator/op/11/m01': <AiRuleOpsPage />,
   '/operator/op/12/m01': <PrivacyProtectionPage />,
 };
 

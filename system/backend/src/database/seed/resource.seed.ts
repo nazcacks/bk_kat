@@ -31,6 +31,38 @@ export const RESOURCE_SEED: Record<string, Record<string, unknown>[]> = {
     { session: 'BG-20260708-014', tenant: 'T-10035', mode: 'BREAK_GLASS', reason: '신고마감 전 DB 라우팅 장애', recording: 'ON · 마스킹', approval: '2/2', status: 'ACTIVE' },
     { session: 'AS-20260708-221', tenant: 'T-10201', mode: 'SUPPORT_SESSION', reason: 'SSO 설정 지원', recording: 'OFF', approval: '1/1', status: 'REVIEWED' },
   ],
+  'operator-org': [
+    { orgCode: 'HQ', name: '관리회사 본부', parentOrg: null, taxAgentNo: '세무대리 12345', manager: '조강수', status: 'ACTIVE' },
+    { orgCode: 'SYS-OPS', name: '시스템운영팀', parentOrg: 'HQ', taxAgentNo: '-', manager: '김시스템', status: 'ACTIVE' },
+    { orgCode: 'BK-OPS', name: '기장운영팀', parentOrg: 'HQ', taxAgentNo: '세무대리 12345', manager: '김기장', status: 'ACTIVE' },
+  ],
+  'tenant-assignment': [
+    { tenant: 'T-10035 금명전자', assignee: '김기장', role: 'BK_PREPARER', startDate: '2026-01-01', endDate: '9999-12-31', status: 'ASSIGNED' },
+    { tenant: 'T-10035 금명전자', assignee: '조강수', role: 'BK_MANAGER', startDate: '2026-01-01', endDate: '9999-12-31', status: 'ASSIGNED' },
+  ],
+  'console-ip': [
+    { cidr: '203.0.113.0/24', label: '본사 사무실', addedBy: 'sec.admin', status: 'ACTIVE' },
+  ],
+  subscription: [
+    { tenant: 'T-10035 금명전자', plan: 'STANDARD', status: 'ACTIVE', startDate: '2026-01-01', renewal: '2027-01-01', usage: 'API 38%' },
+    { tenant: 'T-10110 EDPR Korea', plan: 'PREMIUM', status: 'PAST_DUE', startDate: '2025-07-01', renewal: '2026-07-01', usage: 'API 71%' },
+  ],
+  invoice: [
+    { invoiceNo: 'INV-202607-0035', tenant: 'T-10035 금명전자', amount: '450,000', issueDate: '2026-07-01', dueDate: '2026-07-15', status: '발행', dunning: '-' },
+  ],
+  standard: [
+    { stdCode: 'STD_ACCOUNT', name: '표준계정 템플릿', version: 'v12', status: 'PUBLISHED', distribution: 'MANDATORY', adopted: '132/132 테넌트' },
+    { stdCode: 'STD_VAT', name: '부가세 세율/과세유형', version: 'v8', status: 'PUBLISHED', distribution: 'MANDATORY', adopted: '132/132 테넌트' },
+  ],
+  'bookkeeping-switch': [
+    { tenant: 'T-10035 금명전자', currentMode: 'OPERATOR_LED', requestedMode: 'HYBRID', reason: '전표 자체 수행, 마감·신고는 관리회사', scheduledDate: '2026-08-01', status: 'COUNTERPARTY_CONSENTED' },
+  ],
+  'anomaly-rule': [
+    { ruleCode: 'ANM-001', name: '휴일 대량 전표', target: '전표', condition: '휴일 AND 건수 > 50', severity: 'HIGH', status: 'ACTIVE' },
+  ],
+  'ai-model': [
+    { modelId: 'ANOMALY-TX-2026Q2', type: '이상탐지', version: 'v4', status: 'ACTIVE', note: '가명화 특징량 학습 · 온프레미스 추론' },
+  ],
   'group-menu-permission': [
     { groupCode: 'SEC-OPS', permissions: { 'OP-06': 'ALLOW', 'OP-07': 'ALLOW', 'OP-08': 'DENY', 'OP-10': 'ALLOW', 'OP-12': 'ALLOW' } },
     { groupCode: 'CS-TEAM', permissions: { 'OP-00': 'ALLOW', 'OP-01': 'ALLOW', 'OP-08': 'DENY', 'OP-10': 'DENY', 'OP-12': 'DENY' } },
