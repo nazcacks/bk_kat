@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 회계/세무 서비스 3계층 4단 메뉴구조도 V1.1</title>
+<style>
+:root{
+  --ink:#1c2333; --sub:#5b6478; --line:#d8dde8; --bg:#f4f6fa; --card:#fff;
+  --accent:#2554c7; --accent-bg:#eaf0fd; --pf:#9f1239; --pf-bg:#fff1f2; --op:#6d28d9; --op-bg:#f3e8ff;
+  --tn:#0f766e; --tn-bg:#cdf3ee; --warn:#b45309; --warn-bg:#fef3c7;
+  --danger:#b91c1c; --danger-bg:#fee2e2; --ok:#15803d; --ok-bg:#dcfce7;
+  --muted-bg:#eef1f6; --dark:#16213e;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;color:var(--ink);background:var(--bg);font-size:14px;line-height:1.62}
+main{max-width:1360px;margin:0 auto;padding:28px 32px 72px}
+.doc-header{background:linear-gradient(135deg,#1c2333,#2554c7);color:#fff;border-radius:12px;padding:24px 30px;margin-bottom:24px}
+.doc-header h1{margin:0 0 6px;font-size:24px;letter-spacing:0}
+.doc-header p{margin:3px 0;color:#d8e2fb;font-size:13px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px 28px;margin-bottom:22px}
+h2{font-size:18px;margin:0 0 14px;padding-bottom:9px;border-bottom:2px solid var(--accent);color:var(--dark)}
+h3{font-size:15px;margin:20px 0 8px;color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:10px 0 14px;font-size:12.5px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--muted-bg);font-size:12.1px;white-space:nowrap}
+td.c,th.c{text-align:center}
+code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Consolas,'D2Coding',monospace;font-size:12px;color:#33415e}
+.badge{display:inline-block;border-radius:9px;padding:0 8px;font-size:10.6px;font-weight:700;white-space:nowrap;vertical-align:middle}
+.b-blue{background:var(--accent-bg);color:var(--accent)}
+.b-purple{background:var(--op-bg);color:var(--op)}
+.b-green{background:var(--ok-bg);color:var(--ok)}
+.b-amber{background:var(--warn-bg);color:var(--warn)}
+.b-red{background:var(--danger-bg);color:var(--danger)}
+.b-gray{background:var(--muted-bg);color:var(--sub)}
+.b-teal{background:var(--tn-bg);color:var(--tn)}
+.sid{display:inline-block;background:#1c2333;color:#fff;border-radius:4px;padding:0 7px;font-size:10.8px;font-family:Consolas,monospace;vertical-align:middle}
+.note{background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:0 6px 6px 0;padding:9px 14px;font-size:12.7px;margin:10px 0}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.4px;background:var(--muted-bg);border-radius:8px;padding:10px 16px;margin:8px 0 16px}
+.legend b{color:#33415e}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 14px}
+.search{border:1px solid var(--line);border-radius:6px;padding:8px 11px;min-width:320px;font-size:13px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.chan{border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.chan-head{padding:10px 16px;font-weight:700;font-size:14.4px;color:#fff;display:flex;align-items:center;gap:10px}
+.chan-head small{font-weight:400;opacity:.9;font-size:11.5px}
+.chan.pf .chan-head{background:linear-gradient(120deg,#881337,#be123c)}
+.chan.op .chan-head{background:linear-gradient(120deg,#3b1d77,#7c3aed)}
+.chan.tn .chan-head{background:linear-gradient(120deg,#0f3d42,#0f766e)}
+.chan.co .chan-head{background:linear-gradient(120deg,#243047,#48566f)}
+.chan-body{padding:14px 18px 16px}
+ul.tree,ul.tree ul{list-style:none;margin:0;padding-left:23px;position:relative}
+ul.tree{padding-left:5px}
+ul.tree ul::before{content:"";position:absolute;left:7px;top:0;bottom:12px;border-left:2px solid #c4cdde}
+ul.tree li{position:relative;padding:3px 0 3px 2px}
+ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13px;border-top:2px solid #c4cdde}
+.n0{font-weight:800;font-size:14px;color:#fff;background:#33415e;border:1px solid #243047;border-radius:6px;padding:4px 12px;display:inline-block}
+.chan.pf .n0{background:#881337;border-color:#70112f}
+.chan.op .n0{background:#3b1d77;border-color:#2f1760}
+.chan.tn .n0{background:#0f766e;border-color:#0f5f59}
+.chan.co .n0{background:#33415e;border-color:#243047}
+.n1{font-weight:700;font-size:13.4px;color:#16213e;background:var(--muted-bg);border:1px solid var(--line);border-radius:6px;padding:3px 11px;display:inline-block}
+.chan.pf .n1{background:var(--pf-bg);border-color:#fecdd3}
+.chan.op .n1{background:var(--op-bg);border-color:#ddc8f8}
+.chan.tn .n1{background:var(--tn-bg);border-color:#a8e4dc}
+.chan.co .n1{background:#e5e7eb;border-color:#cbd5e1}
+.n2{font-size:12.8px;color:#1c2333}
+.n3{font-size:12.1px;color:var(--sub)}
+.tab-line{color:#6f7b90;font-size:11.7px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fbfcff}
+.card h3{margin-top:0}
+.hidden{display:none!important}
+@media(max-width:1180px){.cols{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.search{min-width:240px;width:100%}}
+@media print{
+  body{background:#fff}
+  main{max-width:none;padding:10px}
+  section{break-inside:avoid;border:none;padding:14px 0}
+  .chan{break-inside:avoid}
+  .toolbar{display:none}
+}
+</style>
+</head>
+<body>
+<main>
+
+<div class="doc-header">
+  <h1>BK 회계/세무 서비스 3계층 4단 메뉴구조도 V1.1</h1>
+  <p>기준 문서: <b>bk_설계서_v1.1.md</b> · 이전본: <b>설계/화면설계/메뉴구조도_V1.0.HTML</b></p>
+  <p>작성일: 2026-07-13 · 산출물 위치: <b>설계/화면설계/메뉴구조도_V1.1.HTML</b></p>
+  <p>목적: BK 플랫폼 → 복수 관리회사(OperatorOrg) → 관리대상회사(Tenant) 3계층을 전 메뉴에 적용하고, 플랫폼 자체의 사용자·내부조직·사용자그룹과 전체 업무 표준정보·메뉴 원본을 플랫폼콘솔에서 통합 관리하는 PF·OP·TN·CO 4채널 구조를 정의한다.</p>
+  <p>변경 기준: <b>설계/페이즈_화면/시스템관리자_화면_v1.0.HTML</b>의 사용자·사용자그룹·그룹별 메뉴권한·메뉴관리 UX를 수용하되, 메뉴 원본 CUD·발행은 <b>PF-04M</b>, OP 발행본 조회는 <b>OP-06D</b>로 분리한다.</p>
+</div>
+
+<section>
+<h2>1. 표기 범례</h2>
+<div class="legend">
+  <span><span class="sid">PF-01</span> <b>플랫폼콘솔 화면</b></span>
+  <span><span class="sid">BF-09</span> <b>기초/기준정보 화면</b></span>
+  <span><span class="sid">JV-01</span> <b>전표 입력 화면</b></span>
+  <span><span class="sid">AUX-02</span> <b>보조부/보조원장</b></span>
+  <span><span class="sid">SA-VAT</span> <b>SA 기능 화면군</b></span>
+  <span><span class="badge b-red">Step-up</span> 재인증 필요</span>
+  <span><span class="badge b-amber">관리자</span> 관리자/권한자 전용</span>
+  <span><span class="badge b-purple">기장</span> 기장 모드 영향</span>
+  <span><span class="badge b-teal">선택</span> 기능 플래그·업종·Phase별 노출</span>
+  <span class="tab-line">회색 들여쓰기: 화면 내 탭/하위 기능 또는 설계 추적 항목</span>
+</div>
+<div class="note">메뉴는 제품 화면 기준으로 재구성했다. 설계서의 기술 장(데이터 모델, API, 배치, 검증, 보안, 운영)과 부록은 사용자 메뉴가 아니라 운영/관리/설계 추적 메뉴로 연결한다.</div>
+</section>
+
+<section>
+<h2>2. 3계층 운영모델</h2>
+<div class="grid2">
+  <div class="card">
+    <h3>L1 · BK 플랫폼</h3>
+    <p><code>platformId + platformOrgId</code> 기준. PlatformOrg/Unit·PlatformUser·Membership·UserGroup·Role·DutyAssignment·SSO/SCIM, 복수 관리회사 생명주기, 전체 업무 표준정보와 PF/OP/TN/CO 메뉴 원본·버전·발행, 전역 정책·인프라를 관리한다. 플랫폼 Role은 테넌트 회계데이터 권한을 자동 상속하지 않는다.</p>
+  </div>
+  <div class="card">
+    <h3>L2 · 관리회사</h3>
+    <p><code>operatorOrgId</code> 기준. 자기 조직의 사용자·Membership·UserGroup·그룹별 OP 메뉴정책, 활성 수임관계·담당배정·세무대리 인증정보·기장 운영과 플랫폼 표준의 배포대상·일정·채택현황만 관리한다. 다른 관리회사 영역과 플랫폼 표준·메뉴 원본은 조회 권한을 넘어 변경할 수 없다.</p>
+  </div>
+  <div class="card">
+    <h3>L3 · 관리대상회사</h3>
+    <p><code>tenantId</code> 기준. 회계·세무 원천데이터의 소유자이며 자기 사용자·Membership·UserGroup·그룹별 TN 메뉴정책을 관리한다. 동일 시점 활성 <code>PRIMARY</code> 관리회사는 1개이며, 관리회사 이관 시 tenantId와 원천데이터는 유지한다.</p>
+  </div>
+  <div class="card">
+    <h3>관계·담당 분리</h3>
+    <p><code>OperatorOrgTenantRelation</code>은 회사 대 회사 수임관계이고, <code>TenantAssignment</code>와 <code>BookkeepingAssignment</code>는 직원 담당관계다. 두 관계를 분리해 계약·권한·책임시점을 추적한다.</p>
+  </div>
+</div>
+<div class="note">운영자 테넌트 접근 게이트: 활성 OperatorOrgMembership ∧ 활성 PRIMARY 수임관계 ∧ 유효 담당배정 또는 접근세션 ∧ Role/Scope. 관리회사 종료는 테넌트 데이터 삭제를 의미하지 않는다.</div>
+</section>
+
+<section>
+<h2>3. 4채널 4단 메뉴 구조도</h2>
+<div class="toolbar">
+  <input id="menuSearch" class="search" type="search" placeholder="채널, 상위 메뉴, 하위 메뉴, 세부 기능, 화면 ID 검색">
+  <span class="badge b-gray">1뎁스 채널 → 2뎁스 상위 메뉴 → 3뎁스 하위 메뉴 → 4뎁스 세부 기능/화면</span>
+</div>
+<div class="note">각 메뉴는 반드시 4단으로 해석한다. 1뎁스는 채널(플랫폼콘솔/관리회사 운영콘솔/테넌트 업무화면/공통), 2뎁스는 업무 영역, 3뎁스는 진입 메뉴, 4뎁스는 화면·탭·실행 기능이다.</div>
+<div class="cols" id="menuTree">
+
+<div class="chan pf">
+  <div class="chan-head">플랫폼 콘솔 <small>플랫폼 조직·사용자 · 전체 업무 표준 · 복수 관리회사 제어영역</small></div>
+  <div class="chan-body">
+  <ul class="tree">
+    <li><span class="n0">1뎁스 플랫폼콘솔</span>
+      <ul>
+    <li><span class="n1">PF-00 플랫폼 진입·현황</span>
+      <ul>
+        <li><span class="n2">플랫폼 홈</span>
+          <ul>
+            <li><span class="n3">플랫폼 조직·사용자·표준 발행 현황 · 관리회사 수·상태 · 테넌트/사용량 집계</span></li>
+            <li><span class="n3">전역 SLO · 장애 · 조직 격리 보안 이벤트 · 처리 대기 승인</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">관리회사 컨텍스트 선택</span>
+          <ul>
+            <li><span class="n3">관리회사 검색 · 상태/요금제 필터 · 최근 조회</span></li>
+            <li><span class="n3">제어영역 조회 컨텍스트만 부여 · 테넌트 회계 권한 자동 상속 금지</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">PF-01 플랫폼 조직·사용자·관리회사</span> <span class="badge b-amber">관리자</span>
+      <ul>
+        <li><span class="n2">플랫폼 내부조직</span>
+          <ul>
+            <li><span class="n3"><code>PlatformOrg</code> · <code>PlatformOrgUnit</code> 조직 트리 · 조직개편 · 유효기간</span></li>
+            <li><span class="n3">겸직/복수소속 · 소속 이력 · 조직단위별 표준 소관부서 지정</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">플랫폼 사용자관리</span> <span class="sid">PF-01U</span>
+          <ul>
+            <li><span class="n3">사용자 목록 · 기본정보 · 소속/Role/유효기간 · 보안/세션 탭</span></li>
+            <li><span class="n3"><code>PlatformUser</code>: INVITED → ACTIVE → SUSPENDED/DORMANT → TERMINATED</span></li>
+            <li><span class="n3">초대 · 활성 · MFA 초기화 · 휴면 · 정지 · 퇴사 · 세션 즉시 회수</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">플랫폼 사용자그룹</span> <span class="sid">PF-01G</span>
+          <ul>
+            <li><span class="n3"><code>UserGroup</code> · 그룹코드/명 · 유형 · 상위그룹 · 상태 · 유효기간</span></li>
+            <li><span class="n3"><code>UserGroupMember</code> 구성원 목록 · 그룹과 구성원 별도 저장 · scope/기간/순환 검증</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">플랫폼 그룹별 메뉴권한</span> <span class="sid">PF-01P</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">PUBLISHED PF 메뉴목록 · INHERIT/ALLOW/DENY · 상속근거 · 최종노출</span></li>
+            <li><span class="n3">복수그룹 DENY 우선 · 부모 DENY 하위 전파 · 사용자 최종권한 미리보기</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">플랫폼 소속·Role·직무배정</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3"><code>PlatformMembership</code> · 별도 <code>RoleAssignment</code> · <code>PlatformDutyAssignment</code> · 8종 PLATFORM Role</span></li>
+            <li><span class="n3">사용자/소속/Role 분리 · 고위험 Role 2인 승인 · 자기승격 금지 · 유효기간</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">플랫폼 인증·접근환경</span>
+          <ul>
+            <li><span class="n3"><code>PlatformIdentityProvider</code> · SSO/SCIM · 도메인 매핑 · IP 허용목록</span></li>
+            <li><span class="n3">피싱 저항 MFA · 비상계정 · 조직/사용자/Role 변경 전수 감사</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">관리회사 목록·상세</span>
+          <ul>
+            <li><span class="n3">OperatorOrg · 사업자/세무대리 등록번호 · 대표 관리자 · 언어/시간대</span></li>
+            <li><span class="n3">PENDING_VERIFICATION · ACTIVE · SUSPENDED · TERMINATING · TERMINATED</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">심사·활성·정지·종료</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">자격·계약·MFA·위수탁 게이트 · 초기 ORG_OWNER 초대</span></li>
+            <li><span class="n3">상태 전이 사유 · 2인 승인 · 종료 전 수임 테넌트 이관 검증</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">관리회사 Membership 감독</span>
+          <ul>
+            <li><span class="n3">OperatorOrgMembership · 조직 Role · 유효기간 · SSO/SCIM 상태</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">PF-02 플랫폼 계약·쿼터</span>
+      <ul>
+        <li><span class="n2">관리회사 플랫폼 구독</span>
+          <ul>
+            <li><span class="n3">OperatorSubscription · BillingPlan · Invoice · Payment · Dunning</span></li>
+            <li><span class="n3">TRIAL · ACTIVE · PAST_DUE · SUSPENDED · TERMINATED</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">조직 쿼터·통합 사용량</span>
+          <ul>
+            <li><span class="n3">테넌트/사용자/저장량/API/배치 한도 · operatorOrgId 통합 미터</span></li>
+            <li><span class="n3">초과 경고 · 신규 테넌트/대량 배치 제한 · 다운그레이드 영향</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">PF-03 수임관계·관리회사 이관</span> <span class="badge b-red">Step-up</span>
+      <ul>
+        <li><span class="n2">관리회사-테넌트 수임관계</span>
+          <ul>
+            <li><span class="n3">OperatorOrgTenantRelation · PRIMARY/SECONDARY · serviceScopes · 계약기간</span></li>
+            <li><span class="n3">테넌트별 활성 PRIMARY 1건 · 중복/기간 겹침 차단</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">수임 이관 워크플로우</span>
+          <ul>
+            <li><span class="n3">요청 → 테넌트 동의 → 기존 확인 → 신규 수락 → 검증 → 예약 → 컷오버</span></li>
+            <li><span class="n3">미결 전표/마감/신고 · 담당 · 플랫폼 표준 배포정책/테넌트 채택·매핑 · 시크릿 회수 사전점검</span></li>
+            <li><span class="n3">WorkTransfer · 롤백 · 인계 리포트 · 기존/신규 동시 쓰기 차단</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">PF-04 전역 정책·전체 업무 표준</span>
+      <ul>
+        <li><span class="n2">플랫폼 인증·권한 하한</span>
+          <ul>
+            <li><span class="n3">GLOBAL AuthPolicy · PLATFORM Role · SOD · Step-up · 금지/필수 정책</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">전체 업무 표준 카탈로그</span>
+          <ul>
+            <li><span class="n3">회계기준/표준계정/재무제표 · 세율/서식/세법 룰 · Role/메뉴 · 코드/검증/증빙/환율/보고/AI 규칙</span></li>
+            <li><span class="n3"><code>PlatformStandard</code> · 표준 유형/소관부서/Steward · 확장허용 여부</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">메뉴 마스터·메뉴목록</span> <span class="sid">PF-04M</span> <span class="badge b-amber">관리자</span>
+          <ul>
+            <li><span class="n3">메뉴코드 · 상위메뉴코드/명 · 채널 · 레벨 · 유형 · 화면 ID · 한국어/영어명</span></li>
+            <li><span class="n3">route · feature flag · Phase · 상태 · source/detail 목록 조회/정렬/필터/내보내기</span></li>
+            <li><span class="n3">트리는 탐색 보조 · 메뉴목록 그리드가 기준 편집단위 · DRAFT에서만 수정</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">메뉴 버전·영향분석</span> <span class="sid">PF-04M</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">DRAFT → IN_REVIEW → APPROVED → PUBLISHED → RETIRED · SUSPENDED/ROLLED_BACK</span></li>
+            <li><span class="n3">고아/순환/중복/i18n/route 검증 · Role/그룹/사용자 영향 · 작성/검토/발행 SOD</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">표준 버전·SOD 발행</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">DRAFT → IN_REVIEW → APPROVED → PUBLISHED → DEPRECATED/RETIRED</span></li>
+            <li><span class="n3"><code>PlatformStandardVersion</code> · 작성/검토/발행자 분리 · contentHash · 효력일 · 회귀검증</span></li>
+            <li><span class="n3">긴급 SUSPEND/ROLLBACK · 불변 발행본 · 변경사유/승인/감사로그</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">표준 배포·채택 현황</span>
+          <ul>
+            <li><span class="n3">관리회사 배포정책/대상/권고일정 · 테넌트 채택/매핑/허용 namespace 확장</span></li>
+            <li><span class="n3">표준 원본은 플랫폼 단일 소유 · 관리회사/테넌트 원본 CUD·자체버전·오버레이 금지</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">PF-05 플랫폼 보안·감사</span> <span class="badge b-red">Step-up</span>
+      <ul>
+        <li><span class="n2">조직 격리·보안 현황</span>
+          <ul>
+            <li><span class="n3">교차 관리회사 접근 시도 · RLS 위반 · 조직별 보안 이벤트</span></li>
+            <li><span class="n3">PlatformUserActivityLog · 사용자/조직/Role/표준 발행 · 관리회사 상태/정책/이관 변경 이력</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">플랫폼 지원 접근</span>
+          <ul>
+            <li><span class="n3">PlatformSupportSession 요청 · 관리회사 승인 · 범위/시간 제한</span></li>
+            <li><span class="n3">PLATFORM_VIEW/PLATFORM_SUPPORT · 테넌트 통지 · 이중 감사로그</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">PF-06 인프라·운영</span>
+      <ul>
+        <li><span class="n2">전역 배치·큐·관측성</span>
+          <ul>
+            <li><span class="n3">플랫폼 사용자·소속·그룹구성원·Role 재인증 · 메뉴 예약발행/롤백·권한캐시 무효화 · 표준 배포 · 관리회사 상태/이관</span></li>
+            <li><span class="n3">operatorOrgId→tenantId 메트릭 · 큐/워커 조직별 회로차단</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">SLO·장애·DR</span>
+          <ul>
+            <li><span class="n3">관리회사별 영향 집계 · 복구 우선순위 · 백업/복구 훈련</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+      </ul>
+    </li>
+  </ul>
+  </div>
+</div>
+
+<div class="chan op">
+  <div class="chan-head">관리회사 운영 콘솔 <small>현재 OperatorOrg · 운영자 · 기장 담당</small></div>
+  <div class="chan-body">
+  <ul class="tree">
+    <li><span class="n0">1뎁스 관리회사 운영콘솔</span>
+      <ul>
+    <li><span class="n1">OP-00 운영 진입</span>
+      <ul>
+        <li><span class="n2">수임회사 선택</span> <span class="sid">BF-00</span>
+          <ul>
+            <li><span class="n3">현재 <code>operatorOrgId</code>의 활성 PRIMARY 수임회사 검색 · 최근 접근 · 즐겨찾기</span></li>
+            <li><span class="n3"><code>relationId</code> · serviceScopes · 담당 Assignment 확인 후 접근 모드 선택</span></li>
+            <li><span class="n3">VIEW · SUPPORT · BOOKKEEPING · BREAK_GLASS / 접근 사유 · Step-up</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">운영자 홈</span>
+          <ul>
+            <li><span class="n3">현재 관리회사 담당 회사 요약 · 알림 · 미결 승인 · 작업 재개</span></li>
+            <li><span class="n3">기장/지원/감사 컨텍스트 전환 · <code>ContextSnapshot</code> 갱신</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-01 운영 현황</span>
+      <ul>
+        <li><span class="n2">운영 대시보드</span>
+          <ul>
+            <li><span class="n3">현재 관리회사의 수임관계·테넌트 현황 · 구독 상태 · 온보딩 진행률</span></li>
+            <li><span class="n3">배치/수집 상태 · SLO · 장애/보안 이벤트</span></li>
+            <li><span class="n3">미결 기장 작업 · 고객 확인 대기 · 마감 임박 회사</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">운영 리포트</span>
+          <ul>
+            <li><span class="n3">관리회사 사용량/성능/오류 추이 · 수임회사별 SLA 리포트</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-02 우리 조직·소속</span>
+      <ul>
+        <li><span class="n2">현재 관리회사 조직·Membership</span> <span class="sid">BF-01</span>
+          <ul>
+            <li><span class="n3"><code>OperatorOrg</code> 기본정보 조회 · 조직 트리(<code>OperatorOrgUnit</code>)</span></li>
+            <li><span class="n3"><code>OperatorOrgMembership</code> 초대/휴면/종료 · 부서/팀 · 운영 콘솔 IP 허용목록</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">담당 배정·조직 권한</span>
+          <ul>
+            <li><span class="n3">관계 기반 <code>TenantAssignment</code>/<code>BookkeepingAssignment</code> · serviceScopes · 활동 이력</span></li>
+            <li><span class="n3">다른 관리회사 생성·상태변경·조회는 PF-01에서만 수행</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-03 이용회사/테넌트</span>
+      <ul>
+        <li><span class="n2">이용회사/테넌트</span> <span class="sid">BF-02</span>
+          <ul>
+            <li><span class="n3">현재 관리회사의 활성 PRIMARY 관계만 조회 · <code>relationId</code> · serviceScopes</span></li>
+            <li><span class="n3">회사명 · 사업자번호 · 회계기준 · 온보딩 · 테넌트/관계 상태</span></li>
+            <li><span class="n3">격리 방식: SHARED · SCHEMA · DEDICATED · RLS</span></li>
+            <li><span class="n3">QuotaProfile · TenantSnapshot · AsyncReportJob</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">테넌트 운영 작업</span>
+          <ul>
+            <li><span class="n3">허용 범위 내 온보딩 · 티어 변경요청 · 데이터 스냅샷 · 비동기 리포트</span></li>
+            <li><span class="n3">수임 종료·관리회사 이관은 PF-03 승인 워크플로로 요청</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-04 구독·요금·사용량</span>
+      <ul>
+        <li><span class="n2">구독·요금·사용량</span> <span class="sid">BF-10</span>
+          <ul>
+            <li><span class="n3"><code>TenantServiceContract</code> · <code>TenantDirectSubscription</code> · UsageMeter</span></li>
+            <li><span class="n3">관리회사 서비스 청구와 플랫폼 직접 구독을 분리 · Invoice/Payment/DunningCase</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">청구 운영</span>
+          <ul>
+            <li><span class="n3">수임계약 범위 요금 변경 · 사용량 정산 · 미납 알림 · 청구 이력</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-05 플랫폼 표준 배포</span>
+      <ul>
+        <li><span class="n2">플랫폼 표준 카탈로그</span> <span class="sid">BF-08</span>
+          <ul>
+            <li><span class="n3">PUBLISHED <code>PlatformStandardVersion</code> · 유형/효력일/법적근거/변경요약 읽기전용</span></li>
+            <li><span class="n3">표준 원본·항목·버전 등록/수정/발행/롤백은 PF-04 전용</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">표준 배포 관리</span>
+          <ul>
+            <li><span class="n3"><code>OperatorStandardDistributionPolicy</code> · 수임 테넌트 대상/권고일정/사전검증</span></li>
+            <li><span class="n3"><code>OperatorStandardDistribution</code> · <code>TenantStandardAdoption</code> 채택/지연/실패 현황</span></li>
+            <li><span class="n3"><code>ORG_STANDARD_DISTRIBUTOR</code> 전용 · 원본 복제/오버레이/자체버전/강제롤백 금지</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-06 사용자·인증·권한</span>
+      <ul>
+        <li><span class="n2">사용자관리</span> <span class="sid">OP-06A</span> <span class="sid">BF-04</span>
+          <ul>
+            <li><span class="n3">이름/loginId/소속/그룹/상태/MFA 조회 · 사용자 목록/상세</span></li>
+            <li><span class="n3">현재 조직 Membership · Role/유효기간 · 보안/세션 · EXTERNAL_PARTNER</span></li>
+            <li><span class="n3">초대 · 잠금 · 비활성 · MFA 초기화 · 로그인 이력 · 세션 종료</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">사용자그룹관리</span> <span class="sid">OP-06G</span>
+          <ul>
+            <li><span class="n3">현재 operatorOrgId의 UserGroup · 그룹유형/상위그룹/기본 Role/유효기간</span></li>
+            <li><span class="n3">그룹 기본정보와 구성원 목록 별도 저장 · 타 관리회사 구성원 금지</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">그룹별 메뉴권한</span> <span class="sid">OP-06P</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">PUBLISHED OP 메뉴목록 · INHERIT/ALLOW/DENY 일괄저장 · 변경이력</span></li>
+            <li><span class="n3">DENY 우선 · Role VIEW/ENTER/ACTION과 결합 · 사용자 최종권한 미리보기</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">인증 정책</span> <span class="sid">OP-06B</span> <span class="sid">BF-05</span>
+          <ul>
+            <li><span class="n3">MFA · SSO · 패스키 · Step-up · IP 정책</span></li>
+            <li><span class="n3">GLOBAL → OPERATOR_ORG → PLAN → TENANT 정책 병합 · 신뢰 장치</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">역할·가드레일·결재선</span> <span class="sid">OP-06C</span> <span class="sid">BF-07</span>
+          <ul>
+            <li><span class="n3">ORG_OWNER/ADMIN/SUPPORT/STANDARD/SECURITY/BILLING_ADMIN</span></li>
+            <li><span class="n3">BOOKKEEPING_MANAGER · BK_PREPARER · BK_REVIEWER · scopeType/scopeId</span></li>
+            <li><span class="n3">SOD 충돌 · PolicyException · 결재선 버전</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">발행 메뉴목록·영향 조회</span> <span class="sid">OP-06D</span> <span class="sid">BF-12</span>
+          <ul>
+            <li><span class="n3">현재 PUBLISHED OP MenuVersion · 메뉴목록 · route/feature flag · Role/그룹 영향</span></li>
+            <li><span class="n3">조회 · 영향 미리보기 · 내보내기만 허용 · 메뉴 원본 CUD/발행은 PF-04M 전용</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-07 접근 거버넌스</span> <span class="badge b-red">Step-up</span>
+      <ul>
+        <li><span class="n2">접근 거버넌스</span> <span class="sid">BF-06</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">AdminAccessSession/Log: operatorOrgId · tenantId · relationId · assignmentId</span></li>
+            <li><span class="n3">현재 수임관계 내 BreakGlassConsent/Request · SessionRecording · 사후검토</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">사후 검토·감사</span>
+          <ul>
+            <li><span class="n3">접근 사유/녹화/예외 승인 · 플랫폼 지원 세션은 읽기 전용 검토</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-08 기장 워크벤치</span> <span class="badge b-purple">기장</span>
+      <ul>
+        <li><span class="n2">기장 모드 설정</span> <span class="sid">BF-03</span>
+          <ul>
+            <li><span class="n3"><code>BookkeepingConfig</code>: relationId · OPERATOR_LED · TENANT_LED · HYBRID</span></li>
+            <li><span class="n3">전환 요청 · 고객 동의 · 예약 전환 · 관계 종료 시 인계 의무</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">기장 워크벤치</span>
+          <ul>
+            <li><span class="n3">현재 관리회사 담당 회사 보드 · BOOKKEEPING 컨텍스트 진입</span></li>
+            <li><span class="n3">보고패키지 조립 · Open Items · 고객 확인 요청</span></li>
+            <li><span class="n3"><code>BookkeepingHandover</code> · 관리회사 이관 전/후 체크리스트</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-09 운영·배치·연계 모니터링</span>
+      <ul>
+        <li><span class="n2">배치·연계 모니터링</span>
+          <ul>
+            <li><span class="n3">OPERATOR_ORG/TENANT 범위 외부 연계 볼트 · 자료수집 ETL · 배치 · DLQ</span></li>
+            <li><span class="n3"><code>CredentialDelegation</code> · 실행 시점 관계/컨텍스트 스냅샷</span></li>
+            <li><span class="n3">관측성 · SLO · 장애 대응 · DR</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">연계 장애 처리</span>
+          <ul>
+            <li><span class="n3">수집 실패 재처리 · DLQ 원인 분석 · 외부 인증서 만료 알림</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-10 보안·감사 운영</span>
+      <ul>
+        <li><span class="n2">보안·감사 운영</span>
+          <ul>
+            <li><span class="n3">현재 관리회사 범위 KMS · 키 회전 · 취약점 관리 · DLP</span></li>
+            <li><span class="n3">대량 행위 통제 · 수임관계/이관 감사 · 감사로그 해시체인</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">컴플라이언스 점검</span>
+          <ul>
+            <li><span class="n3">개인정보 접근 점검 · 보존/파기 검증 · 보안 예외 현황</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">OP-11 AI·규칙 운영</span> <span class="badge b-green">AI</span>
+      <ul>
+        <li><span class="n2">AI·규칙 운영</span> <span class="badge b-green">AI</span>
+          <ul>
+            <li><span class="n3">플랫폼 발행 이상탐지 규칙/허용 임계치 읽기 · 수임 테넌트 배포/선택 · 검토 큐 운영</span></li>
+            <li><span class="n3">테넌트별 모델/벡터 격리 · 교차 테넌트 학습 금지 · QueryTool 허용 목록</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+      </ul>
+    </li>
+  </ul>
+  </div>
+</div>
+
+<div class="chan tn">
+  <div class="chan-head">수임회사 업무 화면 <small>Tenant 소유 데이터 · 관계/배정 기반 대행</small></div>
+  <div class="chan-body">
+  <ul class="tree">
+    <li><span class="n0">1뎁스 업무화면</span>
+      <ul>
+    <li><span class="n1">TN-00 홈·현황</span>
+      <ul>
+        <li><span class="n2">업무 컨텍스트</span>
+          <ul>
+            <li><span class="n3">직접 이용자: tenantId · 대행자: operatorOrgId + tenantId + relationId + assignmentId</span></li>
+            <li><span class="n3">TN-01~15 모든 조회·입력·승인·출력에 동일 컨텍스트와 감사키 적용</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">회사 대시보드</span>
+          <ul>
+            <li><span class="n3">신고 기한 · 미결 전표 · 마감 상태 · 질의/확인 대기</span></li>
+            <li><span class="n3">이상 알림 · 구독/권한 안내 · 최근 작업</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-01 회사 설정·기초</span>
+      <ul>
+        <li><span class="n2">이용회사 사용자관리</span> <span class="sid">TN-01U</span>
+          <ul>
+            <li><span class="n3">현재 tenantId 사용자 목록/상세 · 소속/Role/유효기간 · 보안/세션</span></li>
+            <li><span class="n3">초대 · 상태변경 · MFA 초기화 · 세션 종료 · 상위 PF/OP 계정 변경 금지</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">이용회사 사용자그룹</span> <span class="sid">TN-01G</span>
+          <ul>
+            <li><span class="n3">tenantId 범위 UserGroup · 그룹 기본정보/구성원 별도 저장 · 유효기간</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">그룹별 메뉴권한</span> <span class="sid">TN-01P</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">PUBLISHED TN/CO 메뉴 · INHERIT/ALLOW/DENY · 최종권한 미리보기</span></li>
+            <li><span class="n3">DENY 우선 · Role/Action/data scope 초과 허용 금지</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">기장 방식</span> <span class="sid">BF-03</span>
+          <ul>
+            <li><span class="n3">관계별 BookkeepingConfig · 기장 수행 주체 · 확인 의무</span></li>
+            <li><span class="n3">신고 승인 정책 · 기장 모드 전환 요청</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">차원/관리항목</span> <span class="sid">BF-09</span>
+          <ul>
+            <li><span class="n3">사업장 · 코스트센터 · 부서 · 프로젝트 · 현장 · 사원</span></li>
+            <li><span class="n3">DimensionConfig · 필수/노출/기본값 · 소수점 설정</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">알림 설정</span> <span class="sid">BF-11</span>
+          <ul>
+            <li><span class="n3">NotificationPolicy · Template · Schedule · Webhook</span></li>
+            <li><span class="n3">법정 기한 · 인증서 · 어음 · 마감 알림</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-02 기초정보관리</span> <span class="sid">SA-BAS</span>
+      <ul>
+        <li><span class="n2">회사·환경·권한</span>
+          <ul>
+            <li><span class="n3">회사등록 <span class="sid">SA-BAS-01</span> · 권한설정 <span class="sid">SA-BAS-02</span> · 환경설정 <span class="sid">SA-BAS-03</span></span></li>
+            <li><span class="n3">마감후이월 <span class="sid">SA-BAS-14</span> · 표준 카탈로그 반영</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">조직·거래처·계정</span>
+          <ul>
+            <li><span class="n3">부서등록 <span class="sid">SA-BAS-04</span> · 사원등록 <span class="sid">SA-BAS-05</span></span></li>
+            <li><span class="n3">거래처등록 <span class="sid">SA-BAS-06</span> · 계정과목/적요 <span class="sid">SA-BAS-07</span> <span class="sid">SA-BAS-08</span></span></li>
+          </ul>
+        </li>
+        <li><span class="n2">현장·프로젝트·차량·외주</span>
+          <ul>
+            <li><span class="n3">현장등록 <span class="sid">SA-BAS-09</span> · 프로젝트등록 <span class="sid">SA-BAS-10</span></span></li>
+            <li><span class="n3">차량등록 <span class="sid">SA-BAS-11</span> · 외주처/외주품목 <span class="sid">SA-BAS-12</span> <span class="sid">SA-BAS-13</span></span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-03 전기이월·개시잔액</span> <span class="sid">SA-OPN</span>
+      <ul>
+        <li><span class="n2">전기 재무제표 이월</span>
+          <ul>
+            <li><span class="n3">재무상태표 · 손익계산서 · 원가명세서 · 현금흐름표 <span class="sid">SA-OPN-01~04</span></span></li>
+            <li><span class="n3">자본변동표 · 이익잉여금처분계산서 · 기초잔액 검증</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">거래처·차원 초기이월</span>
+          <ul>
+            <li><span class="n3">거래처/부서/사원/프로젝트/현장별 초기이월 <span class="sid">SA-OPN-05~15</span></span></li>
+            <li><span class="n3">차대 검증 · 잔액 불일치 조정 · 이월 잠금</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">전기현장·중도시산</span>
+          <ul>
+            <li><span class="n3">전기현장 원가/공사손익 · 중도시산표 <span class="sid">SA-OPN-16~19</span></span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-04 전표 입력·결재</span> <span class="sid">SA-JNL</span>
+      <ul>
+        <li><span class="n2">일반전표입력</span> <span class="sid">JV-01</span> <span class="sid">SA-JNL-01</span> <span class="sid">WJV-01</span>
+          <ul>
+            <li><span class="n3">대체 · 입금 · 출금 · 결차 · 결대 통합 입력</span></li>
+            <li><span class="n3">조회방식 월별/기간 · 전표번호 보임/숨김 · N/U 표시</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">현금 간편입력</span> <span class="sid">JV-02</span> <span class="sid">JV-03</span>
+          <ul>
+            <li><span class="n3">현금 차변 고정 입금 · 현금 대변 고정 출금</span></li>
+            <li><span class="n3">복합 거래는 일반전표입력으로 전환</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">매입매출전표입력</span> <span class="sid">JV-04</span> <span class="sid">JV-05</span> <span class="sid">SA-JNL-02</span>
+          <ul>
+            <li><span class="n3">상단 세무헤더 + 하단 분개라인 2계층 입력</span></li>
+            <li><span class="n3">과세유형 · 증빙 · 세금계산서 · 매입매출장 라우팅</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">전표 도구·정정</span> <span class="sid">JV-06</span> <span class="sid">JV-07</span>
+          <ul>
+            <li><span class="n3">복사 · 반복 · 템플릿 · 역분개 · 상태별 조회</span></li>
+            <li><span class="n3">POSTED/CLOSED/LOCKED 직접 수정 금지</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">일괄 입력·결재함</span> <span class="sid">JV-08</span> <span class="sid">TN-06</span>
+          <ul>
+            <li><span class="n3">엑셀/CSV 업로드 · 행별 검증 · 전체 미리보기</span></li>
+            <li><span class="n3">결재요청 · 승인 · 반려 · 기표 · SOD 통제</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-05 보조부·관리항목</span>
+      <ul>
+        <li><span class="n2">관리항목 입력·통합 관리</span> <span class="sid">WJV-02</span> <span class="sid">WJV-07</span>
+          <ul>
+            <li><span class="n3">라인별 관리차원/보조항목 입력 · 필수 누락 차단</span></li>
+            <li><span class="n3">사업장 · 코스트센터 · 부서 · 프로젝트 · 현장 · 사원 마스터 관리</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">거래처·자금 보조부</span> <span class="sid">AUX-01</span> <span class="sid">AUX-02</span> <span class="sid">AUX-03</span> <span class="sid">AUX-04</span>
+          <ul>
+            <li><span class="n3">거래처별 채권채무 · 어음 · 예금계좌 · 카드 보조부</span></li>
+            <li><span class="n3">받을어음 <span class="sid">WJV-04</span> · 지급어음 <span class="sid">WJV-05</span> · 차입금 <span class="sid">WJV-06</span></span></li>
+          </ul>
+        </li>
+        <li><span class="n2">특수 보조부</span> <span class="sid">AUX-05</span> <span class="sid">AUX-06</span> <span class="sid">AUX-07</span> <span class="sid">AUX-08</span> <span class="sid">AUX-09</span>
+          <ul>
+            <li><span class="n3">가지급금 · 부가세 · 현금출납 · 재고수불 · 고정자산대장</span></li>
+            <li><span class="n3">부가세 부속서류 반영 <span class="sid">WJV-03</span> · 의제매입/재활용폐자원</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-06 자동전표·증빙</span> <span class="sid">SA-ATX</span>
+      <ul>
+        <li><span class="n2">증빙함·자료수집</span>
+          <ul>
+            <li><span class="n3">파일 · 전자세금계산서 · 카드 · 현금영수증 · 통장 수집</span></li>
+            <li><span class="n3">수집정보등록 · ScrappingBoard · 외부 연계 볼트</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">자동전표 후보</span>
+          <ul>
+            <li><span class="n3">전표 후보 생성 · 중복방지 · 계정/과세유형 추천</span></li>
+            <li><span class="n3">전표전송현황 · 자동전표검증 · 사이트비교 <span class="sid">SA-ATX-01~10</span></span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-07 장부·원장·보조장부</span> <span class="sid">SA-LDG</span>
+      <ul>
+        <li><span class="n2">주요 장부</span>
+          <ul>
+            <li><span class="n3">전표출력 · 분개장 · 일/월계표 · 총계정원장 <span class="sid">SA-LDG-01~09</span></span></li>
+            <li><span class="n3">현금출납장 · 계정별/거래처원장 · 매입매출장</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">보조 장부</span>
+          <ul>
+            <li><span class="n3">공사/외주/차량/부서/프로젝트/현장 보조장부 <span class="sid">SA-LDG-10~19</span></span></li>
+            <li><span class="n3">차원별 원가 · 손익 · 잔액명세 <span class="sid">SA-LDG-20~29</span></span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-08 마감·결산·재무제표</span> <span class="sid">SA-CLS</span>
+      <ul>
+        <li><span class="n2">마감 관리</span> <span class="badge b-red">Step-up</span>
+          <ul>
+            <li><span class="n3">가마감 · 본마감 · 마감해제 · 마감 체크리스트</span></li>
+            <li><span class="n3">기간 잠금 · 미결항목 · 원가계산 게이트</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">재무제표·결산장부</span>
+          <ul>
+            <li><span class="n3">결산자료 · 시산표 · 재무상태표 · 손익계산서 <span class="sid">SA-CLS-01~14</span></span></li>
+            <li><span class="n3">제조원가명세 · 현금흐름표 · 부속명세 · 영수증/송금/지출증명 <span class="sid">SA-CLS-15~21</span></span></li>
+          </ul>
+        </li>
+        <li><span class="n2">보고패키지·스케줄</span>
+          <ul>
+            <li><span class="n3">월별 보고패키지 · 계정별 명세/tie-out · 경과/충당/리스 스케줄</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-09 부가세·신고서류</span> <span class="sid">SA-VAT</span>
+      <ul>
+        <li><span class="n2">주요 신고</span>
+          <ul>
+            <li><span class="n3">부가가치세신고서 · MRI 검증 · 전자신고 <span class="sid">SA-VAT-01~08</span></span></li>
+            <li><span class="n3">세금계산서/계산서합계표 · 신용카드/현금영수증</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">첨부·업종별 서식</span>
+          <ul>
+            <li><span class="n3">업종별 첨부 · 의제매입 · 재활용폐자원 · 부동산임대 <span class="sid">SA-VAT-09~34</span></span></li>
+            <li><span class="n3">영세율 · 수출 · 기타 신고서류 <span class="sid">SA-VAT-35~50</span></span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-10 세무·고정자산·차량</span>
+      <ul>
+        <li><span class="n2">법인세·원천세</span>
+          <ul>
+            <li><span class="n3">법인세/세무조정 · 원천세/지급명세서 · 신고 상태 관리</span></li>
+            <li><span class="n3">월별 법인세 추정 · 선납세금 · 법정 신고기한 알림</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">고정자산·차량</span> <span class="sid">SA-FA</span> <span class="sid">AUX-09</span>
+          <ul>
+            <li><span class="n3">고정자산등록 · 상각계산 · 자산관리대장 <span class="sid">SA-FA-01~07</span></span></li>
+            <li><span class="n3">업무용승용차 · 차량별 비용 · 프로젝트/부서 자산명세</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-11 자금·예산·어음</span>
+      <ul>
+        <li><span class="n2">자금관리</span> <span class="sid">SA-FND</span>
+          <ul>
+            <li><span class="n3">일일자금 · 자금계획 · 입출금 · 자금일월보 <span class="sid">SA-FND-01~06</span></span></li>
+            <li><span class="n3">예산입력 · 예실현황 · 추정예산 <span class="sid">SA-FND-07~14</span></span></li>
+          </ul>
+        </li>
+        <li><span class="n2">예적금·차입금</span> <span class="sid">SA-DEP</span>
+          <ul>
+            <li><span class="n3">예적금현황 · 차입금 스케줄 · 차입금현황 <span class="sid">SA-DEP-01~03</span></span></li>
+          </ul>
+        </li>
+        <li><span class="n2">어음·당좌관리</span> <span class="sid">SA-BIL</span>
+          <ul>
+            <li><span class="n3">받을어음 · 지급어음 · 어음집계표 · 당좌수표현황 <span class="sid">SA-BIL-01~04</span></span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-12 외화·관계사·관리회계</span> <span class="badge b-teal">선택</span>
+      <ul>
+        <li><span class="n2">외화·다중 기준</span>
+          <ul>
+            <li><span class="n3">다중 회계기준 · 이중통화 환산 · 외화평가</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">관계사·관리회계</span>
+          <ul>
+            <li><span class="n3">관계사 대사 · Cost-plus · 예산 대비 실적 · 그룹 연결보고 Export</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-13 원가·재고·제조</span> <span class="badge b-teal">Phase/업종</span>
+      <ul>
+        <li><span class="n2">재고·제조원가</span>
+          <ul>
+            <li><span class="n3">재고자산 수불부 · 제조원가명세 · 원가요소 배부</span></li>
+            <li><span class="n3">현장/프로젝트/부서 원가손익 · 재고 tie-out</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-14 협업·AI</span> <span class="badge b-green">AI</span>
+      <ul>
+        <li><span class="n2">협업·확인</span>
+          <ul>
+            <li><span class="n3">Open Items/질의 · 고객 확인(Ack) · 알림/커뮤니케이션</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">AI 지원</span>
+          <ul>
+            <li><span class="n3">이상거래 탐지 · AI 조회 챗봇 · 근거 링크 · 권한 제한 조회</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">TN-15 데이터관리·이관</span> <span class="sid">SA-DAT</span>
+      <ul>
+        <li><span class="n2">데이터 복구·보존</span>
+          <ul>
+            <li><span class="n3">삭제전표복구 · 데이터백업/복구 · 데이터 보존/파기 <span class="sid">SA-DAT-01~02</span></span></li>
+          </ul>
+        </li>
+        <li><span class="n2">SA 이관</span>
+          <ul>
+            <li><span class="n3">SA 내보내기/올리기 · 전체/월별/분기별 <span class="sid">SA-DAT-03~06</span></span></li>
+            <li><span class="n3">기수변경 <span class="sid">SA-DAT-07</span> · 이관 검증 · 이관 로그</span></li>
+            <li><span class="n3">관리회사 변경은 테넌트 데이터 이동 없이 관계·배정·자격증명만 인계</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+      </ul>
+    </li>
+  </ul>
+  </div>
+</div>
+
+<div class="chan co">
+  <div class="chan-head">공통·기술·설계 추적 <small>3계층 컨텍스트 · 전 채널 공통</small></div>
+  <div class="chan-body">
+  <ul class="tree">
+    <li><span class="n0">1뎁스 공통·기술·설계 추적</span>
+      <ul>
+    <li><span class="n1">CO-01 로그인·내 계정</span>
+      <ul>
+        <li><span class="n2">계정 보안</span>
+          <ul>
+            <li><span class="n3">비밀번호 · MFA · 패스키 · SSO · 신뢰 장치</span></li>
+            <li><span class="n3"><code>PlatformUser</code> · <code>PlatformMembership</code> · <code>PlatformOrgUnit</code> · userGroup(PLATFORM/OPERATOR/TENANT)</span></li>
+            <li><span class="n3">세션 관리 · 조직/테넌트 컨텍스트 전환 · contextVersion · 로그인 이력</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-02 알림·커뮤니케이션</span>
+      <ul>
+        <li><span class="n2">알림함·수신 정책</span>
+          <ul>
+            <li><span class="n3">알림함 · 수신 정책 · D-N 스케줄 · 미결항목 알림</span></li>
+            <li><span class="n3">PLATFORM→OPERATOR_ORG→TENANT 알림 라우팅 · 법정/보안/이관 알림</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">템플릿·웹훅</span>
+          <ul>
+            <li><span class="n3">계층별 NotificationTemplate/브랜딩 · WebhookEndpoint · 발송 채널</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-03 API·서비스 계약</span>
+      <ul>
+        <li><span class="n2">API 공통 계약</span>
+          <ul>
+            <li><span class="n3"><code>/api/platform</code> · <code>/api/operator</code> · <code>/api/tenant</code> 경계</span></li>
+            <li><span class="n3"><code>/api/platform/platform-org</code> · <code>/users</code> · <code>/memberships</code> · <code>/standards</code> 플랫폼 전용 CUD</span></li>
+            <li><span class="n3">API 버전 · 멱등키 · 오류 응답 · 권한 미들웨어 · 감사 헤더</span></li>
+            <li><span class="n3">operatorOrgId/tenantId/relationId/assignmentId 컨텍스트 서명·검증</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">비동기·외부 연계</span>
+          <ul>
+            <li><span class="n3">대량 리포트 비동기 API · 관계 스냅샷 · 자료수집 연계 · 콜백/재시도</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-04 검증·오류 처리</span>
+      <ul>
+        <li><span class="n2">업무 검증</span>
+          <ul>
+            <li><span class="n3">ORG_CONTEXT_REQUIRED · OPERATOR_ORG_ACCESS_DENIED · ORG_MEMBERSHIP_REQUIRED</span></li>
+            <li><span class="n3">PLATFORM_MEMBERSHIP_REQUIRED · PLATFORM_SCOPE_DENIED · PLATFORM_STANDARD_WRITE_DENIED</span></li>
+            <li><span class="n3">TENANT_RELATION_REQUIRED/INACTIVE · SERVICE_SCOPE_DENIED · ASSIGNMENT_REQUIRED</span></li>
+            <li><span class="n3">ORG_TRANSFER_IN_PROGRESS · STANDARD_VERSION_NOT_PUBLISHED · STANDARD_SOD_VIOLATION</span></li>
+            <li><span class="n3">NUMBERING_CONFLICT · POSTED_IMMUTABLE · CLOSING_LOCKED</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">오류 표준</span>
+          <ul>
+            <li><span class="n3">오류 코드 · 사용자 메시지 · 복구 가이드 · 재처리 정책</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-05 데이터 모델·상태값</span>
+      <ul>
+        <li><span class="n2">공통 데이터 모델</span>
+          <ul>
+            <li><span class="n3">PlatformOrg/Unit · PlatformUser/Membership/DutyAssignment · OperatorOrg/Unit/Membership · Tenant</span></li>
+            <li><span class="n3">PlatformStandard/Version/Approval/Release · OperatorStandardDistribution · TenantStandardAdoption/Mapping</span></li>
+            <li><span class="n3">TenantAssignment/BookkeepingAssignment · ContextSnapshot · OperatorOrgTransferRequest</span></li>
+            <li><span class="n3">operatorOrgId/tenantId 복합 범위키 · PRIMARY 유니크 · soft delete · append-only</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">상태값·생명주기</span>
+          <ul>
+            <li><span class="n3">조직/관계/배정/이관 + 전표/마감/승인/수집/신고 상태값 · 전이 규칙</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-06 배치·스케줄</span>
+      <ul>
+        <li><span class="n2">정기 배치</span>
+          <ul>
+            <li><span class="n3">자료수집 · 신고기한 알림 · 외화평가 · 스케줄 안분 · 조직별 쿼터</span></li>
+            <li><span class="n3">보고패키지 생성 · 예실/그룹보고 · 보존/파기</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">실패 처리</span>
+          <ul>
+            <li><span class="n3">실행 시 ContextSnapshot 재검증 · 재시도 · DLQ · 수동 재처리 · 실행 이력</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-07 보안·개인정보</span>
+      <ul>
+        <li><span class="n2">보안 통제</span>
+          <ul>
+            <li><span class="n3">관리회사 RLS + 테넌트 RLS · KMS · 암호화/마스킹 · 개인정보 접근로그</span></li>
+            <li><span class="n3">대량 조회/다운로드 통제 · 민감정보 재인증</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">컴플라이언스</span>
+          <ul>
+            <li><span class="n3">플랫폼 지원 세션 격리 · 취약점/침해사고 · 보존/파기 · 계층 감사 증적</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-08 시스템 운영·인프라</span>
+      <ul>
+        <li><span class="n2">운영 환경</span>
+          <ul>
+            <li><span class="n3">환경 분리 · CI/CD · 설정 배포 · 릴리스/롤백</span></li>
+            <li><span class="n3">platformId→operatorOrgId→tenantId 관측성 · SLO · 장애 대응 · DR</span></li>
+            <li><span class="n3">관리회사별 rate limit/circuit breaker · 백업/복구 리허설</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">스토리지·아카이브</span>
+          <ul>
+            <li><span class="n3">콜드 스토리지 아카이빙 · 장기 보존 · 복원 요청</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-09 산출물·보고서</span>
+      <ul>
+        <li><span class="n2">업무 산출물</span>
+          <ul>
+            <li><span class="n3">월별 보고패키지 · 재무제표 · 신고서 · 계정별 명세</span></li>
+            <li><span class="n3">그룹보고 · 데이터 내보내기 · 출력물 · 전자파일</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">출력·전송 이력</span>
+          <ul>
+            <li><span class="n3">생성 주체/조직/테넌트/관계 감사키 · 전송 상태 · 재생성 · 승인본 잠금</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li><span class="n1">CO-10 설계서 부록 추적</span>
+      <ul>
+        <li><span class="n2">V1.1 본문·부록 B~G 추적</span>
+          <ul>
+            <li><span class="n3">3계층 운영모델 · 관리회사 생명주기 · 수임관계/이관 · 기능 모듈 상세</span></li>
+            <li><span class="n3">기초/기준정보 화면설계 · 전표/보조부 화면설계</span></li>
+          </ul>
+        </li>
+        <li><span class="n2">부록 H~L·통합본 추적</span>
+          <ul>
+            <li><span class="n3">회의자료 · SaaS 개발 주의사항 · 추가 검토 · 기초 보강 · 주요기능 설명</span></li>
+            <li><span class="n3">일반전표입력 통합본 <span class="sid">WJV-01~07</span> · 도메인 정합 보강</span></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+      </ul>
+    </li>
+  </ul>
+  </div>
+</div>
+
+</div>
+</section>
+
+<section>
+<h2>4. SA 기능 화면군 반영</h2>
+<table>
+  <tr><th>화면군</th><th>ID 범위</th><th>메뉴 수</th><th>BK 메뉴 위치</th><th>반영 내용</th></tr>
+  <tr><td>기초정보관리</td><td><code>SA-BAS-01~14</code></td><td>14</td><td>TN-02, OP-06</td><td>회사등록, 권한설정, 환경설정, 부서/사원/거래처/COA/현장/프로젝트/차량/외주처, 마감후이월</td></tr>
+  <tr><td>전기이월·전기현장</td><td><code>SA-OPN-01~19</code></td><td>19</td><td>TN-03, TN-08</td><td>전기분 재무제표, 원가/프로젝트/현장/거래처 초기이월, 중도시산표</td></tr>
+  <tr><td>전표관리</td><td><code>SA-JNL-01~04</code></td><td>4</td><td>TN-04</td><td>일반전표, 매입매출전표, 정기청구, 물류전표처리</td></tr>
+  <tr><td>자동전표처리</td><td><code>SA-ATX-01~10</code></td><td>10</td><td>TN-06</td><td>전자세금계산서, 카드, 현금영수증, 통장, 스크래핑, 검증, 전표전송</td></tr>
+  <tr><td>주요·보조장부</td><td><code>SA-LDG-01~29</code></td><td>29</td><td>TN-07, TN-05</td><td>분개장, 원장, 현금출납장, 매입매출장, 보조장부, 차원별 원가/손익/잔액명세</td></tr>
+  <tr><td>결산·재무제표·결산장부</td><td><code>SA-CLS-01~21</code></td><td>21</td><td>TN-08</td><td>결산자료, 시산표, 재무제표, 제조원가명세, 현금흐름표, 부속명세, 경비 증명서류</td></tr>
+  <tr><td>부가가치세·신고서류</td><td><code>SA-VAT-01~50</code></td><td>50</td><td>TN-09</td><td>부가세신고서, MRI 검증, 합계표, 신용카드/현금영수증, 업종별/영세율/기타 첨부서류</td></tr>
+  <tr><td>고정자산</td><td><code>SA-FA-01~07</code></td><td>7</td><td>TN-10</td><td>고정자산등록, 상각계산, 자산관리대장, 현장/프로젝트/부서 자산명세</td></tr>
+  <tr><td>자금·예산관리</td><td><code>SA-FND-01~14</code></td><td>14</td><td>TN-11, TN-12</td><td>일일자금, 자금계획, 예산입력, 예산 실적현황, 추정예산</td></tr>
+  <tr><td>예적금·차입금</td><td><code>SA-DEP-01~03</code></td><td>3</td><td>TN-11, AUX-03</td><td>예적금현황, 차입금 스케줄, 차입금현황</td></tr>
+  <tr><td>어음·당좌관리</td><td><code>SA-BIL-01~04</code></td><td>4</td><td>TN-11, AUX-02</td><td>받을어음, 지급어음, 어음집계표, 당좌수표현황</td></tr>
+  <tr><td>데이터관리</td><td><code>SA-DAT-01~07</code></td><td>7</td><td>TN-15, OP-03</td><td>삭제전표복구, 백업/복구, SA 내보내기/올리기, 기수변경</td></tr>
+  <tr><th>합계</th><th>-</th><th>182</th><th>-</th><th>설계서 25장 전체 기능 화면을 메뉴 구조에 반영</th></tr>
+</table>
+</section>
+
+<section>
+<h2>5. 설계서 전체 커버리지</h2>
+<table>
+  <tr><th>설계서 영역</th><th>주요 내용</th><th>메뉴 반영 위치</th></tr>
+  <tr><td>0장</td><td>확정 원칙, 3계층 운영모델, 화면설계 반영 매트릭스, 매입매출전표 반영</td><td>PF-00~06, OP-00~11, TN-00~15</td></tr>
+  <tr><td>1~10장</td><td>플랫폼·관리회사·테넌트, 인증, 권한, 수임관계/이관, 표준, 구독, 연계, 차원</td><td>PF-00~06, OP-00~11, TN-00~01, CO-01~08</td></tr>
+  <tr><td>11장</td><td>전표, 장부, 결산, 세무, 다중 기준, AI, 마감, 원천세, 자금, 증빙, 보고패키지, 고급 회계</td><td>TN-04~14, OP-08, CO-09</td></tr>
+  <tr><td>12~18장</td><td>3계층 데이터 모델, 계층별 API, 배치 컨텍스트, 검증/오류, 보안, 알림</td><td>PF-03~05, CO-02~07, CO-09, TN-14</td></tr>
+  <tr><td>19~24장</td><td>플랫폼/조직 운영·인프라, 보안 강화, 기장/인계, 구현 우선순위, 산출물 연결</td><td>PF-05~06, OP-08~10, CO-08~10</td></tr>
+  <tr><td>25장</td><td>SA 기준 화면 182개 재설계</td><td>TN-02~15, SA 기능 화면군 표</td></tr>
+  <tr><td>부록 B~E</td><td>서비스형 운영 모델, 기능 모듈 상세, 기장 방식, 실무 산출물 역분석</td><td>OP-08, TN-08~14, CO-10</td></tr>
+  <tr><td>부록 F</td><td>기초·기준정보 화면설계 요약</td><td>PF-01~04, OP-00~08, TN-01~02, CO-10</td></tr>
+  <tr><td>부록 G</td><td>전표·보조부 화면설계 요약</td><td>TN-04~07, TN-11, CO-10</td></tr>
+  <tr><td>부록 H~L</td><td>회의자료, SaaS 개발 주의사항, 추가 검토, 기초 보강, 주요기능 설명</td><td>CO-04~10, 관련 업무 메뉴 전체</td></tr>
+  <tr><td>일반전표입력 통합본</td><td>WJV-01~07, 일반전표입력 화면, 관리항목, 자금, 체크리스트, 도메인 정합 보강</td><td>TN-04, TN-05, TN-06, CO-10</td></tr>
+</table>
+</section>
+
+<section>
+<h2>6. 역할별 기본 접근 매트릭스</h2>
+<h3>플랫폼 역할</h3>
+<table>
+  <tr>
+    <th>메뉴 영역</th>
+    <th class="c">PLATFORM_<br>SUPER_ADMIN</th>
+    <th class="c">PLATFORM_<br>USER_ADMIN</th>
+    <th class="c">PLATFORM_<br>INTERNAL_ORG_ADMIN</th>
+    <th class="c">PLATFORM_<br>ORG_ADMIN</th>
+    <th class="c">PLATFORM_<br>STANDARD_ADMIN</th>
+    <th class="c">PLATFORM_<br>SUPPORT</th>
+    <th class="c">PLATFORM_<br>SECURITY</th>
+    <th class="c">PLATFORM_<br>AUDITOR</th>
+  </tr>
+  <tr><td>PF-00 플랫폼 현황</td><td class="c">○</td><td class="c">△ 사용자</td><td class="c">△ 조직</td><td class="c">△ 관리회사</td><td class="c">△ 표준</td><td class="c">△ 운영</td><td class="c">△ 보안</td><td class="c">△ 조회</td></tr>
+  <tr><td>PF-01 플랫폼 조직·사용자·관리회사</td><td class="c">○</td><td class="c">○ 사용자·그룹·PF 메뉴정책</td><td class="c">○ PlatformOrg/소속</td><td class="c">○ OperatorOrg</td><td class="c">-</td><td class="c">△ 조회</td><td class="c">△ 고위험승인</td><td class="c">○ 이력</td></tr>
+  <tr><td>PF-02 계약·쿼터</td><td class="c">○</td><td class="c">-</td><td class="c">-</td><td class="c">○</td><td class="c">-</td><td class="c">△ 조회</td><td class="c">-</td><td class="c">△ 감사</td></tr>
+  <tr><td>PF-03 수임관계·이관</td><td class="c">○</td><td class="c">-</td><td class="c">-</td><td class="c">○</td><td class="c">-</td><td class="c">△ 실행</td><td class="c">△ 승인</td><td class="c">△ 감사</td></tr>
+  <tr><td>PF-04 정책·전체 업무 표준</td><td class="c">△ 비상</td><td class="c">-</td><td class="c">-</td><td class="c">△ 채택현황</td><td class="c">○ 원본·메뉴목록·버전·발행</td><td class="c">-</td><td class="c">△ 보안하한/승인</td><td class="c">○ 조회</td></tr>
+  <tr><td>PF-05~06 보안·인프라</td><td class="c">○</td><td class="c">△ 사용자감사</td><td class="c">△ 조직감사</td><td class="c">△ 조회</td><td class="c">△ 발행감사</td><td class="c">△ 지원세션</td><td class="c">○</td><td class="c">△ 읽기전용</td></tr>
+</table>
+<div class="note">플랫폼 역할은 PF 제어영역 권한이며 OP/TN 권한을 상속하지 않는다. PF 진입은 활성 PlatformUser ∧ PlatformMembership ∧ Platform Role ∧ PlatformOrgUnit 범위를 검증한다. 고위험 Role과 표준 발행은 요청자≠승인자 SOD를 적용하며, 테넌트 접근은 승인된 PlatformSupportSession을 별도로 요구한다.</div>
+
+<h3>관리회사·수임회사 역할</h3>
+<table>
+  <tr>
+    <th>메뉴 영역</th>
+    <th class="c">ORG_ADMIN</th>
+    <th class="c">ORG_STANDARD_<br>DISTRIBUTOR</th>
+    <th class="c">기장 담당</th>
+    <th class="c">회사 관리자</th>
+    <th class="c">회계 담당</th>
+    <th class="c">세무 담당</th>
+    <th class="c">결재/감사</th>
+    <th class="c">외부 파트너</th>
+  </tr>
+  <tr><td>OP-00~03 조직·수임회사</td><td class="c">○ 현재 조직</td><td class="c">-</td><td class="c">△ 담당 관계</td><td class="c">-</td><td class="c">-</td><td class="c">-</td><td class="c">△ 감사</td><td class="c">△ 허용 관계</td></tr>
+  <tr><td>OP-04~07 구독·표준·권한·접근</td><td class="c">○ 사용자·그룹·그룹메뉴권한</td><td class="c">○ OP-05 대상·일정·채택</td><td class="c">△ 발행메뉴 조회</td><td class="c">-</td><td class="c">-</td><td class="c">-</td><td class="c">△ 권한이력 감사</td><td class="c">-</td></tr>
+  <tr><td>OP-08 기장 워크벤치</td><td class="c">△ 관리</td><td class="c">-</td><td class="c">○ 담당 관계</td><td class="c">-</td><td class="c">-</td><td class="c">-</td><td class="c">△ 검토</td><td class="c">-</td></tr>
+  <tr><td>TN-01~03 설정·기초·이월</td><td class="c">△ 대행</td><td class="c">△ 채택현황</td><td class="c">△ 담당 회사</td><td class="c">○</td><td class="c">△</td><td class="c">△</td><td class="c">△ 조회</td><td class="c">△ 범위 내</td></tr>
+  <tr><td>TN-04 전표 입력·결재</td><td class="c">△ 대행</td><td class="c">-</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">△</td><td class="c">△ 승인</td><td class="c">△ 허용 태그</td></tr>
+  <tr><td>TN-05~07 보조부·증빙·원장</td><td class="c">△ 대행</td><td class="c">-</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">○</td><td class="c">△ 조회</td><td class="c">△ 허용 태그</td></tr>
+  <tr><td>TN-08 마감·결산·보고패키지</td><td class="c">△ 대행</td><td class="c">-</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">△</td><td class="c">○ 승인/감사</td><td class="c">△ 조회</td></tr>
+  <tr><td>TN-09~10 신고·세무·고정자산</td><td class="c">△ 대행</td><td class="c">-</td><td class="c">△ 담당 회사</td><td class="c">○</td><td class="c">△</td><td class="c">○</td><td class="c">△ 승인</td><td class="c">△ 수임 범위</td></tr>
+  <tr><td>TN-11~13 자금·고급회계·원가</td><td class="c">△ 대행</td><td class="c">-</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">△</td><td class="c">△ 조회</td><td class="c">-</td></tr>
+  <tr><td>TN-14 협업·AI</td><td class="c">△</td><td class="c">△ 규칙 배포현황</td><td class="c">○ 담당 회사</td><td class="c">○</td><td class="c">○</td><td class="c">○</td><td class="c">△ 조회</td><td class="c">△ 허용 범위</td></tr>
+  <tr><td>TN-15 데이터관리·이관</td><td class="c">△ 승인</td><td class="c">-</td><td class="c">△ 담당 회사</td><td class="c">○ 관리자</td><td class="c">-</td><td class="c">-</td><td class="c">△ 감사</td><td class="c">-</td></tr>
+  <tr><td>CO-01~10 공통·기술·추적</td><td class="c">○</td><td class="c">△ 표준조회</td><td class="c">△</td><td class="c">△</td><td class="c">△</td><td class="c">△</td><td class="c">△</td><td class="c">△</td></tr>
+</table>
+<div class="note">○ 부여 범위 전체, △ 제한, - 미노출. 실제 노출은 활성 사용자·Membership·PUBLISHED MenuVersion·UserGroupMenuPermission(DENY 우선)·RoleMenuPermission·MenuActionGrant·scopeType/scopeId·활성 수임관계·담당배정·접근세션·기장 모드·구독/기능 플래그를 모두 결합해 결정한다.</div>
+</section>
+
+<section>
+<h2>7. 메뉴 운영 규칙</h2>
+<ul>
+  <li><b>채널 분리</b>: PLATFORM 사용자는 PF, OPERATOR 사용자는 현재 operatorOrgId의 OP, TENANT 사용자는 자기 tenantId의 TN을 기본 채널로 사용한다. userGroup과 맞지 않는 채널은 미노출한다.</li>
+  <li><b>플랫폼 콘솔 게이트</b>: 활성 PlatformUser ∧ PlatformMembership ∧ 플랫폼 Role ∧ 허용 PlatformOrgUnit을 모두 검증한다. 사용자 계정, 조직소속, Role, DutyAssignment는 분리하며 변경 이력을 보존한다.</li>
+  <li><b>3계층 컨텍스트</b>: 모든 요청은 platformId를 기준으로 처리하고 OP는 operatorOrgId, TN은 tenantId를 필수로 한다. 관리회사 대행 TN 요청은 relationId와 assignmentId까지 검증한다.</li>
+  <li><b>수임 접근 게이트</b>: 활성 Membership ∧ 활성 PRIMARY 관계 ∧ 서비스 범위 ∧ 담당배정/승인 접근세션 ∧ Role/Scope를 모두 만족해야 한다.</li>
+  <li><b>조직 격리</b>: 관리회사는 다른 관리회사의 Membership·수임관계·테넌트 목록·사용량을 조회할 수 없다. 플랫폼 지원도 승인된 세션 범위 밖의 데이터는 접근할 수 없다.</li>
+  <li><b>관리회사 이관</b>: TRANSFER_IN_PROGRESS 동안 기존/신규 관리회사의 동시 쓰기를 금지한다. tenantId와 원천데이터는 유지하고 관계·배정·자격증명·미결업무를 컷오버한다.</li>
+  <li><b>정책 상속</b>: 보안·운영 정책은 GLOBAL → OPERATOR_ORG → PLAN → TENANT 순으로 병합하며 하위 계층은 상위의 강제/금지 규칙을 완화할 수 없다.</li>
+  <li><b>표준 원본 단일화</b>: 전체 업무 표준 원본·버전·검토·발행·폐기·롤백은 PF-04와 PLATFORM_STANDARD_ADMIN만 수행한다. OP-05는 PUBLISHED 표준을 읽고 배포대상·일정·사전검증·채택현황만 관리하며 원본 오버레이와 자체 버전을 만들 수 없다.</li>
+  <li><b>메뉴 원본 단일화</b>: PF/OP/TN/CO 메뉴 원본·다국어·route·MenuVersion CUD와 발행은 PF-04M에서만 수행한다. OP-06D는 PUBLISHED OP 메뉴 조회·영향 미리보기 전용이다.</li>
+  <li><b>메뉴목록 기준</b>: PF-04M은 트리를 탐색 보조로 사용하고 메뉴코드·상위메뉴·채널·레벨·유형·화면 ID·다국어명·route·flag·Phase·상태·source/detail의 목록 그리드를 기준으로 편집·검증·영향분석한다.</li>
+  <li><b>그룹별 메뉴권한</b>: PF-01P/OP-06P/TN-01P는 PUBLISHED 메뉴에 INHERIT/ALLOW/DENY를 적용한다. 하나라도 DENY이면 DENY, 부모 DENY는 하위에 전파하며 ALLOW만으로 Role VIEW/ENTER/ACTION을 생성하지 않는다.</li>
+  <li><b>최종 권한평가</b>: 활성 사용자 → Membership/scope → PUBLISHED MenuVersion → 그룹정책 → RoleMenuPermission → MenuActionGrant → data scope → 민감정보/Step-up → SOD 순으로 서버가 평가한다.</li>
+  <li><b>미노출 원칙</b>: 권한 없는 메뉴는 비활성이 아니라 미노출하고 API에서도 재차단한다. 요금제/기능 플래그 미포함 기능은 정책에 따라 업그레이드 안내로 노출할 수 있다.</li>
+  <li><b>기장 모드</b>: `TENANT_LED`는 이용회사 입력 중심, `OPERATOR_LED`는 운영자 기장 워크벤치와 회사 확인 화면 중심, `HYBRID`는 분담 규칙에 따라 입력/검토 권한을 나눈다.</li>
+  <li><b>마감 상태</b>: 메뉴는 유지하되 마감 기간 데이터의 신규/수정/삭제/기표 행위는 `CLOSING_LOCKED`로 차단한다.</li>
+  <li><b>상태 불변성</b>: `POSTED`, `CLOSED`, `LOCKED` 전표는 직접 수정/삭제하지 않고 역분개, 조정전표, 복구/이관 전용 메뉴로 처리한다.</li>
+  <li><b>기능 플래그</b>: 외화, 관계사, Cost-plus, 예산, 그룹보고, 제조원가/재고, XBRL, 다중 회계기준은 구독/업종/기능 플래그와 연동한다.</li>
+  <li><b>감사 추적</b>: 플랫폼 사용자·내부조직·소속·사용자그룹·Role·메뉴/표준 발행과 관리회사 조직·관계·배정·이관·그룹메뉴권한·접근, 테넌트 사용자그룹·권한·전표·증빙·신고 전송은 platformId/platformOrgId/operatorOrgId/tenantId/relationId/menuVersionId와 append-only 이력을 남긴다.</li>
+</ul>
+</section>
+
+</main>
+<script>
+const searchInput = document.getElementById('menuSearch');
+if(searchInput){
+  searchInput.addEventListener('input', () => {
+    const keyword = searchInput.value.trim().toLowerCase();
+    document.querySelectorAll('#menuTree li').forEach(li => {
+      li.classList.remove('hidden');
+      if(!keyword) return;
+      const text = li.textContent.toLowerCase();
+      const match = text.includes(keyword);
+      li.classList.toggle('hidden', !match && !Array.from(li.querySelectorAll('li')).some(child => child.textContent.toLowerCase().includes(keyword)));
+    });
+  });
+}
+</script>
+</body>
+</html>

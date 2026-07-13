@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 회계/세무 서비스 3계층 4채널 4단 세부 메뉴구조 V1.1</title>
+<style>
+:root{
+  --ink:#1c2333; --sub:#5b6478; --line:#d8dde8; --bg:#f4f6fa; --card:#fff;
+  --accent:#2554c7; --accent-bg:#eaf0fd; --pf:#be123c; --pf-bg:#fff1f2;
+  --op:#6d28d9; --op-bg:#f3e8ff; --tn:#0f766e; --tn-bg:#cdf3ee;
+  --co:#475569; --co-bg:#f1f5f9; --warn:#b45309; --warn-bg:#fef3c7;
+  --danger:#b91c1c; --danger-bg:#fee2e2; --ok:#15803d; --ok-bg:#dcfce7;
+  --muted-bg:#eef1f6; --dark:#16213e;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;color:var(--ink);background:var(--bg);font-size:13px;line-height:1.55}
+main{max-width:1680px;margin:0 auto;padding:28px 30px 72px}
+.doc-header{background:linear-gradient(135deg,#1c2333,#2554c7);color:#fff;border-radius:12px;padding:24px 30px;margin-bottom:22px}
+.doc-header h1{margin:0 0 6px;font-size:24px;letter-spacing:0}
+.doc-header p{margin:3px 0;color:#d8e2fb;font-size:13px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:20px}
+h2{font-size:18px;margin:0 0 14px;padding-bottom:9px;border-bottom:2px solid var(--accent);color:var(--dark)}
+h3{font-size:15px;margin:18px 0 8px;color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
+th,td{border:1px solid var(--line);padding:6px 7px;text-align:left;vertical-align:top;word-break:keep-all;overflow-wrap:anywhere}
+th{background:var(--muted-bg);font-size:11.5px;white-space:nowrap;position:sticky;top:0;z-index:1}
+tbody tr:nth-child(even){background:#fbfcff}
+tbody tr:hover{background:#f7fbff}
+td[rowspan]{background:#fff;font-weight:700}
+.level0{font-weight:700;color:#fff;background:#33415e!important;text-align:center}
+.level1{font-weight:700;color:var(--dark);background:#f8faff}
+.level2{font-weight:700;color:#33415e;background:#fbfcff}
+.level3{color:var(--ink)}
+.path{font-size:11px;color:var(--sub);margin-top:3px}
+.grid-wrap{max-height:760px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.summary{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:10px 0 16px}
+.metric{border:1px solid var(--line);border-radius:8px;background:#fbfcff;padding:12px 14px}
+.metric b{display:block;font-size:20px;color:var(--accent);margin-bottom:2px}
+.metric span{font-size:12px;color:var(--sub)}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 14px}
+.search,.select{border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:#fff;font-size:13px}
+.search{min-width:340px}
+code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Consolas,'D2Coding',monospace;font-size:11.5px;color:#33415e}
+.badge{display:inline-block;border-radius:9px;padding:0 8px;font-size:10.4px;font-weight:700;white-space:nowrap;vertical-align:middle}
+.b-blue{background:var(--accent-bg);color:var(--accent)}
+.b-purple{background:var(--op-bg);color:var(--op)}
+.b-green{background:var(--ok-bg);color:var(--ok)}
+.b-amber{background:var(--warn-bg);color:var(--warn)}
+.b-red{background:var(--danger-bg);color:var(--danger)}
+.b-gray{background:var(--muted-bg);color:var(--sub)}
+.b-teal{background:var(--tn-bg);color:var(--tn)}
+.sid{display:inline-block;background:#1c2333;color:#fff;border-radius:4px;padding:0 7px;font-size:10.6px;font-family:Consolas,monospace;vertical-align:middle}
+.note{background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:0 6px 6px 0;padding:9px 14px;font-size:12.5px;margin:10px 0}
+.toc{display:flex;gap:10px;flex-wrap:wrap}
+.toc a{color:var(--accent);text-decoration:none;border:1px solid #bfd0f5;background:var(--accent-bg);border-radius:6px;padding:6px 10px;font-size:12px}
+.op-title{border-left:5px solid var(--op);padding-left:10px}
+.pf-title{border-left:5px solid var(--pf);padding-left:10px}
+.tn-title{border-left:5px solid var(--tn);padding-left:10px}
+.co-title{border-left:5px solid var(--co);padding-left:10px}
+.c{text-align:center}
+.w-no{width:44px}.w-channel{width:92px}.w-code{width:86px}.w-menu{width:116px}.w-sub{width:150px}.w-id{width:118px}.w-purpose{width:240px}.w-data{width:210px}.w-rule{width:190px}.w-source{width:96px}
+@media(max-width:1300px){.summary{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1100px){main{padding:18px 14px}.summary{grid-template-columns:1fr 1fr}.search{min-width:220px;width:100%}.grid-wrap{max-height:none}}
+@media print{body{background:#fff}main{max-width:none;padding:8px}section{break-inside:avoid;border:none}.toolbar,.toc{display:none}.grid-wrap{max-height:none;overflow:visible}th{position:static}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="doc-header">
+  <h1>BK 회계/세무 서비스 3계층 4채널 4단 세부 메뉴구조 V1.1</h1>
+  <p>기준 문서: <b>bk_설계서_v1.1.md</b> · 참조 화면: <b>설계/화면설계/메뉴구조.html</b>, <b>메뉴구조도_V1.1.HTML</b>, <b>설계/페이즈_화면/시스템관리자_화면_v1.0.HTML</b></p>
+  <p>작성일: 2026-07-13 · 파일명: <b>설계/화면설계/메뉴구조_v1.1.html</b></p>
+  <p>BK 플랫폼 → 복수 관리회사(OperatorOrg) → 관리대상회사(Tenant)의 3계층을 PF·OP·TN·CO 4채널에 적용하고, 플랫폼 자체의 사용자·내부조직·사용자그룹과 전체 업무 표준정보·메뉴 원본을 PF 채널에서 통합 관리한다. PF/OP/TN별 사용자관리·사용자그룹관리·그룹별 메뉴권한을 분리하고 SA 기준 182개 세부 기능 화면도 TN 채널에 유지한다.</p>
+</div>
+
+<section>
+<h2>1. 구성 기준</h2>
+<div class="toc">
+  <a href="#pf">플랫폼콘솔 그리드</a>
+  <a href="#op">관리회사콘솔 그리드</a>
+  <a href="#tn">수임회사 업무화면</a>
+  <a href="#co">공통·기술 그리드</a>
+  <a href="#rules">공통 운영 규칙</a>
+</div>
+<div class="summary">
+  <div class="metric"><b id="pfCount">0</b><span>플랫폼콘솔 메뉴 행</span></div>
+  <div class="metric"><b id="opCount">0</b><span>관리회사콘솔 메뉴 행</span></div>
+  <div class="metric"><b id="tnCount">0</b><span>수임회사 업무 메뉴 행</span></div>
+  <div class="metric"><b id="coCount">0</b><span>공통·기술 메뉴 행</span></div>
+  <div class="metric"><b id="saCount">182</b><span>SA 세부 기능 화면</span></div>
+  <div class="metric"><b>4</b><span>메뉴 단계: 구분 / 상위 / 하위 / 세부</span></div>
+</div>
+<div class="note">모든 행은 1단계 채널 → 2단계 상위 메뉴 → 3단계 하위 메뉴 → 4단계 세부 화면으로 해석한다. PF는 platformOrgId + PlatformMembership + PLATFORM RoleAssignment를, 관리회사 대행업무는 operatorOrgId + tenantId + relationId + assignmentId를 검증한다. 메뉴 원본은 PF-04M에서만 관리하고 OP-06D는 PUBLISHED 발행본 조회 전용이다.</div>
+</section>
+
+<section id="pf">
+<h2 class="pf-title">2. 플랫폼콘솔 4단 메뉴 그리드</h2>
+<div class="toolbar">
+  <input id="pfSearch" class="search" type="search" placeholder="플랫폼 조직, 사용자, 표준, 관리회사, 이관, 보안 메뉴 검색">
+  <select id="pfFilter" class="select">
+    <option value="">전체 플랫폼콘솔 메뉴</option>
+    <option value="플랫폼 조직">플랫폼 조직/사용자</option>
+    <option value="관리회사">관리회사 생명주기</option>
+    <option value="계약">계약/쿼터</option>
+    <option value="수임">수임관계/이관</option>
+    <option value="표준">정책/전체 업무 표준</option>
+    <option value="메뉴">메뉴 마스터/메뉴 버전</option>
+    <option value="보안">보안/감사</option>
+    <option value="인프라">인프라/운영</option>
+  </select>
+</div>
+<div class="grid-wrap">
+<table>
+  <thead><tr>
+    <th class="w-no">No</th><th class="w-code">메뉴코드</th><th class="w-channel">1단계 구분</th>
+    <th class="w-menu">2단계 상위 메뉴</th><th class="w-sub">3단계 하위 메뉴</th><th class="w-sub">4단계 세부 메뉴/화면</th>
+    <th class="w-id">화면 ID</th><th class="w-purpose">업무 목적</th><th class="w-data">주요 데이터/엔티티</th>
+    <th class="w-rule">권한/통제</th><th class="w-rule">노출조건/비고</th><th class="w-source">근거</th>
+  </tr></thead>
+  <tbody id="pfBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="op">
+<h2 class="op-title">3. 관리회사 운영콘솔 4단 메뉴 그리드</h2>
+<div class="toolbar">
+  <input id="opSearch" class="search" type="search" placeholder="현재 관리회사 조직·수임회사·기장 메뉴 검색">
+  <select id="opFilter" class="select">
+    <option value="">전체 관리회사콘솔 메뉴</option>
+    <option value="표준">플랫폼 표준 배포</option>
+    <option value="테넌트">테넌트/인프라</option>
+    <option value="권한">사용자/그룹/권한</option>
+    <option value="기장">기장/워크벤치</option>
+    <option value="보안">보안/감사</option>
+    <option value="운영">운영/모니터링</option>
+  </select>
+</div>
+<div class="grid-wrap">
+<table>
+  <thead>
+    <tr>
+      <th class="w-no">No</th>
+      <th class="w-code">메뉴코드</th>
+      <th class="w-channel">1단계 구분</th>
+      <th class="w-menu">2단계 상위 메뉴</th>
+      <th class="w-sub">3단계 하위 메뉴</th>
+      <th class="w-sub">4단계 세부 메뉴/화면</th>
+      <th class="w-id">화면 ID</th>
+      <th class="w-purpose">업무 목적</th>
+      <th class="w-data">주요 데이터/엔티티</th>
+      <th class="w-rule">권한/통제</th>
+      <th class="w-rule">노출조건/비고</th>
+      <th class="w-source">근거</th>
+    </tr>
+  </thead>
+  <tbody id="opBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="tn">
+<h2 class="tn-title">4. 수임회사 업무화면 4단 메뉴 그리드</h2>
+<div class="toolbar">
+  <input id="tnSearch" class="search" type="search" placeholder="업무화면 메뉴, SA/JV/AUX/BF/WJV ID 검색">
+  <select id="tnFilter" class="select">
+    <option value="">전체 업무화면 메뉴</option>
+    <option value="기초">기초/기준정보</option>
+    <option value="전표">전표/자동전표</option>
+    <option value="장부">장부/보조부</option>
+    <option value="결산">결산/보고</option>
+    <option value="세무">세무/신고</option>
+    <option value="자금">자금/예산</option>
+    <option value="데이터">데이터관리/이관</option>
+  </select>
+</div>
+<div class="grid-wrap">
+<table>
+  <thead>
+    <tr>
+      <th class="w-no">No</th>
+      <th class="w-code">메뉴코드</th>
+      <th class="w-channel">1단계 구분</th>
+      <th class="w-menu">2단계 상위 메뉴</th>
+      <th class="w-sub">3단계 하위 메뉴</th>
+      <th class="w-sub">4단계 세부 메뉴/화면</th>
+      <th class="w-id">화면 ID</th>
+      <th class="w-purpose">업무 목적</th>
+      <th class="w-data">주요 데이터/엔티티</th>
+      <th class="w-rule">권한/통제</th>
+      <th class="w-rule">노출조건/비고</th>
+      <th class="w-source">근거</th>
+    </tr>
+  </thead>
+  <tbody id="tnBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="co">
+<h2 class="co-title">5. 공통·기술·설계추적 4단 메뉴 그리드</h2>
+<div class="toolbar">
+  <input id="coSearch" class="search" type="search" placeholder="API, 데이터모델, 오류, 배치, 보안, 인프라 검색">
+  <select id="coFilter" class="select">
+    <option value="">전체 공통·기술 메뉴</option>
+    <option value="계정">계정/알림</option>
+    <option value="API">API/오류</option>
+    <option value="데이터">데이터/배치</option>
+    <option value="보안">보안/인프라</option>
+    <option value="산출물">산출물/추적</option>
+  </select>
+</div>
+<div class="grid-wrap">
+<table>
+  <thead><tr>
+    <th class="w-no">No</th><th class="w-code">메뉴코드</th><th class="w-channel">1단계 구분</th>
+    <th class="w-menu">2단계 상위 메뉴</th><th class="w-sub">3단계 하위 메뉴</th><th class="w-sub">4단계 세부 메뉴/화면</th>
+    <th class="w-id">화면 ID</th><th class="w-purpose">업무 목적</th><th class="w-data">주요 데이터/엔티티</th>
+    <th class="w-rule">권한/통제</th><th class="w-rule">노출조건/비고</th><th class="w-source">근거</th>
+  </tr></thead>
+  <tbody id="coBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="rules">
+<h2>6. 3계층 공통 운영 규칙</h2>
+<table>
+  <tr><th>규칙</th><th>적용 메뉴</th><th>처리 기준</th></tr>
+  <tr><td>채널·사용자군 분리</td><td>PF/OP/TN/CO 전체</td><td>PLATFORM은 PF, OPERATOR는 현재 operatorOrgId의 OP, TENANT는 자기 tenantId의 TN을 기본 채널로 사용한다. 상위 역할이 하위 업무권한을 자동 상속하지 않는다.</td></tr>
+  <tr><td>플랫폼 콘솔 접근</td><td>PF-00~06</td><td>활성 PlatformUser ∧ PlatformMembership ∧ 플랫폼 Role ∧ 허용 PlatformOrgUnit을 검증한다. 사용자·소속·Role·DutyAssignment는 분리하고 변경 이력을 보존한다.</td></tr>
+  <tr><td>3계층 컨텍스트</td><td>전체 요청·배치·산출물</td><td>platformId를 공통 기준으로 하고 OP는 operatorOrgId, TN은 tenantId를 필수로 한다. 관리회사 대행 TN 요청은 relationId와 assignmentId를 추가 검증한다.</td></tr>
+  <tr><td>수임 접근 게이트</td><td>OP-00~11, 대행 TN</td><td>활성 OperatorOrgMembership ∧ 활성 PRIMARY OperatorOrgTenantRelation ∧ serviceScopes ∧ TenantAssignment/BookkeepingAssignment 또는 승인 접근세션 ∧ Role/Scope를 모두 만족해야 한다.</td></tr>
+  <tr><td>조직·테넌트 격리</td><td>PF/OP/TN/API/배치</td><td>관리회사는 다른 관리회사의 소속·수임관계·테넌트 목록·사용량을 조회할 수 없다. 플랫폼 지원도 승인된 PlatformSupportSession 범위만 접근한다.</td></tr>
+  <tr><td>관리회사 이관</td><td>PF-03, OP-03, OP-08, TN-15</td><td>ORG_TRANSFER_IN_PROGRESS 동안 기존/신규 관리회사의 동시 쓰기를 금지한다. tenantId와 원천데이터는 유지하고 관계·배정·자격증명·미결업무만 컷오버한다.</td></tr>
+  <tr><td>정책 상속</td><td>PF-04, OP-06, TN 설정</td><td>보안·운영 정책은 GLOBAL → OPERATOR_ORG → PLAN → TENANT 순으로 병합하며 하위 계층은 상위의 강제·금지 정책을 완화할 수 없다.</td></tr>
+  <tr><td>표준 원본 단일관리</td><td>PF-04, OP-05, TN-01</td><td>전체 업무 표준 원본·버전·검토·발행·폐기·롤백은 PF-04와 PLATFORM_STANDARD_ADMIN만 수행한다. OP-05는 PUBLISHED 표준의 배포대상·일정·사전검증·채택현황만 관리하며 원본 오버레이와 자체 버전을 만들 수 없다.</td></tr>
+  <tr><td>메뉴 원본 단일관리</td><td>PF-04M, OP-06D</td><td>PF/OP/TN/CO 메뉴 원본·다국어·route·MenuVersion CUD/발행은 PF-04M에서만 수행한다. OP-06D는 현재 PUBLISHED OP 메뉴목록·Role/그룹 영향 조회와 내보내기만 허용한다.</td></tr>
+  <tr><td>메뉴목록 기준화</td><td>PF-04M</td><td>트리는 탐색 보조로 사용하고 메뉴코드, 상위메뉴코드/명, 채널, 레벨, 유형, 화면 ID, 한국어/영어명, route, feature flag, Phase, 상태, source/detail 목록을 기준으로 편집·검증·영향분석한다.</td></tr>
+  <tr><td>그룹별 메뉴권한</td><td>PF-01P, OP-06P, TN-01P</td><td>PUBLISHED 메뉴에 INHERIT/ALLOW/DENY를 저장한다. 복수그룹 DENY 우선, 부모 DENY 하위 전파, ALLOW만으로 Role VIEW/ENTER/ACTION 승격 금지를 적용한다.</td></tr>
+  <tr><td>권한 없는 메뉴 미노출</td><td>전체</td><td>활성 사용자·Membership·PUBLISHED MenuVersion·UserGroupMenuPermission·RoleMenuPermission·MenuActionGrant·scopeType/scopeId·관계·배정·접근세션을 순서대로 결합하고 API에서도 재검증한다.</td></tr>
+  <tr><td>기장 모드 연동</td><td>OP-08, TN 전표/마감/신고/보고</td><td>TENANT_LED, OPERATOR_LED, HYBRID와 관계별 BookkeepingConfig에 따라 입력·검토·승인·확인(Ack)을 분리한다.</td></tr>
+  <tr><td>Step-up 인증</td><td>권한 변경, 신고 전송, 마감해제, 긴급대행, 대량 다운로드</td><td>재인증 결과와 사유를 세션 및 감사 로그에 기록한다.</td></tr>
+  <tr><td>마감 잠금</td><td>전표, 보조부, 신고, 결산</td><td>마감 기간 신규/수정/삭제는 CLOSING_LOCKED로 차단한다. 정정은 역분개 또는 조정전표로 처리한다.</td></tr>
+  <tr><td>기표 후 불변성</td><td>전표·원장·보조부</td><td>POSTED, CLOSED, LOCKED 전표는 직접 수정/삭제하지 않고 역분개, 삭제전표복구, 데이터관리 메뉴로 처리한다.</td></tr>
+  <tr><td>기능 플래그</td><td>외화, 관계사, 예산, 그룹보고, 제조원가/재고, XBRL</td><td>구독, 업종, Phase, 회사 설정에 따라 메뉴를 노출하거나 업그레이드 안내로 표시한다.</td></tr>
+  <tr><td>감사 추적</td><td>전체 중요 메뉴</td><td>사용자·사용자그룹·구성원·Role·그룹메뉴권한·메뉴/표준 발행과 관리회사 조직·관계·배정·이관·접근, 테넌트 전표·신고는 platformId/platformOrgId/operatorOrgId/tenantId/relationId/menuVersionId와 append-only 이력 및 변경 사유를 남긴다.</td></tr>
+</table>
+</section>
+
+</main>
+
+<script>
+const pfRows = [
+  ['PF-00','플랫폼 진입·현황','플랫폼 홈','내부조직·사용자·표준·관리회사 통합 현황','PF-00-01','플랫폼 운영조직, 사용자, 표준 발행, 관리회사와 전체 서비스 상태를 감시한다.','PlatformOrg, PlatformUser, PlatformStandardRelease, OperatorOrg, Tenant, SLOEvent','PLATFORM 역할, 집계정보 중심','테넌트 회계 원문 자동 접근 금지','1.1, 1.2, 5.7, 6장'],
+  ['PF-00','플랫폼 진입·현황','플랫폼 조직 컨텍스트','PlatformOrg·Unit·Membership 선택','PF-00-02','플랫폼 사용자의 유효 소속과 조직단위 업무범위를 선택한다.','PlatformOrg, PlatformOrgUnit, PlatformMembership, ContextSnapshot','활성 PlatformUser+Membership+Role','만료·정지 소속의 컨텍스트 발급 금지','1.2.1, 2.2, 5.7'],
+  ['PF-00','플랫폼 진입·현황','관리회사 컨텍스트','관리회사 검색·상태·요금제 필터','PF-00-03','제어영역 작업 대상 관리회사를 선택한다.','OperatorOrg, OperatorSubscription, ContextSnapshot','PLATFORM_ORG_ADMIN/지원','조회 컨텍스트만 부여, 하위 권한 자동상속 금지','1.2.1'],
+  ['PF-00','플랫폼 진입·현황','승인 대기함','고위험 Role·표준 발행·관리회사·이관 승인','PF-00-04','플랫폼 차원의 중요 승인 대기건을 통합 처리한다.','ApprovalRequest, PlatformStandardApproval, OperatorOrgTransferRequest','2인 승인·Step-up','자기 요청·자기 작성건 단독 승인 금지','1.2, 5.7, 6.2'],
+
+  ['PF-01','플랫폼 조직·사용자·관리회사','플랫폼 내부조직','PlatformOrg·Unit 트리·조직개편·유효기간','PF-01-01','플랫폼 운영법인과 내부 조직단위, 소관업무 및 조직개편 이력을 관리한다.','PlatformOrg, PlatformOrgUnit, PlatformUserActivityLog','PLATFORM_INTERNAL_ORG_ADMIN','순환 조직 금지, 과거 소속 이력 보존','5.7'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','플랫폼 사용자관리','목록·상세·소속/Role·보안/세션','PF-01U','PlatformUser의 초대·상태·소속·권한·MFA·세션 생명주기를 관리한다.','PlatformUser, PlatformMembership, RoleAssignment, UserCredential, UserSession, UserSecurityAction','PLATFORM_USER_ADMIN, Step-up, 자기승격 금지','INVITED→ACTIVE→SUSPENDED/DORMANT→TERMINATED','4.3.3, 5.7, 26.6'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','플랫폼 사용자그룹','그룹 기본정보·상위그룹·구성원·유효기간','PF-01G','플랫폼 조직 범위의 권한관리 그룹과 구성원을 별도 저장단위로 관리한다.','UserGroup, UserGroupMember, UserGroupMemberHistory, UserGroupRoleBinding','PLATFORM_USER_ADMIN, 동일 platformOrgId scope','그룹코드 유일, 순환·타 scope 구성원·기간중복 차단','4.3.4, 5.7, 26.6'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','플랫폼 그룹별 메뉴권한','PUBLISHED PF 메뉴·INHERIT/ALLOW/DENY·미리보기','PF-01P','플랫폼 사용자그룹별 PF 메뉴 후보정책과 최종 판정근거를 관리한다.','UserGroupMenuPermission, MenuVersion, RoleMenuPermission, MenuActionGrant, PermissionSimulationLog','PLATFORM_USER_ADMIN+SECURITY, Step-up','DENY 우선, 부모 DENY 전파, ALLOW만으로 Action 승격 금지','4.3.5, 26.6'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','소속·Role·직무배정','Membership·별도 RoleAssignment·DutyAssignment','PF-01-03','사용자 계정과 조직소속, 플랫폼 Role, 직무배정을 분리 관리한다.','PlatformMembership, RoleAssignment, PlatformDutyAssignment','USER/INTERNAL_ORG/SECURITY 관리자, SOD','자기 Role 승격 금지, 고위험 Role 2인 승인','5.7'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','SSO·SCIM·접근환경','IdP·도메인·프로비저닝·IP 허용목록','PF-01-04','플랫폼 전용 인증 연동과 콘솔 접근환경을 관리한다.','PlatformIdentityProvider, SsoIdentity, PlatformIpAllowlist','PLATFORM_INTERNAL_ORG_ADMIN+SECURITY','OperatorOrg IdP와 분리, 피싱저항 MFA 필수','3장, 5.7'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','관리회사 목록·상세','법인·사업자·세무대리 등록정보','PF-01-05','관리회사 기본정보와 대표 관리자, 계약상태를 관리한다.','OperatorOrg, OperatorOrgProfile','PLATFORM_ORG_ADMIN','모든 관리회사 조회는 PF에서만 허용','1.2.1, 5.5'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','관리회사 심사·활성','PENDING_VERIFICATION → ACTIVE','PF-01-06','자격·계약·MFA·위수탁 조건을 검증해 관리회사를 활성화한다.','OperatorOrg, VerificationCase, OperatorOrgMembership','PLATFORM_ORG_ADMIN, 2인 승인','초기 ORG_OWNER 초대 필수','1.2.2, 5.5'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','관리회사 정지·종료','SUSPENDED·TERMINATING·TERMINATED','PF-01-07','위험 관리회사를 정지하거나 안전하게 종료한다.','OperatorOrg, SuspensionCase, TerminationChecklist','PLATFORM_SUPER_ADMIN, Step-up','활성 수임 테넌트 이관 완료 전 종료 금지','1.2.2, 5.5'],
+  ['PF-01','플랫폼 조직·사용자·관리회사','관리회사 Membership 감독','대표 관리자·조직 Role·SSO/SCIM 상태','PF-01-08','관리회사 소속 구조와 대표 관리자 유효성을 감독한다.','OperatorOrgMembership, OperatorOrgUnit','PLATFORM_ORG_ADMIN, 감사 조회','일상 소속 관리는 OP-02에서 수행','1.2.3, 5.5'],
+
+  ['PF-02','플랫폼 계약·쿼터','플랫폼 구독','체험·활성·연체·정지·종료','PF-02-01','BK 플랫폼과 관리회사 간 구독 계약을 관리한다.','OperatorSubscription, BillingPlan','PLATFORM_ORG_ADMIN/BILLING','관리회사 서비스료 계약과 분리','7.1'],
+  ['PF-02','플랫폼 계약·쿼터','통합 사용량','테넌트·사용자·저장량·API·배치','PF-02-02','관리회사 단위 통합 사용량과 비용을 집계한다.','OperatorOrgQuota, UsageMeter','플랫폼 과금/운영 역할','operatorOrgId 기준 집계','7.2'],
+  ['PF-02','플랫폼 계약·쿼터','쿼터·초과 통제','경고·신규생성 제한·다운그레이드 영향','PF-02-03','플랫폼 자원 한도 초과를 사전 통제한다.','OperatorOrgQuota, QuotaViolation','PLATFORM_ORG_ADMIN','기존 테넌트 원천데이터 삭제 금지','7.2'],
+
+  ['PF-03','수임관계·관리회사 이관','수임관계','PRIMARY/SECONDARY·serviceScopes·기간','PF-03-01','관리회사와 테넌트의 계약상 수임관계를 등록·검증한다.','OperatorOrgTenantRelation, TenantServiceContract','PLATFORM_ORG_ADMIN, Step-up','테넌트별 활성 PRIMARY 1건','2.1, 2.2'],
+  ['PF-03','수임관계·관리회사 이관','관계 충돌 검증','중복 PRIMARY·기간 겹침·서비스 범위','PF-03-02','잘못된 중복 수임과 책임기간 충돌을 차단한다.','OperatorOrgTenantRelation, ServiceScope','서버 유니크 제약+업무 검증','TENANT_ALREADY_MANAGED 오류','2.1.2'],
+  ['PF-03','수임관계·관리회사 이관','이관 워크플로','요청·동의·수락·검증·예약·컷오버','PF-03-03','테넌트를 기존 관리회사에서 신규 관리회사로 안전하게 이관한다.','OperatorOrgTransferRequest, WorkTransfer','테넌트 동의, 양사 확인, 플랫폼 승인','ORG_TRANSFER_IN_PROGRESS 쓰기 통제','2.3'],
+  ['PF-03','수임관계·관리회사 이관','인계·롤백','미결업무·표준 배포/채택·시크릿 회수','PF-03-04','플랫폼 표준 버전과 테넌트 채택은 유지하고 관리회사 배포책임만 인계한다.','BookkeepingHandover, OperatorStandardDistribution, TenantStandardAdoption, CredentialDelegation','승인자·감사자, append-only','tenantId·원천데이터·플랫폼 표준 versionId 유지','2.3.2, 6.4, 21장'],
+
+  ['PF-04','전역 정책·전체 업무 표준','인증·권한 하한','GLOBAL MFA·Step-up·SOD·금지정책','PF-04-01','모든 관리회사와 테넌트가 준수할 최소 보안정책을 정의한다.','AuthPolicy, PolicyGuardrail, Role','PLATFORM_SECURITY','하위 계층 완화 금지','4.1~4.4'],
+  ['PF-04','전역 정책·전체 업무 표준','전체 표준 카탈로그','회계·세무·Role·서식·코드·검증·AI 규칙','PF-04-02','전체 업무 표준의 유형, 원본, 소관부서, Steward와 확장허용 여부를 관리한다.','PlatformStandard, PlatformStandardItem','PLATFORM_STANDARD_ADMIN','관리회사·테넌트 원본 CUD 금지','6.0~6.1'],
+  ['PF-04','전역 정책·전체 업무 표준','메뉴 마스터','메뉴목록: code·parent·channel·level·type·screen·i18n·route·flag·phase·status·source','PF-04M','트리를 탐색 보조로 사용하고 PF/OP/TN/CO 메뉴목록을 기준으로 원본·다국어·경로를 관리한다.','Menu, MenuI18n, MenuRouteBinding, MenuVersion','PLATFORM_STANDARD_ADMIN, DRAFT에서만 CUD','고아·순환·중복 code/route·i18n 누락 차단, OP/TN 원본 쓰기 금지','4.3.2, 26.6.3'],
+  ['PF-04','전역 정책·전체 업무 표준','메뉴 버전·영향분석','Diff·Role/그룹/사용자 영향·검토·승인·발행·정지·롤백','PF-04M','메뉴 버전의 검증·SOD 상태전이와 발행/롤백을 수행한다.','MenuVersion, MenuPublishLog, RoleMenuPermission, UserGroupMenuPermission, PermissionEvaluationCache','작성자≠검토자≠발행승인자, Step-up','DRAFT→IN_REVIEW→APPROVED→PUBLISHED→RETIRED, SUSPENDED/ROLLED_BACK','4.3.2, 4.3.6, 26.6'],
+  ['PF-04','전역 정책·전체 업무 표준','표준 버전·검토','초안·영향분석·회귀검증·승인','PF-04-03','표준 버전을 작성하고 법적근거·효력일·영향범위를 검토한다.','PlatformStandardVersion, PlatformStandardApproval','PLATFORM_STANDARD_ADMIN+소관부서 검토자','작성자와 검토·승인자 분리','6.2'],
+  ['PF-04','전역 정책·전체 업무 표준','발행·중지·롤백·폐기','PUBLISHED·SUSPENDED·ROLLED_BACK·RETIRED','PF-04-04','승인된 표준을 불변 발행하고 장애·법령변경 시 안전하게 중지·롤백·폐기한다.','PlatformStandardRelease, StandardRollbackLog, PlatformStandardAuditLog','PLATFORM_STANDARD_ADMIN+발행 승인자, Step-up','contentHash 고정, 자기 작성본 단독 발행 금지','6.2'],
+  ['PF-04','전역 정책·전체 업무 표준','배포·채택 현황','관리회사 대상/일정·테넌트 채택/매핑','PF-04-05','플랫폼 발행본의 관리회사 배포와 테넌트 채택·매핑 현황을 감독한다.','OperatorStandardDistributionPolicy, OperatorStandardDistribution, TenantStandardAdoption, TenantStandardMapping','PLATFORM_STANDARD_ADMIN 조회·긴급통제','하위 원본 복제·오버레이·자체버전 금지','6.3~6.5'],
+
+  ['PF-05','플랫폼 보안·감사','조직 격리 현황','교차 관리회사 접근·RLS 위반','PF-05-01','관리회사 간 데이터 격리 위반을 탐지한다.','SecurityEvent, RlsViolation','PLATFORM_SECURITY','보안 이벤트는 변경 불가','2장, 20장'],
+  ['PF-05','플랫폼 보안·감사','플랫폼 감사로그','사용자·조직·Role·표준·관리회사·이관 변경','PF-05-02','플랫폼 제어영역의 중요 변경과 표준 발행을 감사한다.','PlatformUserActivityLog, PlatformStandardAuditLog, AuditHashChain','PLATFORM_AUDITOR 읽기전용','append-only·해시체인','5.7, 6.2, 12.3, 17장'],
+  ['PF-05','플랫폼 보안·감사','지원 접근 요청','대상 조직·테넌트·목적·범위·시간','PF-05-03','플랫폼 지원자의 제한적 관리회사/테넌트 접근을 승인한다.','PlatformSupportSession','관리회사 승인+Step-up','PLATFORM Role만으로 회계 API 접근 금지','5.4'],
+  ['PF-05','플랫폼 보안·감사','지원 접근 검토','통지·행위로그·만료·사후검토','PF-05-04','플랫폼 지원 세션의 전 과정을 이중 감사한다.','PlatformSupportSession, PlatformAuditLog','PLATFORM_SECURITY/AUDITOR','승인 범위·시간 밖 즉시 차단','5.4, 20장'],
+
+  ['PF-06','인프라·운영','전역 배치·큐','사용자/그룹·메뉴/표준·관리회사 라우팅','PF-06-01','사용자 휴면·소속/그룹구성원 만료, 메뉴 예약발행·롤백·권한캐시 무효화, 표준 배포 및 관리회사 배치를 운영한다.','JobQueue, ContextSnapshot, MenuVersion, PermissionEvaluationCache, PlatformStandardRelease, OperatorOrgQuota','플랫폼 운영 역할','platformOrgId/operatorOrgId/tenantId 라우팅','14장, 19장'],
+  ['PF-06','인프라·운영','관측성·SLO','조직→관리회사→테넌트 메트릭·장애 영향','PF-06-02','장애 영향을 플랫폼 내부조직, 관리회사와 테넌트까지 추적한다.','Metric, Trace, SLOEvent, Incident','플랫폼 운영/감사','조직별 rate limit/circuit breaker','19장'],
+  ['PF-06','인프라·운영','백업·DR','복구 우선순위·훈련·증적','PF-06-03','플랫폼 전역 재해복구와 조직별 복구 검증을 수행한다.','BackupSet, RestoreTest, DrRunbook','플랫폼 운영, Step-up','정기 복구 리허설 필수','19장']
+];
+
+const opRows = [
+  ['OP-00','운영 진입','수임회사 선택','활성 PRIMARY 관계·최근 접근·즐겨찾기','BF-00','현재 관리회사의 접근 가능한 수임회사를 선택한다.','OperatorOrgTenantRelation, TenantAssignment, Tenant','활성 Membership+관계+배정','현재 operatorOrgId 고정, 다른 조직 전환 금지','2.2, F.5.1'],
+  ['OP-00','운영 진입','접근 모드','VIEW/SUPPORT/BOOKKEEPING/BREAK_GLASS','BF-00, BF-06','relationId와 assignmentId를 포함한 임시 TenantContext를 발급한다.','AdminAccessSession, ContextSnapshot','사유·Step-up·serviceScopes 검증','관계 종료 시 세션 즉시 무효화','5장'],
+  ['OP-01','운영 현황','현재 조직 대시보드','수임관계·온보딩·미결 기장·SLO','OP-01-01','현재 관리회사 운영현황만 통합 감시한다.','OperatorOrg, OperatorOrgTenantRelation, OpenItem, SLOEvent','ORG 역할별 집계범위','다른 관리회사 데이터 미노출','1.7, 19장'],
+  ['OP-01','운영 현황','운영 리포트','사용량·오류·고객별 SLA','OP-01-02','현재 관리회사의 운영성과와 수임회사별 SLA를 분석한다.','UsageMeter, Incident, SlaReport','ORG_ADMIN/감사, 담당범위','operatorOrgId 최상위 필터 고정','19장'],
+  ['OP-02','우리 조직·소속','조직 기본정보','현재 OperatorOrg·조직 트리','BF-01','자기 관리회사 기본정보와 조직구조를 관리한다.','OperatorOrg, OperatorOrgUnit','ORG_OWNER/ORG_ADMIN','다른 관리회사 생성·상태변경은 PF-01','1.2, F.5.2'],
+  ['OP-02','우리 조직·소속','Membership','초대·휴면·종료·SSO/SCIM','BF-01','현재 관리회사 소속 사용자의 생명주기를 관리한다.','OperatorOrgMembership, SsoIdentity','ORG_ADMIN, 소속 유효기간','Membership 종료 시 세션·배정 재검증','4장'],
+  ['OP-02','우리 조직·소속','담당 배정','일반 담당·기장 담당·유효기간','BF-01, BF-07','활성 수임관계에 직원을 배정한다.','TenantAssignment, BookkeepingAssignment','Membership·relationId 동일 조직 검증','작성자/검토자 SOD','2.2, 4.5'],
+  ['OP-02','우리 조직·소속','IP 허용목록','운영콘솔 IP/CIDR 제한','BF-01','현재 관리회사의 콘솔 접근망을 제한한다.','ConsoleIpAllowlist','ORG_SECURITY_ADMIN','자기 잠금 경고·변경사유 필수','20.3'],
+  ['OP-03','수임회사·테넌트','수임회사 목록','관계·serviceScopes·온보딩·상태','BF-02','현재 조직의 활성 수임관계 테넌트만 조회한다.','OperatorOrgTenantRelation, Tenant','ORG 역할+배정범위','활성 PRIMARY/허용 SECONDARY만 노출','2.1~2.2'],
+  ['OP-03','수임회사·테넌트','테넌트 운영','격리티어·쿼터·스냅샷·비동기잡','BF-02','허용된 서비스 범위에서 테넌트를 운영한다.','TenantInfra, TenantSnapshot, AsyncReportJob','serviceScopes·Step-up','티어 전환 중 쓰기 제한','2장, F.5.3'],
+  ['OP-03','수임회사·테넌트','관계 변경 요청','수임 종료·서비스범위·이관 요청','OP-03-03','관계 변경을 플랫폼 승인 워크플로로 요청한다.','OperatorOrgTenantRelation, OperatorOrgTransferRequest','ORG_OWNER/ORG_ADMIN','PRIMARY 변경과 이관은 PF-03에서 승인','2.3'],
+  ['OP-04','구독·요금·사용량','수임 서비스 계약','기장·세무·급여·보고 범위·서비스료','BF-10','관리회사와 테넌트 간 서비스 계약과 요금을 관리한다.','TenantServiceContract, ServiceScope','ORG_BILLING_ADMIN','플랫폼 OperatorSubscription과 분리','7.1'],
+  ['OP-04','구독·요금·사용량','사용량·청구','UsageMeter·Invoice·Payment·Dunning','BF-10','수임 서비스 사용량과 청구·미납을 관리한다.','UsageMeter, Invoice, Payment, DunningCase','ORG_BILLING_ADMIN','scopeType=OPERATOR_ORG/TENANT 분리','7장'],
+  ['OP-04','구독·요금·사용량','직접 구독 확인','자가운영 TenantDirectSubscription','BF-10','테넌트 직접 구독과 관리회사 서비스 계약의 충돌을 확인한다.','TenantDirectSubscription','조회 전용','계약 주체별 청구 분리','7.1'],
+  ['OP-05','플랫폼 표준 배포','플랫폼 표준 카탈로그','PUBLISHED 원본·버전·효력일·변경요약','BF-08','플랫폼에서 발행한 전체 업무 표준을 읽기전용으로 조회한다.','PlatformStandard, PlatformStandardVersion, PlatformStandardRelease','ORG_STANDARD_DISTRIBUTOR/조회 역할','원본·버전 등록/수정/발행/롤백은 PF-04 전용','6.0~6.2'],
+  ['OP-05','플랫폼 표준 배포','배포정책·일정','수임 테넌트 대상·권고일·사전검증','OP-05-02','플랫폼 발행본의 수임 테넌트별 배포대상과 일정을 운영한다.','OperatorStandardDistributionPolicy, OperatorStandardDistribution','ORG_STANDARD_DISTRIBUTOR','현재 operatorOrgId와 활성 수임관계 테넌트만 대상','6.3~6.4'],
+  ['OP-05','플랫폼 표준 배포','채택현황','테넌트 채택·매핑·지연·실패','OP-05-03','수임 테넌트의 표준 채택과 회사별 매핑 상태를 모니터링한다.','TenantStandardAdoption, TenantStandardMapping','ORG_STANDARD_DISTRIBUTOR, 읽기/재안내','원본 오버레이·자체버전·강제롤백 금지','6.4~6.5'],
+  ['OP-06','사용자·인증·권한','사용자관리','목록·상세·소속/Role·보안/세션','OP-06A','현재 operatorOrgId의 사용자·Membership·권한·MFA·활성세션을 관리한다.','User, OperatorOrgMembership, RoleAssignment, ExternalPartnerProfile, UserSecurityAction','ORG_ADMIN/ORG_SECURITY_ADMIN, Step-up','PLATFORM 사용자 및 타 관리회사 계정 변경 금지','4.3.3, 26.6'],
+  ['OP-06','사용자·인증·권한','사용자그룹관리','그룹 기본정보·상위그룹·기본 Role·구성원','OP-06G','현재 관리회사의 권한관리 그룹과 구성원을 독립 저장단위로 관리한다.','UserGroup, UserGroupMember, UserGroupMemberHistory, UserGroupRoleBinding','ORG_ADMIN, operatorOrgId 고정','그룹코드 유일, 순환·타 조직 구성원·기간중복 차단','4.3.4, 26.6'],
+  ['OP-06','사용자·인증·권한','그룹별 메뉴권한','PUBLISHED OP 메뉴·INHERIT/ALLOW/DENY·미리보기','OP-06P','현재 관리회사 사용자그룹별 OP 메뉴 후보정책과 최종 판정근거를 관리한다.','UserGroupMenuPermission, MenuVersion, RoleMenuPermission, MenuActionGrant, PermissionSimulationLog','ORG_ADMIN+ORG_SECURITY_ADMIN, Step-up','DENY 우선, 부모 DENY 전파, Role/Action 초과 허용 금지','4.3.5, 26.6'],
+  ['OP-06','사용자·인증·권한','인증 정책','MFA·SSO·패스키·Step-up·IP','OP-06B','현재 관리회사와 수임회사 인증정책을 관리한다.','AuthPolicy, TrustedDevice','ORG_SECURITY_ADMIN','GLOBAL → OPERATOR_ORG → PLAN → TENANT','4.2, 26.6'],
+  ['OP-06','사용자·인증·권한','역할·가드레일·결재선','조직 Role·기장 Role·PolicyGuardrail·SOD','OP-06C','관리회사 조직/기장 역할과 범위 및 결재선을 배정한다.','Role, RoleAssignment, BookkeepingAssignment, PolicyGuardrail','ORG_OWNER/ADMIN, SOD','자기승격 금지, 기장계약·relationId·유효기간 검증','4.3, 4.5, 26.6'],
+  ['OP-06','사용자·인증·권한','발행 메뉴목록·영향 조회','현재 PUBLISHED OP 메뉴·route/flag·Role/그룹 영향','OP-06D','플랫폼에서 발행한 OP 메뉴목록과 권한 영향을 읽기전용으로 조회한다.','Menu, MenuVersion, RoleMenuPermission, UserGroupMenuPermission','ORG_ADMIN/ORG_AUDITOR, 읽기전용','조회·영향 미리보기·내보내기만 허용, 원본 CUD/발행은 PF-04M','4.3.1~4.3.2, 26.6'],
+  ['OP-07','접근 거버넌스','접근 세션','조직·테넌트·관계·배정 감사키','BF-06','관리회사 사용자의 테넌트 접근 근거를 추적한다.','AdminAccessSession, AdminAccessLog','ORG_SUPPORT/감사, Step-up','operatorOrgId/tenantId/relationId/assignmentId 기록','5장'],
+  ['OP-07','접근 거버넌스','긴급대행','Break-glass 승인·녹화·사후검토','BF-06','현재 수임관계 내 긴급 접근을 통제한다.','BreakGlassConsent, BreakGlassRequest, SessionRecording','2인 승인·시간/범위 제한','관계 없는 테넌트 긴급접근 금지','5.3'],
+  ['OP-07','접근 거버넌스','플랫폼 지원 검토','PlatformSupportSession 승인·행위 확인','OP-07-03','자기 조직 대상 플랫폼 지원 접근을 승인·검토한다.','PlatformSupportSession, PlatformAuditLog','ORG_OWNER/SECURITY','플랫폼 세션은 이중 감사','5.4'],
+  ['OP-08','기장 워크벤치','기장 모드','관계별 OPERATOR_LED/TENANT_LED/HYBRID','BF-03','수임관계별 기장 수행주체와 확인의무를 설정한다.','BookkeepingConfig, BookkeepingModeChangeRequest','양측 동의·Step-up','효력일 이전 소급 금지','21장'],
+  ['OP-08','기장 워크벤치','담당 회사 보드','전표·마감·신고·보고 진입','BF-00, TN','현재 조직의 관계와 기장배정을 모두 만족하는 회사만 표시한다.','BookkeepingAssignment, ContextSnapshot','BOOKKEEPING 역할','operatorOrgId 최상위 필터 고정','21.5'],
+  ['OP-08','기장 워크벤치','보고·미결 큐','보고패키지·Open Items·고객 Ack','TN-08, TN-14','수임 산출물 조립과 고객 확인을 관리한다.','ReportPackage, OpenItem, QueryThread','담당관계·기장모드','OPERATOR_LED/HYBRID 중심','11.13, 18.3'],
+  ['OP-08','기장 워크벤치','기장 인계','조직 내 담당변경·관리회사 이관 체크리스트','OP-08-04','미결업무와 책임시점을 새 담당자/관리회사에 인계한다.','BookkeepingHandover, WorkTransfer','인계자·인수자 확인','관리회사 이관은 PF-03과 연동','21장'],
+  ['OP-09','운영·배치·연계','범위형 커넥터','OPERATOR_ORG/TENANT 시크릿·인증서','CO-09','현재 조직 공용 또는 테넌트 소유 커넥터를 관리한다.','ScopedConnector, ConnectorCredential','ORG_SUPPORT, KMS','scopeType/scopeId 격리','8장'],
+  ['OP-09','운영·배치·연계','자격증명 위임','목적·관계·기간·회수','CO-09','관계 기반 외부 인증정보 위임을 관리한다.','CredentialDelegation','relationId/serviceScopes 검증','관계 종료·이관 시 즉시 회수','8.3'],
+  ['OP-09','운영·배치·연계','배치·관측성','ETL·DLQ·SLO·장애','CO-06, CO-08','현재 조직과 수임회사 범위 배치를 모니터링한다.','ContextSnapshot, JobRun, SLOEvent','ORG_SUPPORT/감사','실행 직전 관계·배정 재검증','14장, 19장'],
+  ['OP-10','보안·감사 운영','조직 보안','KMS·키회전·DLP·취약점','CO-07','현재 관리회사 범위의 보안통제를 운영한다.','KmsKey, DlpEvent, VulnerabilityFinding','ORG_SECURITY_ADMIN','다른 관리회사 이벤트 미노출','20장'],
+  ['OP-10','보안·감사 운영','관계·이관 감사','수임·배정·접근·인계 변경이력','CO-05','관리회사 책임관계와 이관 증적을 감사한다.','AdminAccessLog, BookkeepingHandover, AuditHashChain','감사자 읽기전용','append-only·물리삭제 금지','12.3, 17장'],
+  ['OP-11','AI·규칙 운영','표준 규칙 배포·운영','플랫폼 이상탐지 룰·허용 임계치·검토 큐','TN-14','플랫폼 발행 이상탐지 규칙을 수임회사에 배포하고 모델·검토 큐를 운영한다.','PlatformStandardVersion, OperatorStandardDistribution, AnomalyModel','ORG_STANDARD_DISTRIBUTOR/AI 운영/감사','규칙 원본 수정 금지, 테넌트 기준선·피드백 혼합 금지','11.7'],
+  ['OP-11','AI·규칙 운영','AI 조회 가드레일','허용 Tool·읽기범위·감사','TN-14','자연어 조회의 조직·테넌트 접근범위를 통제한다.','ChatGuardrailPolicy, QueryToolLog','읽기전용, 서버 권한필터','테넌트별 모델·벡터 격리','11.8']
+];
+
+const coRows = [
+  ['CO-01','로그인·내 계정','계정 보안','비밀번호·MFA·패스키·SSO·신뢰장치','CO-01-01','모든 사용자군의 공통 계정 보안을 관리한다.','PlatformUser, User, MfaDevice, SsoIdentity','본인/보안 관리자','userGroup=PLATFORM/OPERATOR/TENANT 구분','3장'],
+  ['CO-01','로그인·내 계정','소속·컨텍스트','Platform/Operator/Tenant Membership·조직전환·세션','CO-01-02','유효 소속을 바탕으로 계층별 컨텍스트를 선택한다.','PlatformMembership, PlatformOrgUnit, OperatorOrgMembership, TenantMembership, ContextSnapshot','Membership·Role·contextVersion 검증','위조/만료/정지 소속 컨텍스트 차단','2.2, 3장, 5.7'],
+  ['CO-02','알림·커뮤니케이션','알림함·수신정책','법정·보안·이관·미결업무 알림','CO-02-01','계층별 중요 알림과 확인상태를 관리한다.','Notification, NotificationPolicy','수신자·범위 검증','PLATFORM→OPERATOR_ORG→TENANT 라우팅','18장'],
+  ['CO-02','알림·커뮤니케이션','템플릿·웹훅','계층별 브랜딩·채널·재전송','CO-02-02','알림 템플릿과 외부 전송을 계층별로 관리한다.','NotificationTemplate, WebhookEndpoint','소유 scope만 변경','법정/보안 통지는 수신거부 불가','18장'],
+  ['CO-03','API·서비스 계약','계층별 API','/api/platform·/api/operator·/api/tenant','CO-03-01','플랫폼 제어, 관리회사 운영, 테넌트 업무 API 경계를 분리한다.','ApiRoute, ApiVersion','userGroup·Role·Scope 검증','PlatformUser 일반 회계 API 직접호출 금지','13장'],
+  ['CO-03','API·서비스 계약','플랫폼 조직·표준·메뉴 API','/platform-org·/users·/user-groups·/menu-versions·/standards','CO-03-PF','플랫폼 내부조직·사용자·그룹과 표준/메뉴 원본 CUD 경로를 플랫폼 API로 한정한다.','PlatformOrgService, ScopedUserLifecycleService, UserGroupService, MenuCatalogService, MenuVersionService, PlatformStandardService','PLATFORM 전용 Role+SOD+Step-up','관리회사/테넌트 표준·메뉴 원본 쓰기 경로 미제공','5.7, 6장, 13장'],
+  ['CO-03','API·서비스 계약','그룹메뉴권한·최종메뉴 API','/{scope}/user-groups/{id}/menu-permissions·/api/me/menus','CO-03-PERM','3계층 그룹정책 저장·미리보기와 로그인 사용자의 최종 메뉴를 제공한다.','GroupMenuPermissionService, PermissionEvaluationService, PermissionSimulationService','scope 고정, 서버 재평가, optimistic lock','menuVersionId·permissionGeneration 반환, 캐시 불일치 시 원본 재평가','4.3.5, 13장'],
+  ['CO-03','API·서비스 계약','컨텍스트 미들웨어','조직·테넌트·관계·배정 서명검증','CO-03-02','모든 요청의 3계층 접근 컨텍스트를 일관되게 검증한다.','ContextSnapshot, AdminAccessSession','커밋 직전 관계 재검증','감사 헤더와 contextVersion 기록','2.2, 13장'],
+  ['CO-03','API·서비스 계약','비동기·외부 연계','멱등키·콜백·재시도·대량리포트','CO-03-03','비동기 API와 외부 연계의 신뢰성을 보장한다.','AsyncReportJob, IdempotencyKey','생성·실행 시 권한 재검증','관계종료 후 쓰기잡 취소','13~14장'],
+  ['CO-04','검증·오류 처리','3계층 오류','플랫폼조직·소속·관계·서비스범위·이관','CO-04-01','계층별 접근 실패를 표준 오류로 반환한다.','ErrorCatalog','서버 검증 우선','PLATFORM_MEMBERSHIP_REQUIRED, PLATFORM_SCOPE_DENIED, OPERATOR_ORG_ACCESS_DENIED','15장'],
+  ['CO-04','검증·오류 처리','표준관리 오류','원본쓰기 거부·미발행 버전·SOD 위반','CO-04-STD','표준 원본 소유권과 발행 수명주기 위반을 구분해 반환한다.','ErrorCatalog, PlatformStandardVersion','플랫폼 표준 API에서만 CUD','PLATFORM_STANDARD_WRITE_DENIED, STANDARD_VERSION_NOT_PUBLISHED, STANDARD_SOD_VIOLATION','6장, 15장'],
+  ['CO-04','검증·오류 처리','사용자그룹·메뉴 오류','scope/순환/중복·메뉴버전/경로/i18n·권한캐시','CO-04-PERM','사용자·그룹·메뉴·그룹권한 검증 실패를 복구 가능한 코드로 반환한다.','ErrorCatalog, UserGroup, MenuVersion','서버 검증 우선, 저장 원자성','USER_GROUP_MENU_CONFLICT, MENU_VERSION_NOT_PUBLISHED, MENU_PARENT_INVALID, MENU_I18N_REQUIRED, PERMISSION_CACHE_STALE','15장, 26.4'],
+  ['CO-04','검증·오류 처리','관계·배정 오류','관계없음·비활성·범위거부·배정누락','CO-04-02','관리회사 대행업무의 관계와 담당자 오류를 구분한다.','ErrorCatalog, OperatorOrgTenantRelation','상태와 유효기간 동시 검증','TENANT_RELATION_REQUIRED/INACTIVE, ASSIGNMENT_REQUIRED','15장'],
+  ['CO-04','검증·오류 처리','업무 오류','마감·SOD·차대·차원·보조항목','CO-04-03','기존 회계 업무 검증과 3계층 검증을 결합한다.','ValidationRule','오류코드·복구가이드 제공','CLOSING_LOCKED, SOD_VIOLATION 등','15장'],
+  ['CO-05','데이터 모델·상태값','3계층 제어모델','플랫폼 조직·사용자·소속·수임·배정','CO-05-01','플랫폼 내부조직과 복수 관리회사 운영의 기준 엔티티·관계를 정의한다.','PlatformOrg, PlatformOrgUnit, PlatformUser, PlatformMembership, OperatorOrg, OperatorOrgMembership, OperatorOrgTenantRelation','FK·복합키·유니크 제약','플랫폼 소속, 수임관계, 직원배정 분리','12장'],
+  ['CO-05','데이터 모델·상태값','사용자그룹·메뉴권한 모델','scope별 그룹/구성원/Role·메뉴목록/버전/정책/캐시','CO-05-PERM','3계층 사용자그룹과 플랫폼 메뉴 원본 및 최종 권한평가 엔티티를 정의한다.','UserGroup, UserGroupMember, UserGroupRoleBinding, Menu, MenuI18n, MenuVersion, UserGroupMenuPermission, PermissionEvaluationCache','scope/channel FK·유일·순환·기간 제약','메뉴 원본은 PLATFORM 소유, runtime은 PUBLISHED 1건','4.3, 12장'],
+  ['CO-05','데이터 모델·상태값','표준 원본·배포모델','플랫폼 원본→관리회사 배포→테넌트 채택','CO-05-STD','전체 업무 표준의 원본 소유와 하위 배포·채택 관계를 정의한다.','PlatformStandard, PlatformStandardVersion, PlatformStandardApproval, OperatorStandardDistribution, TenantStandardAdoption, TenantStandardMapping','원본 platformId 고정, 발행 SOD','레거시 OperatorStandardOverlay는 마이그레이션 후 읽기전용 이력','6장, 12장'],
+  ['CO-05','데이터 모델·상태값','이관·컨텍스트 모델','요청·인계·실행시점 스냅샷','CO-05-02','이관 책임시점과 요청/잡 컨텍스트를 보존한다.','OperatorOrgTransferRequest, BookkeepingHandover, ContextSnapshot','append-only 이력','tenantId 소유권과 수임권한 분리','12장'],
+  ['CO-05','데이터 모델·상태값','상태·생명주기','조직·관계·배정·이관·업무상태','CO-05-03','각 엔티티의 허용 상태전이를 표준화한다.','StatusMachine, StatusHistory','정의된 전이만 허용','상태변경 사유와 승인 기록','12.2'],
+  ['CO-06','배치·스케줄','정기 배치','수집·신고기한·평가·보고·보존','CO-06-01','업무 정기잡을 조직과 테넌트 범위로 실행한다.','JobDefinition, JobRun, ContextSnapshot','조직별 쿼터·멱등키','라우팅키 platformId/operatorOrgId/tenantId/jobType','14장'],
+  ['CO-06','배치·스케줄','실행 전 재검증','조직상태·관계·배정·serviceScopes','CO-06-02','대기 중 권한변경을 실행 직전에 반영한다.','ContextSnapshot, OperatorOrgTenantRelation','쓰기잡 커밋 전 재검증','관계종료·이관중 쓰기잡 취소','14장'],
+  ['CO-06','배치·스케줄','권한캐시 무효화','사용자·그룹·Role·메뉴발행 변경 이벤트','CO-06-PERM','권한 근거 변경 시 scope별 cache generation을 증가시키고 최종 메뉴를 재평가한다.','PermissionEvaluationCache, MenuPublishLog, UserGroupMemberHistory','이벤트 멱등·세대 단조증가','PERMISSION_CACHE_STALE이면 원본 즉시 재평가','4.3.5, 14장'],
+  ['CO-06','배치·스케줄','실패·DLQ','재시도·수동처리·실행이력','CO-06-03','실패 작업을 안전하게 복구한다.','DeadLetterQueue, RetryPolicy','조직/관계키 없는 재처리 금지','원 컨텍스트 감사 보존','14장'],
+  ['CO-07','보안·개인정보','이중 RLS·암호화','관리회사 RLS+테넌트 RLS·KMS·마스킹','CO-07-01','조직과 테넌트의 이중 데이터 격리를 보장한다.','RlsPolicy, KmsKey, DataMaskPolicy','보안 관리자·Step-up','교차 조직 접근 보안이벤트 기록','16~17장, 20장'],
+  ['CO-07','보안·개인정보','지원세션 통제','플랫폼 지원 승인·만료·통지·감사','CO-07-02','플랫폼 지원 접근을 일반 관리회사 접근과 분리한다.','PlatformSupportSession, PlatformAuditLog','관리회사 승인+시간/범위 제한','이중 감사로그 필수','5.4, 20장'],
+  ['CO-07','보안·개인정보','컴플라이언스','DLP·취약점·침해사고·보존/파기','CO-07-03','계층별 보안 및 개인정보 의무를 이행한다.','DlpEvent, VulnerabilityFinding, RetentionPolicy','보안/감사 역할','조직·테넌트별 증적 분리','20장'],
+  ['CO-08','시스템 운영·인프라','관측성','platform→operatorOrg→tenant 메트릭','CO-08-01','장애와 성능 영향을 세 계층으로 추적한다.','Metric, Log, Trace, SLOEvent','운영/감사 역할','컨텍스트 키 누락 로그 차단','19장'],
+  ['CO-08','시스템 운영·인프라','격리·회로차단','조직별 rate limit·worker·circuit breaker','CO-08-02','한 관리회사 장애가 다른 조직으로 전파되지 않게 한다.','RateLimitPolicy, WorkerPool, CircuitBreaker','플랫폼 운영 역할','operatorOrgId 단위 격리','19장'],
+  ['CO-08','시스템 운영·인프라','배포·DR·아카이브','환경분리·롤백·백업·콜드스토리지','CO-08-03','서비스 배포와 재해복구를 계층별로 검증한다.','DeployLog, BackupSet, ArchiveObject','운영 권한·Step-up','정기 복구 리허설','19장'],
+  ['CO-09','산출물·보고서','업무 산출물','보고패키지·재무제표·신고서·전자파일','CO-09-01','테넌트 업무 산출물을 생성·전송한다.','ReportPackage, FinancialStatement, FilingArtifact','테넌트/담당 관계·승인','생성 주체·조직·관계 감사키 기록','11장'],
+  ['CO-09','산출물·보고서','출력·전송이력','재생성·전송상태·승인본 잠금','CO-09-02','산출물 버전과 외부 전송 증적을 보존한다.','OutputHistory, TransmissionLog','승인자·감사자','승인본 불변·재생성 사유','11장, 17장'],
+  ['CO-10','설계서 추적','V1.1 3계층 추적','플랫폼 조직·사용자·표준·수임·이관·권한','CO-10-01','V1.1 설계 항목과 구현 메뉴를 추적한다.','DesignTrace, MenuVersion','설계/감사 역할','PF/OP/TN/CO 메뉴코드 연결','0~10장'],
+  ['CO-10','설계서 추적','업무·SA 추적','회계업무·부록·SA 182개 화면','CO-10-02','기존 상세 업무와 3계층 변경의 누락을 확인한다.','DesignTrace, ScreenCatalog','설계/QA 역할','TN-01~15와 SA 화면 연결','11~25장, 부록']
+];
+
+const tnContextRows = [
+  ['TN-00','홈·현황','업무 컨텍스트','직접이용 tenantId / 대행 4키 컨텍스트','TN-00-CTX','TN-01~15 전체 조회·입력·승인·출력의 계층 컨텍스트를 표시한다.','ContextSnapshot, OperatorOrgTenantRelation, TenantAssignment','직접 사용자는 tenantId, 대행자는 관계·배정 추가','모든 TN 화면에 고정 배지와 감사키 적용','2.2'],
+  ['TN-01','회사 설정·기초','관계별 기장방식','BookkeepingConfig·수행주체·확인의무','BF-03','활성 수임관계별 기장모드와 책임을 관리한다.','BookkeepingConfig, OperatorOrgTenantRelation','회사 관리자+관리회사 승인, Step-up','TENANT_LED/OPERATOR_LED/HYBRID','21장'],
+  ['TN-01','회사 설정·기초','플랫폼 표준 채택·매핑','발행버전 채택·회사계정/항목 매핑·허용확장','TN-01-STD','플랫폼 발행 표준을 채택하고 회사 고유 기준정보에 매핑한다.','TenantStandardAdoption, TenantStandardMapping, TenantStandardExtension','TENANT_ADMIN/업무책임자 승인','원본 변경 금지, extensible 유형의 namespace 확장만 허용','6.4~6.5'],
+  ['TN-01','회사 설정·기초','이용회사 사용자관리','목록·상세·소속/Role·보안/세션','TN-01U','현재 tenantId 사용자의 초대·상태·권한·MFA·세션을 관리한다.','TenantUser, TenantMembership, RoleAssignment, UserSecurityAction','TENANT_ADMIN, Step-up','상위 PF/OP 계정과 다른 tenantId 사용자 변경 금지','4.3.3, 26.6'],
+  ['TN-01','회사 설정·기초','이용회사 사용자그룹','그룹 기본정보·상위그룹·구성원·유효기간','TN-01G','현재 tenantId의 권한관리 그룹과 구성원을 별도 저장단위로 관리한다.','UserGroup, UserGroupMember, UserGroupMemberHistory, UserGroupRoleBinding','TENANT_ADMIN, tenantId 고정','그룹코드 유일, 순환·타 tenant 구성원·기간중복 차단','4.3.4, 26.6'],
+  ['TN-01','회사 설정·기초','그룹별 메뉴권한','PUBLISHED TN/CO 메뉴·INHERIT/ALLOW/DENY·미리보기','TN-01P','이용회사 사용자그룹별 TN/CO 메뉴 후보정책과 최종 판정근거를 관리한다.','UserGroupMenuPermission, MenuVersion, RoleMenuPermission, MenuActionGrant','TENANT_ADMIN, Step-up','DENY 우선, 부모 DENY 전파, Role/Action/data scope 초과 허용 금지','4.3.5, 26.6'],
+  ['TN-15','데이터관리·이관','관리회사 변경 인계','관계·배정·시크릿·미결업무 컷오버','TN-15-04','관리회사 변경 시 테넌트 데이터 이동 없이 업무책임을 인계한다.','OperatorOrgTransferRequest, BookkeepingHandover, WorkTransfer','테넌트 동의+플랫폼 승인','tenantId와 원천데이터 유지','2.3, 21장']
+];
+
+const tnCoreRows = [
+  ['TN-00','회사 대시보드','현황','신고기한·미결전표·마감상태','-','이용회사 업무 시작 화면과 주요 알림 허브다.','Tenant, ClosingStatus, OpenItem, Alert','소속 사용자 권한 범위','위젯은 Role 데이터 범위에 따라 필터','1장, 18장'],
+  ['TN-01','회사 설정·기초','기장 방식','기장 모드·확인의무·전환 요청','BF-03','회사별 기장 수행 주체와 신고 승인 책임을 설정한다.','BookkeepingConfig, ModeChangeRequest','회사 관리자/운영자, Step-up','OPERATOR_LED/HYBRID에 따라 메뉴 가변','21장, F.5.4'],
+  ['TN-01','회사 설정·기초','차원/관리항목','사업장·코스트센터·부서·프로젝트·현장·사원','BF-09','전표와 원장 분석에 쓰는 관리차원 마스터를 관리한다.','Dimension, BusinessPlace, CostCenter, Department, Project, Site, Employee','회사 관리자/운영자','사업장 기본 필수, 나머지는 회사 설정으로 강화','9장, F.5.10'],
+  ['TN-01','회사 설정·기초','차원 사용정책/소수점','DimensionConfig, TenantAccountingConfig','BF-09','차원 필수/기본값/조합 검증과 금액·수량·환율 자릿수를 관리한다.','DimensionConfig, TenantAccountingConfig','회사 관리자','전표 저장 검증에 즉시 영향','9.3, F.7'],
+  ['TN-01','회사 설정·기초','알림 설정','수신정책·템플릿·D-N·웹훅','BF-11','법정 기한, 인증서, 어음, 마감 알림을 설정한다.','NotificationPolicy, NotificationTemplate, WebhookEndpoint','회사 관리자/사용자','법정/보안 통지는 수신 거부 불가','18장, F.5.12'],
+  ['TN-02','기초정보관리','BK 기준정보','회사/권한/환경/거래처/COA/차원','BF-01~12, SA-BAS','기초·마스터 정보를 등록하고 SA 기초 기능을 BK 모델로 흡수한다.','Tenant, Partner, COA, Dimension, Menu, Role','회사 관리자/회계 관리자','SA-BAS 14개 화면 세부 행 별도 포함','25.1, F절'],
+  ['TN-03','전기이월·개시잔액','초기이월','재무제표·거래처·부서·프로젝트·현장 이월','SA-OPN','전임 장부나 전기 잔액을 BK 기초잔액으로 적재한다.','OpeningBalance, FiscalPeriod, Dimension','회계 관리자/기장 담당','차액 검증 통과 후 정상 기장 개시','25.2~25.3'],
+  ['TN-04','전표 입력·결재','일반전표입력','대체·입금·출금·결차·결대 통합','JV-01, SA-JNL-01, WJV-01','일반 거래를 하나의 전표 입력 화면에서 처리한다.','journal_header, journal_line','회계담당/기장담당, 마감기간 차단','입금/출금 별도 메뉴 없음, 현금 위치로 판정','11.1, 25.4.1, G.5.1'],
+  ['TN-04','전표 입력·결재','현금 간편입력','현금 차변/대변 고정 모드','JV-02, JV-03','현금 입출금 단순 거래를 빠르게 입력한다.','journal_line','회계담당/기장담당','현금만 허용, 채권채무/부가세 계정은 대체전표 유도','G.5.2'],
+  ['TN-04','전표 입력·결재','매입매출전표입력','상단 세무헤더 + 하단 분개라인','JV-04, JV-05, SA-JNL-02, WPV-01','부가세 신고자료와 재무회계 분개를 동시에 생성한다.','journal_tax_line, journal_line, tax_type_master','회계/세무담당','과세유형이 신고서식 라우팅의 단일 진실원','25.4.2, G.5.3~G.5.4'],
+  ['TN-04','전표 입력·결재','전표 도구','복사·반복·템플릿·역분개','JV-06','반복 입력과 기표 후 정정을 지원한다.','JournalTemplate, ReversalJournal','회계담당/결재권자','POSTED 전표는 역분개로만 정정','G.5.5'],
+  ['TN-04','전표 입력·결재','전표 검색/수정/삭제','상태별 조회·수정·역분개','JV-07','전표 상태별 조회와 정정 흐름을 제공한다.','journal_header, journal_history','권한/상태별 제한','POSTED/CLOSED/LOCKED 직접 수정 금지','G.5.6'],
+  ['TN-04','전표 입력·결재','다건·일괄 입력','엑셀/CSV 업로드·행별 검증','JV-08','외부 기장자료를 대량 업로드하고 전표로 생성한다.','ImportBatch, journal_line','회계담당/기장담당','오류행 인라인 수정 후 재검증','G.5.7'],
+  ['TN-04','전표 입력·결재','전표 결재함','승인·반려·기표','TN-06','작성 전표를 검토하고 결재/기표한다.','ApprovalRule, ApprovalStep, journal_history','작성자와 승인자 동일 금지','SOD_VIOLATION 차단','4장, G.8.3'],
+  ['TN-05','보조부·관리항목','관리항목 입력','전표 라인 보조항목 입력','WJV-02','전표 라인의 차원, 거래처, 자금, 차량, 카드 등 관리항목을 입력한다.','journal_line_aux, DimensionConfig','라인 입력 권한','필수 관리항목 누락 시 AUX_REQUIRED 차단','G.6, 부록 일반전표'],
+  ['TN-05','보조부·관리항목','관리항목 통합 관리','차원/보조부 마스터 관리','WJV-07','입력 중 필요한 관리항목 마스터를 추가/수정한다.','Dimension, Partner, Note, BankAccount, Card','회사 관리자/회계 관리자','계정별 노출/필수 규칙과 연결','부록 일반전표'],
+  ['TN-05','보조부·관리항목','거래처별 보조부','채권·채무·외화·aging','AUX-01','거래처별 채권채무 잔액과 반제 관계를 관리한다.','partner, journal_line_aux','회계/세무/기장 담당','잔액만·연체만·미반제만 조회','G.6'],
+  ['TN-05','보조부·관리항목','어음 보조부','받을/지급어음·할인·부도·타임라인','AUX-02, WJV-04, WJV-05','어음번호 기준 만기와 상태 이력을 추적한다.','note, note_history','회계/기장 담당','할인 자동분개, 원전표-증빙-후속전표 연결','G.6'],
+  ['TN-05','보조부·관리항목','부가세 부속서류 반영','의제매입세액·재활용폐자원','WJV-03','일반전표 입력 중 부가세 부속서류 반영 대상 라인을 식별하고 신고자료와 연결한다.','vat_attachment, purchase_ledger_line, journal_line_aux','세무/회계 담당','과세유형·계정·증빙 유형 조건 충족 시 노출','부록 일반전표 5.1'],
+  ['TN-05','보조부·관리항목','차입금 입력','차입처·약정·이자·상환 스케줄','WJV-06','차입금 보조부를 등록하고 원금/이자/상환 전표와 연결한다.','loan, loan_schedule, journal_line_aux','회계/자금 담당','계정과목이 차입금 관리대상일 때 필수 입력','부록 일반전표 6.4'],
+  ['TN-05','보조부·관리항목','예금/카드 보조부','계좌 대사·카드 공제판정','AUX-03, AUX-04','은행/카드 수신내역과 전표 후보를 관리한다.','bank_account, card, card_txn','회계/기장 담당','카드 MCC·공제세액 보존','G.6'],
+  ['TN-05','보조부·관리항목','가지급금·부가세·현금','정산·신고집계·시재','AUX-05, AUX-06, AUX-07','특수 보조부와 현금출납을 관리한다.','advance, purchase_ledger_line, journal_line','회계/세무 담당','부가세는 프로젝트·부서·사업장 필터 제공','G.6'],
+  ['TN-05','보조부·관리항목','재고/고정자산 보조부','수불·취득·상각 기준','AUX-08, AUX-09','재고수불과 고정자산대장을 관리한다.','stock_move, fixed_asset','회계/자산 담당','AUX-08은 Phase 2 이관','G.6'],
+  ['TN-06','자동전표·증빙','증빙함','파일·세금계산서·카드·어음 증빙 매칭','TN-08','증빙을 수집하고 전표 라인과 매칭한다.','evidence, evidence_match','회계/세무/기장 담당','평문/민감정보는 마스킹·재인증','11.12, G.4'],
+  ['TN-06','자동전표·증빙','자동전표 수집','전자세금계산서·카드·현금영수증·통장','SA-ATX','외부자료를 수집해 전표 후보로 전송한다.','CollectionJob, StagingEvidence, AutoJournalCandidate','회계/기장 담당','중복방지·전표전송현황·자동전표검증','25.5'],
+  ['TN-07','장부·원장·보조장부','주요장부','분개장·원장·시산표·매입매출장','SA-LDG-01~09','전표와 원장을 조회/출력한다.','journal_header, journal_line, ledger_view','조회 권한/데이터 범위','POSTED 기준 집계','25.6'],
+  ['TN-07','장부·원장·보조장부','보조장부','공사/외주/차량/차원별 원가·손익','SA-LDG-10~29','세부 보조원장과 차원별 손익/원가를 조회한다.','journal_line_aux, Dimension, CostAllocation','조회 권한/차원 범위','관리차원별 필터','25.7~25.8'],
+  ['TN-08','마감·결산·재무제표','마감 관리','가마감·본마감·마감해제·체크리스트','TN-09','기간별 입력 잠금과 마감 체크리스트를 관리한다.','ClosingPeriod, ClosingChecklist','마감 권한자, Step-up','미tie-out/미결항목/원가계산 게이트','11.9'],
+  ['TN-08','마감·결산·재무제표','결산/재무제표','결산자료·시산표·재무제표','SA-CLS-01~14','결산 입력과 재무제표 산출물을 생성한다.','closing_entry, financial_statement','회계/결산 담당','결차/결대 구분 반영','25.9'],
+  ['TN-08','마감·결산·재무제표','결산장부/증명서류','영수증·송금·지출증명·기간별 손익','SA-CLS-15~21','결산 부속장부와 증명 서류를 생성한다.','supporting_schedule, evidence_summary','회계/세무 담당','증빙 누락 검증과 연결','25.10'],
+  ['TN-08','마감·결산·재무제표','보고패키지·tie-out·스케줄','월별 보고패키지·계정별 명세·리스','-','월말 보고 산출물과 잔액 소명, 기간배분 스케줄을 관리한다.','ReportPackage, AccountSchedule, LeaseContract','회계/기장/결재자','마감 게이트와 고객 Ack 연결','11.13~11.15'],
+  ['TN-09','부가세·신고서류','부가세 주요신고','신고서·MRI·합계표·전자신고','SA-VAT-01~08','부가세 신고서와 주요 합계표를 작성/검증/전송한다.','vat_return, tax_invoice_summary','세무 담당, 신고 전송 Step-up','사업장/사업자단위 신고','25.11'],
+  ['TN-09','부가세·신고서류','업종별/첨부/영세율/기타','부가세 첨부서류 42종','SA-VAT-09~50','업종별, 영세율, 수출, 기타 신고 부속서류를 관리한다.','vat_attachment, evidence','세무 담당','과세유형·계정·적요 기반 라우팅','25.12~25.15'],
+  ['TN-10','세무·고정자산·차량','원천세·법인세·세무조정','신고·추정세액·선납세금','-','세무 신고와 월별 법인세 추정/선납세금을 관리한다.','TaxProvision, PrepaidTax, filing_status','세무 담당, 신고 Step-up','법정 신고기한 알림과 연결','11.5, 11.5 확장'],
+  ['TN-10','세무·고정자산·차량','고정자산','등록·상각·관리대장·자산명세','SA-FA, AUX-09','고정자산 취득, 상각, 배부 기준을 관리한다.','fixed_asset, depreciation_schedule','자산/회계 담당','전표 취득 라인과 연결','25.16, G.6'],
+  ['TN-11','자금·예산·어음','자금관리','일일자금·자금계획·입출금·자금일월보','SA-FND-01~06','자금 흐름과 계획을 관리한다.','cash_plan, bank_txn, fund_schedule','회계/자금 담당','은행거래 대사와 연결','25.17'],
+  ['TN-11','자금·예산·어음','예산관리','예산입력·예실·추정예산','SA-FND-07~14','예산과 실적을 월별/분기별로 비교한다.','Budget, BudgetActual','관리회계 담당','부서/코스트센터 차원 사용','11.19, 25.17'],
+  ['TN-11','자금·예산·어음','예적금·차입금','예적금현황·차입금스케줄','SA-DEP','예금과 차입금 잔액 및 일정을 관리한다.','bank_account, borrowing_schedule','자금/회계 담당','AUX-03 예금 보조부와 연결','25.18'],
+  ['TN-11','자금·예산·어음','어음·당좌','받을/지급어음·어음집계·수표','SA-BIL, AUX-02','어음과 당좌수표 상태를 관리한다.','note, checkbook, note_history','자금/회계 담당','만기/할인/부도 타임라인','25.19, G.6'],
+  ['TN-12','외화·관계사·관리회계','외화 평가','환율·월말환산·외환손익','-','외화 채권채무와 월말 환산을 처리한다.','FxRate, FxRevaluation','회계/기장 담당','feature.fxRevaluation','11.16'],
+  ['TN-12','외화·관계사·관리회계','관계사 거래·대사','IC 마스터·잔액·연결제거 기초','-','관계사 거래와 상호잔액을 대사한다.','RelatedParty, IntercompanyBalance','회계/관리회계 담당','feature.intercompany','11.17'],
+  ['TN-12','외화·관계사·관리회계','Cost-plus·차이분석','원가가산 수익·Invoice vs PL','-','원가가산 수익과 청구/손익 차이를 분석한다.','CostPlusRule, InvoicePLDiff','관리회계 담당','feature.costPlus','11.18'],
+  ['TN-12','외화·관계사·관리회계','그룹 연결보고','HFM/Weblink Export·계정매핑','-','그룹 보고 패키지와 연결보고 파일을 생성한다.','GroupReportMapping, GroupExport','관리자/회계 담당','feature.groupReporting','11.20'],
+  ['TN-13','원가·재고·제조','제조원가·재고수불','재고수불·원가계산·제조원가명세','AUX-08, SA-CLS-05','재고와 원가요소 배부, 제조원가명세를 관리한다.','stock_move, CostAllocationRule, CostStatement','제조/원가 담당','제조/유통 업종, Phase 2 항목 포함','11.21'],
+  ['TN-14','협업·AI','미결항목/질의','Open Items·고객 확인·증빙요청','-','마감/보고 전 미결 질의와 고객 확인을 관리한다.','OpenItem, QueryThread, Ack','회사/기장 담당','OPERATOR_LED/HYBRID 협업 강화','18.3'],
+  ['TN-14','협업·AI','이상거래 탐지','이상 알림 검토함','-','AI/룰 기반 이상 전표 후보를 검토한다.','AnomalyFinding, ReviewDecision','회계/결재/감사','휴먼인더루프 필수','11.7'],
+  ['TN-14','협업·AI','AI 조회 챗봇','자연어 조회·읽기전용','-','권한 범위 내 회계 데이터를 자연어로 조회한다.','ChatSession, QueryToolLog','읽기 전용, 데이터 범위 강제','응답은 서버 권한 필터 적용','11.8'],
+  ['TN-15','데이터관리·이관','삭제전표복구','삭제 전표 조회·복구','SA-DAT-01','삭제 전표를 검토 후 복구한다.','DeletedJournal, journal_history','관리자/회계 권한','복구 시 재채번, 자동전표 일부 제외','25.20.1'],
+  ['TN-15','데이터관리·이관','백업/복구·SA 이관','기수별/월별/분기별 내보내기·올리기','SA-DAT-02~06','레거시 SA와 BK 간 데이터를 이관한다.','MigrationJob, BackupFile, ImportMapping','회사 관리자/서비스 관리자','사업자번호·기수 검증, 작업 이력 감사','25.20.2~25.20.6'],
+  ['TN-15','데이터관리·이관','기수변경','회계기수 메타데이터 정정','SA-DAT-07','잘못 선택한 기수를 단일 기수 조건에서 정정한다.','FiscalPeriod, TenantMetadata','관리자, 수동 검토 가능','2개 이상 기수 데이터 존재 시 자동 변경 불가','25.20.7']
+];
+
+const saRaw = `
+SA-BAS-01|회사등록|25.1.1
+SA-BAS-02|권한설정|25.1.2
+SA-BAS-03|환경설정|25.1.3
+SA-BAS-04|부서등록(회계)|25.1.4
+SA-BAS-05|사원등록(회계)|25.1.5
+SA-BAS-06|거래처등록|25.1.6
+SA-BAS-07|계정과목 및 적요등록(회계)|25.1.7
+SA-BAS-08|현장등록(회계)|25.1.8
+SA-BAS-09|프로젝트등록(회계)|25.1.9
+SA-BAS-10|업무용승용차 등록|25.1.10
+SA-BAS-11|외주처등록|25.1.11
+SA-BAS-12|거래처DM인쇄|25.1.12
+SA-BAS-13|거래처등코드변환|25.1.13
+SA-BAS-14|마감후이월(회계)|25.1.14
+SA-OPN-01|전기분재무상태표|25.2.1
+SA-OPN-02|전기분손익계산서|25.2.2
+SA-OPN-03|전기분원가명세서|25.2.3
+SA-OPN-04|전기분이익잉여금처분계산서|25.2.4
+SA-OPN-05|전기분자본변동표|25.2.5
+SA-OPN-06|전기분현금흐름표|25.2.6
+SA-OPN-07|거래처별초기이월|25.2.7
+SA-OPN-08|부서/사원별초기이월|25.2.8
+SA-OPN-09|전기 기간별손익계산서|25.3.1
+SA-OPN-10|전기 기간별원가계산서(원가명세서)|25.3.2
+SA-OPN-11|전기 프로젝트손익현황|25.3.3
+SA-OPN-12|전기 프로젝트원가현황|25.3.4
+SA-OPN-13|프로젝트초기이월|25.3.5
+SA-OPN-14|전기 중단사업손익계산서|25.3.6
+SA-OPN-15|전기 중단사업원가명세서|25.3.7
+SA-OPN-16|중도시산표|25.3.8
+SA-OPN-17|미완성공사초기이월|25.3.9
+SA-OPN-18|외주처별초기이월|25.3.10
+SA-OPN-19|현장별/거래처별초기이월|25.3.11
+SA-JNL-01|일반전표입력|25.4.1
+SA-JNL-02|매입매출전표입력|25.4.2
+SA-JNL-03|정기청구입력|25.4.3
+SA-JNL-04|물류전표처리|25.4.4
+SA-ATX-01|수집정보등록|25.5.1
+SA-ATX-02|전자세금계산서|25.5.2
+SA-ATX-03|전자계산서|25.5.3
+SA-ATX-04|신용카드|25.5.4
+SA-ATX-05|현금영수증|25.5.5
+SA-ATX-06|통장|25.5.6
+SA-ATX-07|자료수집현황|25.5.7
+SA-ATX-08|전표전송현황|25.5.8
+SA-ATX-09|국세청자료검증 및 사이트비교|25.5.9
+SA-ATX-10|ScrappingBoard|25.5.10
+SA-LDG-01|전표출력|25.6.1
+SA-LDG-02|분개장|25.6.2
+SA-LDG-03|일/월계표|25.6.3
+SA-LDG-04|총계정원장|25.6.4
+SA-LDG-05|현금출납장|25.6.5
+SA-LDG-06|계정별원장|25.6.6
+SA-LDG-07|거래처원장|25.6.7
+SA-LDG-08|총괄원장|25.6.8
+SA-LDG-09|매입매출장|25.6.9
+SA-LDG-10|총계정관리원장|25.7.1
+SA-LDG-11|세금/계산서 발급 및 수취현황|25.7.2
+SA-LDG-12|신용카드매출전표 발행현황|25.7.3
+SA-LDG-13|적요별원장|25.7.4
+SA-LDG-14|전도금원장|25.7.5
+SA-LDG-15|공사대장|25.7.6
+SA-LDG-16|외주대장|25.7.7
+SA-LDG-17|운행기록부(업무용승용차)|25.7.8
+SA-LDG-18|차량비용현황(업무용승용차)|25.7.9
+SA-LDG-19|현장/프로젝트/부서 원가안분|25.8.1
+SA-LDG-20|현장/프로젝트/부서 원가현황|25.8.2
+SA-LDG-21|현장/프로젝트/부서 손익안분|25.8.3
+SA-LDG-22|현장/프로젝트/부서 손익현황|25.8.4
+SA-LDG-23|현장/프로젝트/부서 원가손익|25.8.5
+SA-LDG-24|현장별 공사원가집계표|25.8.6
+SA-LDG-25|현장별 공사비용현황|25.8.7
+SA-LDG-26|현장별 잔액명세서|25.8.8
+SA-LDG-27|현장/프로젝트/부서 거래처원장|25.8.9
+SA-LDG-28|프로젝트 누적손익현황|25.8.10
+SA-LDG-29|프로젝트 누적원가현황|25.8.11
+SA-CLS-01|결산자료입력|25.9.1
+SA-CLS-02|합계잔액시산표|25.9.2
+SA-CLS-03|재무상태표|25.9.3
+SA-CLS-04|손익계산서|25.9.4
+SA-CLS-05|제조원가명세서|25.9.5
+SA-CLS-06|이익잉여금처분계산서|25.9.6
+SA-CLS-07|자본변동표|25.9.7
+SA-CLS-08|현금흐름표|25.9.8
+SA-CLS-09|결산부속명세서|25.9.9
+SA-CLS-10|현금및예금잔액검토|25.9.10
+SA-CLS-11|신용카드 및 상품권 등 사용내역 검토서식|25.9.11
+SA-CLS-12|AI 합계잔액시산표|25.9.12
+SA-CLS-13|재무제표 일괄출력|25.9.13
+SA-CLS-14|경영정보(안정성·수익성·활동성 분석)|25.9.14
+SA-CLS-15|영수증수취명세서|25.10.1
+SA-CLS-16|경비등의송금명세서|25.10.2
+SA-CLS-17|지출증명서류합계표|25.10.3
+SA-CLS-18|기간별손익계산서|25.10.4
+SA-CLS-19|기간별원가명세서|25.10.5
+SA-CLS-20|중단사업손익계산서|25.10.6
+SA-CLS-21|중단사업원가명세서|25.10.7
+SA-VAT-01|부가가치세신고서|25.11.1
+SA-VAT-02|세무리스크 자동검증(부가가치세 MRI)|25.11.2
+SA-VAT-03|세금계산서합계표|25.11.3
+SA-VAT-04|신용카드매출전표등 수령명세서|25.11.4
+SA-VAT-05|신용카드매출전표 발행집계표|25.11.5
+SA-VAT-06|계산서합계표|25.11.6
+SA-VAT-07|부가가치세 전자신고|25.11.7
+SA-VAT-08|부가가치세 납부서|25.11.8
+SA-VAT-09|부동산임대공급가액명세서|25.12.1
+SA-VAT-10|건물관리명세서|25.12.2
+SA-VAT-11|의제매입세액공제신고서|25.12.3
+SA-VAT-12|재활용폐자원세액공제신고서|25.12.4
+SA-VAT-13|구리스크랩등 매입세액공제신고서|25.12.5
+SA-VAT-14|현금매출명세서|25.12.6
+SA-VAT-15|동물진료용역매출명세서|25.12.7
+SA-VAT-16|면세유류공급명세서(갑)|25.12.8
+SA-VAT-17|월별판매액합계표|25.12.9
+SA-VAT-18|농어업기자재 부가세환급신청|25.12.10
+SA-VAT-19|전자화폐결제명세서|25.12.11
+SA-VAT-20|전자신고세액공제신청서|25.12.12
+SA-VAT-21|입국경로 설치된 보세판매장 공급실적명세서|25.12.13
+SA-VAT-22|공제받지못할매입세액명세서|25.13.1
+SA-VAT-23|건물등감가상각자산취득명세서|25.13.2
+SA-VAT-24|대손세액공제신고서|25.13.3
+SA-VAT-25|사업장별 부가세 납부/환급 신고명세|25.13.4
+SA-VAT-26|사업자단위과세 사업장별 부가세|25.13.5
+SA-VAT-27|과표수정 및 추가납부계산서(부가세)|25.13.6
+SA-VAT-28|과표 및 세액 경정청구서(부가세)|25.13.7
+SA-VAT-29|수출실적명세서|25.14.1
+SA-VAT-30|영세율첨부서류제출명세서|25.14.2
+SA-VAT-31|내국신용장/구매확인서 전자발급|25.14.3
+SA-VAT-32|외화획득명세서|25.14.4
+SA-VAT-33|관세환급금등명세서|25.14.5
+SA-VAT-34|외국인관광객 면세판매 및 환급명세서|25.14.6
+SA-VAT-35|외국인관광객 미용성형 의료용역 환급실적명세서|25.14.7
+SA-VAT-36|외국인관광객 숙박용역 환급실적명세서|25.14.8
+SA-VAT-37|외국인관광객 즉시환급 물품판매실적명세서|25.14.9
+SA-VAT-38|외국인물품(외교관면세) 판매기록표|25.14.10
+SA-VAT-39|재화·용역 공급기록표|25.14.11
+SA-VAT-40|공급가액확정명세서|25.14.12
+SA-VAT-41|선박에 의한 운송용역 공급가액일람표|25.14.13
+SA-VAT-42|외항선박등에 제공한 재화·용역 일람표|25.14.14
+SA-VAT-43|영세율매출명세서|25.14.15
+SA-VAT-44|일반/간이과세 전환 시 재고품등 신고|25.15.1
+SA-VAT-45|과세사업전환 감가상각자산 신고서|25.15.2
+SA-VAT-46|매입자발행세금계산서합계표|25.15.3
+SA-VAT-47|과세유흥장소 과표신고서(신)|25.15.4
+SA-VAT-48|사업용계좌 개설신고서|25.15.5
+SA-VAT-49|납부서 작성(전세목)|25.15.6
+SA-VAT-50|사업양도신고서|25.15.7
+SA-FA-01|고정자산등록|25.16.1
+SA-FA-02|미상각분 감가상각계산|25.16.2
+SA-FA-03|양도자산 감가상각계산|25.16.3
+SA-FA-04|원가경비별 감가상각명세서|25.16.4
+SA-FA-05|고정자산관리대장|25.16.5
+SA-FA-06|현장 / 프로젝트 / 부서 자산명세서|25.16.6
+SA-FA-07|월별 감가상각비 계상|25.16.7
+SA-FND-01|일일자금명세/경리일보|25.17.1
+SA-FND-02|자금계획입력|25.17.2
+SA-FND-03|일일자금현황|25.17.3
+SA-FND-04|자금일월보|25.17.4
+SA-FND-05|자금입출금내역|25.17.5
+SA-FND-06|자금계획서|25.17.6
+SA-FND-07|예산입력|25.17.7
+SA-FND-08|당기예산 월별 실적현황|25.17.8
+SA-FND-09|당기예산 분기/반기 실적현황|25.17.9
+SA-FND-10|전기실행액입력|25.17.10
+SA-FND-11|전기예산 월별 실적현황|25.17.11
+SA-FND-12|전기예산 분기/반기 실적현황|25.17.12
+SA-FND-13|차기예산입력|25.17.13
+SA-FND-14|추정예산|25.17.14
+SA-DEP-01|예적금현황|25.18.1
+SA-DEP-02|차입금스케줄관리|25.18.2
+SA-DEP-03|차입금현황|25.18.3
+SA-BIL-01|받을어음현황|25.19.1
+SA-BIL-02|지급어음현황|25.19.2
+SA-BIL-03|어음집계표|25.19.3
+SA-BIL-04|당좌수표현황|25.19.4
+SA-DAT-01|삭제전표복구|25.20.1
+SA-DAT-02|데이터백업 / 데이터복구(기수별)|25.20.2
+SA-DAT-03|SA로 보낼 데이터 만들기(기수별)|25.20.3
+SA-DAT-04|SA로 보낼 데이터 만들기(월별/분기별)|25.20.4
+SA-DAT-05|SA 데이터올리기(전체기수)|25.20.5
+SA-DAT-06|SA 데이터올리기(월별/분기별)|25.20.6
+SA-DAT-07|기수변경|25.20.7`;
+
+const saMeta = {
+  'SA-BAS': ['TN-02','기초정보관리','SA 기초정보','회사·권한·환경·마스터 기준정보를 BK 기준정보 모델로 관리한다.','Tenant, Partner, COA, Dimension, Role, Menu','회사 관리자/회계 관리자','회사 설정·마스터 관리 권한 필요','25.1'],
+  'SA-OPN': ['TN-03','전기이월·개시잔액','전기이월','전기 재무제표와 거래처·차원별 초기이월을 등록한다.','OpeningBalance, FiscalPeriod, Dimension','회계 관리자/기장 담당','차액 검증 통과 후 개시','25.2~25.3'],
+  'SA-JNL': ['TN-04','전표 입력·결재','전표관리','일반·매입매출·정기·물류 전표 입력을 처리한다.','journal_header, journal_line, journal_tax_line','회계담당/기장담당','마감기간·상태·권한 검증','25.4'],
+  'SA-ATX': ['TN-06','자동전표·증빙','자동전표처리','외부 자료를 수집·검증하고 전표 후보로 전송한다.','CollectionJob, Evidence, AutoJournalCandidate','회계/기장 담당','중복방지·검증·전송현황 관리','25.5'],
+  'SA-LDG': ['TN-07','장부·원장·보조장부','주요·보조장부','전표 기반 주요 원장과 보조장부를 조회/출력한다.','LedgerView, journal_line_aux, Dimension','조회 권한/데이터 범위','POSTED 기준 집계','25.6~25.8'],
+  'SA-CLS': ['TN-08','마감·결산·재무제표','결산·재무제표','결산 입력, 재무제표, 결산장부, 부속명세를 생성한다.','ClosingEntry, FinancialStatement, SupportingSchedule','결산/회계 담당','마감 체크리스트와 결재 연동','25.9~25.10'],
+  'SA-VAT': ['TN-09','부가세·신고서류','부가가치세·신고서류','부가세 신고서와 주요/업종별/영세율/기타 첨부서류를 작성한다.','VatReturn, VatAttachment, TaxInvoiceSummary','세무 담당, 신고 Step-up','과세유형·증빙·계정 라우팅','25.11~25.15'],
+  'SA-FA': ['TN-10','세무·고정자산·차량','고정자산','고정자산 등록, 상각, 자산명세를 관리한다.','fixed_asset, depreciation_schedule','자산/회계 담당','취득 전표·상각 전표 연동','25.16'],
+  'SA-FND': ['TN-11','자금·예산·어음','자금·예산관리','자금 계획, 입출금, 예산 및 예실을 관리한다.','cash_plan, Budget, BudgetActual','자금/회계/관리회계 담당','부서·코스트센터 차원 연계','25.17'],
+  'SA-DEP': ['TN-11','자금·예산·어음','예적금·차입금','예적금과 차입금 잔액 및 스케줄을 관리한다.','bank_account, borrowing_schedule','자금/회계 담당','예금 보조부와 연결','25.18'],
+  'SA-BIL': ['TN-11','자금·예산·어음','어음·당좌관리','받을/지급어음과 당좌수표를 관리한다.','note, note_history, checkbook','자금/회계 담당','어음 타임라인과 만기 관리','25.19'],
+  'SA-DAT': ['TN-15','데이터관리·이관','데이터관리','삭제전표복구, 백업/복구, SA 이관, 기수변경을 처리한다.','MigrationJob, BackupFile, DeletedJournal, FiscalPeriod','회사 관리자/서비스 관리자','사업자번호·기수·기간 검증','25.20']
+};
+
+function saPrefix(id){
+  return id.split('-').slice(0,2).join('-');
+}
+
+function buildSaRows(){
+  return saRaw.trim().split('\n').map(line => {
+    const [id,name,source] = line.split('|');
+    const meta = saMeta[saPrefix(id)];
+    return [meta[0], meta[1], meta[2], name, id, meta[3], meta[4], meta[5], meta[6], source];
+  });
+}
+
+const topMenuNames = {
+  'PF-00':'플랫폼 진입·현황',
+  'PF-01':'플랫폼 조직·사용자·관리회사',
+  'PF-02':'플랫폼 계약·쿼터',
+  'PF-03':'수임관계·관리회사 이관',
+  'PF-04':'전역 정책·전체 업무 표준',
+  'PF-05':'플랫폼 보안·감사',
+  'PF-06':'인프라·운영',
+  'OP-00':'운영 진입',
+  'OP-01':'운영 현황',
+  'OP-02':'우리 조직·소속',
+  'OP-03':'수임회사·테넌트',
+  'OP-04':'구독·요금·사용량',
+  'OP-05':'플랫폼 표준 배포',
+  'OP-06':'사용자·인증·권한',
+  'OP-07':'접근 거버넌스',
+  'OP-08':'기장 워크벤치',
+  'OP-09':'운영·배치·연계 모니터링',
+  'OP-10':'보안·감사 운영',
+  'OP-11':'AI·규칙 운영',
+  'TN-00':'홈·현황',
+  'TN-01':'회사 설정·기초',
+  'TN-02':'기초정보관리',
+  'TN-03':'전기이월·개시잔액',
+  'TN-04':'전표 입력·결재',
+  'TN-05':'보조부·관리항목',
+  'TN-06':'자동전표·증빙',
+  'TN-07':'장부·원장·보조장부',
+  'TN-08':'마감·결산·재무제표',
+  'TN-09':'부가세·신고서류',
+  'TN-10':'세무·고정자산·차량',
+  'TN-11':'자금·예산·어음',
+  'TN-12':'외화·관계사·관리회계',
+  'TN-13':'원가·재고·제조',
+  'TN-14':'협업·AI',
+  'TN-15':'데이터관리·이관',
+  'CO-01':'로그인·내 계정',
+  'CO-02':'알림·커뮤니케이션',
+  'CO-03':'API·서비스 계약',
+  'CO-04':'검증·오류 처리',
+  'CO-05':'데이터 모델·상태값',
+  'CO-06':'배치·스케줄',
+  'CO-07':'보안·개인정보',
+  'CO-08':'시스템 운영·인프라',
+  'CO-09':'산출물·보고서',
+  'CO-10':'설계서 추적'
+};
+
+const menuOrder = Object.fromEntries(Object.keys(topMenuNames).map((code, index) => [code, index]));
+
+function normalizeRows(rows){
+  return rows.map(row => {
+    const next = [...row];
+    if(topMenuNames[next[0]]) next[1] = topMenuNames[next[0]];
+    return next;
+  });
+}
+
+function sortRowsByMenu(rows){
+  return rows
+    .map((row, index) => ({row, index}))
+    .sort((a, b) => {
+      const orderA = menuOrder[a.row[0]] ?? 9999;
+      const orderB = menuOrder[b.row[0]] ?? 9999;
+      return orderA - orderB || a.index - b.index;
+    })
+    .map(item => item.row);
+}
+
+function makeRowSpans(rows, keyFn){
+  const spans = new Map();
+  let start = 0;
+  while(start < rows.length){
+    const key = keyFn(rows[start]);
+    let end = start + 1;
+    while(end < rows.length && keyFn(rows[end]) === key) end += 1;
+    spans.set(start, end - start);
+    for(let i = start + 1; i < end; i += 1) spans.set(i, 0);
+    start = end;
+  }
+  return spans;
+}
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function renderRows(tbodyId, rows, searchId, filterId, countId, channelLabel){
+  const tbody = document.getElementById(tbodyId);
+  const search = document.getElementById(searchId);
+  const filter = document.getElementById(filterId);
+  const preparedRows = sortRowsByMenu(normalizeRows(rows)).map(row => [channelLabel, ...row]);
+  function draw(){
+    const keyword = (search?.value || '').trim().toLowerCase();
+    const category = filter?.value || '';
+    const filtered = preparedRows.filter(row => {
+      const text = row.join(' ').toLowerCase();
+      return (!keyword || text.includes(keyword)) && (!category || text.includes(category.toLowerCase()));
+    });
+    const channelSpans = makeRowSpans(filtered, row => row[0]);
+    const topSpans = makeRowSpans(filtered, row => `${row[0]}|${row[1]}|${row[2]}`);
+    const subSpans = makeRowSpans(filtered, row => `${row[0]}|${row[1]}|${row[2]}|${row[3]}`);
+    tbody.innerHTML = filtered.map((row, index) => `
+      <tr>
+        <td class="c">${index + 1}</td>
+        ${topSpans.get(index) ? `<td rowspan="${topSpans.get(index)}"><code>${escapeHtml(row[1])}</code></td>` : ''}
+        ${channelSpans.get(index) ? `<td rowspan="${channelSpans.get(index)}" class="level0">${escapeHtml(row[0])}</td>` : ''}
+        ${topSpans.get(index) ? `<td rowspan="${topSpans.get(index)}" class="level1">${escapeHtml(row[2])}<div class="path">${escapeHtml(row[1])}</div></td>` : ''}
+        ${subSpans.get(index) ? `<td rowspan="${subSpans.get(index)}" class="level2">${escapeHtml(row[3])}</td>` : ''}
+        <td class="level3">${escapeHtml(row[4])}</td>
+        <td><span class="sid">${escapeHtml(row[5])}</span></td>
+        <td>${escapeHtml(row[6])}</td>
+        <td>${escapeHtml(row[7])}</td>
+        <td>${escapeHtml(row[8])}</td>
+        <td>${escapeHtml(row[9])}</td>
+        <td>${escapeHtml(row[10])}</td>
+      </tr>
+    `).join('');
+    if(countId) document.getElementById(countId).textContent = preparedRows.length.toLocaleString('ko-KR');
+  }
+  search?.addEventListener('input', draw);
+  filter?.addEventListener('change', draw);
+  draw();
+}
+
+const tnRows = [...tnContextRows, ...tnCoreRows, ...buildSaRows()];
+renderRows('pfBody', pfRows, 'pfSearch', 'pfFilter', 'pfCount', '플랫폼콘솔');
+renderRows('opBody', opRows, 'opSearch', 'opFilter', 'opCount', '관리회사콘솔');
+renderRows('tnBody', tnRows, 'tnSearch', 'tnFilter', 'tnCount', '수임회사 업무');
+renderRows('coBody', coRows, 'coSearch', 'coFilter', 'coCount', '공통·기술');
+document.getElementById('saCount').textContent = buildSaRows().length.toLocaleString('ko-KR');
+</script>
+</body>
+</html>
