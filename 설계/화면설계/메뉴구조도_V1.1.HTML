@@ -36,6 +36,7 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
 .b-gray{background:var(--muted-bg);color:var(--sub)}
 .b-teal{background:var(--tn-bg);color:var(--tn)}
 .sid{display:inline-block;background:#1c2333;color:#fff;border-radius:4px;padding:0 7px;font-size:10.8px;font-family:Consolas,monospace;vertical-align:middle}
+.legacy-id{display:inline-block;background:#f1f5f9;color:#64748b;border:1px dashed #94a3b8;border-radius:4px;padding:0 6px;font-size:10.5px;font-family:Consolas,monospace;vertical-align:middle}
 .note{background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:0 6px 6px 0;padding:9px 14px;font-size:12.7px;margin:10px 0}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.4px;background:var(--muted-bg);border-radius:8px;padding:10px 16px;margin:8px 0 16px}
 .legend b{color:#33415e}
@@ -90,24 +91,33 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
   <p>기준 문서: <b>bk_설계서_v1.1.md</b> · 이전본: <b>설계/화면설계/메뉴구조도_V1.0.HTML</b></p>
   <p>작성일: 2026-07-13 · 산출물 위치: <b>설계/화면설계/메뉴구조도_V1.1.HTML</b></p>
   <p>목적: BK 플랫폼 → 복수 관리회사(OperatorOrg) → 관리대상회사(Tenant) 3계층을 전 메뉴에 적용하고, 플랫폼 자체의 사용자·내부조직·사용자그룹과 전체 업무 표준정보·메뉴 원본을 플랫폼콘솔에서 통합 관리하는 PF·OP·TN·CO 4채널 구조를 정의한다.</p>
-  <p>변경 기준: <b>설계/페이즈_화면/시스템관리자_화면_v1.0.HTML</b>의 사용자·사용자그룹·그룹별 메뉴권한·메뉴관리 UX를 수용하되, 메뉴 원본 CUD·발행은 <b>PF-04M</b>, OP 발행본 조회는 <b>OP-06D</b>로 분리한다.</p>
+  <p>변경 기준: <b>설계/페이즈_화면/시스템관리자_화면_v1.0.HTML</b>의 사용자·사용자그룹·그룹별 메뉴권한·메뉴관리 UX와 <b>bk_설계서_v1.1.md 26.1.1</b>의 ID 표준을 적용한다. 메뉴 원본 CUD·발행은 <b>PF-04-03-01</b>, OP 발행본 조회는 <b>OP-06-06-01</b>로 분리한다.</p>
 </div>
 
 <section>
 <h2>1. 표기 범례</h2>
 <div class="legend">
-  <span><span class="sid">PF-01</span> <b>플랫폼콘솔 화면</b></span>
-  <span><span class="sid">BF-09</span> <b>기초/기준정보 화면</b></span>
-  <span><span class="sid">JV-01</span> <b>전표 입력 화면</b></span>
-  <span><span class="sid">AUX-02</span> <b>보조부/보조원장</b></span>
-  <span><span class="sid">SA-VAT</span> <b>SA 기능 화면군</b></span>
+  <span><span class="sid">PF-01-02-01</span> <b>canonical 화면 ID</b></span>
+  <span><span class="legacy-id">legacy BF-09</span> <b>기초/기준정보 추적 ID</b></span>
+  <span><span class="legacy-id">legacy JV-01</span> <b>전표 입력 추적 ID</b></span>
+  <span><span class="legacy-id">legacy AUX-02</span> <b>보조부 추적 ID</b></span>
+  <span><span class="legacy-id">legacy SA-VAT</span> <b>SA 기능 추적 ID</b></span>
   <span><span class="badge b-red">Step-up</span> 재인증 필요</span>
   <span><span class="badge b-amber">관리자</span> 관리자/권한자 전용</span>
   <span><span class="badge b-purple">기장</span> 기장 모드 영향</span>
   <span><span class="badge b-teal">선택</span> 기능 플래그·업종·Phase별 노출</span>
   <span class="tab-line">회색 들여쓰기: 화면 내 탭/하위 기능 또는 설계 추적 항목</span>
 </div>
-<div class="note">메뉴는 제품 화면 기준으로 재구성했다. 설계서의 기술 장(데이터 모델, API, 배치, 검증, 보안, 운영)과 부록은 사용자 메뉴가 아니라 운영/관리/설계 추적 메뉴로 연결한다.</div>
+<div class="note">메뉴는 제품 화면 기준으로 재구성했다. 설계서의 기술 장(데이터 모델, API, 배치, 검증, 보안, 운영)과 부록은 사용자 메뉴가 아니라 운영/관리/설계 추적 메뉴로 연결한다. 회색 점선 배지는 화면 실행 ID가 아니라 <code>LegacyScreenIdMap</code>의 원천 추적값이다.</div>
+<h3>메뉴코드·화면 ID 표준</h3>
+<table>
+  <tr><th>계층</th><th>형식</th><th>예시</th><th>적용 기준</th></tr>
+  <tr><td>1뎁스 채널</td><td><code>CC</code></td><td><code>PF</code></td><td>PF 플랫폼 / OP 관리회사 / TN 이용회사 / CO 공통</td></tr>
+  <tr><td>2뎁스 업무영역</td><td><code>CC-NN</code></td><td><code>PF-01</code></td><td>채널별 2자리 숫자. <code>00</code>은 홈·진입 전용</td></tr>
+  <tr><td>3뎁스 진입메뉴</td><td><code>CC-NN-NN</code></td><td><code>PF-01-02</code></td><td>동일 업무영역 안에서 <code>01</code>부터 순차 부여</td></tr>
+  <tr><td>4뎁스 실행화면</td><td><code>CC-NN-NN-NN</code></td><td><code>PF-01-02-01</code></td><td>canonical <code>screenId</code>. 발행 후 불변·재사용 금지</td></tr>
+</table>
+<div class="note"><code>PF-01U</code>·<code>OP-06A</code>·<code>TN-01U</code> 및 BF/SA/JV/AUX 계열은 legacy ID로만 보존한다. 신규 메뉴·라우트·권한·즐겨찾기·감사로그는 <code>^(PF|OP|TN|CO)-[0-9]{2}-[0-9]{2}-[0-9]{2}$</code> 형식의 canonical 화면 ID만 사용한다.</div>
 </section>
 
 <section>
@@ -173,20 +183,20 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
             <li><span class="n3">겸직/복수소속 · 소속 이력 · 조직단위별 표준 소관부서 지정</span></li>
           </ul>
         </li>
-        <li><span class="n2">플랫폼 사용자관리</span> <span class="sid">PF-01U</span>
+        <li><span class="n2">플랫폼 사용자관리</span> <span class="sid">PF-01-02-01</span> <span class="legacy-id">legacy PF-01U</span>
           <ul>
             <li><span class="n3">사용자 목록 · 기본정보 · 소속/Role/유효기간 · 보안/세션 탭</span></li>
             <li><span class="n3"><code>PlatformUser</code>: INVITED → ACTIVE → SUSPENDED/DORMANT → TERMINATED</span></li>
             <li><span class="n3">초대 · 활성 · MFA 초기화 · 휴면 · 정지 · 퇴사 · 세션 즉시 회수</span></li>
           </ul>
         </li>
-        <li><span class="n2">플랫폼 사용자그룹</span> <span class="sid">PF-01G</span>
+        <li><span class="n2">플랫폼 사용자그룹</span> <span class="sid">PF-01-03-01</span> <span class="legacy-id">legacy PF-01G</span>
           <ul>
             <li><span class="n3"><code>UserGroup</code> · 그룹코드/명 · 유형 · 상위그룹 · 상태 · 유효기간</span></li>
             <li><span class="n3"><code>UserGroupMember</code> 구성원 목록 · 그룹과 구성원 별도 저장 · scope/기간/순환 검증</span></li>
           </ul>
         </li>
-        <li><span class="n2">플랫폼 그룹별 메뉴권한</span> <span class="sid">PF-01P</span> <span class="badge b-red">Step-up</span>
+        <li><span class="n2">플랫폼 그룹별 메뉴권한</span> <span class="sid">PF-01-04-01</span> <span class="legacy-id">legacy PF-01P</span> <span class="badge b-red">Step-up</span>
           <ul>
             <li><span class="n3">PUBLISHED PF 메뉴목록 · INHERIT/ALLOW/DENY · 상속근거 · 최종노출</span></li>
             <li><span class="n3">복수그룹 DENY 우선 · 부모 DENY 하위 전파 · 사용자 최종권한 미리보기</span></li>
@@ -272,15 +282,11 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
             <li><span class="n3"><code>PlatformStandard</code> · 표준 유형/소관부서/Steward · 확장허용 여부</span></li>
           </ul>
         </li>
-        <li><span class="n2">메뉴 마스터·메뉴목록</span> <span class="sid">PF-04M</span> <span class="badge b-amber">관리자</span>
+        <li><span class="n2">메뉴 마스터·메뉴목록·버전·영향분석</span> <span class="sid">PF-04-03-01</span> <span class="legacy-id">legacy PF-04M</span> <span class="badge b-amber">관리자</span> <span class="badge b-red">Step-up</span>
           <ul>
             <li><span class="n3">메뉴코드 · 상위메뉴코드/명 · 채널 · 레벨 · 유형 · 화면 ID · 한국어/영어명</span></li>
             <li><span class="n3">route · feature flag · Phase · 상태 · source/detail 목록 조회/정렬/필터/내보내기</span></li>
             <li><span class="n3">트리는 탐색 보조 · 메뉴목록 그리드가 기준 편집단위 · DRAFT에서만 수정</span></li>
-          </ul>
-        </li>
-        <li><span class="n2">메뉴 버전·영향분석</span> <span class="sid">PF-04M</span> <span class="badge b-red">Step-up</span>
-          <ul>
             <li><span class="n3">DRAFT → IN_REVIEW → APPROVED → PUBLISHED → RETIRED · SUSPENDED/ROLLED_BACK</span></li>
             <li><span class="n3">고아/순환/중복/i18n/route 검증 · Role/그룹/사용자 영향 · 작성/검토/발행 SOD</span></li>
           </ul>
@@ -347,7 +353,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
       <ul>
     <li><span class="n1">OP-00 운영 진입</span>
       <ul>
-        <li><span class="n2">수임회사 선택</span> <span class="sid">BF-00</span>
+        <li><span class="n2">수임회사 선택</span> <span class="legacy-id">legacy BF-00</span>
           <ul>
             <li><span class="n3">현재 <code>operatorOrgId</code>의 활성 PRIMARY 수임회사 검색 · 최근 접근 · 즐겨찾기</span></li>
             <li><span class="n3"><code>relationId</code> · serviceScopes · 담당 Assignment 확인 후 접근 모드 선택</span></li>
@@ -382,7 +388,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">OP-02 우리 조직·소속</span>
       <ul>
-        <li><span class="n2">현재 관리회사 조직·Membership</span> <span class="sid">BF-01</span>
+        <li><span class="n2">현재 관리회사 조직·Membership</span> <span class="legacy-id">legacy BF-01</span>
           <ul>
             <li><span class="n3"><code>OperatorOrg</code> 기본정보 조회 · 조직 트리(<code>OperatorOrgUnit</code>)</span></li>
             <li><span class="n3"><code>OperatorOrgMembership</code> 초대/휴면/종료 · 부서/팀 · 운영 콘솔 IP 허용목록</span></li>
@@ -399,7 +405,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">OP-03 이용회사/테넌트</span>
       <ul>
-        <li><span class="n2">이용회사/테넌트</span> <span class="sid">BF-02</span>
+        <li><span class="n2">이용회사/테넌트</span> <span class="legacy-id">legacy BF-02</span>
           <ul>
             <li><span class="n3">현재 관리회사의 활성 PRIMARY 관계만 조회 · <code>relationId</code> · serviceScopes</span></li>
             <li><span class="n3">회사명 · 사업자번호 · 회계기준 · 온보딩 · 테넌트/관계 상태</span></li>
@@ -418,7 +424,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">OP-04 구독·요금·사용량</span>
       <ul>
-        <li><span class="n2">구독·요금·사용량</span> <span class="sid">BF-10</span>
+        <li><span class="n2">구독·요금·사용량</span> <span class="legacy-id">legacy BF-10</span>
           <ul>
             <li><span class="n3"><code>TenantServiceContract</code> · <code>TenantDirectSubscription</code> · UsageMeter</span></li>
             <li><span class="n3">관리회사 서비스 청구와 플랫폼 직접 구독을 분리 · Invoice/Payment/DunningCase</span></li>
@@ -434,7 +440,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">OP-05 플랫폼 표준 배포</span>
       <ul>
-        <li><span class="n2">플랫폼 표준 카탈로그</span> <span class="sid">BF-08</span>
+        <li><span class="n2">플랫폼 표준 카탈로그</span> <span class="legacy-id">legacy BF-08</span>
           <ul>
             <li><span class="n3">PUBLISHED <code>PlatformStandardVersion</code> · 유형/효력일/법적근거/변경요약 읽기전용</span></li>
             <li><span class="n3">표준 원본·항목·버전 등록/수정/발행/롤백은 PF-04 전용</span></li>
@@ -452,42 +458,42 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">OP-06 사용자·인증·권한</span>
       <ul>
-        <li><span class="n2">사용자관리</span> <span class="sid">OP-06A</span> <span class="sid">BF-04</span>
+        <li><span class="n2">사용자관리</span> <span class="sid">OP-06-01-01</span> <span class="legacy-id">legacy OP-06A / BF-04</span>
           <ul>
             <li><span class="n3">이름/loginId/소속/그룹/상태/MFA 조회 · 사용자 목록/상세</span></li>
             <li><span class="n3">현재 조직 Membership · Role/유효기간 · 보안/세션 · EXTERNAL_PARTNER</span></li>
             <li><span class="n3">초대 · 잠금 · 비활성 · MFA 초기화 · 로그인 이력 · 세션 종료</span></li>
           </ul>
         </li>
-        <li><span class="n2">사용자그룹관리</span> <span class="sid">OP-06G</span>
+        <li><span class="n2">사용자그룹관리</span> <span class="sid">OP-06-02-01</span> <span class="legacy-id">legacy OP-06G</span>
           <ul>
             <li><span class="n3">현재 operatorOrgId의 UserGroup · 그룹유형/상위그룹/기본 Role/유효기간</span></li>
             <li><span class="n3">그룹 기본정보와 구성원 목록 별도 저장 · 타 관리회사 구성원 금지</span></li>
           </ul>
         </li>
-        <li><span class="n2">그룹별 메뉴권한</span> <span class="sid">OP-06P</span> <span class="badge b-red">Step-up</span>
+        <li><span class="n2">그룹별 메뉴권한</span> <span class="sid">OP-06-03-01</span> <span class="legacy-id">legacy OP-06P</span> <span class="badge b-red">Step-up</span>
           <ul>
             <li><span class="n3">PUBLISHED OP 메뉴목록 · INHERIT/ALLOW/DENY 일괄저장 · 변경이력</span></li>
             <li><span class="n3">DENY 우선 · Role VIEW/ENTER/ACTION과 결합 · 사용자 최종권한 미리보기</span></li>
           </ul>
         </li>
-        <li><span class="n2">인증 정책</span> <span class="sid">OP-06B</span> <span class="sid">BF-05</span>
+        <li><span class="n2">인증 정책</span> <span class="sid">OP-06-04-01</span> <span class="legacy-id">legacy OP-06B / BF-05</span>
           <ul>
             <li><span class="n3">MFA · SSO · 패스키 · Step-up · IP 정책</span></li>
             <li><span class="n3">GLOBAL → OPERATOR_ORG → PLAN → TENANT 정책 병합 · 신뢰 장치</span></li>
           </ul>
         </li>
-        <li><span class="n2">역할·가드레일·결재선</span> <span class="sid">OP-06C</span> <span class="sid">BF-07</span>
+        <li><span class="n2">역할·가드레일·결재선</span> <span class="sid">OP-06-05-01</span> <span class="legacy-id">legacy OP-06C / BF-07</span>
           <ul>
             <li><span class="n3">ORG_OWNER/ADMIN/SUPPORT/STANDARD/SECURITY/BILLING_ADMIN</span></li>
             <li><span class="n3">BOOKKEEPING_MANAGER · BK_PREPARER · BK_REVIEWER · scopeType/scopeId</span></li>
             <li><span class="n3">SOD 충돌 · PolicyException · 결재선 버전</span></li>
           </ul>
         </li>
-        <li><span class="n2">발행 메뉴목록·영향 조회</span> <span class="sid">OP-06D</span> <span class="sid">BF-12</span>
+        <li><span class="n2">발행 메뉴목록·영향 조회</span> <span class="sid">OP-06-06-01</span> <span class="legacy-id">legacy OP-06D / BF-12</span>
           <ul>
             <li><span class="n3">현재 PUBLISHED OP MenuVersion · 메뉴목록 · route/feature flag · Role/그룹 영향</span></li>
-            <li><span class="n3">조회 · 영향 미리보기 · 내보내기만 허용 · 메뉴 원본 CUD/발행은 PF-04M 전용</span></li>
+            <li><span class="n3">조회 · 영향 미리보기 · 내보내기만 허용 · 메뉴 원본 CUD/발행은 PF-04-03-01 전용</span></li>
           </ul>
         </li>
       </ul>
@@ -495,7 +501,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">OP-07 접근 거버넌스</span> <span class="badge b-red">Step-up</span>
       <ul>
-        <li><span class="n2">접근 거버넌스</span> <span class="sid">BF-06</span> <span class="badge b-red">Step-up</span>
+        <li><span class="n2">접근 거버넌스</span> <span class="legacy-id">legacy BF-06</span> <span class="badge b-red">Step-up</span>
           <ul>
             <li><span class="n3">AdminAccessSession/Log: operatorOrgId · tenantId · relationId · assignmentId</span></li>
             <li><span class="n3">현재 수임관계 내 BreakGlassConsent/Request · SessionRecording · 사후검토</span></li>
@@ -511,7 +517,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">OP-08 기장 워크벤치</span> <span class="badge b-purple">기장</span>
       <ul>
-        <li><span class="n2">기장 모드 설정</span> <span class="sid">BF-03</span>
+        <li><span class="n2">기장 모드 설정</span> <span class="legacy-id">legacy BF-03</span>
           <ul>
             <li><span class="n3"><code>BookkeepingConfig</code>: relationId · OPERATOR_LED · TENANT_LED · HYBRID</span></li>
             <li><span class="n3">전환 요청 · 고객 동의 · 예약 전환 · 관계 종료 시 인계 의무</span></li>
@@ -601,36 +607,36 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">TN-01 회사 설정·기초</span>
       <ul>
-        <li><span class="n2">이용회사 사용자관리</span> <span class="sid">TN-01U</span>
+        <li><span class="n2">이용회사 사용자관리</span> <span class="sid">TN-01-01-01</span> <span class="legacy-id">legacy TN-01U</span>
           <ul>
             <li><span class="n3">현재 tenantId 사용자 목록/상세 · 소속/Role/유효기간 · 보안/세션</span></li>
             <li><span class="n3">초대 · 상태변경 · MFA 초기화 · 세션 종료 · 상위 PF/OP 계정 변경 금지</span></li>
           </ul>
         </li>
-        <li><span class="n2">이용회사 사용자그룹</span> <span class="sid">TN-01G</span>
+        <li><span class="n2">이용회사 사용자그룹</span> <span class="sid">TN-01-02-01</span> <span class="legacy-id">legacy TN-01G</span>
           <ul>
             <li><span class="n3">tenantId 범위 UserGroup · 그룹 기본정보/구성원 별도 저장 · 유효기간</span></li>
           </ul>
         </li>
-        <li><span class="n2">그룹별 메뉴권한</span> <span class="sid">TN-01P</span> <span class="badge b-red">Step-up</span>
+        <li><span class="n2">그룹별 메뉴권한</span> <span class="sid">TN-01-03-01</span> <span class="legacy-id">legacy TN-01P</span> <span class="badge b-red">Step-up</span>
           <ul>
             <li><span class="n3">PUBLISHED TN/CO 메뉴 · INHERIT/ALLOW/DENY · 최종권한 미리보기</span></li>
             <li><span class="n3">DENY 우선 · Role/Action/data scope 초과 허용 금지</span></li>
           </ul>
         </li>
-        <li><span class="n2">기장 방식</span> <span class="sid">BF-03</span>
+        <li><span class="n2">기장 방식</span> <span class="legacy-id">legacy BF-03</span>
           <ul>
             <li><span class="n3">관계별 BookkeepingConfig · 기장 수행 주체 · 확인 의무</span></li>
             <li><span class="n3">신고 승인 정책 · 기장 모드 전환 요청</span></li>
           </ul>
         </li>
-        <li><span class="n2">차원/관리항목</span> <span class="sid">BF-09</span>
+        <li><span class="n2">차원/관리항목</span> <span class="legacy-id">legacy BF-09</span>
           <ul>
             <li><span class="n3">사업장 · 코스트센터 · 부서 · 프로젝트 · 현장 · 사원</span></li>
             <li><span class="n3">DimensionConfig · 필수/노출/기본값 · 소수점 설정</span></li>
           </ul>
         </li>
-        <li><span class="n2">알림 설정</span> <span class="sid">BF-11</span>
+        <li><span class="n2">알림 설정</span> <span class="legacy-id">legacy BF-11</span>
           <ul>
             <li><span class="n3">NotificationPolicy · Template · Schedule · Webhook</span></li>
             <li><span class="n3">법정 기한 · 인증서 · 어음 · 마감 알림</span></li>
@@ -639,78 +645,78 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
       </ul>
     </li>
 
-    <li><span class="n1">TN-02 기초정보관리</span> <span class="sid">SA-BAS</span>
+    <li><span class="n1">TN-02 기초정보관리</span> <span class="legacy-id">legacy SA-BAS</span>
       <ul>
         <li><span class="n2">회사·환경·권한</span>
           <ul>
-            <li><span class="n3">회사등록 <span class="sid">SA-BAS-01</span> · 권한설정 <span class="sid">SA-BAS-02</span> · 환경설정 <span class="sid">SA-BAS-03</span></span></li>
-            <li><span class="n3">마감후이월 <span class="sid">SA-BAS-14</span> · 표준 카탈로그 반영</span></li>
+            <li><span class="n3">회사등록 <span class="legacy-id">legacy SA-BAS-01</span> · 권한설정 <span class="legacy-id">legacy SA-BAS-02</span> · 환경설정 <span class="legacy-id">legacy SA-BAS-03</span></span></li>
+            <li><span class="n3">마감후이월 <span class="legacy-id">legacy SA-BAS-14</span> · 표준 카탈로그 반영</span></li>
           </ul>
         </li>
         <li><span class="n2">조직·거래처·계정</span>
           <ul>
-            <li><span class="n3">부서등록 <span class="sid">SA-BAS-04</span> · 사원등록 <span class="sid">SA-BAS-05</span></span></li>
-            <li><span class="n3">거래처등록 <span class="sid">SA-BAS-06</span> · 계정과목/적요 <span class="sid">SA-BAS-07</span> <span class="sid">SA-BAS-08</span></span></li>
+            <li><span class="n3">부서등록 <span class="legacy-id">legacy SA-BAS-04</span> · 사원등록 <span class="legacy-id">legacy SA-BAS-05</span></span></li>
+            <li><span class="n3">거래처등록 <span class="legacy-id">legacy SA-BAS-06</span> · 계정과목/적요 <span class="legacy-id">legacy SA-BAS-07</span> <span class="legacy-id">legacy SA-BAS-08</span></span></li>
           </ul>
         </li>
         <li><span class="n2">현장·프로젝트·차량·외주</span>
           <ul>
-            <li><span class="n3">현장등록 <span class="sid">SA-BAS-09</span> · 프로젝트등록 <span class="sid">SA-BAS-10</span></span></li>
-            <li><span class="n3">차량등록 <span class="sid">SA-BAS-11</span> · 외주처/외주품목 <span class="sid">SA-BAS-12</span> <span class="sid">SA-BAS-13</span></span></li>
+            <li><span class="n3">현장등록 <span class="legacy-id">legacy SA-BAS-09</span> · 프로젝트등록 <span class="legacy-id">legacy SA-BAS-10</span></span></li>
+            <li><span class="n3">차량등록 <span class="legacy-id">legacy SA-BAS-11</span> · 외주처/외주품목 <span class="legacy-id">legacy SA-BAS-12</span> <span class="legacy-id">legacy SA-BAS-13</span></span></li>
           </ul>
         </li>
       </ul>
     </li>
 
-    <li><span class="n1">TN-03 전기이월·개시잔액</span> <span class="sid">SA-OPN</span>
+    <li><span class="n1">TN-03 전기이월·개시잔액</span> <span class="legacy-id">legacy SA-OPN</span>
       <ul>
         <li><span class="n2">전기 재무제표 이월</span>
           <ul>
-            <li><span class="n3">재무상태표 · 손익계산서 · 원가명세서 · 현금흐름표 <span class="sid">SA-OPN-01~04</span></span></li>
+            <li><span class="n3">재무상태표 · 손익계산서 · 원가명세서 · 현금흐름표 <span class="legacy-id">legacy SA-OPN-01~04</span></span></li>
             <li><span class="n3">자본변동표 · 이익잉여금처분계산서 · 기초잔액 검증</span></li>
           </ul>
         </li>
         <li><span class="n2">거래처·차원 초기이월</span>
           <ul>
-            <li><span class="n3">거래처/부서/사원/프로젝트/현장별 초기이월 <span class="sid">SA-OPN-05~15</span></span></li>
+            <li><span class="n3">거래처/부서/사원/프로젝트/현장별 초기이월 <span class="legacy-id">legacy SA-OPN-05~15</span></span></li>
             <li><span class="n3">차대 검증 · 잔액 불일치 조정 · 이월 잠금</span></li>
           </ul>
         </li>
         <li><span class="n2">전기현장·중도시산</span>
           <ul>
-            <li><span class="n3">전기현장 원가/공사손익 · 중도시산표 <span class="sid">SA-OPN-16~19</span></span></li>
+            <li><span class="n3">전기현장 원가/공사손익 · 중도시산표 <span class="legacy-id">legacy SA-OPN-16~19</span></span></li>
           </ul>
         </li>
       </ul>
     </li>
 
-    <li><span class="n1">TN-04 전표 입력·결재</span> <span class="sid">SA-JNL</span>
+    <li><span class="n1">TN-04 전표 입력·결재</span> <span class="legacy-id">legacy SA-JNL</span>
       <ul>
-        <li><span class="n2">일반전표입력</span> <span class="sid">JV-01</span> <span class="sid">SA-JNL-01</span> <span class="sid">WJV-01</span>
+        <li><span class="n2">일반전표입력</span> <span class="legacy-id">legacy JV-01</span> <span class="legacy-id">legacy SA-JNL-01</span> <span class="legacy-id">legacy WJV-01</span>
           <ul>
             <li><span class="n3">대체 · 입금 · 출금 · 결차 · 결대 통합 입력</span></li>
             <li><span class="n3">조회방식 월별/기간 · 전표번호 보임/숨김 · N/U 표시</span></li>
           </ul>
         </li>
-        <li><span class="n2">현금 간편입력</span> <span class="sid">JV-02</span> <span class="sid">JV-03</span>
+        <li><span class="n2">현금 간편입력</span> <span class="legacy-id">legacy JV-02</span> <span class="legacy-id">legacy JV-03</span>
           <ul>
             <li><span class="n3">현금 차변 고정 입금 · 현금 대변 고정 출금</span></li>
             <li><span class="n3">복합 거래는 일반전표입력으로 전환</span></li>
           </ul>
         </li>
-        <li><span class="n2">매입매출전표입력</span> <span class="sid">JV-04</span> <span class="sid">JV-05</span> <span class="sid">SA-JNL-02</span>
+        <li><span class="n2">매입매출전표입력</span> <span class="legacy-id">legacy JV-04</span> <span class="legacy-id">legacy JV-05</span> <span class="legacy-id">legacy SA-JNL-02</span>
           <ul>
             <li><span class="n3">상단 세무헤더 + 하단 분개라인 2계층 입력</span></li>
             <li><span class="n3">과세유형 · 증빙 · 세금계산서 · 매입매출장 라우팅</span></li>
           </ul>
         </li>
-        <li><span class="n2">전표 도구·정정</span> <span class="sid">JV-06</span> <span class="sid">JV-07</span>
+        <li><span class="n2">전표 도구·정정</span> <span class="legacy-id">legacy JV-06</span> <span class="legacy-id">legacy JV-07</span>
           <ul>
             <li><span class="n3">복사 · 반복 · 템플릿 · 역분개 · 상태별 조회</span></li>
             <li><span class="n3">POSTED/CLOSED/LOCKED 직접 수정 금지</span></li>
           </ul>
         </li>
-        <li><span class="n2">일괄 입력·결재함</span> <span class="sid">JV-08</span> <span class="sid">TN-06</span>
+        <li><span class="n2">일괄 입력·결재함</span> <span class="legacy-id">legacy JV-08</span> <span class="legacy-id">legacy TN-06</span>
           <ul>
             <li><span class="n3">엑셀/CSV 업로드 · 행별 검증 · 전체 미리보기</span></li>
             <li><span class="n3">결재요청 · 승인 · 반려 · 기표 · SOD 통제</span></li>
@@ -721,28 +727,28 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">TN-05 보조부·관리항목</span>
       <ul>
-        <li><span class="n2">관리항목 입력·통합 관리</span> <span class="sid">WJV-02</span> <span class="sid">WJV-07</span>
+        <li><span class="n2">관리항목 입력·통합 관리</span> <span class="legacy-id">legacy WJV-02</span> <span class="legacy-id">legacy WJV-07</span>
           <ul>
             <li><span class="n3">라인별 관리차원/보조항목 입력 · 필수 누락 차단</span></li>
             <li><span class="n3">사업장 · 코스트센터 · 부서 · 프로젝트 · 현장 · 사원 마스터 관리</span></li>
           </ul>
         </li>
-        <li><span class="n2">거래처·자금 보조부</span> <span class="sid">AUX-01</span> <span class="sid">AUX-02</span> <span class="sid">AUX-03</span> <span class="sid">AUX-04</span>
+        <li><span class="n2">거래처·자금 보조부</span> <span class="legacy-id">legacy AUX-01</span> <span class="legacy-id">legacy AUX-02</span> <span class="legacy-id">legacy AUX-03</span> <span class="legacy-id">legacy AUX-04</span>
           <ul>
             <li><span class="n3">거래처별 채권채무 · 어음 · 예금계좌 · 카드 보조부</span></li>
-            <li><span class="n3">받을어음 <span class="sid">WJV-04</span> · 지급어음 <span class="sid">WJV-05</span> · 차입금 <span class="sid">WJV-06</span></span></li>
+            <li><span class="n3">받을어음 <span class="legacy-id">legacy WJV-04</span> · 지급어음 <span class="legacy-id">legacy WJV-05</span> · 차입금 <span class="legacy-id">legacy WJV-06</span></span></li>
           </ul>
         </li>
-        <li><span class="n2">특수 보조부</span> <span class="sid">AUX-05</span> <span class="sid">AUX-06</span> <span class="sid">AUX-07</span> <span class="sid">AUX-08</span> <span class="sid">AUX-09</span>
+        <li><span class="n2">특수 보조부</span> <span class="legacy-id">legacy AUX-05</span> <span class="legacy-id">legacy AUX-06</span> <span class="legacy-id">legacy AUX-07</span> <span class="legacy-id">legacy AUX-08</span> <span class="legacy-id">legacy AUX-09</span>
           <ul>
             <li><span class="n3">가지급금 · 부가세 · 현금출납 · 재고수불 · 고정자산대장</span></li>
-            <li><span class="n3">부가세 부속서류 반영 <span class="sid">WJV-03</span> · 의제매입/재활용폐자원</span></li>
+            <li><span class="n3">부가세 부속서류 반영 <span class="legacy-id">legacy WJV-03</span> · 의제매입/재활용폐자원</span></li>
           </ul>
         </li>
       </ul>
     </li>
 
-    <li><span class="n1">TN-06 자동전표·증빙</span> <span class="sid">SA-ATX</span>
+    <li><span class="n1">TN-06 자동전표·증빙</span> <span class="legacy-id">legacy SA-ATX</span>
       <ul>
         <li><span class="n2">증빙함·자료수집</span>
           <ul>
@@ -753,30 +759,30 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
         <li><span class="n2">자동전표 후보</span>
           <ul>
             <li><span class="n3">전표 후보 생성 · 중복방지 · 계정/과세유형 추천</span></li>
-            <li><span class="n3">전표전송현황 · 자동전표검증 · 사이트비교 <span class="sid">SA-ATX-01~10</span></span></li>
+            <li><span class="n3">전표전송현황 · 자동전표검증 · 사이트비교 <span class="legacy-id">legacy SA-ATX-01~10</span></span></li>
           </ul>
         </li>
       </ul>
     </li>
 
-    <li><span class="n1">TN-07 장부·원장·보조장부</span> <span class="sid">SA-LDG</span>
+    <li><span class="n1">TN-07 장부·원장·보조장부</span> <span class="legacy-id">legacy SA-LDG</span>
       <ul>
         <li><span class="n2">주요 장부</span>
           <ul>
-            <li><span class="n3">전표출력 · 분개장 · 일/월계표 · 총계정원장 <span class="sid">SA-LDG-01~09</span></span></li>
+            <li><span class="n3">전표출력 · 분개장 · 일/월계표 · 총계정원장 <span class="legacy-id">legacy SA-LDG-01~09</span></span></li>
             <li><span class="n3">현금출납장 · 계정별/거래처원장 · 매입매출장</span></li>
           </ul>
         </li>
         <li><span class="n2">보조 장부</span>
           <ul>
-            <li><span class="n3">공사/외주/차량/부서/프로젝트/현장 보조장부 <span class="sid">SA-LDG-10~19</span></span></li>
-            <li><span class="n3">차원별 원가 · 손익 · 잔액명세 <span class="sid">SA-LDG-20~29</span></span></li>
+            <li><span class="n3">공사/외주/차량/부서/프로젝트/현장 보조장부 <span class="legacy-id">legacy SA-LDG-10~19</span></span></li>
+            <li><span class="n3">차원별 원가 · 손익 · 잔액명세 <span class="legacy-id">legacy SA-LDG-20~29</span></span></li>
           </ul>
         </li>
       </ul>
     </li>
 
-    <li><span class="n1">TN-08 마감·결산·재무제표</span> <span class="sid">SA-CLS</span>
+    <li><span class="n1">TN-08 마감·결산·재무제표</span> <span class="legacy-id">legacy SA-CLS</span>
       <ul>
         <li><span class="n2">마감 관리</span> <span class="badge b-red">Step-up</span>
           <ul>
@@ -786,8 +792,8 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
         </li>
         <li><span class="n2">재무제표·결산장부</span>
           <ul>
-            <li><span class="n3">결산자료 · 시산표 · 재무상태표 · 손익계산서 <span class="sid">SA-CLS-01~14</span></span></li>
-            <li><span class="n3">제조원가명세 · 현금흐름표 · 부속명세 · 영수증/송금/지출증명 <span class="sid">SA-CLS-15~21</span></span></li>
+            <li><span class="n3">결산자료 · 시산표 · 재무상태표 · 손익계산서 <span class="legacy-id">legacy SA-CLS-01~14</span></span></li>
+            <li><span class="n3">제조원가명세 · 현금흐름표 · 부속명세 · 영수증/송금/지출증명 <span class="legacy-id">legacy SA-CLS-15~21</span></span></li>
           </ul>
         </li>
         <li><span class="n2">보고패키지·스케줄</span>
@@ -798,18 +804,18 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
       </ul>
     </li>
 
-    <li><span class="n1">TN-09 부가세·신고서류</span> <span class="sid">SA-VAT</span>
+    <li><span class="n1">TN-09 부가세·신고서류</span> <span class="legacy-id">legacy SA-VAT</span>
       <ul>
         <li><span class="n2">주요 신고</span>
           <ul>
-            <li><span class="n3">부가가치세신고서 · MRI 검증 · 전자신고 <span class="sid">SA-VAT-01~08</span></span></li>
+            <li><span class="n3">부가가치세신고서 · MRI 검증 · 전자신고 <span class="legacy-id">legacy SA-VAT-01~08</span></span></li>
             <li><span class="n3">세금계산서/계산서합계표 · 신용카드/현금영수증</span></li>
           </ul>
         </li>
         <li><span class="n2">첨부·업종별 서식</span>
           <ul>
-            <li><span class="n3">업종별 첨부 · 의제매입 · 재활용폐자원 · 부동산임대 <span class="sid">SA-VAT-09~34</span></span></li>
-            <li><span class="n3">영세율 · 수출 · 기타 신고서류 <span class="sid">SA-VAT-35~50</span></span></li>
+            <li><span class="n3">업종별 첨부 · 의제매입 · 재활용폐자원 · 부동산임대 <span class="legacy-id">legacy SA-VAT-09~34</span></span></li>
+            <li><span class="n3">영세율 · 수출 · 기타 신고서류 <span class="legacy-id">legacy SA-VAT-35~50</span></span></li>
           </ul>
         </li>
       </ul>
@@ -823,9 +829,9 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
             <li><span class="n3">월별 법인세 추정 · 선납세금 · 법정 신고기한 알림</span></li>
           </ul>
         </li>
-        <li><span class="n2">고정자산·차량</span> <span class="sid">SA-FA</span> <span class="sid">AUX-09</span>
+        <li><span class="n2">고정자산·차량</span> <span class="legacy-id">legacy SA-FA</span> <span class="legacy-id">legacy AUX-09</span>
           <ul>
-            <li><span class="n3">고정자산등록 · 상각계산 · 자산관리대장 <span class="sid">SA-FA-01~07</span></span></li>
+            <li><span class="n3">고정자산등록 · 상각계산 · 자산관리대장 <span class="legacy-id">legacy SA-FA-01~07</span></span></li>
             <li><span class="n3">업무용승용차 · 차량별 비용 · 프로젝트/부서 자산명세</span></li>
           </ul>
         </li>
@@ -834,20 +840,20 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
     <li><span class="n1">TN-11 자금·예산·어음</span>
       <ul>
-        <li><span class="n2">자금관리</span> <span class="sid">SA-FND</span>
+        <li><span class="n2">자금관리</span> <span class="legacy-id">legacy SA-FND</span>
           <ul>
-            <li><span class="n3">일일자금 · 자금계획 · 입출금 · 자금일월보 <span class="sid">SA-FND-01~06</span></span></li>
-            <li><span class="n3">예산입력 · 예실현황 · 추정예산 <span class="sid">SA-FND-07~14</span></span></li>
+            <li><span class="n3">일일자금 · 자금계획 · 입출금 · 자금일월보 <span class="legacy-id">legacy SA-FND-01~06</span></span></li>
+            <li><span class="n3">예산입력 · 예실현황 · 추정예산 <span class="legacy-id">legacy SA-FND-07~14</span></span></li>
           </ul>
         </li>
-        <li><span class="n2">예적금·차입금</span> <span class="sid">SA-DEP</span>
+        <li><span class="n2">예적금·차입금</span> <span class="legacy-id">legacy SA-DEP</span>
           <ul>
-            <li><span class="n3">예적금현황 · 차입금 스케줄 · 차입금현황 <span class="sid">SA-DEP-01~03</span></span></li>
+            <li><span class="n3">예적금현황 · 차입금 스케줄 · 차입금현황 <span class="legacy-id">legacy SA-DEP-01~03</span></span></li>
           </ul>
         </li>
-        <li><span class="n2">어음·당좌관리</span> <span class="sid">SA-BIL</span>
+        <li><span class="n2">어음·당좌관리</span> <span class="legacy-id">legacy SA-BIL</span>
           <ul>
-            <li><span class="n3">받을어음 · 지급어음 · 어음집계표 · 당좌수표현황 <span class="sid">SA-BIL-01~04</span></span></li>
+            <li><span class="n3">받을어음 · 지급어음 · 어음집계표 · 당좌수표현황 <span class="legacy-id">legacy SA-BIL-01~04</span></span></li>
           </ul>
         </li>
       </ul>
@@ -894,17 +900,17 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
       </ul>
     </li>
 
-    <li><span class="n1">TN-15 데이터관리·이관</span> <span class="sid">SA-DAT</span>
+    <li><span class="n1">TN-15 데이터관리·이관</span> <span class="legacy-id">legacy SA-DAT</span>
       <ul>
         <li><span class="n2">데이터 복구·보존</span>
           <ul>
-            <li><span class="n3">삭제전표복구 · 데이터백업/복구 · 데이터 보존/파기 <span class="sid">SA-DAT-01~02</span></span></li>
+            <li><span class="n3">삭제전표복구 · 데이터백업/복구 · 데이터 보존/파기 <span class="legacy-id">legacy SA-DAT-01~02</span></span></li>
           </ul>
         </li>
         <li><span class="n2">SA 이관</span>
           <ul>
-            <li><span class="n3">SA 내보내기/올리기 · 전체/월별/분기별 <span class="sid">SA-DAT-03~06</span></span></li>
-            <li><span class="n3">기수변경 <span class="sid">SA-DAT-07</span> · 이관 검증 · 이관 로그</span></li>
+            <li><span class="n3">SA 내보내기/올리기 · 전체/월별/분기별 <span class="legacy-id">legacy SA-DAT-03~06</span></span></li>
+            <li><span class="n3">기수변경 <span class="legacy-id">legacy SA-DAT-07</span> · 이관 검증 · 이관 로그</span></li>
             <li><span class="n3">관리회사 변경은 테넌트 데이터 이동 없이 관계·배정·자격증명만 인계</span></li>
           </ul>
         </li>
@@ -1081,7 +1087,7 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
         <li><span class="n2">부록 H~L·통합본 추적</span>
           <ul>
             <li><span class="n3">회의자료 · SaaS 개발 주의사항 · 추가 검토 · 기초 보강 · 주요기능 설명</span></li>
-            <li><span class="n3">일반전표입력 통합본 <span class="sid">WJV-01~07</span> · 도메인 정합 보강</span></li>
+            <li><span class="n3">일반전표입력 통합본 <span class="legacy-id">legacy WJV-01~07</span> · 도메인 정합 보강</span></li>
           </ul>
         </li>
       </ul>
@@ -1197,9 +1203,10 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
   <li><b>관리회사 이관</b>: TRANSFER_IN_PROGRESS 동안 기존/신규 관리회사의 동시 쓰기를 금지한다. tenantId와 원천데이터는 유지하고 관계·배정·자격증명·미결업무를 컷오버한다.</li>
   <li><b>정책 상속</b>: 보안·운영 정책은 GLOBAL → OPERATOR_ORG → PLAN → TENANT 순으로 병합하며 하위 계층은 상위의 강제/금지 규칙을 완화할 수 없다.</li>
   <li><b>표준 원본 단일화</b>: 전체 업무 표준 원본·버전·검토·발행·폐기·롤백은 PF-04와 PLATFORM_STANDARD_ADMIN만 수행한다. OP-05는 PUBLISHED 표준을 읽고 배포대상·일정·사전검증·채택현황만 관리하며 원본 오버레이와 자체 버전을 만들 수 없다.</li>
-  <li><b>메뉴 원본 단일화</b>: PF/OP/TN/CO 메뉴 원본·다국어·route·MenuVersion CUD와 발행은 PF-04M에서만 수행한다. OP-06D는 PUBLISHED OP 메뉴 조회·영향 미리보기 전용이다.</li>
-  <li><b>메뉴목록 기준</b>: PF-04M은 트리를 탐색 보조로 사용하고 메뉴코드·상위메뉴·채널·레벨·유형·화면 ID·다국어명·route·flag·Phase·상태·source/detail의 목록 그리드를 기준으로 편집·검증·영향분석한다.</li>
-  <li><b>그룹별 메뉴권한</b>: PF-01P/OP-06P/TN-01P는 PUBLISHED 메뉴에 INHERIT/ALLOW/DENY를 적용한다. 하나라도 DENY이면 DENY, 부모 DENY는 하위에 전파하며 ALLOW만으로 Role VIEW/ENTER/ACTION을 생성하지 않는다.</li>
+  <li><b>메뉴 원본 단일화</b>: PF/OP/TN/CO 메뉴 원본·다국어·route·MenuVersion CUD와 발행은 <code>PF-04-03-01</code>에서만 수행한다. <code>OP-06-06-01</code>은 PUBLISHED OP 메뉴 조회·영향 미리보기 전용이다.</li>
+  <li><b>메뉴목록 기준</b>: <code>PF-04-03-01</code>은 트리를 탐색 보조로 사용하고 메뉴코드·상위메뉴·채널·레벨·유형·canonical 화면 ID·legacyScreenId·다국어명·route·flag·Phase·상태·source/detail의 목록 그리드를 기준으로 편집·검증·영향분석한다.</li>
+  <li><b>그룹별 메뉴권한</b>: <code>PF-01-04-01</code>/<code>OP-06-03-01</code>/<code>TN-01-03-01</code>은 PUBLISHED 메뉴에 INHERIT/ALLOW/DENY를 적용한다. 하나라도 DENY이면 DENY, 부모 DENY는 하위에 전파하며 ALLOW만으로 Role VIEW/ENTER/ACTION을 생성하지 않는다.</li>
+  <li><b>ID 형식</b>: 메뉴코드는 <code>CC-NN</code>/<code>CC-NN-NN</code>, 실행화면 ID는 <code>CC-NN-NN-NN</code>만 허용한다. channel·부모 prefix·2자리 숫자를 검증하고 발행된 ID와 폐기 ID를 재사용하지 않는다.</li>
   <li><b>최종 권한평가</b>: 활성 사용자 → Membership/scope → PUBLISHED MenuVersion → 그룹정책 → RoleMenuPermission → MenuActionGrant → data scope → 민감정보/Step-up → SOD 순으로 서버가 평가한다.</li>
   <li><b>미노출 원칙</b>: 권한 없는 메뉴는 비활성이 아니라 미노출하고 API에서도 재차단한다. 요금제/기능 플래그 미포함 기능은 정책에 따라 업그레이드 안내로 노출할 수 있다.</li>
   <li><b>기장 모드</b>: `TENANT_LED`는 이용회사 입력 중심, `OPERATOR_LED`는 운영자 기장 워크벤치와 회사 확인 화면 중심, `HYBRID`는 분담 규칙에 따라 입력/검토 권한을 나눈다.</li>
@@ -1212,6 +1219,15 @@ ul.tree ul li::before{content:"";position:absolute;left:-16px;top:14px;width:13p
 
 </main>
 <script>
+const canonicalScreenPattern = /^(PF|OP|TN|CO)-\d{2}-\d{2}-\d{2}$/;
+document.querySelectorAll('.sid').forEach(element => {
+  const value = element.textContent.trim();
+  if(!canonicalScreenPattern.test(value)){
+    element.classList.remove('sid');
+    element.classList.add('legacy-id');
+    element.textContent = `legacy ${value}`;
+  }
+});
 const searchInput = document.getElementById('menuSearch');
 if(searchInput){
   searchInput.addEventListener('input', () => {

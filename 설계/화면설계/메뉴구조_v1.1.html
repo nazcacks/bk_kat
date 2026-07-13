@@ -59,7 +59,8 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
 .tn-title{border-left:5px solid var(--tn);padding-left:10px}
 .co-title{border-left:5px solid var(--co);padding-left:10px}
 .c{text-align:center}
-.w-no{width:44px}.w-channel{width:92px}.w-code{width:86px}.w-menu{width:116px}.w-sub{width:150px}.w-id{width:118px}.w-purpose{width:240px}.w-data{width:210px}.w-rule{width:190px}.w-source{width:96px}
+.legacy-id{display:block;margin-top:4px;color:#64748b;font:10.2px/1.35 Consolas,'D2Coding',monospace}
+.w-no{width:44px}.w-channel{width:92px}.w-code{width:86px}.w-menu{width:116px}.w-sub{width:150px}.w-id{width:152px}.w-purpose{width:240px}.w-data{width:210px}.w-rule{width:190px}.w-source{width:96px}
 @media(max-width:1300px){.summary{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:1100px){main{padding:18px 14px}.summary{grid-template-columns:1fr 1fr}.search{min-width:220px;width:100%}.grid-wrap{max-height:none}}
 @media print{body{background:#fff}main{max-width:none;padding:8px}section{break-inside:avoid;border:none}.toolbar,.toc{display:none}.grid-wrap{max-height:none;overflow:visible}th{position:static}}
@@ -92,7 +93,16 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
   <div class="metric"><b id="saCount">182</b><span>SA 세부 기능 화면</span></div>
   <div class="metric"><b>4</b><span>메뉴 단계: 구분 / 상위 / 하위 / 세부</span></div>
 </div>
-<div class="note">모든 행은 1단계 채널 → 2단계 상위 메뉴 → 3단계 하위 메뉴 → 4단계 세부 화면으로 해석한다. PF는 platformOrgId + PlatformMembership + PLATFORM RoleAssignment를, 관리회사 대행업무는 operatorOrgId + tenantId + relationId + assignmentId를 검증한다. 메뉴 원본은 PF-04M에서만 관리하고 OP-06D는 PUBLISHED 발행본 조회 전용이다.</div>
+<div class="note">모든 행은 1단계 채널 → 2단계 상위 메뉴 → 3단계 진입 메뉴 → 4단계 실행 화면으로 해석한다. PF는 platformOrgId + PlatformMembership + PLATFORM RoleAssignment를, 관리회사 대행업무는 operatorOrgId + tenantId + relationId + assignmentId를 검증한다. 메뉴 원본은 <code>PF-04-03-01</code>에서만 관리하고 <code>OP-06-06-01</code>은 PUBLISHED 발행본 조회 전용이다.</div>
+<h3>메뉴코드·화면 ID 부여 표준</h3>
+<table>
+  <tr><th>계층</th><th>형식</th><th>예시</th><th>규칙</th></tr>
+  <tr><td>1뎁스 채널</td><td><code>CC</code></td><td><code>PF</code></td><td>PF 플랫폼 / OP 관리회사 / TN 이용회사 / CO 공통</td></tr>
+  <tr><td>2뎁스 업무영역</td><td><code>CC-NN</code></td><td><code>PF-01</code></td><td>채널별 2자리 숫자. <code>00</code>은 홈·진입 전용</td></tr>
+  <tr><td>3뎁스 진입메뉴</td><td><code>CC-NN-NN</code></td><td><code>PF-01-02</code></td><td>업무영역별 <code>01</code>부터 순차 부여</td></tr>
+  <tr><td>4뎁스 실행화면</td><td><code>CC-NN-NN-NN</code></td><td><code>PF-01-02-01</code></td><td>canonical screenId. 발행 후 불변·폐기번호 재사용 금지</td></tr>
+</table>
+<div class="note">화면 ID 열은 canonical ID를 주 식별자로 표시한다. PF-01U·OP-06A·TN-01U 및 BF/SA/JV/AUX 계열은 <code>LegacyScreenIdMap</code>의 원천 추적값으로만 병기하며 권한·라우트·감사로그 키로 사용하지 않는다.</div>
 </section>
 
 <section id="pf">
@@ -116,7 +126,7 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
   <thead><tr>
     <th class="w-no">No</th><th class="w-code">메뉴코드</th><th class="w-channel">1단계 구분</th>
     <th class="w-menu">2단계 상위 메뉴</th><th class="w-sub">3단계 하위 메뉴</th><th class="w-sub">4단계 세부 메뉴/화면</th>
-    <th class="w-id">화면 ID</th><th class="w-purpose">업무 목적</th><th class="w-data">주요 데이터/엔티티</th>
+    <th class="w-id">canonical 화면 ID / legacy</th><th class="w-purpose">업무 목적</th><th class="w-data">주요 데이터/엔티티</th>
     <th class="w-rule">권한/통제</th><th class="w-rule">노출조건/비고</th><th class="w-source">근거</th>
   </tr></thead>
   <tbody id="pfBody"></tbody>
@@ -148,7 +158,7 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
       <th class="w-menu">2단계 상위 메뉴</th>
       <th class="w-sub">3단계 하위 메뉴</th>
       <th class="w-sub">4단계 세부 메뉴/화면</th>
-      <th class="w-id">화면 ID</th>
+      <th class="w-id">canonical 화면 ID / legacy</th>
       <th class="w-purpose">업무 목적</th>
       <th class="w-data">주요 데이터/엔티티</th>
       <th class="w-rule">권한/통제</th>
@@ -186,7 +196,7 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
       <th class="w-menu">2단계 상위 메뉴</th>
       <th class="w-sub">3단계 하위 메뉴</th>
       <th class="w-sub">4단계 세부 메뉴/화면</th>
-      <th class="w-id">화면 ID</th>
+      <th class="w-id">canonical 화면 ID / legacy</th>
       <th class="w-purpose">업무 목적</th>
       <th class="w-data">주요 데이터/엔티티</th>
       <th class="w-rule">권한/통제</th>
@@ -217,7 +227,7 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
   <thead><tr>
     <th class="w-no">No</th><th class="w-code">메뉴코드</th><th class="w-channel">1단계 구분</th>
     <th class="w-menu">2단계 상위 메뉴</th><th class="w-sub">3단계 하위 메뉴</th><th class="w-sub">4단계 세부 메뉴/화면</th>
-    <th class="w-id">화면 ID</th><th class="w-purpose">업무 목적</th><th class="w-data">주요 데이터/엔티티</th>
+    <th class="w-id">canonical 화면 ID / legacy</th><th class="w-purpose">업무 목적</th><th class="w-data">주요 데이터/엔티티</th>
     <th class="w-rule">권한/통제</th><th class="w-rule">노출조건/비고</th><th class="w-source">근거</th>
   </tr></thead>
   <tbody id="coBody"></tbody>
@@ -237,9 +247,10 @@ code{background:var(--muted-bg);border-radius:3px;padding:0 5px;font-family:Cons
   <tr><td>관리회사 이관</td><td>PF-03, OP-03, OP-08, TN-15</td><td>ORG_TRANSFER_IN_PROGRESS 동안 기존/신규 관리회사의 동시 쓰기를 금지한다. tenantId와 원천데이터는 유지하고 관계·배정·자격증명·미결업무만 컷오버한다.</td></tr>
   <tr><td>정책 상속</td><td>PF-04, OP-06, TN 설정</td><td>보안·운영 정책은 GLOBAL → OPERATOR_ORG → PLAN → TENANT 순으로 병합하며 하위 계층은 상위의 강제·금지 정책을 완화할 수 없다.</td></tr>
   <tr><td>표준 원본 단일관리</td><td>PF-04, OP-05, TN-01</td><td>전체 업무 표준 원본·버전·검토·발행·폐기·롤백은 PF-04와 PLATFORM_STANDARD_ADMIN만 수행한다. OP-05는 PUBLISHED 표준의 배포대상·일정·사전검증·채택현황만 관리하며 원본 오버레이와 자체 버전을 만들 수 없다.</td></tr>
-  <tr><td>메뉴 원본 단일관리</td><td>PF-04M, OP-06D</td><td>PF/OP/TN/CO 메뉴 원본·다국어·route·MenuVersion CUD/발행은 PF-04M에서만 수행한다. OP-06D는 현재 PUBLISHED OP 메뉴목록·Role/그룹 영향 조회와 내보내기만 허용한다.</td></tr>
-  <tr><td>메뉴목록 기준화</td><td>PF-04M</td><td>트리는 탐색 보조로 사용하고 메뉴코드, 상위메뉴코드/명, 채널, 레벨, 유형, 화면 ID, 한국어/영어명, route, feature flag, Phase, 상태, source/detail 목록을 기준으로 편집·검증·영향분석한다.</td></tr>
-  <tr><td>그룹별 메뉴권한</td><td>PF-01P, OP-06P, TN-01P</td><td>PUBLISHED 메뉴에 INHERIT/ALLOW/DENY를 저장한다. 복수그룹 DENY 우선, 부모 DENY 하위 전파, ALLOW만으로 Role VIEW/ENTER/ACTION 승격 금지를 적용한다.</td></tr>
+  <tr><td>메뉴 원본 단일관리</td><td>PF-04-03-01, OP-06-06-01</td><td>PF/OP/TN/CO 메뉴 원본·다국어·route·MenuVersion CUD/발행은 PF-04-03-01에서만 수행한다. OP-06-06-01은 현재 PUBLISHED OP 메뉴목록·Role/그룹 영향 조회와 내보내기만 허용한다.</td></tr>
+  <tr><td>메뉴목록 기준화</td><td>PF-04-03-01</td><td>트리는 탐색 보조로 사용하고 메뉴코드, 상위메뉴코드/명, 채널, 레벨, 유형, canonical 화면 ID, legacyScreenId, 한국어/영어명, route, feature flag, Phase, 상태, source/detail 목록을 기준으로 편집·검증·영향분석한다.</td></tr>
+  <tr><td>그룹별 메뉴권한</td><td>PF-01-04-01, OP-06-03-01, TN-01-03-01</td><td>PUBLISHED 메뉴에 INHERIT/ALLOW/DENY를 저장한다. 복수그룹 DENY 우선, 부모 DENY 하위 전파, ALLOW만으로 Role VIEW/ENTER/ACTION 승격 금지를 적용한다.</td></tr>
+  <tr><td>ID 형식·수명주기</td><td>PF/OP/TN/CO 전체</td><td>메뉴는 CC-NN/CC-NN-NN, 실행화면은 CC-NN-NN-NN만 허용한다. channel·부모 prefix·2자리 숫자를 검증하고 발행 또는 폐기된 canonical ID를 재사용하지 않는다.</td></tr>
   <tr><td>권한 없는 메뉴 미노출</td><td>전체</td><td>활성 사용자·Membership·PUBLISHED MenuVersion·UserGroupMenuPermission·RoleMenuPermission·MenuActionGrant·scopeType/scopeId·관계·배정·접근세션을 순서대로 결합하고 API에서도 재검증한다.</td></tr>
   <tr><td>기장 모드 연동</td><td>OP-08, TN 전표/마감/신고/보고</td><td>TENANT_LED, OPERATOR_LED, HYBRID와 관계별 BookkeepingConfig에 따라 입력·검토·승인·확인(Ack)을 분리한다.</td></tr>
   <tr><td>Step-up 인증</td><td>권한 변경, 신고 전송, 마감해제, 긴급대행, 대량 다운로드</td><td>재인증 결과와 사유를 세션 및 감사 로그에 기록한다.</td></tr>
@@ -281,8 +292,7 @@ const pfRows = [
 
   ['PF-04','전역 정책·전체 업무 표준','인증·권한 하한','GLOBAL MFA·Step-up·SOD·금지정책','PF-04-01','모든 관리회사와 테넌트가 준수할 최소 보안정책을 정의한다.','AuthPolicy, PolicyGuardrail, Role','PLATFORM_SECURITY','하위 계층 완화 금지','4.1~4.4'],
   ['PF-04','전역 정책·전체 업무 표준','전체 표준 카탈로그','회계·세무·Role·서식·코드·검증·AI 규칙','PF-04-02','전체 업무 표준의 유형, 원본, 소관부서, Steward와 확장허용 여부를 관리한다.','PlatformStandard, PlatformStandardItem','PLATFORM_STANDARD_ADMIN','관리회사·테넌트 원본 CUD 금지','6.0~6.1'],
-  ['PF-04','전역 정책·전체 업무 표준','메뉴 마스터','메뉴목록: code·parent·channel·level·type·screen·i18n·route·flag·phase·status·source','PF-04M','트리를 탐색 보조로 사용하고 PF/OP/TN/CO 메뉴목록을 기준으로 원본·다국어·경로를 관리한다.','Menu, MenuI18n, MenuRouteBinding, MenuVersion','PLATFORM_STANDARD_ADMIN, DRAFT에서만 CUD','고아·순환·중복 code/route·i18n 누락 차단, OP/TN 원본 쓰기 금지','4.3.2, 26.6.3'],
-  ['PF-04','전역 정책·전체 업무 표준','메뉴 버전·영향분석','Diff·Role/그룹/사용자 영향·검토·승인·발행·정지·롤백','PF-04M','메뉴 버전의 검증·SOD 상태전이와 발행/롤백을 수행한다.','MenuVersion, MenuPublishLog, RoleMenuPermission, UserGroupMenuPermission, PermissionEvaluationCache','작성자≠검토자≠발행승인자, Step-up','DRAFT→IN_REVIEW→APPROVED→PUBLISHED→RETIRED, SUSPENDED/ROLLED_BACK','4.3.2, 4.3.6, 26.6'],
+  ['PF-04','전역 정책·전체 업무 표준','메뉴관리','메뉴목록·상세·버전·영향분석·검토/승인/발행/롤백','PF-04M','트리를 탐색 보조로 사용하고 PF/OP/TN/CO 메뉴목록을 기준으로 원본·다국어·경로·버전·권한영향을 통합 관리한다.','Menu, MenuI18n, MenuRouteBinding, ScreenCatalog, LegacyScreenIdMap, MenuVersion, MenuPublishLog, PermissionEvaluationCache','PLATFORM_STANDARD_ADMIN, DRAFT CUD, 작성자≠발행승인자, Step-up','ID 형식·고아·순환·중복 code/route·i18n·영향분석 검증 후 발행; OP/TN 원본 쓰기 금지','4.3.2, 4.3.6, 26.1.1, 26.6'],
   ['PF-04','전역 정책·전체 업무 표준','표준 버전·검토','초안·영향분석·회귀검증·승인','PF-04-03','표준 버전을 작성하고 법적근거·효력일·영향범위를 검토한다.','PlatformStandardVersion, PlatformStandardApproval','PLATFORM_STANDARD_ADMIN+소관부서 검토자','작성자와 검토·승인자 분리','6.2'],
   ['PF-04','전역 정책·전체 업무 표준','발행·중지·롤백·폐기','PUBLISHED·SUSPENDED·ROLLED_BACK·RETIRED','PF-04-04','승인된 표준을 불변 발행하고 장애·법령변경 시 안전하게 중지·롤백·폐기한다.','PlatformStandardRelease, StandardRollbackLog, PlatformStandardAuditLog','PLATFORM_STANDARD_ADMIN+발행 승인자, Step-up','contentHash 고정, 자기 작성본 단독 발행 금지','6.2'],
   ['PF-04','전역 정책·전체 업무 표준','배포·채택 현황','관리회사 대상/일정·테넌트 채택/매핑','PF-04-05','플랫폼 발행본의 관리회사 배포와 테넌트 채택·매핑 현황을 감독한다.','OperatorStandardDistributionPolicy, OperatorStandardDistribution, TenantStandardAdoption, TenantStandardMapping','PLATFORM_STANDARD_ADMIN 조회·긴급통제','하위 원본 복제·오버레이·자체버전 금지','6.3~6.5'],
@@ -320,7 +330,7 @@ const opRows = [
   ['OP-06','사용자·인증·권한','그룹별 메뉴권한','PUBLISHED OP 메뉴·INHERIT/ALLOW/DENY·미리보기','OP-06P','현재 관리회사 사용자그룹별 OP 메뉴 후보정책과 최종 판정근거를 관리한다.','UserGroupMenuPermission, MenuVersion, RoleMenuPermission, MenuActionGrant, PermissionSimulationLog','ORG_ADMIN+ORG_SECURITY_ADMIN, Step-up','DENY 우선, 부모 DENY 전파, Role/Action 초과 허용 금지','4.3.5, 26.6'],
   ['OP-06','사용자·인증·권한','인증 정책','MFA·SSO·패스키·Step-up·IP','OP-06B','현재 관리회사와 수임회사 인증정책을 관리한다.','AuthPolicy, TrustedDevice','ORG_SECURITY_ADMIN','GLOBAL → OPERATOR_ORG → PLAN → TENANT','4.2, 26.6'],
   ['OP-06','사용자·인증·권한','역할·가드레일·결재선','조직 Role·기장 Role·PolicyGuardrail·SOD','OP-06C','관리회사 조직/기장 역할과 범위 및 결재선을 배정한다.','Role, RoleAssignment, BookkeepingAssignment, PolicyGuardrail','ORG_OWNER/ADMIN, SOD','자기승격 금지, 기장계약·relationId·유효기간 검증','4.3, 4.5, 26.6'],
-  ['OP-06','사용자·인증·권한','발행 메뉴목록·영향 조회','현재 PUBLISHED OP 메뉴·route/flag·Role/그룹 영향','OP-06D','플랫폼에서 발행한 OP 메뉴목록과 권한 영향을 읽기전용으로 조회한다.','Menu, MenuVersion, RoleMenuPermission, UserGroupMenuPermission','ORG_ADMIN/ORG_AUDITOR, 읽기전용','조회·영향 미리보기·내보내기만 허용, 원본 CUD/발행은 PF-04M','4.3.1~4.3.2, 26.6'],
+  ['OP-06','사용자·인증·권한','발행 메뉴목록·영향 조회','현재 PUBLISHED OP 메뉴·route/flag·Role/그룹 영향','OP-06D','플랫폼에서 발행한 OP 메뉴목록과 권한 영향을 읽기전용으로 조회한다.','Menu, MenuVersion, RoleMenuPermission, UserGroupMenuPermission','ORG_ADMIN/ORG_AUDITOR, 읽기전용','조회·영향 미리보기·내보내기만 허용, 원본 CUD/발행은 PF-04-03-01','4.3.1~4.3.2, 26.6'],
   ['OP-07','접근 거버넌스','접근 세션','조직·테넌트·관계·배정 감사키','BF-06','관리회사 사용자의 테넌트 접근 근거를 추적한다.','AdminAccessSession, AdminAccessLog','ORG_SUPPORT/감사, Step-up','operatorOrgId/tenantId/relationId/assignmentId 기록','5장'],
   ['OP-07','접근 거버넌스','긴급대행','Break-glass 승인·녹화·사후검토','BF-06','현재 수임관계 내 긴급 접근을 통제한다.','BreakGlassConsent, BreakGlassRequest, SessionRecording','2인 승인·시간/범위 제한','관계 없는 테넌트 긴급접근 금지','5.3'],
   ['OP-07','접근 거버넌스','플랫폼 지원 검토','PlatformSupportSession 승인·행위 확인','OP-07-03','자기 조직 대상 플랫폼 지원 접근을 승인·검토한다.','PlatformSupportSession, PlatformAuditLog','ORG_OWNER/SECURITY','플랫폼 세션은 이중 감사','5.4'],
@@ -385,7 +395,6 @@ const tnContextRows = [
 
 const tnCoreRows = [
   ['TN-00','회사 대시보드','현황','신고기한·미결전표·마감상태','-','이용회사 업무 시작 화면과 주요 알림 허브다.','Tenant, ClosingStatus, OpenItem, Alert','소속 사용자 권한 범위','위젯은 Role 데이터 범위에 따라 필터','1장, 18장'],
-  ['TN-01','회사 설정·기초','기장 방식','기장 모드·확인의무·전환 요청','BF-03','회사별 기장 수행 주체와 신고 승인 책임을 설정한다.','BookkeepingConfig, ModeChangeRequest','회사 관리자/운영자, Step-up','OPERATOR_LED/HYBRID에 따라 메뉴 가변','21장, F.5.4'],
   ['TN-01','회사 설정·기초','차원/관리항목','사업장·코스트센터·부서·프로젝트·현장·사원','BF-09','전표와 원장 분석에 쓰는 관리차원 마스터를 관리한다.','Dimension, BusinessPlace, CostCenter, Department, Project, Site, Employee','회사 관리자/운영자','사업장 기본 필수, 나머지는 회사 설정으로 강화','9장, F.5.10'],
   ['TN-01','회사 설정·기초','차원 사용정책/소수점','DimensionConfig, TenantAccountingConfig','BF-09','차원 필수/기본값/조합 검증과 금액·수량·환율 자릿수를 관리한다.','DimensionConfig, TenantAccountingConfig','회사 관리자','전표 저장 검증에 즉시 영향','9.3, F.7'],
   ['TN-01','회사 설정·기초','알림 설정','수신정책·템플릿·D-N·웹훅','BF-11','법정 기한, 인증서, 어음, 마감 알림을 설정한다.','NotificationPolicy, NotificationTemplate, WebhookEndpoint','회사 관리자/사용자','법정/보안 통지는 수신 거부 불가','18장, F.5.12'],
@@ -431,9 +440,7 @@ const tnCoreRows = [
   ['TN-14','협업·AI','미결항목/질의','Open Items·고객 확인·증빙요청','-','마감/보고 전 미결 질의와 고객 확인을 관리한다.','OpenItem, QueryThread, Ack','회사/기장 담당','OPERATOR_LED/HYBRID 협업 강화','18.3'],
   ['TN-14','협업·AI','이상거래 탐지','이상 알림 검토함','-','AI/룰 기반 이상 전표 후보를 검토한다.','AnomalyFinding, ReviewDecision','회계/결재/감사','휴먼인더루프 필수','11.7'],
   ['TN-14','협업·AI','AI 조회 챗봇','자연어 조회·읽기전용','-','권한 범위 내 회계 데이터를 자연어로 조회한다.','ChatSession, QueryToolLog','읽기 전용, 데이터 범위 강제','응답은 서버 권한 필터 적용','11.8'],
-  ['TN-15','데이터관리·이관','삭제전표복구','삭제 전표 조회·복구','SA-DAT-01','삭제 전표를 검토 후 복구한다.','DeletedJournal, journal_history','관리자/회계 권한','복구 시 재채번, 자동전표 일부 제외','25.20.1'],
   ['TN-15','데이터관리·이관','백업/복구·SA 이관','기수별/월별/분기별 내보내기·올리기','SA-DAT-02~06','레거시 SA와 BK 간 데이터를 이관한다.','MigrationJob, BackupFile, ImportMapping','회사 관리자/서비스 관리자','사업자번호·기수 검증, 작업 이력 감사','25.20.2~25.20.6'],
-  ['TN-15','데이터관리·이관','기수변경','회계기수 메타데이터 정정','SA-DAT-07','잘못 선택한 기수를 단일 기수 조건에서 정정한다.','FiscalPeriod, TenantMetadata','관리자, 수동 검토 가능','2개 이상 기수 데이터 존재 시 자동 변경 불가','25.20.7']
 ];
 
 const saRaw = `
@@ -647,6 +654,97 @@ function buildSaRows(){
   });
 }
 
+const canonicalScreenPattern = /^(PF|OP|TN|CO)-\d{2}-\d{2}-\d{2}$/;
+const saCanonicalMap = (() => {
+  const counters = new Map();
+  const result = new Map();
+  saRaw.trim().split('\n').forEach(line => {
+    const [legacyId] = line.split('|');
+    const menuCode = saMeta[saPrefix(legacyId)][0];
+    let next = (counters.get(menuCode) || 0) + 1;
+    if(menuCode === 'TN-04' && next === 3) next = 4;
+    counters.set(menuCode, next);
+    result.set(legacyId, `${menuCode}-${String(next).padStart(2, '0')}-01`);
+  });
+  return result;
+})();
+
+const explicitCanonicalMap = new Map([
+  ['PF-01|플랫폼 사용자관리', 'PF-01-02-01'],
+  ['PF-01|플랫폼 사용자그룹', 'PF-01-03-01'],
+  ['PF-01|플랫폼 그룹별 메뉴권한', 'PF-01-04-01'],
+  ['PF-04|메뉴관리', 'PF-04-03-01'],
+  ['OP-06|사용자관리', 'OP-06-01-01'],
+  ['OP-06|사용자그룹관리', 'OP-06-02-01'],
+  ['OP-06|그룹별 메뉴권한', 'OP-06-03-01'],
+  ['OP-06|인증 정책', 'OP-06-04-01'],
+  ['OP-06|역할·가드레일·결재선', 'OP-06-05-01'],
+  ['OP-06|발행 메뉴목록·영향 조회', 'OP-06-06-01'],
+  ['TN-00|업무 컨텍스트', 'TN-00-01-01'],
+  ['TN-00|현황', 'TN-00-02-01'],
+  ['TN-01|이용회사 사용자관리', 'TN-01-01-01'],
+  ['TN-01|이용회사 사용자그룹', 'TN-01-02-01'],
+  ['TN-01|그룹별 메뉴권한', 'TN-01-03-01'],
+  ['TN-01|관계별 기장방식', 'TN-01-04-01'],
+  ['TN-01|차원/관리항목', 'TN-01-05-01'],
+  ['TN-01|차원 사용정책/소수점', 'TN-01-05-02'],
+  ['TN-01|알림 설정', 'TN-01-06-01'],
+  ['TN-01|플랫폼 표준 채택·매핑', 'TN-01-07-01'],
+  ['TN-04|전표 결재함', 'TN-04-03-01'],
+  ['TN-15|관리회사 변경 인계', 'TN-15-08-01']
+]);
+
+function assignCanonicalRows(rows){
+  const usedThirdByMenu = new Map();
+  const assignedScreenIds = new Set();
+  const reserve = screenId => {
+    const segments = screenId.split('-');
+    const menuCode = `${segments[0]}-${segments[1]}`;
+    if(!usedThirdByMenu.has(menuCode)) usedThirdByMenu.set(menuCode, new Set());
+    usedThirdByMenu.get(menuCode).add(Number(segments[2]));
+  };
+  [...saCanonicalMap.values(), ...explicitCanonicalMap.values()].forEach(reserve);
+
+  const generatedGroups = new Map();
+  return rows.map(row => {
+    const next = [...row];
+    const menuCode = next[0];
+    const legacyScreenId = String(next[4] ?? '').trim();
+    const explicitKey = `${menuCode}|${next[2]}`;
+    const saMatch = legacyScreenId.match(/^SA-[A-Z]+-\d{2}$/)?.[0];
+    const mappedSaScreenId = saMatch ? saCanonicalMap.get(saMatch) : null;
+    let canonicalScreenId = explicitCanonicalMap.get(explicitKey) || (mappedSaScreenId?.startsWith(`${menuCode}-`) ? mappedSaScreenId : null);
+
+    if(!canonicalScreenId){
+      const groupKey = `${menuCode}|${next[2]}`;
+      let group = generatedGroups.get(groupKey);
+      if(!group){
+        const used = usedThirdByMenu.get(menuCode) || new Set();
+        let third = 1;
+        while(used.has(third)) third += 1;
+        if(third > 99) throw new Error(`메뉴 화면 순번 초과: ${menuCode}`);
+        used.add(third);
+        usedThirdByMenu.set(menuCode, used);
+        group = {third, detail: 0};
+        generatedGroups.set(groupKey, group);
+      }
+      group.detail += 1;
+      canonicalScreenId = `${menuCode}-${String(group.third).padStart(2, '0')}-${String(group.detail).padStart(2, '0')}`;
+    }
+
+    if(!canonicalScreenPattern.test(canonicalScreenId)){
+      throw new Error(`canonical 화면 ID 형식 오류: ${canonicalScreenId}`);
+    }
+    if(assignedScreenIds.has(canonicalScreenId)){
+      throw new Error(`canonical 화면 ID 중복: ${canonicalScreenId}`);
+    }
+    assignedScreenIds.add(canonicalScreenId);
+    next[4] = canonicalScreenId;
+    next.push(legacyScreenId && legacyScreenId !== '-' && legacyScreenId !== canonicalScreenId ? legacyScreenId : '');
+    return next;
+  });
+}
+
 const topMenuNames = {
   'PF-00':'플랫폼 진입·현황',
   'PF-01':'플랫폼 조직·사용자·관리회사',
@@ -738,7 +836,7 @@ function renderRows(tbodyId, rows, searchId, filterId, countId, channelLabel){
   const tbody = document.getElementById(tbodyId);
   const search = document.getElementById(searchId);
   const filter = document.getElementById(filterId);
-  const preparedRows = sortRowsByMenu(normalizeRows(rows)).map(row => [channelLabel, ...row]);
+  const preparedRows = sortRowsByMenu(normalizeRows(assignCanonicalRows(rows))).map(row => [channelLabel, ...row]);
   function draw(){
     const keyword = (search?.value || '').trim().toLowerCase();
     const category = filter?.value || '';
@@ -755,9 +853,9 @@ function renderRows(tbodyId, rows, searchId, filterId, countId, channelLabel){
         ${topSpans.get(index) ? `<td rowspan="${topSpans.get(index)}"><code>${escapeHtml(row[1])}</code></td>` : ''}
         ${channelSpans.get(index) ? `<td rowspan="${channelSpans.get(index)}" class="level0">${escapeHtml(row[0])}</td>` : ''}
         ${topSpans.get(index) ? `<td rowspan="${topSpans.get(index)}" class="level1">${escapeHtml(row[2])}<div class="path">${escapeHtml(row[1])}</div></td>` : ''}
-        ${subSpans.get(index) ? `<td rowspan="${subSpans.get(index)}" class="level2">${escapeHtml(row[3])}</td>` : ''}
+        ${subSpans.get(index) ? `<td rowspan="${subSpans.get(index)}" class="level2">${escapeHtml(row[3])}<div class="path">${escapeHtml(row[5].split('-').slice(0, 3).join('-'))}</div></td>` : ''}
         <td class="level3">${escapeHtml(row[4])}</td>
-        <td><span class="sid">${escapeHtml(row[5])}</span></td>
+        <td><span class="sid">${escapeHtml(row[5])}</span>${row[11] ? `<span class="legacy-id">legacy ${escapeHtml(row[11])}</span>` : ''}</td>
         <td>${escapeHtml(row[6])}</td>
         <td>${escapeHtml(row[7])}</td>
         <td>${escapeHtml(row[8])}</td>
