@@ -1,7 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import configuration from './config/configuration';
 import { RequestContextMiddleware } from './common/middleware/request-context.middleware';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -19,27 +20,24 @@ import { User } from './modules/users/user.entity';
 import { CommonCodeGroup, CommonCodeItem } from './modules/common-codes/common-code.entity';
 import { MaskingPolicy } from './modules/security/entities/masking-policy.entity';
 import { AdminResource } from './modules/resources/admin-resource.entity';
+import { createMikroOrmOptions } from './database/mikro-orm.options';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
-    TypeOrmModule.forRootAsync({
+    MikroOrmModule.forRootAsync({
+      driver: PostgreSqlDriver,
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get<string>('database.host'),
-        port: config.get<number>('database.port'),
-        username: config.get<string>('database.username'),
-        password: config.get<string>('database.password'),
-        database: config.get<string>('database.database'),
-        autoLoadEntities: true,
-        // 개발 전용 — 운영은 마이그레이션으로 전환
-        synchronize: config.get<boolean>('database.synchronize'),
-        retryAttempts: 3,
-        retryDelay: 2000,
+      useFactory: (config: ConfigService) => createMikroOrmOptions({
+        host: config.getOrThrow<string>('database.host'),
+        port: config.getOrThrow<number>('database.port'),
+        username: config.getOrThrow<string>('database.username'),
+        password: config.getOrThrow<string>('database.password'),
+        database: config.getOrThrow<string>('database.database'),
+        debug: config.get<boolean>('database.debug'),
       }),
     }),
-    TypeOrmModule.forFeature([Menu, User, CommonCodeGroup, CommonCodeItem, MaskingPolicy, AdminResource]),
+    MikroOrmModule.forFeature([Menu, User, CommonCodeGroup, CommonCodeItem, MaskingPolicy, AdminResource]),
     SecurityModule,
     AuthModule,
     UsersModule,

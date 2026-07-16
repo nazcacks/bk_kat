@@ -1,6 +1,8 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { MikroORM, RequestContext } from '@mikro-orm/core';
+import { EntityManager, EntityRepository, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import * as bcrypt from 'bcryptjs';
 import { Menu } from '../../modules/menus/menu.entity';
 import { User } from '../../modules/users/user.entity';
@@ -19,20 +21,28 @@ export class SeedService implements OnApplicationBootstrap {
   private readonly logger = new Logger(SeedService.name);
 
   constructor(
-    @InjectRepository(Menu) private readonly menuRepo: Repository<Menu>,
-    @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(CommonCodeGroup) private readonly codeGroupRepo: Repository<CommonCodeGroup>,
-    @InjectRepository(CommonCodeItem) private readonly codeItemRepo: Repository<CommonCodeItem>,
-    @InjectRepository(MaskingPolicy) private readonly maskingRepo: Repository<MaskingPolicy>,
-    @InjectRepository(AdminResource) private readonly resourceRepo: Repository<AdminResource>,
+    @InjectRepository(Menu) private readonly menuRepo: EntityRepository<Menu>,
+    @InjectRepository(User) private readonly userRepo: EntityRepository<User>,
+    @InjectRepository(CommonCodeGroup) private readonly codeGroupRepo: EntityRepository<CommonCodeGroup>,
+    @InjectRepository(CommonCodeItem) private readonly codeItemRepo: EntityRepository<CommonCodeItem>,
+    @InjectRepository(MaskingPolicy) private readonly maskingRepo: EntityRepository<MaskingPolicy>,
+    @InjectRepository(AdminResource) private readonly resourceRepo: EntityRepository<AdminResource>,
+    private readonly em: EntityManager,
+    private readonly orm: MikroORM<PostgreSqlDriver>,
+    private readonly config: ConfigService,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    await this.seedMenus();
-    await this.seedUsers();
-    await this.seedCommonCodes();
-    await this.seedMaskingPolicies();
-    await this.seedResources();
+    if (this.config.get<boolean>('database.synchronize')) {
+      await this.orm.schema.updateSchema({ safe: true, dropTables: false });
+    }
+    await RequestContext.create(this.orm.em, async () => {
+      await this.seedMenus();
+      await this.seedUsers();
+      await this.seedCommonCodes();
+      await this.seedMaskingPolicies();
+      await this.seedResources();
+    });
   }
 
   private async seedResources(): Promise<void> {
@@ -43,21 +53,21 @@ export class SeedService implements OnApplicationBootstrap {
         rows.push(this.resourceRepo.create({ resourceType, data, source: 'SEED' }));
       }
     }
-    await this.resourceRepo.save(rows);
+    await this.em.persistAndFlush(rows);
     this.logger.log(`운영 리소스 시드 완료 (${rows.length}건)`);
   }
 
   private async seedMenus(): Promise<void> {
     if ((await this.menuRepo.count()) > 0) return;
-    await this.menuRepo.save(this.menuRepo.create(MENU_SEED));
+    const menus = MENU_SEED.map((menu) => this.menuRepo.create(menu, { partial: true }));
+    await this.em.persistAndFlush(menus);
     this.logger.log(`메뉴 시드 완료 (${MENU_SEED.length}건)`);
   }
 
   private async seedUsers(): Promise<void> {
     if ((await this.userRepo.count()) > 0) return;
     const hash = await bcrypt.hash('admin1234!', 10);
-    await this.userRepo.save(
-      this.userRepo.create([
+    const users: Partial<User>[] = [
         {
           loginId: 'admin',
           name: '조강수',
@@ -156,31 +166,33 @@ export class SeedService implements OnApplicationBootstrap {
             history: ['2026-07-01 로그인 5회 실패 잠금', '2026-02-01 초대'],
           },
         },
-      ]),
-    );
+      ];
+    await this.em.persistAndFlush(users.map((user) => this.userRepo.create(user, { partial: true })));
     this.logger.log('사용자 시드 완료 (4건)');
   }
 
   /** 시스템 공통코드 — 설계 HTML COMMON_CODE_CATALOG 기준 */
   private async seedCommonCodes(): Promise<void> {
     if ((await this.codeGroupRepo.count()) > 0) return;
-    await this.codeGroupRepo.save(this.codeGroupRepo.create(CODE_GROUP_SEED));
+    const groups = CODE_GROUP_SEED.map((group) => this.codeGroupRepo.create(group, { partial: true }));
     // 항목이 많아 배치 저장 (chunk)
-    await this.codeItemRepo.save(this.codeItemRepo.create(CODE_ITEM_SEED), { chunk: 100 });
+    const items = CODE_ITEM_SEED.map((item) => this.codeItemRepo.create(item, { partial: true }));
+    await this.em.persistAndFlush([...groups, ...items]);
     this.logger.log(`공통코드 시드 완료 (그룹 ${CODE_GROUP_SEED.length}개 · 코드 ${CODE_ITEM_SEED.length}건)`);
   }
 
   private async seedMaskingPolicies(): Promise<void> {
     if ((await this.maskingRepo.count()) > 0) return;
-    await this.maskingRepo.save(
-      this.maskingRepo.create([
+    const policies: Partial<MaskingPolicy>[] = [
         { dataType: 'GENERAL', fieldName: 'name', maskPattern: 'name', description: '성명 — 가운데 마스킹 (홍*동)' },
         { dataType: 'GENERAL', fieldName: 'email', maskPattern: 'email', description: '이메일 — 로컬부 마스킹 (ab****@domain)' },
         { dataType: 'GENERAL', fieldName: 'phone', maskPattern: 'phone', description: '전화번호 — 가운데 마스킹 (010-****-5678)' },
         { dataType: 'UNIQUE_ID', fieldName: 'rrn', maskPattern: 'rrn', description: '주민등록번호 — 뒤 6자리 마스킹, AES-256 암호화 저장', requiredGrant: 'SENSITIVE_UNIQUE_ID' },
         { dataType: 'FINANCIAL', fieldName: 'account', maskPattern: 'account', description: '계좌번호 — 가운데 마스킹, 암호화 저장', requiredGrant: 'SENSITIVE_FINANCIAL' },
         { dataType: 'FINANCIAL', fieldName: 'card', maskPattern: 'card', description: '카드번호 — 가운데 8자리 마스킹, 암호화 저장', requiredGrant: 'SENSITIVE_FINANCIAL' },
-      ]),
+      ];
+    await this.em.persistAndFlush(
+      policies.map((policy) => this.maskingRepo.create(policy, { partial: true })),
     );
     this.logger.log('마스킹 정책 시드 완료');
   }

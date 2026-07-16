@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { Menu } from './menu.entity';
 import { ErrorCodes } from '../../common/constants/error-codes';
 
@@ -27,13 +27,13 @@ export interface MenuNode {
 export class MenusService {
   constructor(
     @InjectRepository(Menu)
-    private readonly menuRepo: Repository<Menu>,
+    private readonly menuRepo: EntityRepository<Menu>,
+    private readonly em: EntityManager,
   ) {}
 
   findAll(channel?: string): Promise<Menu[]> {
-    return this.menuRepo.find({
-      where: channel ? { channel } : {},
-      order: { sortOrder: 'ASC', menuCode: 'ASC' },
+    return this.menuRepo.find(channel ? { channel } : {}, {
+      orderBy: { sortOrder: 'ASC', menuCode: 'ASC' },
     });
   }
 
@@ -42,9 +42,8 @@ export class MenusService {
    * 권한 평가(RoleMenuPermission)는 후속 단계 — 현재는 isVisible/isActive 만 필터.
    */
   async findTree(channel?: string): Promise<MenuNode[]> {
-    const menus = await this.menuRepo.find({
-      where: { isActive: true, isVisible: true },
-      order: { sortOrder: 'ASC', menuCode: 'ASC' },
+    const menus = await this.menuRepo.find({ isActive: true, isVisible: true }, {
+      orderBy: { sortOrder: 'ASC', menuCode: 'ASC' },
     });
     const filtered = channel ? menus.filter((m) => m.channel === channel) : menus;
 
@@ -82,7 +81,8 @@ export class MenusService {
   }
 
   async bulkInsert(menus: Partial<Menu>[]): Promise<void> {
-    await this.menuRepo.save(this.menuRepo.create(menus));
+    const entities = menus.map((menu) => this.menuRepo.create(menu, { partial: true }));
+    await this.em.persistAndFlush(entities);
   }
 
   // ── CRUD (설계 OP-06D: 코드/라우트 중복, 부모 유형, 사용 중 삭제 검증) ──
@@ -91,21 +91,20 @@ export class MenusService {
     if (!data.menuCode || !data.name) {
       throw new BadRequestException('menuCode 와 name(국문명) 은 필수입니다. (MENU_I18N_REQUIRED)');
     }
-    if (await this.menuRepo.findOneBy({ menuCode: data.menuCode })) {
+    if (await this.menuRepo.findOne({ menuCode: data.menuCode })) {
       throw new ConflictException({
         code: ErrorCodes.DUPLICATE_RESOURCE,
         message: `메뉴코드 '${data.menuCode}' 가 이미 존재합니다.`,
       });
     }
     if (data.parentCode) {
-      const parent = await this.menuRepo.findOneBy({ menuCode: data.parentCode });
+      const parent = await this.menuRepo.findOne({ menuCode: data.parentCode });
       if (!parent) throw new BadRequestException(`상위메뉴 '${data.parentCode}' 가 존재하지 않습니다.`);
       if (parent.menuType !== 'GROUP') {
         throw new BadRequestException(`상위메뉴 '${data.parentCode}' 는 GROUP 유형이어야 합니다.`);
       }
     }
-    return this.menuRepo.save(
-      this.menuRepo.create({
+    const menu = this.menuRepo.create({
         menuCode: data.menuCode,
         parentCode: data.parentCode ?? null,
         channel: data.channel ?? 'TN',
@@ -116,12 +115,13 @@ export class MenusService {
         screenId: data.screenId ?? null,
         sortOrder: data.sortOrder ?? 9999,
         requiresStepUp: data.requiresStepUp ?? false,
-      }),
-    );
+      });
+    await this.em.persistAndFlush(menu);
+    return menu;
   }
 
   async update(id: string, data: Partial<Menu>): Promise<Menu> {
-    const menu = await this.menuRepo.findOneBy({ id });
+    const menu = await this.menuRepo.findOne({ id });
     if (!menu) throw new NotFoundException('메뉴를 찾을 수 없습니다.');
     const allowed: (keyof Menu)[] = [
       'parentCode', 'channel', 'menuType', 'name', 'nameEn', 'path',
@@ -130,20 +130,21 @@ export class MenusService {
     for (const key of allowed) {
       if (data[key] !== undefined) (menu as unknown as Record<string, unknown>)[key] = data[key];
     }
-    return this.menuRepo.save(menu);
+    await this.em.flush();
+    return menu;
   }
 
   /** 하위 메뉴가 있으면 삭제 차단 (사용 중 삭제 검증) */
   async remove(id: string): Promise<{ id: string; deleted: boolean }> {
-    const menu = await this.menuRepo.findOneBy({ id });
+    const menu = await this.menuRepo.findOne({ id });
     if (!menu) throw new NotFoundException('메뉴를 찾을 수 없습니다.');
-    const childCount = await this.menuRepo.countBy({ parentCode: menu.menuCode });
+    const childCount = await this.menuRepo.count({ parentCode: menu.menuCode });
     if (childCount > 0) {
       throw new BadRequestException(
         `하위 메뉴 ${childCount}건이 존재하여 삭제할 수 없습니다. 하위 메뉴를 먼저 정리하세요.`,
       );
     }
-    await this.menuRepo.delete(id);
+    await this.menuRepo.nativeDelete({ id });
     return { id, deleted: true };
   }
 }

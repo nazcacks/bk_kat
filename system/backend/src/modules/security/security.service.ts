@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { AuditLog } from './entities/audit-log.entity';
 import { PersonalDataAccessLog } from './entities/personal-data-access-log.entity';
 import { LoginHistory } from './entities/login-history.entity';
@@ -14,22 +14,23 @@ export class SecurityService {
 
   constructor(
     @InjectRepository(AuditLog)
-    private readonly auditRepo: Repository<AuditLog>,
+    private readonly auditRepo: EntityRepository<AuditLog>,
     @InjectRepository(PersonalDataAccessLog)
-    private readonly privacyRepo: Repository<PersonalDataAccessLog>,
+    private readonly privacyRepo: EntityRepository<PersonalDataAccessLog>,
     @InjectRepository(LoginHistory)
-    private readonly loginRepo: Repository<LoginHistory>,
+    private readonly loginRepo: EntityRepository<LoginHistory>,
     @InjectRepository(MaskingPolicy)
-    private readonly maskingRepo: Repository<MaskingPolicy>,
+    private readonly maskingRepo: EntityRepository<MaskingPolicy>,
+    private readonly em: EntityManager,
   ) {}
 
   // ── 감사로그 (append-only + 해시체인) ──────────────────────────
 
   async writeAuditLog(entry: Partial<AuditLog>): Promise<void> {
     try {
-      const last = await this.auditRepo.find({
-        order: { id: 'DESC' },
-        take: 1,
+      const last = await this.auditRepo.find({}, {
+        orderBy: { id: 'DESC' },
+        limit: 1,
       });
       const prevHash = last[0]?.chainHash ?? null;
       const body = JSON.stringify({
@@ -41,7 +42,8 @@ export class SecurityService {
         afterData: entry.afterData ?? null,
       });
       const chainHash = CryptoUtil.sha256(`${prevHash ?? ''}${body}`);
-      await this.auditRepo.save(this.auditRepo.create({ ...entry, prevHash, chainHash }));
+      const auditLog = this.auditRepo.create({ ...entry, prevHash, chainHash }, { partial: true });
+      await this.em.persistAndFlush(auditLog);
     } catch (e) {
       // 감사 기록 실패가 업무 트랜잭션을 막지 않도록 로깅만 (운영에서는 보안 이벤트 발행)
       this.logger.error(`감사로그 기록 실패: ${(e as Error).message}`);
@@ -50,7 +52,7 @@ export class SecurityService {
 
   /** 해시체인 무결성 검증 (설계서 AuditLogChain) */
   async verifyAuditChain(limit = 1000): Promise<{ valid: boolean; checked: number }> {
-    const rows = await this.auditRepo.find({ order: { id: 'ASC' }, take: limit });
+    const rows = await this.auditRepo.find({}, { orderBy: { id: 'ASC' }, limit });
     let prevHash: string | null = null;
     for (const row of rows) {
       if (row.prevHash !== prevHash) return { valid: false, checked: rows.length };
@@ -60,10 +62,10 @@ export class SecurityService {
   }
 
   async findAuditLogs(req: PageRequestDto): Promise<PageResponse<AuditLog>> {
-    const [items, total] = await this.auditRepo.findAndCount({
-      order: { id: 'DESC' },
-      skip: (req.page - 1) * req.size,
-      take: req.size,
+    const [items, total] = await this.auditRepo.findAndCount({}, {
+      orderBy: { id: 'DESC' },
+      offset: (req.page - 1) * req.size,
+      limit: req.size,
     });
     return toPage(items, total, req);
   }
@@ -72,7 +74,8 @@ export class SecurityService {
 
   async writePrivacyAccessLog(entry: Partial<PersonalDataAccessLog>): Promise<void> {
     try {
-      await this.privacyRepo.insert(entry as PersonalDataAccessLog);
+      const accessLog = this.privacyRepo.create(entry, { partial: true });
+      await this.em.persistAndFlush(accessLog);
     } catch (e) {
       this.logger.error(`개인정보 접근로그 기록 실패: ${(e as Error).message}`);
     }
@@ -81,10 +84,10 @@ export class SecurityService {
   async findPrivacyAccessLogs(
     req: PageRequestDto,
   ): Promise<PageResponse<PersonalDataAccessLog>> {
-    const [items, total] = await this.privacyRepo.findAndCount({
-      order: { id: 'DESC' },
-      skip: (req.page - 1) * req.size,
-      take: req.size,
+    const [items, total] = await this.privacyRepo.findAndCount({}, {
+      orderBy: { id: 'DESC' },
+      offset: (req.page - 1) * req.size,
+      limit: req.size,
     });
     return toPage(items, total, req);
   }
@@ -93,17 +96,18 @@ export class SecurityService {
 
   async writeLoginHistory(entry: Partial<LoginHistory>): Promise<void> {
     try {
-      await this.loginRepo.insert(entry as LoginHistory);
+      const loginHistory = this.loginRepo.create(entry, { partial: true });
+      await this.em.persistAndFlush(loginHistory);
     } catch (e) {
       this.logger.error(`로그인 이력 기록 실패: ${(e as Error).message}`);
     }
   }
 
   async findLoginHistories(req: PageRequestDto): Promise<PageResponse<LoginHistory>> {
-    const [items, total] = await this.loginRepo.findAndCount({
-      order: { id: 'DESC' },
-      skip: (req.page - 1) * req.size,
-      take: req.size,
+    const [items, total] = await this.loginRepo.findAndCount({}, {
+      orderBy: { id: 'DESC' },
+      offset: (req.page - 1) * req.size,
+      limit: req.size,
     });
     return toPage(items, total, req);
   }
@@ -111,20 +115,20 @@ export class SecurityService {
   // ── 마스킹 정책 ────────────────────────────────────────────────
 
   findMaskingPolicies(): Promise<MaskingPolicy[]> {
-    return this.maskingRepo.find({ order: { dataType: 'ASC', fieldName: 'ASC' } });
+    return this.maskingRepo.find({}, { orderBy: { dataType: 'ASC', fieldName: 'ASC' } });
   }
 
   async createMaskingPolicy(data: Partial<MaskingPolicy>): Promise<MaskingPolicy> {
-    return this.maskingRepo.save(
-      this.maskingRepo.create({
+    const policy = this.maskingRepo.create({
         dataType: data.dataType ?? 'GENERAL',
         fieldName: data.fieldName ?? '',
         maskPattern: data.maskPattern ?? 'name',
         description: data.description ?? null,
         requiredGrant: data.requiredGrant ?? null,
         isActive: data.isActive ?? true,
-      }),
-    );
+      });
+    await this.em.persistAndFlush(policy);
+    return policy;
   }
 
   async updateMaskingPolicy(id: string, data: Partial<MaskingPolicy>): Promise<MaskingPolicy | null> {
@@ -133,12 +137,15 @@ export class SecurityService {
     if (data.maskPattern !== undefined) allowed.maskPattern = data.maskPattern;
     if (data.description !== undefined) allowed.description = data.description;
     if (data.requiredGrant !== undefined) allowed.requiredGrant = data.requiredGrant;
-    await this.maskingRepo.update(id, allowed);
-    return this.maskingRepo.findOneBy({ id });
+    const policy = await this.maskingRepo.findOne({ id });
+    if (!policy) return null;
+    this.maskingRepo.assign(policy, allowed);
+    await this.em.flush();
+    return policy;
   }
 
   async removeMaskingPolicy(id: string): Promise<{ id: string; deleted: boolean }> {
-    await this.maskingRepo.delete(id);
+    await this.maskingRepo.nativeDelete({ id });
     return { id, deleted: true };
   }
 }

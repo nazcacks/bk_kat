@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK 플랫폼콘솔 화면설계 — 제어영역 (PLATFORM_ADMIN, EY 레이아웃)</title>
+<style>
+:root{
+  --ey-yellow:#FFE600; --ey-dark:#2E2E38; --ey-darker:#1A1A24; --ey-gray:#747480;
+  --ey-light:#F6F6FA; --ey-border:#E1E1E6; --ey-text:#2E2E38; --ey-red:#E0362C;
+  --ey-green:#168736; --ey-blue:#188CE5; --ey-link:#155CB4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ey-text);background:var(--ey-light);font-size:13.5px;line-height:1.55}
+/* ===== 상단바 ===== */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;background:var(--ey-darker);color:#fff;height:54px;padding:0 16px;border-bottom:1px solid #000}
+.ey-logo{display:flex;align-items:center;gap:10px;min-width:210px}
+.ey-mark{position:relative;width:40px;height:40px;background:#000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px}
+.ey-mark .beam{position:absolute;top:4px;left:4px;width:0;height:0;border-left:32px solid transparent;border-bottom:9px solid var(--ey-yellow);transform:skewX(-18deg)}
+.ey-mark .ey{font-weight:800;font-size:19px;color:#fff;line-height:1}
+.ey-tag{font-size:10.5px;line-height:1.25;color:#d9d9e0;font-weight:600}
+.company-select{display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.company-select .code{color:#b9b9c2}
+.global-search{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;background:var(--ey-dark);border:1px solid #45454f;border-radius:4px;padding:6px 12px;color:#8a8a94;font-size:12.5px}
+.top-utils{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12.5px;white-space:nowrap}
+.top-utils .util{display:flex;align-items:center;gap:5px;cursor:pointer;color:#e8e8ee}
+.top-utils .fav .ico{color:var(--ey-yellow)}
+.top-utils .avatar{width:26px;height:26px;border-radius:50%;background:#fff;color:var(--ey-darker);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+/* ===== 레이아웃 ===== */
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:216px;background:var(--ey-dark);color:#d7d7de;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:54px;height:calc(100vh - 54px);overflow:auto}
+.sidebar .menu-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #3d3d47;color:#fff;font-weight:700;font-size:13px}
+.sidebar nav{flex:1;overflow:auto;padding:4px 0 8px}
+.mgroup{margin-top:5px}
+.mgroup>.gtitle{display:flex;align-items:center;gap:8px;padding:5px 16px;font-weight:700;font-size:12.5px;color:var(--ey-yellow);cursor:pointer}
+.mgroup>.gtitle .bar{width:3px;height:14px;background:var(--ey-yellow);border-radius:2px}
+.mgroup.plain>.gtitle{color:#fff}
+.mgroup.plain>.gtitle .bar{background:#6a6a75}
+.mitem{display:block;padding:4px 16px 4px 34px;font-size:12.5px;color:#c9c9d2;cursor:pointer;border-left:3px solid transparent;text-decoration:none}
+.mitem:hover{background:#3a3a45;color:#fff}
+.mitem.active{background:var(--ey-yellow);color:#1a1a24;font-weight:700;border-left-color:#c9b400}
+.mitem .mid{float:right;font-size:10px;color:#8a8a94;margin-top:2px}
+.mitem.active .mid{color:#55550a}
+.sidebar .foot{padding:8px 16px;border-top:1px solid #3d3d47;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sidebar .foot .ey-mark{width:30px;height:30px}
+.sidebar .foot .ey-mark .beam{border-left-width:24px;border-bottom-width:7px;top:3px;left:3px}
+.sidebar .foot .ey-mark .ey{font-size:14px}
+.sidebar .foot .txt{font-size:10px;color:#b9b9c2;line-height:1.3;font-weight:600}
+/* ===== 콘텐츠 ===== */
+.content{flex:1;padding:18px 22px 60px;max-width:calc(100% - 216px)}
+.section{display:none}
+.section.visible{display:block}
+.page-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.page-title h1{font-size:20px;font-weight:800}
+.page-title .star{color:var(--ey-yellow);font-size:16px}
+.page-title .chip-id{background:var(--ey-dark);color:var(--ey-yellow);font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700}
+.crumb{font-size:11.5px;color:var(--ey-gray);margin-bottom:12px}
+.src{font-size:11.5px;color:var(--ey-gray);background:#EFEFF4;border-left:3px solid var(--ey-yellow);padding:8px 12px;border-radius:0 4px 4px 0;margin:10px 0 16px}
+.src b{color:var(--ey-text)}
+h2.sec{font-size:15.5px;font-weight:800;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+h2.sec .no{color:#9a9aa4;font-weight:700;margin-right:6px}
+h3.sub{font-size:13.5px;font-weight:700;margin:16px 0 8px;padding-left:8px;border-left:3px solid var(--ey-yellow)}
+p.desc{margin:6px 0 10px;color:#44444e}
+ul.plain{margin:6px 0 12px 18px}
+ul.plain li{margin:3px 0}
+table.spec{width:100%;border-collapse:collapse;margin:8px 0 16px;background:#fff;font-size:12.5px}
+table.spec th{background:var(--ey-dark);color:#fff;padding:6px 10px;text-align:left;font-weight:600;border:1px solid #45454f;font-size:12px}
+table.spec td{padding:5px 10px;border:1px solid var(--ey-border);vertical-align:top}
+table.spec tr:nth-child(even) td{background:#FAFAFD}
+table.spec td.c,table.spec th.c{text-align:center}
+code{background:#EFEFF4;border:1px solid var(--ey-border);border-radius:3px;padding:0 4px;font-family:Consolas,monospace;font-size:12px;color:#7A2E8D}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin:0 2px;vertical-align:1px}
+.b-block{background:#FBE9E7;color:var(--ey-red);border:1px solid #F5C6C0}
+.b-warn{background:#FFF8DC;color:#8a6d00;border:1px solid #EFE0A0}
+.b-ok{background:#E8F5E9;color:var(--ey-green);border:1px solid #BFE3C6}
+.b-new{background:var(--ey-yellow);color:#1a1a24;border:1px solid #d9c400}
+.b-ref{background:#EAF2FB;color:var(--ey-link);border:1px solid #C5DCF5}
+.b-gray{background:#EFEFF4;color:#5a5a66;border:1px solid #d9d9e0}
+/* ===== 목업 공통 ===== */
+.mock{background:#fff;border:1px solid var(--ey-border);border-radius:6px;box-shadow:0 1px 4px rgba(30,30,40,.08);margin:12px 0 20px;overflow:hidden}
+.mock .mock-cap{background:#EFEFF4;border-bottom:1px solid var(--ey-border);padding:5px 12px;font-size:11px;color:var(--ey-gray);font-weight:600}
+.screen-details{margin:2px 0 30px}
+.screen-details .sd-title{font-size:14px;font-weight:800;margin:8px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ey-dark)}
+.screen-desc-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 14px}
+.screen-desc-item{background:#fff;border:1px solid var(--ey-border);border-left:3px solid var(--ey-yellow);border-radius:0 5px 5px 0;padding:8px 10px;font-size:11.8px;min-height:62px}
+.screen-desc-item .desc-label{display:block;font-weight:800;color:var(--ey-dark);margin-bottom:3px}
+.screen-desc-item .desc-body{color:#4b4b55}
+/* 타이틀바 (EY 다크) */
+.titlebar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--ey-darker);border-bottom:2px solid var(--ey-yellow);flex-wrap:wrap}
+.titlebar .tb-crumb{font-size:12px;color:#b9b9c2;font-weight:600}
+.titlebar .tb-sep{color:#6a6a75;font-weight:700}
+.titlebar .tb-title{font-size:15px;font-weight:800;color:#fff}
+.titlebar .tb-star{color:var(--ey-yellow);font-size:14px;cursor:pointer}
+.titlebar .tb-id{background:var(--ey-yellow);color:#1a1a24;font-size:10.5px;padding:2px 8px;border-radius:3px;font-weight:700}
+.titlebar .tb-right{margin-left:auto;font-size:11px;color:#c9c9d2}
+/* 조회조건 바 */
+.qbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#fff;flex-wrap:wrap;font-size:12px}
+.qbar .qlabel{font-size:11px;color:var(--ey-gray);font-weight:700}
+.qbar .seg{display:inline-flex;border:1px solid #c9c9d2;border-radius:4px;overflow:hidden}
+.qbar .seg span{padding:3px 10px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;color:#5a5a66}
+.qbar .seg span.on{background:var(--ey-dark);color:var(--ey-yellow)}
+.qbar .qv{display:inline-flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:3px 8px;background:#fff;font-size:12px}
+.qbar .qv.off{background:#F3F3F7;color:#9a9aa4}
+.qbar .navbtn{border:1px solid #c9c9d2;background:#fff;border-radius:3px;padding:2px 7px;font-size:11px;cursor:pointer;font-weight:700}
+.qbar .qright{margin-left:auto;display:inline-flex;gap:6px;align-items:center}
+/* 액션바 (우측 정렬) */
+.actionbar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap}
+.abtn{border:1px solid #c9c9d2;background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.abtn.dark{background:var(--ey-dark);color:#fff;border-color:var(--ey-dark)}
+.abtn.red{background:var(--ey-red);color:#fff;border-color:var(--ey-red)}
+.abtn.yellow{background:var(--ey-yellow);color:#1a1a24;border-color:#d9c400;font-weight:700}
+.abtn.ghost{background:#fff}
+.abtn.sm{padding:2px 7px;font-size:11px}
+.ab-right{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+/* 탭 */
+.tabbar{display:flex;gap:2px;padding:8px 12px 0;background:#FCFCFE;border-bottom:1px solid var(--ey-border);flex-wrap:wrap}
+.tab{padding:6px 16px;border:1px solid var(--ey-border);border-bottom:none;border-radius:6px 6px 0 0;background:#EFEFF4;font-size:12px;font-weight:600;color:#5a5a66;cursor:pointer}
+.tab.on{background:#fff;color:var(--ey-text);font-weight:700;border-color:#b9b9c2;border-bottom:2px solid #fff;margin-bottom:-1px}
+.tab .tno{color:#9a9aa4;font-size:10.5px}
+.tabpane{display:none}
+.tabpane.on{display:block}
+/* 폼 */
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;padding:12px}
+.formgrid.c3{grid-template-columns:repeat(3,1fr)}
+.formgrid.c2{grid-template-columns:repeat(2,1fr)}
+.ff{display:flex;flex-direction:column;gap:2px}
+.ff label{font-size:11px;color:var(--ey-gray);font-weight:600}
+.ff .fv{display:flex;align-items:center;gap:4px;border:1px solid #c9c9d2;border-radius:4px;padding:4px 8px;background:#fff;font-size:12.5px;min-height:28px}
+select.fv{display:block;width:100%;height:28px;min-height:28px;padding:3px 8px}
+.ff .fv.ro{background:#F3F3F7;color:#5a5a66}
+.ff .fv .lens{margin-left:auto;color:#9a9aa4;font-size:11px;cursor:pointer}
+.ff.wide{grid-column:span 2}
+.ff.full{grid-column:span 4}
+.formgrid.c3 .ff.full{grid-column:span 3}
+.formgrid.c2 .ff.full{grid-column:span 2}
+.formgrid.label-left .ff{display:grid;grid-template-columns:86px minmax(0,1fr);align-items:center;gap:6px}
+.formgrid.label-left .ff label{text-align:right;white-space:nowrap}
+.formgrid.label-left .ff .fv{min-width:0}
+.mock input,.mock select,.mock textarea{border:1px solid #c9c9d2;border-radius:4px;background:#fff;padding:3px 6px;font:inherit;color:var(--ey-text)}
+.mock input,.mock select{height:26px}
+.mock textarea{width:100%;resize:vertical}
+table.grid input,table.grid select{width:100%;min-width:0}
+table.grid input.num{text-align:right;font-family:Consolas,monospace}
+/* 기능바/토글 */
+.fnbar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--ey-border);border-bottom:1px solid var(--ey-border);background:#FCFCFE;flex-wrap:wrap;font-size:12px}
+.chip{border:1px solid #c9c9d2;background:#fff;border-radius:14px;padding:3px 12px;font-size:11.5px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--ey-dark);color:var(--ey-yellow);border-color:var(--ey-dark)}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.toggle .sw{width:34px;height:18px;border-radius:9px;background:var(--ey-yellow);position:relative;display:inline-block}
+.toggle .sw::after{content:'';position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#1a1a24}
+.sumbox{margin-left:auto;display:flex;gap:14px;font-weight:700;font-size:12px}
+.sumbox .ok{color:var(--ey-green)}
+/* 그리드 */
+table.grid{width:100%;border-collapse:collapse;font-size:12px;background:#fff}
+table.grid th{background:#F3F3F7;border:1px solid var(--ey-border);padding:5px 6px;font-weight:700;color:#44444e;white-space:nowrap}
+table.grid td{border:1px solid var(--ey-border);padding:4px 6px;white-space:nowrap}
+table.grid td .lens{float:right;color:#9a9aa4;margin-left:8px;cursor:pointer}
+table.grid td.num{text-align:right;font-family:Consolas,monospace}
+table.grid td.c{text-align:center}
+table.grid tr.sel td{background:#FFFBE0}
+table.grid tr[data-user-id]{cursor:pointer}
+table.grid tr.empty td{color:#c9c9d2;height:26px}
+table.grid tr.tot td{background:#F3F3F7;font-weight:700}
+table.grid .red{color:var(--ey-red);font-weight:700}
+table.grid .blue{color:var(--ey-blue)}
+table.grid .dr{color:var(--ey-blue);font-weight:700}
+table.grid .cr{color:var(--ey-red);font-weight:700}
+table.grid .dim{color:#9a9aa4}
+.statusbar{display:flex;align-items:center;gap:16px;background:var(--ey-darker);color:#e8e8ee;padding:7px 12px;font-size:11.5px;flex-wrap:wrap}
+.statusbar .okmsg{color:#7ADB8F;font-weight:700}
+.statusbar .warnmsg{color:#FFD666;font-weight:700}
+.statusbar .opts{display:flex;gap:12px}
+.statusbar .cnt{margin-left:auto;color:#b9b9c2}
+/* 좌우 배치 + 패널 */
+.mock-flex{display:flex;gap:0}
+.mock-main{flex:1;min-width:0}
+.lpane{width:280px;flex-shrink:0;border-right:1px solid var(--ey-border);background:#FCFCFE;display:flex;flex-direction:column}
+.menu-master-layout .lpane{width:560px}
+.lpane .lp-t{background:#F3F3F7;padding:6px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rpanel{width:250px;flex-shrink:0;border-left:1px solid var(--ey-border);background:#FCFCFE;padding:10px;display:flex;flex-direction:column;gap:12px}
+.rp-box{border:1px solid var(--ey-border);border-radius:5px;background:#fff}
+.rp-box .rp-t{background:#F3F3F7;padding:5px 10px;font-size:11.5px;font-weight:700;border-bottom:1px solid var(--ey-border)}
+.rp-box .rp-b{padding:8px 10px;font-size:11.5px}
+.rp-box .kv{display:flex;justify-content:space-between;margin:3px 0;gap:8px}
+.rp-box .kv .k{color:var(--ey-gray);white-space:nowrap}
+.rp-box .kv .v{font-weight:600;text-align:right}
+.dropzone{border:1.5px dashed #c9c9d2;border-radius:5px;padding:10px;text-align:center;color:#9a9aa4;font-size:11px;margin-bottom:6px}
+.file{display:flex;align-items:center;gap:6px;font-size:11.5px;margin:3px 0;color:#44444e}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+.source-wjv .page-title{flex-wrap:nowrap}
+.source-wjv .titlebar{flex-wrap:nowrap}
+.source-wjv .ab-right{flex-wrap:nowrap}
+.source-wjv .rpanel{width:230px}
+.source-wjv .rp-box .kv{gap:0}
+.source-wjv .statusbar{flex-wrap:nowrap}
+.source-wjv table.grid td,.source-wjv table.grid th{white-space:nowrap}
+/* 트리 */
+.tree{padding:8px 6px;font-size:12px;overflow:auto;max-height:430px}
+.tree .tnode{padding:2px 8px;cursor:pointer;border-radius:3px;white-space:nowrap}
+.tree .tnode:hover{background:#EFEFF4}
+.tree .tnode.on{background:var(--ey-yellow);font-weight:700}
+.tree .tnode.lv2{padding-left:18px}
+.tree .tnode.lv3{padding-left:30px}
+.tree .tnode.lv4{padding-left:48px;color:#44444e}
+.tree .tnode.lv5{padding-left:66px;color:#44444e}
+.tree .tnode .twist{display:inline-block;width:14px;color:#6f6f78}
+.tree .tnode .cnt{color:#8a8a94;font-size:10.5px;margin-left:4px}
+.lpane .tree{max-height:620px;overflow:auto;padding:6px}
+.fv{overflow:hidden;text-overflow:ellipsis}
+.tree .lv1{font-weight:700}
+.tree .lv2{padding-left:22px}
+.tree .lv3{padding-left:40px;color:#44444e}
+.tree .lv4{padding-left:58px;color:#44444e}
+.tree .lv5{padding-left:76px;color:#44444e}
+.tree .cnt{color:#9a9aa4;font-size:10.5px}
+.tree .red{color:var(--ey-red)}
+.note{font-size:11.5px;color:var(--ey-gray);margin:6px 0 14px;padding-left:2px}
+.kbd{display:inline-block;border:1px solid #b9b9c2;border-bottom-width:2px;border-radius:3px;background:#fff;padding:0 5px;font-size:11px;font-family:Consolas,monospace;font-weight:700;color:#44444e}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 16px}
+.flow .st{background:#fff;border:1.5px solid var(--ey-dark);border-radius:4px;padding:4px 10px;font-size:11.5px;font-weight:700}
+.flow .st.hl{background:var(--ey-yellow);border-color:#c9b400}
+.flow .st.end{background:var(--ey-dark);color:#fff}
+.flow .ar{color:#9a9aa4;font-weight:700}
+/* 모달 목업 */
+.modal{max-width:560px;margin:10px auto;border:2px solid var(--ey-dark);border-radius:6px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.modal .m-t{background:var(--ey-darker);color:#fff;padding:8px 12px;font-weight:700;font-size:12.5px;display:flex}
+.modal .m-t .x{margin-left:auto;color:#c9c9d2;cursor:pointer}
+.modal .m-b{padding:12px}
+.modal .m-f{padding:8px 12px;border-top:1px solid var(--ey-border);display:flex;justify-content:flex-end;gap:6px}
+.footer{background:var(--ey-darker);color:#b9b9c2;padding:14px 22px;font-size:11px;display:flex;align-items:center;gap:14px}
+.footer .beamline{width:70px;height:8px;background:var(--ey-yellow);transform:skewX(-30deg)}
+@media(max-width:1100px){.twocol{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,1fr)}.ff.full{grid-column:span 2}.screen-desc-list{grid-template-columns:1fr}.mock-flex{flex-direction:column}.lpane,.rpanel{width:auto;border:none;border-bottom:1px solid var(--ey-border)}}
+/* ===== 마스터-디테일: 그리드행/트리노드 선택 → 세부항목 ===== */
+.mock table.grid tr.rowsel-able{cursor:pointer}
+.mock table.grid tr.rowsel-able:hover td{background:#FFFDF0}
+.row-detail{display:none;margin:12px 0 2px;border:1px solid var(--ey-border);border-radius:8px;background:#fff;overflow:hidden;box-shadow:0 1px 4px rgba(46,46,56,.08)}
+.row-detail.on{display:block}
+.row-detail .rd-head{display:flex;align-items:center;gap:10px;background:var(--ey-dark);color:#fff;padding:7px 14px;font-size:12.5px;font-weight:700}
+.row-detail .rd-head .rd-ttl{color:var(--ey-yellow)}
+.row-detail .rd-head .rd-sub{color:#c9c9d2;font-weight:600;font-size:11.5px}
+.row-detail .rd-head .rd-close{margin-left:auto;cursor:pointer;color:#c9c9d2;font-weight:700}
+.row-detail .rd-head .rd-close:hover{color:#fff}
+.row-detail .rd-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--ey-border)}
+.row-detail .rd-field{display:flex;gap:10px;background:#fff;padding:7px 14px;font-size:12.5px;min-width:0}
+.row-detail .rd-field.full{grid-column:1 / -1}
+.row-detail .rd-field .k{min-width:104px;flex-shrink:0;color:var(--ey-gray);font-weight:600}
+.row-detail .rd-field .v{color:var(--ey-text);font-weight:600;word-break:break-word}
+.row-detail .rd-foot{padding:6px 14px;border-top:1px solid var(--ey-border);font-size:11.5px;color:var(--ey-gray);background:#FAFAFC}
+@media(max-width:720px){.row-detail .rd-body{grid-template-columns:1fr}}
+.row-detail.rd-right{margin:0 0 12px}
+.abtn,.seg>span{cursor:pointer}
+.mk-toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(12px);background:var(--ey-darker);color:#fff;padding:10px 22px;border-radius:6px;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.28);border-left:4px solid var(--ey-yellow);opacity:0;pointer-events:none;transition:.22s;z-index:9999}
+.mk-toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ===================== 상단바 ===================== -->
+<header class="topbar">
+  <div class="ey-logo">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="ey-tag">Shape the future<br>with confidence</div>
+  </div>
+  <div class="company-select"><span class="code">PF</span> <b>BK Platform Console</b> <span>▾</span></div>
+  <div class="global-search">🔍 메뉴, 기능, 코드 검색 (Ctrl + K)</div>
+  <div class="top-utils">
+    <div class="util">🔔 공지사항</div>
+    <div class="util fav"><span class="ico">★</span> 즐겨찾기</div>
+    <div class="util">? 도움말</div>
+    <div class="util"><span class="avatar">플</span> 플랫폼운영 ▾</div>
+    <div class="util">▦</div>
+  </div>
+</header>
+
+<div class="layout">
+<!-- ===================== 좌측 메뉴 ===================== -->
+<aside class="sidebar">
+  <div class="menu-head">☰ Menu — 플랫폼콘솔</div>
+  <nav>
+    <a class="mitem active" data-sec="home" style="padding-left:16px;font-weight:700">🏠 플랫폼콘솔 개요</a>
+
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>PF-00 플랫폼 진입·현황</div>
+      <a class="mitem" data-sec="PF-00-01-01">플랫폼 홈 <span class="mid">PF-00-01-01</span></a>
+      <a class="mitem" data-sec="PF-00-02-01">플랫폼 조직 컨텍스트 <span class="mid">PF-00-02-01</span></a>
+      <a class="mitem" data-sec="PF-00-03-01">관리회사 컨텍스트 <span class="mid">PF-00-03-01</span></a>
+      <a class="mitem" data-sec="PF-00-04-01">승인 대기함 <span class="mid">PF-00-04-01</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>PF-01 조직·사용자·관리회사</div>
+      <a class="mitem" data-sec="PF-01-01-01">플랫폼 내부조직 <span class="mid">PF-01-01-01</span></a>
+      <a class="mitem" data-sec="PF-01-02-01">플랫폼 사용자관리 <span class="mid">PF-01-02-01</span></a>
+      <a class="mitem" data-sec="PF-01-03-01">플랫폼 사용자그룹 <span class="mid">PF-01-03-01</span></a>
+      <a class="mitem" data-sec="PF-01-04-01">그룹별 메뉴권한 <span class="mid">PF-01-04-01</span></a>
+      <a class="mitem" data-sec="PF-01-05-01">소속·Role·직무배정 <span class="mid">PF-01-05-01</span></a>
+      <a class="mitem" data-sec="PF-01-06-01">SSO·SCIM·접근환경 <span class="mid">PF-01-06-01</span></a>
+      <a class="mitem" data-sec="PF-01-07-01">관리회사 목록·상세 <span class="mid">PF-01-07-01</span></a>
+      <a class="mitem" data-sec="PF-01-08-01">관리회사 심사·활성 <span class="mid">PF-01-08-01</span></a>
+      <a class="mitem" data-sec="PF-01-09-01">관리회사 정지·종료 <span class="mid">PF-01-09-01</span></a>
+      <a class="mitem" data-sec="PF-01-10-01">Membership 감독 <span class="mid">PF-01-10-01</span></a>
+    </div>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>PF-02 구독·사용량</div>
+      <a class="mitem" data-sec="PF-02-01-01">플랫폼 구독 <span class="mid">PF-02-01-01</span></a>
+      <a class="mitem" data-sec="PF-02-02-01">통합 사용량 <span class="mid">PF-02-02-01</span></a>
+      <a class="mitem" data-sec="PF-02-03-01">쿼터·초과 통제 <span class="mid">PF-02-03-01</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>PF-03 수임·이관</div>
+      <a class="mitem" data-sec="PF-03-01-01">수임관계 <span class="mid">PF-03-01-01</span></a>
+      <a class="mitem" data-sec="PF-03-02-01">관계 충돌 검증 <span class="mid">PF-03-02-01</span></a>
+      <a class="mitem" data-sec="PF-03-03-01">이관 워크플로 <span class="mid">PF-03-03-01</span></a>
+      <a class="mitem" data-sec="PF-03-04-01">인계·롤백 <span class="mid">PF-03-04-01</span></a>
+    </div>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>PF-04 표준·메뉴·발행</div>
+      <a class="mitem" data-sec="PF-04-01-01">인증·권한 하한 <span class="mid">PF-04-01-01</span></a>
+      <a class="mitem" data-sec="PF-04-02-01">전체 표준 카탈로그 <span class="mid">PF-04-02-01</span></a>
+      <a class="mitem" data-sec="PF-04-03-01">메뉴관리 <span class="mid">PF-04-03-01</span></a>
+      <a class="mitem" data-sec="PF-04-04-01">표준 버전·검토 <span class="mid">PF-04-04-01</span></a>
+      <a class="mitem" data-sec="PF-04-05-01">발행·중지·롤백·폐기 <span class="mid">PF-04-05-01</span></a>
+      <a class="mitem" data-sec="PF-04-06-01">배포·채택 현황 <span class="mid">PF-04-06-01</span></a>
+    </div>
+    <div class="mgroup plain">
+      <div class="gtitle"><span class="bar"></span>PF-05 보안·감사·지원접근</div>
+      <a class="mitem" data-sec="PF-05-01-01">조직 격리 현황 <span class="mid">PF-05-01-01</span></a>
+      <a class="mitem" data-sec="PF-05-02-01">플랫폼 감사로그 <span class="mid">PF-05-02-01</span></a>
+      <a class="mitem" data-sec="PF-05-03-01">지원 접근 요청 <span class="mid">PF-05-03-01</span></a>
+      <a class="mitem" data-sec="PF-05-04-01">지원 접근 검토 <span class="mid">PF-05-04-01</span></a>
+    </div>
+    <div class="mgroup">
+      <div class="gtitle"><span class="bar"></span>PF-06 운영·관측</div>
+      <a class="mitem" data-sec="PF-06-01-01">전역 배치·큐 <span class="mid">PF-06-01-01</span></a>
+      <a class="mitem" data-sec="PF-06-02-01">관측성·SLO <span class="mid">PF-06-02-01</span></a>
+      <a class="mitem" data-sec="PF-06-03-01">백업·DR <span class="mid">PF-06-03-01</span></a>
+    </div>
+  </nav>
+  <div class="foot">
+    <div class="ey-mark"><div class="beam"></div><div class="ey">EY</div></div>
+    <div class="txt">Building a better<br>working world</div>
+  </div>
+</aside>
+
+<!-- ===================== 콘텐츠 ===================== -->
+<main class="content">
+
+<section class="section visible" id="home">
+  <div class="page-title"><h1>플랫폼콘솔 화면설계</h1><span class="chip-id">PLATFORM_ADMIN</span><span class="badge b-new">v1.0</span></div>
+  <div class="crumb">개발설계 › 플렛폼콘솔_v1.0.md 기반 화면설계 · 레이아웃 준거: 시스템관리자_화면_v1.0.HTML (EY 레이아웃) · 기준문서 bk_설계서_v1.1.md §1.2, §2~8, §12~15, §17, §19~20, §26</div>
+  <div class="src"><b>범위</b>: 활성 <code>PlatformUser</code>·<code>PlatformMembership</code>을 가진 플랫폼 임직원이 사용하는 제어영역 콘솔. 플랫폼 조직·관리회사·전역 정책·전체 업무 표준·수임관계·보안·인프라를 PF-00~PF-06 <b>34개 화면</b>으로 통합한다. 플랫폼콘솔은 OP/TN 업무를 대신하지 않으며, 플랫폼 Role은 OP/TN 권한을 자동 상속하지 않는다. API prefix는 <code>/api/pf/v1</code>이고 scope는 URL이 아니라 인증 Membership에서 주입된다.</div>
+
+  <h2 class="sec">업무 흐름 — 플랫폼콘솔 End-to-End</h2>
+  <div class="flow"><span class="st">플랫폼 진입<br><small>Membership·scope 컨텍스트 고정</small></span><span class="ar">→</span><span class="st hl">조직·사용자·관리회사<br><small>PF-01 심사→활성</small></span><span class="ar">→</span><span class="st">구독·수임·이관<br><small>PF-02·PF-03</small></span><span class="ar">→</span><span class="st">전역 표준·메뉴 발행<br><small>DRAFT→PUBLISHED</small></span><span class="ar">→</span><span class="st end">보안·감사·운영<br><small>append-only · SLO · DR</small></span></div>
+  <p class="note">고위험 변경은 Step-up, 사유, 요청자≠승인자, 전후값 감사를 요구한다. 관리회사 선택은 제어영역 조회 컨텍스트일 뿐 회계데이터 접근권한이 아니며, 발행된 표준·메뉴 canonical ID는 수정·재사용하지 않는다.</p>
+
+  <h2 class="sec">화면 인벤토리 · PF 34화면</h2>
+  <table class="spec">
+    <tr><th>#</th><th>화면 ID</th><th>명칭</th><th class="c">우선순위</th><th>핵심 기능</th><th>근거</th></tr>
+    <tr><td>1</td><td>PF-00-01-01</td><td>플랫폼 홈</td><td class="c"><span class="badge b-new">MVP</span></td><td>조직·사용자·표준·관리회사·SLO·보안사건 현황</td><td>§5.1, §26.1</td></tr>
+    <tr><td>2</td><td>PF-00-02-01</td><td>플랫폼 조직 컨텍스트</td><td class="c"><span class="badge b-new">MVP</span></td><td>PlatformOrg/Unit/Membership 선택, ContextSnapshot 고정</td><td>§5.1</td></tr>
+    <tr><td>3</td><td>PF-00-03-01</td><td>관리회사 컨텍스트</td><td class="c"><span class="badge b-new">MVP</span></td><td>관리회사 검색·상태·요금제 필터, 조회 컨텍스트 발급</td><td>§5.1</td></tr>
+    <tr><td>4</td><td>PF-00-04-01</td><td>승인 대기함</td><td class="c"><span class="badge b-new">MVP</span></td><td>Role·표준·관리회사·이관 승인, 2인 승인·Step-up</td><td>§5.1</td></tr>
+    <tr><td>5</td><td>PF-01-01-01</td><td>플랫폼 내부조직</td><td class="c"><span class="badge b-new">MVP</span></td><td>조직 트리·개편·유효기간 이력</td><td>§5.2</td></tr>
+    <tr><td>6</td><td>PF-01-02-01</td><td>플랫폼 사용자관리</td><td class="c"><span class="badge b-new">MVP</span></td><td>초대·상태·소속/Role·보안/세션</td><td>§5.2, BF-04</td></tr>
+    <tr><td>7</td><td>PF-01-03-01</td><td>플랫폼 사용자그룹</td><td class="c"><span class="badge b-new">MVP</span></td><td>그룹·상위그룹·구성원·유효기간</td><td>§5.2</td></tr>
+    <tr><td>8</td><td>PF-01-04-01</td><td>그룹별 메뉴권한</td><td class="c"><span class="badge b-new">MVP</span></td><td>PF 메뉴 INHERIT/ALLOW/DENY·미리보기</td><td>§5.2</td></tr>
+    <tr><td>9</td><td>PF-01-05-01</td><td>소속·Role·직무배정</td><td class="c"><span class="badge b-new">MVP</span></td><td>Membership·Role·DutyAssignment 분리</td><td>§5.2</td></tr>
+    <tr><td>10</td><td>PF-01-06-01</td><td>SSO·SCIM·접근환경</td><td class="c"><span class="badge b-ref">확장</span></td><td>IdP·도메인·프로비저닝·IP 허용목록</td><td>§5.2</td></tr>
+    <tr><td>11</td><td>PF-01-07-01</td><td>관리회사 목록·상세</td><td class="c"><span class="badge b-new">MVP</span></td><td>법인·사업자·대표관리자·계약상태</td><td>§5.2</td></tr>
+    <tr><td>12</td><td>PF-01-08-01</td><td>관리회사 심사·활성</td><td class="c"><span class="badge b-new">MVP</span></td><td>자격·계약·MFA·위수탁 검증</td><td>§5.2</td></tr>
+    <tr><td>13</td><td>PF-01-09-01</td><td>관리회사 정지·종료</td><td class="c"><span class="badge b-block">고위험</span></td><td>정지·종료 체크리스트, 미결 차단</td><td>§5.2</td></tr>
+    <tr><td>14</td><td>PF-01-10-01</td><td>Membership 감독</td><td class="c"><span class="badge b-ref">확장</span></td><td>대표관리자·Role·SSO/SCIM 감독</td><td>§5.2</td></tr>
+    <tr><td>15</td><td>PF-02-01-01</td><td>플랫폼 구독</td><td class="c"><span class="badge b-new">MVP</span></td><td>체험·활성·연체·정지·종료</td><td>§5.3</td></tr>
+    <tr><td>16</td><td>PF-02-02-01</td><td>통합 사용량</td><td class="c"><span class="badge b-new">MVP</span></td><td>테넌트·사용자·저장량·API·배치 집계</td><td>§5.3</td></tr>
+    <tr><td>17</td><td>PF-02-03-01</td><td>쿼터·초과 통제</td><td class="c"><span class="badge b-ref">확장</span></td><td>경고→생성제한→다운그레이드 영향</td><td>§5.3</td></tr>
+    <tr><td>18</td><td>PF-03-01-01</td><td>수임관계</td><td class="c"><span class="badge b-new">MVP</span></td><td>PRIMARY/SECONDARY·serviceScopes·기간</td><td>§5.4</td></tr>
+    <tr><td>19</td><td>PF-03-02-01</td><td>관계 충돌 검증</td><td class="c"><span class="badge b-new">MVP</span></td><td>중복 PRIMARY·기간중첩·범위 검증</td><td>§5.4</td></tr>
+    <tr><td>20</td><td>PF-03-03-01</td><td>이관 워크플로</td><td class="c"><span class="badge b-block">고위험</span></td><td>요청·동의·수락·검증·예약·컷오버</td><td>§5.4</td></tr>
+    <tr><td>21</td><td>PF-03-04-01</td><td>인계·롤백</td><td class="c"><span class="badge b-block">고위험</span></td><td>미결업무·표준·시크릿 인계, 보상처리</td><td>§5.4</td></tr>
+    <tr><td>22</td><td>PF-04-01-01</td><td>인증·권한 하한</td><td class="c"><span class="badge b-new">MVP</span></td><td>GLOBAL MFA·Step-up·SOD·금지정책</td><td>§5.5</td></tr>
+    <tr><td>23</td><td>PF-04-02-01</td><td>전체 표준 카탈로그</td><td class="c"><span class="badge b-new">MVP</span></td><td>유형·원본·Steward·확장정책</td><td>§5.5</td></tr>
+    <tr><td>24</td><td>PF-04-03-01</td><td>메뉴관리</td><td class="c"><span class="badge b-new">MVP</span></td><td>목록·버전·영향·발행·롤백</td><td>§5.5</td></tr>
+    <tr><td>25</td><td>PF-04-04-01</td><td>표준 버전·검토</td><td class="c"><span class="badge b-new">MVP</span></td><td>초안·diff·회귀검증·승인</td><td>§5.5</td></tr>
+    <tr><td>26</td><td>PF-04-05-01</td><td>발행·중지·롤백·폐기</td><td class="c"><span class="badge b-block">고위험</span></td><td>불변 발행과 상태전이</td><td>§5.5</td></tr>
+    <tr><td>27</td><td>PF-04-06-01</td><td>배포·채택 현황</td><td class="c"><span class="badge b-ref">확장</span></td><td>관리회사 배포·테넌트 채택/매핑</td><td>§5.5</td></tr>
+    <tr><td>28</td><td>PF-05-01-01</td><td>조직 격리 현황</td><td class="c"><span class="badge b-new">MVP</span></td><td>교차 접근·RLS 위반 탐지</td><td>§5.6</td></tr>
+    <tr><td>29</td><td>PF-05-02-01</td><td>플랫폼 감사로그</td><td class="c"><span class="badge b-new">MVP</span></td><td>조직·사용자·Role·표준·이관 감사</td><td>§5.6</td></tr>
+    <tr><td>30</td><td>PF-05-03-01</td><td>지원 접근 요청</td><td class="c"><span class="badge b-block">고위험</span></td><td>대상·목적·범위·시간 승인</td><td>§5.6</td></tr>
+    <tr><td>31</td><td>PF-05-04-01</td><td>지원 접근 검토</td><td class="c"><span class="badge b-ref">확장</span></td><td>통지·행위로그·만료·사후검토</td><td>§5.6</td></tr>
+    <tr><td>32</td><td>PF-06-01-01</td><td>전역 배치·큐</td><td class="c"><span class="badge b-new">MVP</span></td><td>메뉴·표준·권한·관리회사 작업, DLQ</td><td>§5.7</td></tr>
+    <tr><td>33</td><td>PF-06-02-01</td><td>관측성·SLO</td><td class="c"><span class="badge b-ref">확장</span></td><td>조직→관리회사→테넌트 장애 영향</td><td>§5.7</td></tr>
+    <tr><td>34</td><td>PF-06-03-01</td><td>백업·DR</td><td class="c"><span class="badge b-ref">확장</span></td><td>복구 우선순위·훈련·증적</td><td>§5.7</td></tr>
+  </table>
+
+  <h2 class="sec">선행조건 · 통제 원칙</h2>
+  <table class="spec">
+    <tr><th>구분</th><th>조건</th><th>화면 반영</th></tr>
+    <tr><td>컨텍스트</td><td>요청마다 platformUserId·orgId/unitId·membershipId·roleAssignmentIds·menuVersionId·permissionGeneration을 ContextSnapshot에 기록</td><td>PF-00-02·03 컨텍스트 고정, 상태영역 traceId 표시</td></tr>
+    <tr><td>권한</td><td>활성 사용자·Membership·Role·조직단위 범위를 모두 검증, 그룹 DENY 우선</td><td>PF-01-04 미리보기, 미허용 메뉴 미노출</td></tr>
+    <tr><td>SOD</td><td>고위험 변경은 Step-up·사유·요청자≠승인자·전후값 감사</td><td>PF-00-04 승인함, PF-04-05 발행 SOD</td></tr>
+    <tr><td>불변</td><td>발행 표준·메뉴 버전과 canonical ID는 수정·재사용 금지, 승인/감사 append-only</td><td>PF-04-05 상태전이, PF-05-02 해시체인</td></tr>
+    <tr><td>경계</td><td>승인 지원세션 없이는 테넌트 원문 접근 금지, 관리회사는 타 관리회사 조회 불가</td><td>PF-05-01 격리, PF-05-03 지원세션</td></tr>
+  </table>
+</section>
+
+<section class="section" id="PF-00-01-01">
+  <div class="page-title"><h1>플랫폼 홈</h1><span class="chip-id">PF-00-01-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-00 플랫폼 진입·현황 › 플랫폼 홈 · 조직·사용자·표준·관리회사·SLO·보안사건을 집계로 관측 (§5.1)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-00-01-01 — 제어영역 전체 현황을 집계로만 보여주며 회계 원문 drill-down은 금지된다.</div>
+    <div class="titlebar"><span class="tb-crumb">플랫폼 진입·현황</span><span class="tb-sep">›</span><span class="tb-title">플랫폼 홈</span><span class="tb-star">☆</span><span class="tb-id">PF-00-01-01</span><span class="tb-right">Asia/Seoul · 2026-07-14 09:20 · 👤 PLATFORM_SUPER_ADMIN</span></div>
+    <div class="qbar"><span class="qlabel">범위</span><span class="seg"><span class="on">전체</span><span>표준</span><span>관리회사</span><span>보안</span></span><span class="qlabel">기간</span><span class="qv">오늘 00:00 ~ 현재 <span class="lens">📅</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">알림설정</button></span></div>
+    <div class="fnbar"><span class="chip on">전역 SLO 99.96%</span><span class="chip">관리회사 128</span><span class="chip">플랫폼 사용자 214</span><span class="chip">표준 PUBLISHED 41</span><span class="chip">보안 이벤트 3</span><div class="sumbox"><span class="ok">핵심 API 정상</span><span>승인 대기 6</span></div></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>영역</th><th>상태</th><th class="c">건수</th><th>대표 이벤트</th><th>이동</th></tr>
+          <tr class="sel"><td>관리회사</td><td><span class="badge b-warn">심사 대기</span></td><td class="c">4</td><td>신규 심사 2 · SUSPENDED 1 · 계약 연체 1</td><td>PF-01-08</td></tr>
+          <tr><td>표준·메뉴</td><td><span class="badge b-ok">정상</span></td><td class="c">2</td><td>MenuVersion v51 발행 완료 · 세율표준 IN_REVIEW 1</td><td>PF-04-03</td></tr>
+          <tr><td>수임·이관</td><td><span class="badge b-warn">진행</span></td><td class="c">1</td><td>T-20117 이관 컷오버 예약 D-1</td><td>PF-03-03</td></tr>
+          <tr><td>보안</td><td><span class="badge b-block">주의</span></td><td class="c">3</td><td>RLS 위반 시도 1 · 지원세션 만료 임박 2</td><td>PF-05-01</td></tr>
+          <tr class="tot"><td colspan="2">요약</td><td class="c">10</td><td colspan="2" class="blue">SEV1 없음 · 승인 대기 6건 · 배치 DLQ 8건</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">관리회사 심사 대기 4건 — SLA 내 처리 필요</span><span class="cnt">집계만 표시 · 회계 원문 접근 없음</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">오늘의 우선순위</div><div class="rp-b">1. 관리회사 심사 2건<br>2. 이관 컷오버 사전검증<br>3. 지원세션 만료 확인</div></div>
+        <div class="rp-box"><div class="rp-t">접근 경계</div><div class="rp-b"><span class="badge b-block">회계 원문 차단</span><br>대시보드는 집계 지표만, drill-down은 scope·승인 필요</div></div>
+        <div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>GET /api/pf/v1/dashboard</code></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">플랫폼 진입 후 조직·사용자·표준·관리회사·SLO·보안사건 현황을 한 화면에서 파악한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">범위(전체/표준/관리회사/보안), 기간, 심각도, 조직/관리회사 수 집계.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">영역별 상태·건수 요약, 대표 이벤트 표시, 관련 화면 바로가기, 알림 설정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">집계만 표시하고 회계 원문 drill-down 금지, 권한 없는 영역 카드 미노출.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">운영 대시보드 지표, 승인·인시던트·배치 화면 연결.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-00-04 승인함, PF-05 보안, PF-06 운영, SLO·SecurityEvent.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-00-02-01">
+  <div class="page-title"><h1>플랫폼 조직 컨텍스트</h1><span class="chip-id">PF-00-02-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-00 플랫폼 진입·현황 › 플랫폼 조직 컨텍스트 · 활성 소속·조직단위·Role 선택으로 ContextSnapshot 고정 (§5.1)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-00-02-01 — 활성 Membership과 조직단위·Role을 선택해 요청 컨텍스트를 고정한다. 만료/정지 Membership은 차단된다.</div>
+    <div class="titlebar"><span class="tb-crumb">플랫폼 진입·현황</span><span class="tb-sep">›</span><span class="tb-title">플랫폼 조직 컨텍스트</span><span class="tb-star">☆</span><span class="tb-id">PF-00-02-01</span><span class="tb-right">permissionGeneration g-4821</span></div>
+    <div class="qbar"><span class="qlabel">활성 소속</span><span class="qv">플랫폼운영본부 <span class="lens">▾</span></span><span class="qlabel">조직단위</span><span class="qv">표준관리팀 <span class="lens">▾</span></span><span class="qlabel">Role</span><span class="qv">PLATFORM_STANDARD_ADMIN <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">컨텍스트 적용</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th class="c">선택</th><th>Membership</th><th>조직단위</th><th>Role</th><th>유효기간</th><th class="c">상태</th></tr>
+          <tr class="sel"><td class="c">✓</td><td>M-PF-0031</td><td>표준관리팀</td><td>PLATFORM_STANDARD_ADMIN</td><td>2026-01-01 ~ 상시</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+          <tr><td class="c">○</td><td>M-PF-0044</td><td>보안운영팀</td><td>PLATFORM_SECURITY</td><td>2026-01-01 ~ 2026-12-31</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+          <tr><td class="c">✕</td><td>M-PF-0009</td><td>감사팀</td><td>PLATFORM_AUDITOR</td><td>~ 2026-06-30</td><td class="c"><span class="badge b-block">EXPIRED</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 활성 Membership으로 ContextSnapshot 고정 · 만료 소속은 선택 차단</span><span class="cnt">ContextSnapshot · membershipId M-PF-0031</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">고정된 컨텍스트</div><div class="rp-b"><div class="kv"><span class="k">platformOrgId</span><span class="v">PO-001</span></div><div class="kv"><span class="k">unitId</span><span class="v">U-STD</span></div><div class="kv"><span class="k">menuVersionId</span><span class="v">v51</span></div></div></div>
+        <div class="rp-box"><div class="rp-t">차단 조건</div><div class="rp-b"><span class="badge b-block">EXPIRED/SUSPENDED</span><br>만료·정지 Membership, scope 범위 밖 조직단위</div></div>
+        <div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>POST /api/pf/v1/contexts/platform</code></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">활성 소속·조직단위·Role을 선택해 요청 컨텍스트(ContextSnapshot)를 고정한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">활성 Membership, 조직단위, Role, 유효기간, 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">Membership 선택, 컨텍스트 적용, permissionGeneration 갱신, 컨텍스트 요약 표시.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">만료/정지 Membership 차단, scope 범위 밖 조직단위 선택 불가.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">플랫폼 조직 컨텍스트(ContextSnapshot), permissionGeneration.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-05 소속·Role, 전 화면 권한평가, PermissionEvaluationCache.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-00-03-01">
+  <div class="page-title"><h1>관리회사 컨텍스트</h1><span class="chip-id">PF-00-03-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-00 플랫폼 진입·현황 › 관리회사 컨텍스트 · 관리회사 검색·상태·요금제 필터로 조회 컨텍스트만 발급 (§5.1)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-00-03-01 — 관리회사를 선택하면 제어영역 조회 컨텍스트만 발급되고 하위 권한은 상속되지 않는다.</div>
+    <div class="titlebar"><span class="tb-crumb">플랫폼 진입·현황</span><span class="tb-sep">›</span><span class="tb-title">관리회사 컨텍스트</span><span class="tb-star">☆</span><span class="tb-id">PF-00-03-01</span><span class="tb-right"><span class="badge b-block">하위권한 미상속</span></span></div>
+    <div class="qbar"><span class="qlabel">관리회사</span><span class="qv">회사명/사업자번호 <span class="lens">⌕</span></span><span class="qlabel">상태</span><span class="seg"><span class="on">전체</span><span>ACTIVE</span><span>SUSPENDED</span></span><span class="qlabel">요금제</span><span class="qv">전체 <span class="lens">▾</span></span><span class="qlabel">위험</span><span class="qv">연체/보안 포함 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">컨텍스트 발급</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>OperatorOrg</th><th>관리회사명</th><th>요금제</th><th class="c">상태</th><th>테넌트</th><th>위험</th></tr>
+          <tr class="sel"><td>OO-1002</td><td>세정회계법인</td><td>PRO</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td>34</td><td><span class="badge b-ok">정상</span></td></tr>
+          <tr><td>OO-1017</td><td>한빛세무법인</td><td>STANDARD</td><td class="c"><span class="badge b-warn">SUSPENDED</span></td><td>12</td><td><span class="badge b-warn">연체 D+8</span></td></tr>
+          <tr><td>OO-1029</td><td>미래택스</td><td>ENTERPRISE</td><td class="c"><span class="badge b-ok">ACTIVE</span></td><td>61</td><td><span class="badge b-block">보안이벤트 1</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 조회 컨텍스트만 발급 · 회계데이터 접근권한 아님</span><span class="cnt">관리회사 128건 · ACTIVE 121</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">발급 컨텍스트</div><div class="rp-b"><div class="kv"><span class="k">operatorOrgId</span><span class="v">OO-1002</span></div><div class="kv"><span class="k">유형</span><span class="v">VIEW_ONLY</span></div><div class="kv"><span class="k">만료</span><span class="v">세션 종료 시</span></div></div></div>
+        <div class="rp-box"><div class="rp-t">경계 규칙</div><div class="rp-b"><span class="badge b-block">미상속</span><br>관리회사 선택은 컨텍스트일 뿐 OP/TN 권한을 부여하지 않음</div></div>
+        <div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>POST /api/pf/v1/contexts/operators</code></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">관리회사를 검색·필터해 제어영역 조회 컨텍스트를 발급한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">관리회사명/사업자번호, 상태, 요금제, 위험(연체·보안).</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">관리회사 목록 조회, 조회 컨텍스트 발급, 위험 지표 표시.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">조회 컨텍스트만 발급하며 하위권한 미상속, 회계데이터 접근 없음.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">관리회사 제어 컨텍스트(VIEW_ONLY), ContextSnapshot.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-07 관리회사 상세, PF-02 구독, PF-03 수임관계.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-00-04-01">
+  <div class="page-title"><h1>승인 대기함</h1><span class="chip-id">PF-00-04-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-00 플랫폼 진입·현황 › 승인 대기함 · Role·표준·관리회사·이관 승인, 자기요청 승인 금지 (§5.1)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-00-04-01 — 승인유형·위험도별 대기 항목을 처리한다. 자기요청 승인은 금지되고 고위험은 2인 승인·Step-up이 필요하다.</div>
+    <div class="titlebar"><span class="tb-crumb">플랫폼 진입·현황</span><span class="tb-sep">›</span><span class="tb-title">승인 대기함</span><span class="tb-star">☆</span><span class="tb-id">PF-00-04-01</span><span class="tb-right"><span class="badge b-block">요청자≠승인자</span></span></div>
+    <div class="qbar"><span class="qlabel">승인유형</span><span class="seg"><span class="on">전체</span><span>Role</span><span>표준</span><span>관리회사</span><span>이관</span></span><span class="qlabel">위험도</span><span class="qv">HIGH 포함 <span class="lens">▾</span></span><span class="qlabel">기한</span><span class="qv">D-3 이내 <span class="lens">📅</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn dark">승인</button><button class="abtn red">반려</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th class="c">선택</th><th>승인유형</th><th>대상</th><th>요청자</th><th class="c">위험도</th><th>기한</th><th>Step-up</th></tr>
+          <tr class="sel"><td class="c">✓</td><td>이관 컷오버</td><td>T-20117 → 미래택스</td><td>김이관</td><td class="c"><span class="badge b-block">HIGH</span></td><td>D-1</td><td>필요</td></tr>
+          <tr><td class="c">□</td><td>표준 발행</td><td>세율표준 v3 PUBLISH</td><td>박표준</td><td class="c"><span class="badge b-warn">MED</span></td><td>D-2</td><td>필요</td></tr>
+          <tr><td class="c">□</td><td>Role 승격</td><td>이운영 → PLATFORM_SECURITY</td><td>이운영</td><td class="c"><span class="badge b-block">HIGH</span></td><td>D-3</td><td><span class="red">자기요청</span></td></tr>
+          <tr><td class="c">□</td><td>관리회사 활성</td><td>OO-1041 활성화</td><td>정심사</td><td class="c"><span class="badge b-warn">MED</span></td><td>D-3</td><td>-</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">자기요청 항목은 승인 불가 — Role 승격은 별도 승인자 필요</span><span class="cnt">ApprovalDecision · append-only 감사</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">선택 항목</div><div class="rp-b"><div class="kv"><span class="k">유형</span><span class="v">이관 컷오버</span></div><div class="kv"><span class="k">위험도</span><span class="v">HIGH</span></div><div class="kv"><span class="k">승인 수</span><span class="v">2인</span></div></div></div>
+        <div class="rp-box"><div class="rp-t">승인 검증</div><div class="rp-b">· 자기요청 승인 <span class="badge b-block">차단</span><br>· 고위험 2인 승인 <span class="badge b-warn">필요</span><br>· Step-up 재인증</div></div>
+        <div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>GET /api/pf/v1/approvals</code><br><code>POST /approvals/{id}/approve|reject</code></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">Role·표준·관리회사·이관 등 고위험 요청을 승인·반려한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">승인유형, 위험도, 요청자, 기한, Step-up 필요 여부.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">대기 항목 조회, 승인/반려, 전후값·사유 확인, 2인 승인 지정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">자기요청 승인 금지, Step-up, 고위험 2인 승인, 기한 초과 표시.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">ApprovalDecision, 감사로그(append-only), 후속 상태전이.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-03-03 이관, PF-04-05 발행, PF-01-05 Role, PF-05-02 감사.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-01-01">
+  <div class="page-title"><h1>플랫폼 내부조직</h1><span class="chip-id">PF-01-01-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 플랫폼 내부조직 · PlatformOrg/Unit 트리, 개편, 유효기간 이력 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-01-01 — 조직은 같은 platformOrgId 부모만 참조하고 순환을 금지하며, 개편은 유효기간 이력으로 처리한다.</div>
+    <div class="titlebar"><span class="tb-crumb">조직·사용자</span><span class="tb-sep">›</span><span class="tb-title">플랫폼 내부조직</span><span class="tb-star">☆</span><span class="tb-id">PF-01-01-01</span><span class="tb-right">PlatformOrg PO-001</span></div>
+    <div class="qbar"><span class="qlabel">조직검색</span><span class="qv">unitCode/명칭 <span class="lens">⌕</span></span><span class="qlabel">기준일</span><span class="qv">2026-07-14 <span class="lens">📅</span></span><span class="qlabel">상태</span><span class="seg"><span class="on">유효</span><span>예정</span><span>종료</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">단위 추가</button><button class="abtn ghost">개편</button><button class="abtn dark">저장</button></span></div>
+    <div class="mock-flex">
+      <div class="lpane"><div class="lp-t">조직 트리 <span class="cnt">18단위</span></div><div class="tree"><div class="tnode lv1 on">▸ 플랫폼운영본부 <span class="cnt">PO-001</span></div><div class="tnode lv2">표준관리팀 <span class="cnt">12명</span></div><div class="tnode lv2">보안운영팀 <span class="cnt">9명</span></div><div class="tnode lv2">고객지원팀 <span class="cnt">21명</span></div><div class="tnode lv1">▸ 사업총괄본부 <span class="cnt">PO-002</span></div><div class="tnode lv2">계약운영팀 <span class="cnt">8명</span></div></div></div>
+      <div class="mock-main">
+        <div class="formgrid c3 label-left">
+          <div class="ff"><label>단위코드</label><input class="fv" value="U-STD"></div>
+          <div class="ff"><label>국문명</label><input class="fv" value="표준관리팀"></div>
+          <div class="ff"><label>영문명</label><input class="fv" value="Standard Management"></div>
+          <div class="ff"><label>상위단위</label><select class="fv"><option>플랫폼운영본부</option><option>- 루트</option></select></div>
+          <div class="ff"><label>단위유형</label><select class="fv"><option>TEAM</option><option>DIVISION</option><option>DEPT</option></select></div>
+          <div class="ff"><label>상태</label><select class="fv"><option>ACTIVE</option><option>PLANNED</option><option>CLOSED</option></select></div>
+          <div class="ff"><label>유효시작</label><input class="fv" value="2026-01-01"></div>
+          <div class="ff"><label>유효종료</label><input class="fv" value="9999-12-31"></div>
+          <div class="ff"><label>책임자</label><input class="fv" value="박표준"></div>
+          <div class="ff full"><label>개편사유</label><textarea class="fv" rows="2">2026년 표준 거버넌스 강화에 따른 팀 신설</textarea></div>
+        </div>
+        <table class="grid">
+          <tr><th>변경</th><th>단위</th><th>이전 상위</th><th>신규 상위</th><th>효력일</th><th class="c">상태</th></tr>
+          <tr class="sel"><td>신설</td><td>표준관리팀</td><td>-</td><td>플랫폼운영본부</td><td>2026-01-01</td><td class="c"><span class="badge b-ok">유효</span></td></tr>
+          <tr><td>이동</td><td>계약운영팀</td><td>플랫폼운영본부</td><td>사업총괄본부</td><td>2026-08-01</td><td class="c"><span class="badge b-warn">예정</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 동일 platformOrgId 부모 · 순환 없음 · 유효기간 겹침 없음</span><span class="cnt">PlatformOrgUnit · 유효기간 이력</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">저장 검증</div><div class="rp-b"><div class="kv"><span class="k">부모</span><span class="v">동일 Org</span></div><div class="kv"><span class="k">순환</span><span class="v">없음</span></div><div class="kv"><span class="k">기간</span><span class="v">겹침 0</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/api/pf/v1/platform-orgs</code><br><code>/platform-units</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">플랫폼 내부조직(PlatformOrg/Unit) 트리를 관리하고 개편을 유효기간 이력으로 처리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">unitCode, 국문/영문명, 상위단위, 단위유형, 상태, 유효시작/종료, 책임자, 개편사유.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">단위 추가·수정, 조직 개편(이동/신설/종료), 기준일 조회, 이력 확인.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">동일 platformOrgId 부모, 순환 참조 금지, 유효기간 겹침 방지.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">PlatformOrg, PlatformOrgUnit, 유효기간 이력, 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-05 소속·Role, PF-00-02 조직 컨텍스트, PlatformMembership.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-02-01">
+  <div class="page-title"><h1>플랫폼 사용자관리</h1><span class="chip-id">PF-01-02-01 · BF-04</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 플랫폼 사용자관리 · 초대·상태·소속/Role·보안/세션 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-02-01 — loginId는 전역 유일이며 상태는 INVITED→ACTIVE→SUSPENDED/DORMANT→TERMINATED. 사용 이력 계정은 물리삭제하지 않는다.</div>
+    <div class="titlebar"><span class="tb-crumb">조직·사용자</span><span class="tb-sep">›</span><span class="tb-title">플랫폼 사용자관리</span><span class="tb-star">☆</span><span class="tb-id">PF-01-02-01</span><span class="tb-right"><span class="badge b-gray">Step-up 유효 08:41</span> · 👤 PLATFORM_USER_ADMIN</span></div>
+    <div class="tabbar"><div class="tab on">사용자 목록·기본정보 <span class="tno">1</span></div><div class="tab">보안·세션 <span class="tno">2</span></div></div>
+    <div class="tabpane on">
+      <div class="qbar"><span class="qlabel">검색어</span><span class="qv">이름/loginId/조직 <span class="lens">⌕</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/SUSPENDED/DORMANT <span class="lens">▾</span></span><span class="qlabel">Role</span><span class="qv">전체 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">초대</button><button class="abtn ghost">수정</button><button class="abtn dark">저장</button></span></div>
+      <div class="mock-flex">
+        <div class="lpane" style="width:380px"><div class="lp-t">사용자 목록 <span class="cnt">214명</span></div><table class="grid"><tr><th>이름</th><th>Login ID</th><th>조직</th><th class="c">상태</th></tr><tr class="sel"><td>박표준</td><td>std.admin@bk.io</td><td>표준관리팀</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td>이운영</td><td>ops@bk.io</td><td>보안운영팀</td><td class="c"><span class="badge b-warn">DORMANT</span></td></tr><tr><td>최지원</td><td>support@bk.io</td><td>고객지원팀</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr></table><div class="statusbar"><span class="warnmsg">휴면 1명 — 365일 미접속 자동 전환</span></div></div>
+        <div class="mock-main">
+          <div class="formgrid c3 label-left">
+            <div class="ff"><label>사용자ID</label><input class="fv" value="PU-00031"></div>
+            <div class="ff"><label>Login ID</label><input class="fv" value="std.admin@bk.io"></div>
+            <div class="ff"><label>상태</label><select class="fv"><option>ACTIVE</option><option>INVITED</option><option>SUSPENDED</option><option>DORMANT</option><option>TERMINATED</option></select></div>
+            <div class="ff"><label>성명</label><input class="fv" value="박표준"></div>
+            <div class="ff"><label>영문명</label><input class="fv" value="Park Standard"></div>
+            <div class="ff"><label>사번</label><input class="fv" value="BK-0031"></div>
+            <div class="ff"><label>소속조직</label><select class="fv"><option>표준관리팀</option><option>보안운영팀</option></select></div>
+            <div class="ff"><label>기본 Role</label><select class="fv"><option>PLATFORM_STANDARD_ADMIN</option><option>PLATFORM_AUDITOR</option></select></div>
+            <div class="ff"><label>이메일</label><input class="fv" value="std.admin@bk.io"></div>
+            <div class="ff"><label>휴대폰</label><input class="fv" value="+82-10-0000-0031"></div>
+            <div class="ff"><label>언어</label><select class="fv"><option>ko-KR</option><option>en-US</option></select></div>
+            <div class="ff full"><label>저장사유</label><textarea class="fv" rows="2">정기 권한 점검 결과 유지</textarea></div>
+          </div>
+          <div class="statusbar"><span class="okmsg">✓ loginId 전역 유일 · Membership·Role·DutyAssignment 분리 저장</span><span class="cnt">PlatformUser · PlatformMembership</span></div>
+        </div>
+        <div class="rpanel"><div class="rp-box"><div class="rp-t">상태 전이</div><div class="rp-b"><span class="chip">INVITED</span> → <span class="chip on">ACTIVE</span> → <span class="chip">SUSPENDED</span> → <span class="chip">TERMINATED</span></div></div><div class="rp-box"><div class="rp-t">가능 조치</div><div class="rp-b"><button class="abtn sm">초대 재발송</button> <button class="abtn sm">MFA 초기화</button><br><span class="badge b-block">본인 조치 차단</span></div></div></div>
+      </div>
+    </div>
+    <div class="tabpane">
+      <div class="qbar"><span class="qlabel">사용자</span><span class="qv">ops@bk.io <span class="lens">⌕</span></span><span class="qlabel">보안상태</span><span class="qv">MFA/세션/실패 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn dark">MFA 초기화</button><button class="abtn red">세션 종료</button></span></div>
+      <div class="mock-flex"><div class="mock-main"><table class="grid"><tr><th>보안 항목</th><th>상태</th><th>상세</th><th>조치</th></tr><tr class="sel"><td>MFA</td><td><span class="badge b-ok">등록</span></td><td>WebAuthn 1 · TOTP 1</td><td>초기화(Step-up)</td></tr><tr><td>활성 세션</td><td><span class="badge b-warn">2개</span></td><td>Chrome Seoul · API token</td><td>강제 종료</td></tr><tr><td>휴면</td><td><span class="badge b-warn">DORMANT</span></td><td>371일 미접속</td><td>재활성 승인</td></tr><tr><td>로그인 이력</td><td>최근 실패 0</td><td>비정상 없음</td><td>감사로그</td></tr></table><div class="statusbar"><span class="warnmsg">MFA 초기화·세션 종료·재활성은 Step-up과 사유 필요</span><span class="cnt">UserSecurityAction 기록</span></div></div><div class="rpanel"><div class="rp-box"><div class="rp-t">고위험 조치</div><div class="rp-b"><span class="badge b-block">Step-up</span> MFA 초기화·세션 종료·고위험 Role 변경</div></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">플랫폼 사용자 계정의 기본정보, 상태, 소속/Role, 보안·세션을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">userId, loginId, status, 성명/영문명, 사번, 소속조직, 기본Role, 연락처, locale, 저장사유.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">초대·수정·저장, 상태 전이, MFA 초기화, 세션 종료, 휴면 재활성.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">loginId 전역 유일, 상태전이 규칙, 고위험 조치 Step-up·사유, 본인 조치 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">PlatformUser, PlatformMembership, MfaDevice, UserSession, UserSecurityAction.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-03 그룹, PF-01-05 Role, PF-01-06 SSO/SCIM, LoginHistory.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-03-01">
+  <div class="page-title"><h1>플랫폼 사용자그룹</h1><span class="chip-id">PF-01-03-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 플랫폼 사용자그룹 · 그룹·상위그룹·구성원·유효기간, 그룹정보와 구성원 별도 저장 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-03-01 — 그룹 기본정보와 구성원을 별도 저장한다. 그룹코드 유일·순환·타 scope 구성원·기간중복을 검증한다.</div>
+    <div class="titlebar"><span class="tb-crumb">조직·사용자</span><span class="tb-sep">›</span><span class="tb-title">플랫폼 사용자그룹</span><span class="tb-star">☆</span><span class="tb-id">PF-01-03-01</span><span class="tb-right">MenuVersion v51 · PUBLISHED</span></div>
+    <div class="qbar"><span class="qlabel">그룹검색</span><span class="qv">groupCode/명칭 <span class="lens">⌕</span></span><span class="qlabel">그룹유형</span><span class="seg"><span class="on">전체</span><span>SECURITY</span><span>STANDARD</span><span>SUPPORT</span></span><span class="qlabel">상태</span><span class="qv">ACTIVE/INACTIVE <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">그룹 추가</button><button class="abtn dark">그룹 저장</button></span></div>
+    <div class="mock-flex">
+      <div class="lpane"><div class="lp-t">그룹 트리 <span class="cnt">9건</span></div><div class="tree"><div class="tnode lv1 on">▸ 표준거버넌스 <span class="cnt">STD-GOV · 12명</span></div><div class="tnode lv2">표준 검토자 <span class="cnt">5명</span></div><div class="tnode lv1">▸ 보안운영 <span class="cnt">SEC-OPS · 9명</span></div></div></div>
+      <div class="mock-main">
+        <div class="formgrid c3 label-left"><div class="ff"><label>그룹코드</label><input class="fv" value="STD-GOV"></div><div class="ff"><label>국문명</label><input class="fv" value="표준거버넌스"></div><div class="ff"><label>그룹유형</label><select class="fv"><option>STANDARD</option><option>SECURITY</option><option>SUPPORT</option></select></div><div class="ff"><label>상위그룹</label><select class="fv"><option>- 루트</option><option>플랫폼운영</option></select></div><div class="ff"><label>기본Role</label><select class="fv"><option>PLATFORM_STANDARD_ADMIN</option></select></div><div class="ff"><label>상태</label><select class="fv"><option>ACTIVE</option><option>INACTIVE</option></select></div><div class="ff full"><label>유효기간</label><div class="fv">2026-01-01 ~ 9999-12-31</div></div></div>
+        <div class="qbar"><span class="qlabel">구성원 검색</span><span class="qv">이름/loginId <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">구성원 조회</button><button class="abtn ghost">구성원 추가</button><button class="abtn dark">구성원 저장</button></span></div>
+        <table class="grid"><tr><th class="c">선택</th><th>구성원</th><th>Login ID</th><th>상속 Role</th><th>시작일</th><th>만료</th><th class="c">상태</th></tr><tr class="sel"><td class="c">✓</td><td>박표준</td><td>std.admin@bk.io</td><td>PLATFORM_STANDARD_ADMIN</td><td>2026-01-01</td><td>상시</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td class="c">□</td><td>정검토</td><td>review@bk.io</td><td>STANDARD_REVIEWER</td><td>2026-07-01</td><td>2026-12-31</td><td class="c"><span class="badge b-warn">TEMP</span></td></tr></table>
+        <div class="statusbar"><span class="okmsg">✓ 그룹 CRUD와 구성원 CRUD를 별도 저장 단위로 분리</span><span class="cnt">UserGroup 1 · Member 12</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">그룹 검증</div><div class="rp-b"><div class="kv"><span class="k">groupCode</span><span class="v">UNIQUE</span></div><div class="kv"><span class="k">상위</span><span class="v">순환 없음</span></div></div></div><div class="rp-box"><div class="rp-t">구성원 검증</div><div class="rp-b"><div class="kv"><span class="k">scope</span><span class="v">일치</span></div><div class="kv"><span class="k">기간중복</span><span class="v">0건</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/api/pf/v1/user-groups</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">플랫폼 사용자그룹의 생성·수정과 구성원 관리를 분리 저장하고 Role 상속을 통제한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">그룹: groupCode, 명칭, groupType, 상위그룹, defaultRole, status, 유효기간. 구성원: userId/loginId, inheritedRole, 시작/만료일, memberStatus.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">그룹 추가·수정·저장, 구성원 조회·추가·저장, Role 바인딩.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">그룹코드 유일, 상위그룹 순환, 타 scope 구성원, 기간 중복 검증.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">UserGroup, UserGroupHierarchy, UserGroupMember, UserGroupRoleBinding.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-04 그룹별 메뉴권한, PF-01-05 Role, PermissionEvaluationCache.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-04-01">
+  <div class="page-title"><h1>그룹별 메뉴권한</h1><span class="chip-id">PF-01-04-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 그룹별 메뉴권한 · PUBLISHED PF 메뉴 INHERIT/ALLOW/DENY, DENY 우선, 미리보기 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-04-01 — 좌측에서 사용자그룹을 선택하고 PF 메뉴별 정책을 부여한다. 그룹 DENY가 Role 허용보다 우선한다.</div>
+    <div class="titlebar"><span class="tb-crumb">조직·사용자</span><span class="tb-sep">›</span><span class="tb-title">그룹별 메뉴권한</span><span class="tb-star">☆</span><span class="tb-id">PF-01-04-01</span><span class="tb-right"><span class="badge b-block">DENY 우선</span> · MenuVersion v51 PUBLISHED</span></div>
+    <div class="qbar"><span class="qlabel">그룹</span><span class="qv">표준거버넌스 <span class="lens">▾</span></span><span class="qlabel">채널</span><span class="seg"><span class="on">PF</span></span><span class="qlabel">저장방식</span><span class="qv off">정책 클릭 시 즉시 저장 · 감사로그 기록</span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">영향 분석</button></span></div>
+    <div class="mock-flex">
+      <div class="lpane"><div class="lp-t">사용자그룹 <span class="cnt">2건</span></div><div class="tree"><div class="tnode lv1 on">▸ 표준거버넌스 <span class="cnt">STD-GOV · 12명</span></div><div class="tnode lv1">▸ 보안운영 <span class="cnt">SEC-OPS · 9명</span></div></div></div>
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>PF 메뉴</th><th>Role 권한</th><th>그룹 정책 (클릭하여 변경)</th><th>최종 노출</th><th>진입</th></tr>
+          <tr><td>PF-04 표준·메뉴·발행</td><td><span class="badge b-ok">ALLOW</span></td><td><span class="seg"><span>INHERIT</span><span class="on">ALLOW</span><span>DENY</span></span></td><td>보임</td><td>가능</td></tr>
+          <tr class="sel"><td>PF-04-05 발행·폐기 🔒</td><td><span class="badge b-ok">ALLOW</span></td><td><span class="seg"><span>INHERIT</span><span>ALLOW</span><span class="on">DENY</span></span></td><td><span class="red">숨김</span></td><td>불가</td></tr>
+          <tr><td>PF-05 보안·감사</td><td><span class="badge b-ok">ALLOW</span></td><td><span class="seg"><span class="on">INHERIT</span><span>ALLOW</span><span>DENY</span></span></td><td>보임</td><td>Step-up 후</td></tr>
+          <tr><td>PF-01 조직·사용자</td><td><span class="badge b-block">-</span></td><td><span class="seg"><span class="on">INHERIT</span><span>ALLOW</span><span>DENY</span></span></td><td><span class="red">숨김</span></td><td>불가</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">✓ 저장됨: STD-GOV · PF-04-05 → DENY — Role 허용이 있어도 미노출</span><span class="cnt">ALLOW 1 · DENY 1 · 나머지 INHERIT</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">평가 순서</div><div class="rp-b">1. PUBLISHED MenuVersion<br>2. <b>그룹 메뉴권한 (DENY 우선)</b><br>3. RoleMenuPermission<br>4. MenuActionGrant · data scope</div></div>
+        <div class="rp-box"><div class="rp-t">최종권한 미리보기</div><div class="rp-b">ALLOW만으로 Role의 VIEW/ENTER/ACTION을 만들지 않음</div></div>
+        <div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/api/pf/v1/group-menu-permissions</code></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">PUBLISHED PF 메뉴만 대상으로 그룹별 노출 정책(INHERIT/ALLOW/DENY)을 부여한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">사용자그룹, 채널(PF), 메뉴, 정책(INHERIT/ALLOW/DENY).</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">그룹 선택, 메뉴 정책 즉시 저장, 정책 diff, 최종권한 미리보기, 영향 분석.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">PUBLISHED 메뉴만 대상, 그룹 DENY 우선, 부모 메뉴 DENY 시 하위 미노출.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">UserGroupMenuPermission, 감사로그, PermissionEvaluationCache 무효화.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-03 그룹, PF-04-03 메뉴관리, /api/me/menus bootstrap.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-05-01">
+  <div class="page-title"><h1>소속·Role·직무배정</h1><span class="chip-id">PF-01-05-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 소속·Role·직무배정 · Membership·Role·DutyAssignment 분리 저장 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-05-01 — 사용자별 소속(Membership), Role, 직무배정을 분리 저장한다. 자기 Role 승격은 금지된다.</div>
+    <div class="titlebar"><span class="tb-crumb">조직·사용자</span><span class="tb-sep">›</span><span class="tb-title">소속·Role·직무배정</span><span class="tb-star">☆</span><span class="tb-id">PF-01-05-01</span><span class="tb-right"><span class="badge b-block">자기승격 금지</span></span></div>
+    <div class="qbar"><span class="qlabel">사용자</span><span class="qv">박표준 / std.admin@bk.io <span class="lens">⌕</span></span><span class="qlabel">배정유형</span><span class="seg"><span class="on">전체</span><span>Membership</span><span>Role</span><span>Duty</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">배정 추가</button><button class="abtn dark">저장</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>배정유형</th><th>조직단위/Role</th><th>범위(scope)</th><th>시작일</th><th>종료일</th><th class="c">상태</th></tr>
+          <tr class="sel"><td>Membership</td><td>표준관리팀</td><td>PO-001 / U-STD</td><td>2026-01-01</td><td>상시</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+          <tr><td>Role</td><td>PLATFORM_STANDARD_ADMIN</td><td>표준 원본·버전·발행</td><td>2026-01-01</td><td>상시</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+          <tr><td>Role</td><td>PLATFORM_AUDITOR <span class="badge b-block">SOD 충돌</span></td><td>전역 읽기전용</td><td>-</td><td>-</td><td class="c"><span class="red">거부</span></td></tr>
+          <tr><td>Duty</td><td>세율표준 Steward</td><td>세무 표준군</td><td>2026-03-01</td><td>2026-12-31</td><td class="c"><span class="badge b-warn">TEMP</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">STANDARD_ADMIN + AUDITOR는 SOD 금지조합 — 동시 배정 차단</span><span class="cnt">RoleAssignment · DutyAssignment</span></div>
+      </div>
+      <div class="rpanel">
+        <div class="rp-box"><div class="rp-t">저장 검증</div><div class="rp-b">· 자기 Role 승격 <span class="badge b-block">차단</span><br>· SOD 금지조합 <span class="badge b-block">차단</span><br>· 고위험 Role Step-up</div></div>
+        <div class="rp-box"><div class="rp-t">분리 저장</div><div class="rp-b">Membership · Role · DutyAssignment는 각각 별도 저장 단위</div></div>
+        <div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/api/pf/v1/platform-memberships</code></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">사용자별 소속(Membership), Role, 직무배정(Duty)을 분리 저장·관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">사용자, 배정유형, 조직단위/Role, dataScope, 시작/종료일, 사유.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">Membership·Role·Duty 추가·수정·저장, 유효기간 관리, SOD 미리검증.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">자기 Role 승격 금지, SOD 금지조합 차단, 고위험 Role Step-up·사유.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">PlatformMembership, RoleAssignment, PlatformDutyAssignment, 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-00-02 조직 컨텍스트, PF-00-04 승인함, PF-04-01 SOD 하한.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-06-01">
+  <div class="page-title"><h1>SSO·SCIM·접근환경</h1><span class="chip-id">PF-01-06-01</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › SSO·SCIM·접근환경 · IdP·도메인·프로비저닝·IP 허용목록 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-06-01 — SAML/OIDC IdP, 검증 도메인, JIT/SCIM, IP 허용목록을 관리한다. 시크릿은 KMS 참조만 저장한다.</div>
+    <div class="titlebar"><span class="tb-crumb">조직·사용자</span><span class="tb-sep">›</span><span class="tb-title">SSO·SCIM·접근환경</span><span class="tb-star">☆</span><span class="tb-id">PF-01-06-01</span><span class="tb-right"><span class="badge b-block">Step-up 필요</span></span></div>
+    <div class="qbar"><span class="qlabel">IdP</span><span class="qv">BK-EntraID <span class="lens">▾</span></span><span class="qlabel">프로토콜</span><span class="seg"><span class="on">OIDC</span><span>SAML</span></span><span class="qlabel">상태</span><span class="qv">활성 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">테스트 로그인</button><button class="abtn dark">저장</button></span></div>
+    <div class="actionbar"><button class="abtn yellow">연결 검증</button><div class="ab-right"><button class="abtn ghost">복구경로 확인</button><button class="abtn red">IdP 비활성</button></div></div>
+    <div class="formgrid c3"><div class="ff"><label>issuer</label><div class="fv">https://login.bk.io/oidc</div></div><div class="ff"><label>client_id</label><div class="fv">bk-platform-console</div></div><div class="ff"><label>client_secret</label><div class="fv ro">🔒 KMS 참조 (kms://pf/idp/01)</div></div><div class="ff"><label>검증 도메인</label><div class="fv">bk.io · ey.com</div></div><div class="ff"><label>claim mapping</label><div class="fv">email→loginId · groups→role</div></div><div class="ff"><label>JIT/SCIM</label><div class="fv">SCIM provisioning ON</div></div><div class="ff full"><label>IP 허용목록</label><div class="fv">203.0.113.0/24 · 198.51.100.10 (운영망)</div></div></div>
+    <table class="grid"><tr><th>동기화</th><th>대상</th><th class="c">상태</th><th>최근 실행</th><th>충돌</th></tr><tr class="sel"><td>SCIM Users</td><td>214명</td><td class="c"><span class="badge b-ok">SYNCED</span></td><td>2026-07-14 08:00</td><td>externalId 충돌 0</td></tr><tr><td>SCIM Groups</td><td>9건</td><td class="c"><span class="badge b-warn">PARTIAL</span></td><td>2026-07-14 08:00</td><td>매핑 누락 1</td></tr></table>
+    <div class="statusbar"><span class="okmsg">✓ 시크릿 KMS 참조만 저장 · OperatorOrg IdP와 분리</span><span class="cnt">IdentityProvider · SsoIdentity</span></div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">플랫폼 SSO/SCIM IdP와 접근환경(IP·도메인)을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">IdP 유형(SAML/OIDC), 검증 도메인, issuer/client_id/secret(KMS), claim mapping, JIT/SCIM, IP 허용목록.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">IdP 등록·검증·비활성, 테스트 로그인, SCIM 동기화 상태 확인, 복구경로 검증.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">시크릿 KMS 참조만 저장, OperatorOrg IdP와 분리, 비활성 전 로컬 비상관리자·복구경로 검증.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">IdentityProvider, SsoIdentity, SCIM 동기화 로그, IP 허용목록.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-02 사용자, PF-04-01 인증 하한, KMS.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-07-01">
+  <div class="page-title"><h1>관리회사 목록·상세</h1><span class="chip-id">PF-01-07-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 관리회사 목록·상세 · 법인·사업자·대표관리자·계약상태 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-07-01 — 관리회사 법인정보와 대표관리자, 계약·상태를 조회·관리한다. 상태는 PENDING_VERIFICATION→ACTIVE→SUSPENDED→TERMINATING→TERMINATED.</div>
+    <div class="titlebar"><span class="tb-crumb">관리회사</span><span class="tb-sep">›</span><span class="tb-title">관리회사 목록·상세</span><span class="tb-star">☆</span><span class="tb-id">PF-01-07-01</span><span class="tb-right">OperatorOrg 128건</span></div>
+    <div class="qbar"><span class="qlabel">검색</span><span class="qv">법인명/사업자번호 <span class="lens">⌕</span></span><span class="qlabel">상태</span><span class="seg"><span class="on">전체</span><span>ACTIVE</span><span>SUSPENDED</span><span>TERMINATED</span></span><span class="qlabel">요금제</span><span class="qv">전체 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">수정</button><button class="abtn dark">저장</button></span></div>
+    <div class="mock-flex">
+      <div class="lpane" style="width:400px"><div class="lp-t">관리회사 목록 <span class="cnt">128</span></div><table class="grid"><tr><th>OperatorOrg</th><th>법인명</th><th class="c">상태</th></tr><tr class="sel"><td>OO-1002</td><td>세정회계법인</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr><tr><td>OO-1017</td><td>한빛세무법인</td><td class="c"><span class="badge b-warn">SUSPENDED</span></td></tr><tr><td>OO-1041</td><td>제일택스</td><td class="c"><span class="badge b-gray">PENDING</span></td></tr></table></div>
+      <div class="mock-main">
+        <div class="formgrid c3 label-left"><div class="ff"><label>OperatorOrg</label><div class="fv">OO-1002</div></div><div class="ff"><label>법인명</label><input class="fv" value="세정회계법인"></div><div class="ff"><label>사업자번호</label><input class="fv" value="123-45-67890"></div><div class="ff"><label>대표관리자</label><input class="fv" value="김대표 / owner@sejeong.co.kr"></div><div class="ff"><label>요금제</label><select class="fv"><option>PRO</option><option>STANDARD</option><option>ENTERPRISE</option></select></div><div class="ff"><label>상태</label><div class="fv">ACTIVE</div></div><div class="ff"><label>테넌트 수</label><div class="fv ro">34</div></div><div class="ff"><label>계약 시작</label><input class="fv" value="2025-03-01"></div><div class="ff"><label>계약 상태</label><div class="fv">유효</div></div><div class="ff full"><label>위수탁 계약</label><div class="fv">전자계약 체결 완료 · 개인정보 위수탁 포함</div></div></div>
+        <table class="grid"><tr><th>이력</th><th>내용</th><th>일시</th><th>행위자</th></tr><tr class="sel"><td>활성화</td><td>PENDING_VERIFICATION → ACTIVE</td><td>2025-03-01</td><td>정심사</td></tr><tr><td>요금제 변경</td><td>STANDARD → PRO</td><td>2026-01-15</td><td>박계약</td></tr></table>
+        <div class="statusbar"><span class="okmsg">✓ 관리회사는 타 관리회사를 조회할 수 없음 · 전역조회는 PF 한정</span><span class="cnt">OperatorOrg · OperatorOrgProfile</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">상태 전이</div><div class="rp-b"><span class="chip">PENDING</span> → <span class="chip on">ACTIVE</span> → <span class="chip">SUSPENDED</span> → <span class="chip">TERMINATING</span> → <span class="chip">TERMINATED</span></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/api/pf/v1/operator-orgs</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">관리회사 법인·사업자·대표관리자·계약상태를 목록·상세로 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">법인명/사업자번호, 상태, 요금제, 계약 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">관리회사 조회·수정, 대표관리자·계약·요금제 관리, 상태 이력 확인.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">상태전이 규칙, 관리회사는 타 관리회사 조회 불가, 전역조회 PF 한정.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">OperatorOrg, OperatorOrgProfile, 상태·계약 이력.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-08 심사·활성, PF-01-09 정지·종료, PF-02 구독.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-08-01">
+  <div class="page-title"><h1>관리회사 심사·활성</h1><span class="chip-id">PF-01-08-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 관리회사 심사·활성 · 자격·계약·MFA·위수탁 검증 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-08-01 — 활성화에는 초기 ORG_OWNER, 유효 Membership, MFA, 계약, 위수탁 검증이 모두 필요하다.</div>
+    <div class="titlebar"><span class="tb-crumb">관리회사</span><span class="tb-sep">›</span><span class="tb-title">관리회사 심사·활성</span><span class="tb-star">☆</span><span class="tb-id">PF-01-08-01</span><span class="tb-right"><span class="badge b-block">활성화 2인 승인</span></span></div>
+    <div class="fnbar"><span class="chip on">PENDING_VERIFICATION</span><span class="ar">→</span><span class="chip">검증 통과</span><span class="ar">→</span><span class="chip">ACTIVE</span></div>
+    <div class="qbar"><span class="qlabel">심사 대상</span><span class="qv">제일택스 / OO-1041 <span class="lens">⌕</span></span><span class="qlabel">심사단계</span><span class="qv">검증 중 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">검증 실행</button><button class="abtn dark">활성화 요청</button><button class="abtn red">반려</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>검증 항목</th><th class="c">결과</th><th>상세</th><th>조치</th></tr>
+          <tr class="sel"><td>초기 ORG_OWNER</td><td class="c"><span class="badge b-ok">통과</span></td><td>owner@jeil.co.kr 지정 · MFA 등록</td><td>-</td></tr>
+          <tr><td>유효 Membership</td><td class="c"><span class="badge b-ok">통과</span></td><td>대표관리자 1명 활성</td><td>-</td></tr>
+          <tr><td>계약</td><td class="c"><span class="badge b-warn">확인</span></td><td>구독 계약 서명 대기</td><td>계약 요청</td></tr>
+          <tr><td>위수탁 계약</td><td class="c"><span class="badge b-block">미완</span></td><td>개인정보 위수탁 미체결</td><td>업로드</td></tr>
+          <tr class="tot"><td colspan="2">활성화 가능 여부</td><td colspan="2" class="red">불가 — 계약·위수탁 미완</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">계약·위수탁 검증 미통과 — 활성화 차단</span><span class="cnt">VerificationCase · OO-1041</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">활성화 조건</div><div class="rp-b">· ORG_OWNER <span class="badge b-ok">✓</span><br>· MFA <span class="badge b-ok">✓</span><br>· 계약 <span class="badge b-warn">대기</span><br>· 위수탁 <span class="badge b-block">미완</span></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-orgs/{id}/verify|activate</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">신규 관리회사의 자격·계약·MFA·위수탁을 심사하고 활성화한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력·대상</span><span class="desc-body">심사 대상 관리회사, 심사단계, 검증 항목별 증빙.</span></div><div class="screen-desc-item"><span class="desc-label">처리 로직</span><span class="desc-body">검증 실행, 활성화 요청/반려, ORG_OWNER·Membership·계약·위수탁 확인.</span></div><div class="screen-desc-item"><span class="desc-label">검증·예외</span><span class="desc-body">활성화에 초기 ORG_OWNER, 유효 Membership, MFA, 계약, 위수탁 검증이 모두 필요.</span></div><div class="screen-desc-item"><span class="desc-label">처리 결과</span><span class="desc-body">VerificationCase, OperatorOrg 상태 ACTIVE 전이, 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-07 상세, PF-00-04 승인함, PF-02-01 구독.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-09-01">
+  <div class="page-title"><h1>관리회사 정지·종료</h1><span class="chip-id">PF-01-09-01</span><span class="badge b-block">고위험</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › 관리회사 정지·종료 · 정지·종료 체크리스트, 미결 차단 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-09-01 — 종료 전 활성 PRIMARY 관계, 미결업무, 배치, 시크릿, 청구를 정리해야 하며 미결이 있으면 차단된다.</div>
+    <div class="titlebar"><span class="tb-crumb">관리회사</span><span class="tb-sep">›</span><span class="tb-title">관리회사 정지·종료</span><span class="tb-star">☆</span><span class="tb-id">PF-01-09-01</span><span class="tb-right"><span class="badge b-block">Step-up · 2인 승인</span></span></div>
+    <div class="fnbar"><span class="chip">ACTIVE</span><span class="ar">→</span><span class="chip on">SUSPENDED</span><span class="ar">→</span><span class="chip">TERMINATING</span><span class="ar">→</span><span class="chip">TERMINATED</span></div>
+    <div class="qbar"><span class="qlabel">대상</span><span class="qv">한빛세무법인 / OO-1017 <span class="lens">⌕</span></span><span class="qlabel">조치</span><span class="seg"><span class="on">정지</span><span>종료</span><span>재활성</span></span><span class="qright"><button class="abtn yellow">체크리스트 검증</button><button class="abtn red">종료 요청</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>종료 체크리스트</th><th class="c">상태</th><th>내용</th><th>조치</th></tr>
+          <tr class="sel"><td>활성 PRIMARY 관계</td><td class="c"><span class="badge b-block">있음</span></td><td>PRIMARY 12건 · 이관 또는 해지 필요</td><td>PF-03-03</td></tr>
+          <tr><td>미결업무</td><td class="c"><span class="badge b-warn">3건</span></td><td>마감 미완 테넌트 3</td><td>확인</td></tr>
+          <tr><td>배치·큐</td><td class="c"><span class="badge b-ok">정리</span></td><td>예약 배치 없음</td><td>-</td></tr>
+          <tr><td>시크릿</td><td class="c"><span class="badge b-warn">보류</span></td><td>KMS 키 폐기 대기</td><td>폐기 예약</td></tr>
+          <tr><td>청구</td><td class="c"><span class="badge b-block">연체</span></td><td>미수금 정산 필요</td><td>정산</td></tr>
+          <tr class="tot"><td colspan="2">종료 가능 여부</td><td colspan="2" class="red">불가 — PRIMARY·청구 미결</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">활성 PRIMARY·미수금 미결로 종료 차단 — 정지만 가능</span><span class="cnt">OperatorOrg 상태전이 · append-only</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">차단 조건</div><div class="rp-b"><span class="badge b-block">미결 시 차단</span><br>활성 PRIMARY · 미결업무 · 시크릿 · 청구</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-orgs/{id}/suspend|terminate</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">관리회사의 정지·종료·재활성을 체크리스트 기반으로 통제한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력·대상</span><span class="desc-body">대상 관리회사, 조치(정지/종료/재활성), 사유.</span></div><div class="screen-desc-item"><span class="desc-label">처리 로직</span><span class="desc-body">체크리스트 검증, 정지/종료 요청, 상태 전이, 시크릿 폐기 예약.</span></div><div class="screen-desc-item"><span class="desc-label">검증·예외</span><span class="desc-body">활성 PRIMARY 관계·미결업무·배치·시크릿·청구 미정리 시 종료 차단, Step-up·2인 승인.</span></div><div class="screen-desc-item"><span class="desc-label">처리 결과</span><span class="desc-body">OperatorOrg 상태전이(append-only), 감사로그, 후속 정리 작업.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-03 수임·이관, PF-02 구독, PF-06 배치, PF-00-04 승인함.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-01-10-01">
+  <div class="page-title"><h1>관리회사 Membership 감독</h1><span class="chip-id">PF-01-10-01</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">PF-01 조직·사용자·관리회사 › Membership 감독 · 대표관리자·Role·SSO/SCIM 감독 (§5.2)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-01-10-01 — 관리회사 대표관리자와 Role, SSO/SCIM 상태를 감독한다. 원문 접근 없이 거버넌스 지표만 조회한다.</div>
+    <div class="titlebar"><span class="tb-crumb">관리회사</span><span class="tb-sep">›</span><span class="tb-title">Membership 감독</span><span class="tb-star">☆</span><span class="tb-id">PF-01-10-01</span><span class="tb-right"><span class="badge b-block">원문 접근 없음</span></span></div>
+    <div class="qbar"><span class="qlabel">관리회사</span><span class="qv">세정회계법인 / OO-1002 <span class="lens">⌕</span></span><span class="qlabel">감독항목</span><span class="seg"><span class="on">대표관리자</span><span>Role</span><span>SSO/SCIM</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">경고 발송</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>감독 항목</th><th class="c">상태</th><th>지표</th><th>조치</th></tr>
+          <tr class="sel"><td>대표관리자(ORG_OWNER)</td><td class="c"><span class="badge b-ok">정상</span></td><td>1명 활성 · MFA 등록</td><td>-</td></tr>
+          <tr><td>고위험 Role 배정</td><td class="c"><span class="badge b-warn">주의</span></td><td>OP_SUPER_ADMIN 3명 (권장 2)</td><td>권고</td></tr>
+          <tr><td>SSO 연결</td><td class="c"><span class="badge b-ok">활성</span></td><td>EntraID · 로컬 비상관리자 1</td><td>-</td></tr>
+          <tr><td>SCIM 동기화</td><td class="c"><span class="badge b-warn">지연</span></td><td>최근 동기화 26시간 경과</td><td>재동기화 권고</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 거버넌스 지표만 조회 · 관리회사 계정·데이터 원문 접근 없음</span><span class="cnt">OperatorOrgMembership 감독</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">감독 경계</div><div class="rp-b"><span class="badge b-block">읽기전용</span><br>변경은 관리회사 SEC_ADMIN 소관, 플랫폼은 경고·권고만</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-orgs/{id}/memberships</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">관리회사 대표관리자·Role·SSO/SCIM 거버넌스를 감독한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">관리회사, 감독항목(대표관리자/Role/SSO·SCIM).</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">거버넌스 지표 조회, 고위험 Role·SSO/SCIM 상태 확인, 경고·권고 발송.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">읽기전용 감독, 관리회사 계정·데이터 원문 접근 없음, 변경은 관리회사 소관.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">감독 지표, 경고·권고 알림, 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-07 관리회사 상세, PF-05 보안·감사, PF-01-06 SSO/SCIM.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-02-01-01">
+  <div class="page-title"><h1>플랫폼 구독</h1><span class="chip-id">PF-02-01-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-02 계약·쿼터 › 플랫폼 구독 · 체험·활성·연체·정지·종료 (§5.3)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-02-01-01 — OperatorSubscription은 플랫폼↔관리회사 계약이며 OP-04 TenantServiceContract와 분리한다. 상태 TRIAL/ACTIVE/PAST_DUE/SUSPENDED/GRACE/TERMINATED/REACTIVATED.</div>
+    <div class="titlebar"><span class="tb-crumb">계약·쿼터</span><span class="tb-sep">›</span><span class="tb-title">플랫폼 구독</span><span class="tb-star">☆</span><span class="tb-id">PF-02-01-01</span><span class="tb-right">OperatorSubscription</span></div>
+    <div class="qbar"><span class="qlabel">관리회사</span><span class="qv">세정회계법인 / OO-1002 <span class="lens">⌕</span></span><span class="qlabel">요금제</span><span class="qv">Professional <span class="lens">▾</span></span><span class="qlabel">상태</span><span class="seg"><span>전체</span><span class="on">활성</span><span>연체</span><span>정지</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">요금제 변경</button><button class="abtn dark">상태 전이</button></span></div>
+    <div class="flow"><span class="st on">TRIAL</span><span class="ar">→</span><span class="st done">ACTIVE</span><span class="ar">→</span><span class="st">PAST_DUE</span><span class="ar">→</span><span class="st">GRACE</span><span class="ar">→</span><span class="st">SUSPENDED</span><span class="ar">→</span><span class="st">TERMINATED</span><span class="ar">⤴</span><span class="st">REACTIVATED</span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="formgrid c3 label-left">
+          <div class="ff"><label>구독ID</label><input class="fv" value="SUB-2024-1002" readonly></div>
+          <div class="ff"><label>관리회사</label><input class="fv" value="세정회계법인 (OO-1002)" readonly></div>
+          <div class="ff"><label>현재상태</label><select class="fv"><option>ACTIVE</option><option>TRIAL</option><option>PAST_DUE</option><option>GRACE</option><option>SUSPENDED</option><option>TERMINATED</option></select></div>
+          <div class="ff"><label>요금제(BillingPlan)</label><select class="fv"><option>Professional</option><option>Starter</option><option>Enterprise</option></select></div>
+          <div class="ff"><label>계약시작</label><input class="fv" value="2024-03-01"></div>
+          <div class="ff"><label>갱신일</label><input class="fv" value="2026-03-01"></div>
+          <div class="ff"><label>결제주기</label><select class="fv"><option>연간</option><option>월간</option></select></div>
+          <div class="ff"><label>다음 청구</label><input class="fv" value="2027-03-01" readonly></div>
+          <div class="ff"><label>연체 유예</label><input class="fv" value="14일 (GRACE)"></div>
+          <div class="ff full"><label>전이 사유</label><textarea class="fv" rows="2">2026 연간 갱신 완료 — 정상 결제 확인</textarea></div>
+        </div>
+        <table class="grid">
+          <tr><th>일시</th><th>이전상태</th><th>신규상태</th><th>사유</th><th class="c">Step-up</th></tr>
+          <tr class="sel"><td>2026-03-01</td><td><span class="badge b-gray">TRIAL</span></td><td><span class="badge b-ok">ACTIVE</span></td><td>초기 계약 체결</td><td class="c">✓</td></tr>
+          <tr><td>2025-12-15</td><td><span class="badge b-warn">PAST_DUE</span></td><td><span class="badge b-ok">ACTIVE</span></td><td>결제 정상화</td><td class="c">✓</td></tr>
+          <tr><td>2025-12-01</td><td><span class="badge b-ok">ACTIVE</span></td><td><span class="badge b-warn">PAST_DUE</span></td><td>결제 실패 (자동)</td><td class="c">-</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 플랫폼↔관리회사 계약 · 테넌트 계약(OP-04)과 분리 · 상태전이 감사</span><span class="cnt">OperatorSubscription · BillingPlan</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">계약 경계</div><div class="rp-b"><div class="kv"><span class="k">주체</span><span class="v">PF↔OP</span></div><div class="kv"><span class="k">분리</span><span class="v">OP↔TN 계약</span></div><div class="kv"><span class="k">전이</span><span class="v">Step-up</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-subscriptions</code><br><code>/billing-plans</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">플랫폼↔관리회사 구독(OperatorSubscription)의 생명주기와 요금제를 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">관리회사, 요금제, 상태, 계약시작/갱신일, 결제주기, 유예기간, 전이사유.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">요금제 변경, 상태 전이(TRIAL/ACTIVE/PAST_DUE/GRACE/SUSPENDED/TERMINATED/REACTIVATED), 이력 조회.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">테넌트 계약(OP-04)과 분리, 고위험 전이 Step-up·사유, 상태전이 규칙 준수.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">OperatorSubscription, BillingPlan, 상태전이 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-02-02 통합 사용량, PF-02-03 쿼터, PF-01-09 관리회사 정지·종료.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-02-02-01">
+  <div class="page-title"><h1>통합 사용량</h1><span class="chip-id">PF-02-02-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-02 계약·쿼터 › 통합 사용량 · 테넌트·사용자·저장량·API·배치 (§5.3)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-02-02-01 — operatorOrgId별 테넌트·사용자·저장량·API·배치·보고서 보관량을 월/조직 멱등집계한다.</div>
+    <div class="titlebar"><span class="tb-crumb">계약·쿼터</span><span class="tb-sep">›</span><span class="tb-title">통합 사용량</span><span class="tb-star">☆</span><span class="tb-id">PF-02-02-01</span><span class="tb-right">UsageMeter</span></div>
+    <div class="qbar"><span class="qlabel">관리회사</span><span class="qv">세정회계법인 / OO-1002 <span class="lens">⌕</span></span><span class="qlabel">집계월</span><span class="qv">2026-07 <span class="lens">📅</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">CSV 내보내기</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>미터</th><th class="c">사용량</th><th class="c">한도</th><th class="c">사용률</th><th class="c">상태</th></tr>
+          <tr><td>테넌트 수</td><td class="c">42</td><td class="c">50</td><td class="c">84%</td><td class="c"><span class="badge b-warn">주의</span></td></tr>
+          <tr><td>활성 사용자</td><td class="c">318</td><td class="c">500</td><td class="c">64%</td><td class="c"><span class="badge b-ok">정상</span></td></tr>
+          <tr class="sel"><td>저장량(GB)</td><td class="c">1,842</td><td class="c">2,000</td><td class="c">92%</td><td class="c"><span class="badge b-warn">경고</span></td></tr>
+          <tr><td>API 호출(월)</td><td class="c">4.2M</td><td class="c">10M</td><td class="c">42%</td><td class="c"><span class="badge b-ok">정상</span></td></tr>
+          <tr><td>배치 실행(월)</td><td class="c">1,120</td><td class="c">2,000</td><td class="c">56%</td><td class="c"><span class="badge b-ok">정상</span></td></tr>
+          <tr><td>보고서 보관(GB)</td><td class="c">640</td><td class="c">1,000</td><td class="c">64%</td><td class="c"><span class="badge b-ok">정상</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 월/조직 멱등집계 · 회계 원문 drill-down 없음 · 미터별 임계치 표시</span><span class="cnt">UsageMeter · 2026-07 확정</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">집계 원칙</div><div class="rp-b"><div class="kv"><span class="k">주기</span><span class="v">월/조직</span></div><div class="kv"><span class="k">멱등</span><span class="v">중복 무시</span></div><div class="kv"><span class="k">원문</span><span class="v">접근 없음</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-usage</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">관리회사별 테넌트·사용자·저장량·API·배치·보고서 보관량을 통합 집계·조회한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">관리회사, 집계월.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">미터별 사용량·한도·사용률 조회, 임계치 상태 표시, CSV 내보내기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">월/조직 멱등집계, 회계 원문 drill-down 금지.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">UsageMeter, 사용량 리포트.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-02-03 쿼터·초과 통제, PF-02-01 구독, PF-06-01 전역 배치.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-02-03-01">
+  <div class="page-title"><h1>쿼터·초과 통제</h1><span class="chip-id">PF-02-03-01</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">PF-02 계약·쿼터 › 쿼터·초과 통제 · 경고·생성제한·다운그레이드 영향 (§5.3)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-02-03-01 — 임계치 도달 시 경고→신규 생성/증설 제한→승인 예외 순으로 처리하며 기존 원천데이터는 자동삭제하지 않는다. 다운그레이드는 영향분석 후 효력일 반영.</div>
+    <div class="titlebar"><span class="tb-crumb">계약·쿼터</span><span class="tb-sep">›</span><span class="tb-title">쿼터·초과 통제</span><span class="tb-star">☆</span><span class="tb-id">PF-02-03-01</span><span class="tb-right">OperatorOrgQuota</span></div>
+    <div class="qbar"><span class="qlabel">관리회사</span><span class="qv">세정회계법인 / OO-1002 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">예외 승인</button><button class="abtn ghost">다운그레이드 영향</button></span></div>
+    <div class="tabbar"><span class="tab on">초과 통제</span><span class="tab">다운그레이드 영향</span></div>
+    <div class="tabpane on">
+      <div class="mock-flex">
+        <div class="mock-main">
+          <div class="flow"><span class="st on">경고(80%)</span><span class="ar">→</span><span class="st">생성/증설 제한(100%)</span><span class="ar">→</span><span class="st">승인 예외</span></div>
+          <table class="grid">
+            <tr><th>미터</th><th class="c">사용률</th><th class="c">통제 단계</th><th>적용 조치</th><th class="c">예외</th></tr>
+            <tr class="sel"><td>저장량</td><td class="c">92%</td><td class="c"><span class="badge b-warn">경고</span></td><td>관리자 알림 발송</td><td class="c">-</td></tr>
+            <tr><td>테넌트 수</td><td class="c">84%</td><td class="c"><span class="badge b-warn">경고</span></td><td>관리자 알림 발송</td><td class="c">-</td></tr>
+            <tr><td>API 호출</td><td class="c">42%</td><td class="c"><span class="badge b-ok">정상</span></td><td>-</td><td class="c">-</td></tr>
+          </table>
+          <div class="statusbar"><span class="okmsg">✓ 경고→생성제한→승인예외 순 · 기존 원천데이터 자동삭제 없음</span><span class="cnt">OperatorOrgQuota · QuotaException</span></div>
+        </div>
+        <div class="rpanel"><div class="rp-box"><div class="rp-t">통제 원칙</div><div class="rp-b"><span class="badge b-block">원천 자동삭제 금지</span><br>제한은 신규 생성/증설에만 적용</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-quotas</code><br><code>/quota-exceptions</code></div></div></div>
+      </div>
+    </div>
+    <div class="tabpane">
+      <div class="mock-flex">
+        <div class="mock-main">
+          <div class="mock-cap">Professional → Starter 다운그레이드 영향분석 (효력일 2026-09-01)</div>
+          <table class="grid">
+            <tr><th>영역</th><th>현재</th><th>변경 후</th><th class="c">영향</th></tr>
+            <tr class="sel"><td>테넌트 한도</td><td>50</td><td>20</td><td class="c"><span class="badge b-block">초과 22</span></td></tr>
+            <tr><td>저장량</td><td>2,000GB</td><td>500GB</td><td class="c"><span class="badge b-block">초과 1,342GB</span></td></tr>
+            <tr><td>보존기간</td><td>10년</td><td>5년</td><td class="c"><span class="badge b-warn">단축</span></td></tr>
+            <tr><td>AI 기능</td><td>포함</td><td>미포함</td><td class="c"><span class="badge b-warn">비활성</span></td></tr>
+          </table>
+          <div class="statusbar"><span class="warnmsg">⚠ 한도 초과 항목 존재 — 승인 후 효력일 반영, 기존 데이터는 보존기간까지 유지</span><span class="cnt">downgrade-impact</span></div>
+        </div>
+        <div class="rpanel"><div class="rp-box"><div class="rp-t">반영 절차</div><div class="rp-b"><div class="kv"><span class="k">분석</span><span class="v">기능·쿼터·보존</span></div><div class="kv"><span class="k">승인</span><span class="v">필요</span></div><div class="kv"><span class="k">시점</span><span class="v">효력일</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/downgrade-impact</code></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">쿼터 임계치 초과를 단계적으로 통제하고 다운그레이드 영향을 분석한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">관리회사, 미터별 사용률.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">경고→생성/증설 제한→승인 예외 통제, 다운그레이드 기능·쿼터·보존 영향분석, 예외 승인.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">기존 원천데이터 자동삭제 금지, 다운그레이드 승인 후 효력일 반영, 예외 승인 감사.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">OperatorOrgQuota, QuotaException, 다운그레이드 영향 리포트.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-02-02 통합 사용량, PF-02-01 구독, PF-00-04 승인 대기함.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-03-01-01">
+  <div class="page-title"><h1>수임관계</h1><span class="chip-id">PF-03-01-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-03 수임관계·이관 › 수임관계 · PRIMARY/SECONDARY·serviceScopes·기간 (§5.4)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-03-01-01 — 관계 필드 operatorOrgId, tenantId, relationType, serviceScopes, validFrom/To, status. 테넌트별 활성 PRIMARY는 1건이다.</div>
+    <div class="titlebar"><span class="tb-crumb">수임관계</span><span class="tb-sep">›</span><span class="tb-title">수임관계</span><span class="tb-star">☆</span><span class="tb-id">PF-03-01-01</span><span class="tb-right">OperatorOrgTenantRelation</span></div>
+    <div class="qbar"><span class="qlabel">테넌트</span><span class="qv">(주)한빛제조 / TN-3021 <span class="lens">⌕</span></span><span class="qlabel">관리회사</span><span class="qv">세정회계법인 <span class="lens">⌕</span></span><span class="qlabel">유형</span><span class="seg"><span class="on">전체</span><span>PRIMARY</span><span>SECONDARY</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">관계 등록</button><button class="abtn dark">저장</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="formgrid c3 label-left">
+          <div class="ff"><label>관계ID</label><input class="fv" value="REL-3021-01" readonly></div>
+          <div class="ff"><label>관리회사</label><input class="fv" value="세정회계법인 (OO-1002)"></div>
+          <div class="ff"><label>테넌트</label><input class="fv" value="(주)한빛제조 (TN-3021)"></div>
+          <div class="ff"><label>관계유형</label><select class="fv"><option>PRIMARY</option><option>SECONDARY</option></select></div>
+          <div class="ff"><label>유효시작</label><input class="fv" value="2024-04-01"></div>
+          <div class="ff"><label>유효종료</label><input class="fv" value="9999-12-31"></div>
+          <div class="ff full"><label>serviceScopes</label><input class="fv" value="회계기장, 부가세, 법인세, 급여"></div>
+        </div>
+        <table class="grid">
+          <tr><th>관리회사</th><th class="c">유형</th><th>serviceScopes</th><th>기간</th><th class="c">상태</th></tr>
+          <tr class="sel"><td>세정회계법인</td><td class="c"><span class="badge b-ok">PRIMARY</span></td><td>회계·부가세·법인세·급여</td><td>2024-04-01~</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+          <tr><td>대한세무법인</td><td class="c"><span class="badge b-ref">SECONDARY</span></td><td>지방세 자문</td><td>2025-01-01~</td><td class="c"><span class="badge b-ok">ACTIVE</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 테넌트별 활성 PRIMARY 1건 유지 · serviceScopes 충돌 없음</span><span class="cnt">OperatorOrgTenantRelation</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">불변조건</div><div class="rp-b"><div class="kv"><span class="k">PRIMARY</span><span class="v">테넌트당 1</span></div><div class="kv"><span class="k">기간</span><span class="v">중첩 금지</span></div><div class="kv"><span class="k">범위</span><span class="v">충돌 검증</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-tenant-relations</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">관리회사↔테넌트 수임관계(PRIMARY/SECONDARY)와 서비스 범위·기간을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">관리회사, 테넌트, relationType, serviceScopes, validFrom/To, status.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">관계 등록·수정, PRIMARY/SECONDARY 지정, 서비스 범위·기간 설정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">테넌트별 활성 PRIMARY 1건, 기간 중첩 금지, serviceScopes 충돌 차단(DB제약+서비스검증).</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">OperatorOrgTenantRelation, 관계 이력, 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-03-02 관계 충돌 검증, PF-03-03 이관 워크플로.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-03-02-01">
+  <div class="page-title"><h1>관계 충돌 검증</h1><span class="chip-id">PF-03-02-01</span><span class="badge b-ok">공통</span></div>
+  <div class="crumb">PF-03 수임관계·이관 › 관계 충돌 검증 · 중복 PRIMARY·기간중첩·범위 검증 (§5.4)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-03-02-01 — 기간 중첩과 서비스 범위 충돌을 DB 제약과 서비스 검증으로 차단한다. TENANT_ALREADY_MANAGED 오류를 사전 탐지한다.</div>
+    <div class="titlebar"><span class="tb-crumb">수임관계</span><span class="tb-sep">›</span><span class="tb-title">관계 충돌 검증</span><span class="tb-star">☆</span><span class="tb-id">PF-03-02-01</span><span class="tb-right">relation-conflicts</span></div>
+    <div class="qbar"><span class="qlabel">검증 대상</span><span class="qv">REL-3021-신규 (세정→한빛제조 PRIMARY) <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 검증 실행</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>검증 규칙</th><th>대상</th><th class="c">결과</th><th>비고</th></tr>
+          <tr class="sel"><td>중복 PRIMARY</td><td>TN-3021 활성 PRIMARY</td><td class="c"><span class="badge b-block">충돌</span></td><td>기존 세정회계법인 PRIMARY 존재</td></tr>
+          <tr><td>기간 중첩</td><td>2024-04-01~ vs 신규</td><td class="c"><span class="badge b-block">중첩</span></td><td>TENANT_ALREADY_MANAGED</td></tr>
+          <tr><td>서비스 범위 충돌</td><td>회계기장 중복</td><td class="c"><span class="badge b-warn">주의</span></td><td>동일 scope 중복 배정</td></tr>
+          <tr><td>SECONDARY 범위 격리</td><td>지방세 자문</td><td class="c"><span class="badge b-ok">통과</span></td><td>범위 분리 정상</td></tr>
+        </table>
+        <div class="statusbar"><span class="errmsg">✕ 등록 차단 — 활성 PRIMARY 중복 및 기간 중첩. 이관(PF-03-03)으로 처리 필요</span><span class="cnt">relation-conflicts/validate</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">오류코드</div><div class="rp-b"><span class="badge b-block">TENANT_ALREADY_MANAGED</span></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/relation-conflicts/validate</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">수임관계 등록·변경 전 중복 PRIMARY·기간중첩·범위충돌을 검증한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">검증 대상 관계(신규/변경).</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">중복 PRIMARY·기간중첩·서비스범위 충돌·SECONDARY 격리 검증 실행.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">DB 제약+서비스 검증 이중화, TENANT_ALREADY_MANAGED 사전 탐지, 충돌 시 등록 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">검증 결과 리포트, 충돌 상세.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-03-01 수임관계, PF-03-03 이관 워크플로.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-03-03-01">
+  <div class="page-title"><h1>이관 워크플로</h1><span class="chip-id">PF-03-03-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-03 수임관계·이관 › 이관 워크플로 · 요청·동의·수락·검증·예약·컷오버 (§5.4)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-03-03-01 — 이관은 요청→테넌트 동의→양사 확인→플랫폼 승인→사전검증→예약→컷오버→사후검증 순서다. TRANSFER_IN_PROGRESS 동안 동시 쓰기를 금지한다.</div>
+    <div class="titlebar"><span class="tb-crumb">수임관계</span><span class="tb-sep">›</span><span class="tb-title">이관 워크플로</span><span class="tb-star">☆</span><span class="tb-id">PF-03-03-01</span><span class="tb-right">OperatorOrgTransferRequest</span></div>
+    <div class="qbar"><span class="qlabel">이관ID</span><span class="qv">TRF-2026-0042 <span class="lens">⌕</span></span><span class="qlabel">테넌트</span><span class="qv">(주)한빛제조 / TN-3021 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn dark">단계 진행</button></span></div>
+    <div class="flow"><span class="st done">요청</span><span class="ar">→</span><span class="st done">테넌트 동의</span><span class="ar">→</span><span class="st done">양사 확인</span><span class="ar">→</span><span class="st on">플랫폼 승인</span><span class="ar">→</span><span class="st">사전검증</span><span class="ar">→</span><span class="st">예약</span><span class="ar">→</span><span class="st">컷오버</span><span class="ar">→</span><span class="st">사후검증</span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="formgrid c3 label-left">
+          <div class="ff"><label>이관ID</label><input class="fv" value="TRF-2026-0042" readonly></div>
+          <div class="ff"><label>테넌트</label><input class="fv" value="(주)한빛제조 (TN-3021)" readonly></div>
+          <div class="ff"><label>현재단계</label><input class="fv" value="플랫폼 승인 대기" readonly></div>
+          <div class="ff"><label>이관元(from)</label><input class="fv" value="세정회계법인" readonly></div>
+          <div class="ff"><label>이관처(to)</label><input class="fv" value="대한세무법인" readonly></div>
+          <div class="ff"><label>컷오버 예약</label><input class="fv" value="2026-08-01 00:00"></div>
+        </div>
+        <table class="grid">
+          <tr><th>단계</th><th>담당</th><th>일시</th><th class="c">상태</th></tr>
+          <tr><td>요청</td><td>대한세무법인</td><td>2026-07-05</td><td class="c"><span class="badge b-ok">완료</span></td></tr>
+          <tr><td>테넌트 동의</td><td>(주)한빛제조</td><td>2026-07-08</td><td class="c"><span class="badge b-ok">완료</span></td></tr>
+          <tr><td>양사 확인</td><td>세정/대한</td><td>2026-07-10</td><td class="c"><span class="badge b-ok">완료</span></td></tr>
+          <tr class="sel"><td>플랫폼 승인</td><td>PLATFORM_ORG_ADMIN</td><td>-</td><td class="c"><span class="badge b-warn">대기</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">⚠ TRANSFER_IN_PROGRESS 진입 시 기존·신규 관리회사 동시 쓰기 금지 · 2인 승인 필요</span><span class="cnt">ORG_TRANSFER_IN_PROGRESS</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">동시성 잠금</div><div class="rp-b"><span class="badge b-block">동시 쓰기 금지</span><br>컷오버까지 원자적 이관</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-transfers</code><br><code>/{id}/consent|accept|approve</code><br><code>/{id}/schedule|cutover</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">관리회사 간 수임 이관을 다단계 워크플로로 안전하게 처리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">이관ID, 테넌트, 이관元/처, 컷오버 예약일, 단계별 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">요청→동의→확인→승인→사전검증→예약→컷오버→사후검증 단계 진행.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">TRANSFER_IN_PROGRESS 동시 쓰기 금지, 2인 승인, Step-up, 각 단계 append-only.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">OperatorOrgTransferRequest, 단계 이력, 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-03-04 인계·롤백, PF-03-01 수임관계, PF-00-04 승인 대기함.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-03-04-01">
+  <div class="page-title"><h1>인계·롤백</h1><span class="chip-id">PF-03-04-01</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">PF-03 수임관계·이관 › 인계·롤백 · 미결업무·표준·시크릿 인계 (§5.4)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-03-04-01 — tenantId·원천데이터·표준 채택 versionId는 유지하고 관계·배정·위임 시크릿·미결업무·책임시점만 인계한다. 실패 시 보상처리한다.</div>
+    <div class="titlebar"><span class="tb-crumb">수임관계</span><span class="tb-sep">›</span><span class="tb-title">인계·롤백</span><span class="tb-star">☆</span><span class="tb-id">PF-03-04-01</span><span class="tb-right">WorkTransfer · BookkeepingHandover</span></div>
+    <div class="qbar"><span class="qlabel">이관ID</span><span class="qv">TRF-2026-0042 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">인계 확정</button><button class="abtn dark">롤백</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>인계 항목</th><th class="c">처리방식</th><th class="c">상태</th><th>비고</th></tr>
+          <tr><td>tenantId</td><td class="c"><span class="badge b-gray">유지</span></td><td class="c"><span class="badge b-ok">불변</span></td><td>원천 식별자 보존</td></tr>
+          <tr><td>원천데이터</td><td class="c"><span class="badge b-gray">유지</span></td><td class="c"><span class="badge b-ok">불변</span></td><td>테넌트 소유</td></tr>
+          <tr><td>표준 채택 versionId</td><td class="c"><span class="badge b-gray">유지</span></td><td class="c"><span class="badge b-ok">불변</span></td><td>채택본 보존</td></tr>
+          <tr class="sel"><td>수임관계·배정</td><td class="c"><span class="badge b-new">인계</span></td><td class="c"><span class="badge b-warn">진행</span></td><td>대한세무법인으로 이전</td></tr>
+          <tr><td>위임 시크릿</td><td class="c"><span class="badge b-new">인계</span></td><td class="c"><span class="badge b-warn">진행</span></td><td>KMS 참조 재발급</td></tr>
+          <tr><td>미결업무·책임시점</td><td class="c"><span class="badge b-new">인계</span></td><td class="c"><span class="badge b-warn">진행</span></td><td>책임시점 불변 기록</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 유지/인계 구분 명확 · 실패 시 신규 권한 회수·기존 관계 복원 보상 · append-only</span><span class="cnt">WorkTransfer · BookkeepingHandover</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">보상(롤백)</div><div class="rp-b"><div class="kv"><span class="k">신규권한</span><span class="v">회수</span></div><div class="kv"><span class="k">기존관계</span><span class="v">복원</span></div><div class="kv"><span class="k">기록</span><span class="v">append-only</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/operator-transfers/{id}/rollback</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">이관 인계 항목을 확정하고 실패 시 보상(롤백)한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">이관ID.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">관계·배정·시크릿·미결업무·책임시점 인계 확정, 실패 시 롤백(권한회수·관계복원).</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">tenantId·원천데이터·표준 채택 versionId 불변 유지, 책임시점 불변, 전 단계 append-only.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">WorkTransfer, BookkeepingHandover, 보상 이력.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-03-03 이관 워크플로, PF-05-02 감사로그.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-04-01-01">
+  <div class="page-title"><h1>인증·권한 하한</h1><span class="chip-id">PF-04-01-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-04 정책·전체 업무 표준 › 인증·권한 하한 · GLOBAL MFA·Step-up·SOD·금지정책 (§5.5)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-04-01-01 — MFA 대상·수단, 세션수명, Step-up 행위, IP/DLP 하한, SOD 금지조합, Break-glass를 관리한다. 정책은 GLOBAL→OPERATOR_ORG→PLAN→TENANT 순으로 병합한다.</div>
+    <div class="titlebar"><span class="tb-crumb">전역 정책</span><span class="tb-sep">›</span><span class="tb-title">인증·권한 하한</span><span class="tb-star">☆</span><span class="tb-id">PF-04-01-01</span><span class="tb-right">GlobalAuthPolicy</span></div>
+    <div class="qbar"><span class="qlabel">정책범위</span><span class="qv">GLOBAL (하한) <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">SOD 규칙</button><button class="abtn dark">저장</button></span></div>
+    <div class="tabbar"><span class="tab on">인증 하한</span><span class="tab">SOD 금지조합</span></div>
+    <div class="tabpane on">
+      <div class="mock-flex">
+        <div class="mock-main">
+          <div class="formgrid c3 label-left">
+            <div class="ff"><label>MFA 대상</label><select class="fv"><option>전체 사용자</option><option>고위험 Role</option></select></div>
+            <div class="ff"><label>허용 수단</label><input class="fv" value="TOTP, FIDO2, Passkey"></div>
+            <div class="ff"><label>세션 수명</label><input class="fv" value="8시간"></div>
+            <div class="ff"><label>Step-up 행위</label><input class="fv" value="Role변경·정지·발행·이관"></div>
+            <div class="ff"><label>IP 하한</label><input class="fv" value="허용목록 강제"></div>
+            <div class="ff"><label>DLP 하한</label><select class="fv"><option>대량출력 승인</option><option>비활성</option></select></div>
+            <div class="ff"><label>Break-glass</label><input class="fv" value="2인 승인+시간제한"></div>
+          </div>
+          <div class="statusbar"><span class="okmsg">✓ GLOBAL은 하한 · 하위는 완화·금지 완화 불가 · GLOBAL→OPERATOR_ORG→PLAN→TENANT 병합</span><span class="cnt">GlobalAuthPolicy</span></div>
+        </div>
+        <div class="rpanel"><div class="rp-box"><div class="rp-t">병합 순서</div><div class="rp-b"><div class="kv"><span class="k">1</span><span class="v">GLOBAL</span></div><div class="kv"><span class="k">2</span><span class="v">OPERATOR_ORG</span></div><div class="kv"><span class="k">3</span><span class="v">PLAN</span></div><div class="kv"><span class="k">4</span><span class="v">TENANT</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/global-auth-policies</code><br><code>/policy-guardrails</code></div></div></div>
+      </div>
+    </div>
+    <div class="tabpane">
+      <div class="mock-flex">
+        <div class="mock-main">
+          <table class="grid">
+            <tr><th>금지조합(SOD)</th><th>충돌 사유</th><th class="c">적용</th></tr>
+            <tr class="sel"><td>표준 작성 + 표준 발행</td><td>작성/발행 분리</td><td class="c"><span class="badge b-block">금지</span></td></tr>
+            <tr><td>승인 요청자 = 승인자</td><td>2인 원칙</td><td class="c"><span class="badge b-block">금지</span></td></tr>
+            <tr><td>사용자 관리 + 자기 Role 승격</td><td>자기승격</td><td class="c"><span class="badge b-block">금지</span></td></tr>
+            <tr><td>관리회사 정지 + 감사</td><td>실행/감사 분리</td><td class="c"><span class="badge b-warn">경고</span></td></tr>
+          </table>
+          <div class="statusbar"><span class="okmsg">✓ STANDARD_SOD_VIOLATION 사전 차단 · 하위는 금지조합 완화 불가</span><span class="cnt">SOD 금지조합</span></div>
+        </div>
+        <div class="rpanel"><div class="rp-box"><div class="rp-t">오류코드</div><div class="rp-b"><span class="badge b-block">STANDARD_SOD_VIOLATION</span><br><span class="badge b-block">STEP_UP_REQUIRED</span></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">전역 인증·권한 하한(MFA·Step-up·IP/DLP·SOD·Break-glass)을 정의한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">MFA대상·수단, 세션수명, Step-up행위, IP/DLP 하한, SOD 금지조합, Break-glass 조건.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">하한 설정, SOD 금지조합 관리, 정책 병합 미리보기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">GLOBAL→OPERATOR_ORG→PLAN→TENANT 병합, 하위 완화·금지완화 불가, SOD 위반 차단.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">GlobalAuthPolicy, PolicyGuardrail, 감사로그.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-05 보안·감사, PF-01-05 소속·Role, PF-04-04 표준 검토.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-04-02-01">
+  <div class="page-title"><h1>전체 표준 카탈로그</h1><span class="chip-id">PF-04-02-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-04 정책·전체 업무 표준 › 전체 표준 카탈로그 · 유형·원본·Steward·확장정책 (§5.5)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-04-02-01 — 회계기준·표준계정·재무제표·세율·서식·Role·메뉴·코드·검증·증빙·환율·보고·AI 규칙의 원본·소관부서·Steward·법적근거·효력일·확장정책을 관리한다.</div>
+    <div class="titlebar"><span class="tb-crumb">전체 업무 표준</span><span class="tb-sep">›</span><span class="tb-title">전체 표준 카탈로그</span><span class="tb-star">☆</span><span class="tb-id">PF-04-02-01</span><span class="tb-right">PlatformStandard</span></div>
+    <div class="qbar"><span class="qlabel">유형</span><span class="qv">전체 <span class="lens">▾</span></span><span class="qlabel">Steward</span><span class="qv">표준관리팀 <span class="lens">⌕</span></span><span class="qlabel">상태</span><span class="seg"><span class="on">발행</span><span>초안</span><span>폐기</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">표준 등록</button></span></div>
+    <div class="mock-flex">
+      <div class="lpane"><div class="lp-t">표준 유형 <span class="cnt">13종</span></div><div class="tree"><div class="tnode lv1 on">회계기준</div><div class="tnode lv1">표준계정과목</div><div class="tnode lv1">재무제표 양식</div><div class="tnode lv1">세율·신고서식</div><div class="tnode lv1">Role 카탈로그</div><div class="tnode lv1">메뉴 원본</div><div class="tnode lv1">코드·검증규칙</div><div class="tnode lv1">증빙·환율</div><div class="tnode lv1">AI 규칙</div></div></div>
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>표준명</th><th>소관부서</th><th>Steward</th><th>효력일</th><th class="c">상태</th></tr>
+          <tr class="sel"><td>K-IFRS 표준계정</td><td>회계표준실</td><td>박표준</td><td>2026-01-01</td><td class="c"><span class="badge b-ok">PUBLISHED</span></td></tr>
+          <tr><td>부가세 신고서식</td><td>세무표준실</td><td>이세무</td><td>2026-01-01</td><td class="c"><span class="badge b-ok">PUBLISHED</span></td></tr>
+          <tr><td>표준 검증규칙</td><td>검증팀</td><td>최검증</td><td>2026-07-01</td><td class="c"><span class="badge b-new">IN_REVIEW</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 플랫폼 원본 · Steward·법적근거·효력일·확장정책 관리 · OP 배포·TN 채택 분리</span><span class="cnt">PlatformStandard · PlatformStandardItem</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">거버넌스</div><div class="rp-b"><div class="kv"><span class="k">원본</span><span class="v">플랫폼</span></div><div class="kv"><span class="k">Steward</span><span class="v">소관부서</span></div><div class="kv"><span class="k">확장</span><span class="v">정책 제한</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/standards</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">전체 업무 표준의 원본·소관·Steward·효력일·확장정책을 카탈로그로 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">유형, Steward, 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">표준 등록·조회, 13종 유형별 원본·법적근거·확장정책 관리.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">플랫폼 원본 소유, OP 배포·TN 채택과 분리, 확장정책 제한.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">PlatformStandard, PlatformStandardItem.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-04-04 표준 버전·검토, PF-04-05 발행, PF-04-06 배포·채택.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-04-03-01">
+  <div class="page-title"><h1>메뉴관리</h1><span class="chip-id">PF-04-03-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-04 정책·전체 업무 표준 › 메뉴관리 · 목록·버전·영향·발행·롤백 (§5.5)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-04-03-01 — 메뉴목록 그리드가 주 편집단위이고 트리는 탐색 보조다. canonical ID는 CC-NN-NN-NN 형식이며 발행/폐기 ID를 재사용하지 않는다.</div>
+    <div class="titlebar"><span class="tb-crumb">메뉴 원본</span><span class="tb-sep">›</span><span class="tb-title">메뉴관리</span><span class="tb-star">☆</span><span class="tb-id">PF-04-03-01</span><span class="tb-right">Menu · MenuVersion</span></div>
+    <div class="qbar"><span class="qlabel">채널</span><span class="qv">PF <span class="lens">▾</span></span><span class="qlabel">버전</span><span class="qv">v1.1 (DRAFT) <span class="lens">▾</span></span><span class="qlabel">상태</span><span class="seg"><span class="on">전체</span><span>DRAFT</span><span>발행</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">영향분석</button><button class="abtn ghost">발행</button><button class="abtn dark">저장</button></span></div>
+    <div class="mock-flex">
+      <div class="lpane"><div class="lp-t">메뉴 트리(탐색) <span class="cnt">PF</span></div><div class="tree"><div class="tnode lv1 on">▸ PF-00 진입·현황</div><div class="tnode lv2">PF-00-01-01 플랫폼 홈</div><div class="tnode lv1">▸ PF-01 조직·사용자</div><div class="tnode lv1">▸ PF-04 정책·표준</div></div></div>
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>menuCode</th><th>parent</th><th>type</th><th>canonical</th><th>route</th><th class="c">status</th></tr>
+          <tr class="sel"><td>PF-04-03</td><td>PF-04</td><td>SCREEN</td><td>PF-04-03-01</td><td>/pf/menus</td><td class="c"><span class="badge b-gray">DRAFT</span></td></tr>
+          <tr><td>PF-04-04</td><td>PF-04</td><td>SCREEN</td><td>PF-04-04-01</td><td>/pf/std-review</td><td class="c"><span class="badge b-gray">DRAFT</span></td></tr>
+          <tr><td>PF-01-01</td><td>PF-01</td><td>SCREEN</td><td>PF-01-01-01</td><td>/pf/org</td><td class="c"><span class="badge b-ok">PUBLISHED</span></td></tr>
+        </table>
+        <table class="grid">
+          <tr><th>검증 규칙</th><th class="c">결과</th></tr>
+          <tr><td>고아·순환</td><td class="c"><span class="badge b-ok">통과</span></td></tr>
+          <tr><td>중복 code/route</td><td class="c"><span class="badge b-ok">통과</span></td></tr>
+          <tr><td>i18n(ko/en) 누락</td><td class="c"><span class="badge b-warn">1건</span></td></tr>
+          <tr><td>화면 미등록(ScreenCatalog)</td><td class="c"><span class="badge b-ok">통과</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">⚠ i18n 누락 1건 — 발행 전 해소 필요 · canonical ID CC-NN-NN-NN 형식 검증 통과</span><span class="cnt">MENU_CODE_FORMAT_INVALID 없음</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">편집 규칙</div><div class="rp-b"><span class="badge b-gray">DRAFT만 CUD</span><br>검토·승인·발행·롤백은 독립 action+Step-up</div></div><div class="rp-box"><div class="rp-t">ID 불변</div><div class="rp-b">발행/폐기 canonical ID 재사용 금지</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/menus</code> <code>/menu-versions</code><br><code>/{id}/validate|impact|publish</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">PF/OP/TN/CO 메뉴 원본·버전·canonical ID·발행을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">menuCode, parentMenuCode, channel, level, type, canonical/legacy screenId, ko/en, route, featureFlag, phase, status.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">그리드 편집(주), 트리 탐색(보조), 영향분석, 검토·승인·발행·정지·롤백.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">CC-NN-NN-NN 형식, 고아·순환·중복·i18n·화면미등록·영향 검증, DRAFT만 CUD, 발행/폐기 ID 재사용 금지.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">Menu, MenuI18n, ScreenCatalog, MenuVersion, MenuPublishLog.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-01-04 그룹별 메뉴권한, PF-04-06 배포·채택.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-04-04-01">
+  <div class="page-title"><h1>표준 버전·검토</h1><span class="chip-id">PF-04-04-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-04 정책·전체 업무 표준 › 표준 버전·검토 · 초안·diff·회귀검증·승인 (§5.5)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-04-04-01 — 버전은 DRAFT→IN_REVIEW→APPROVED→PUBLISHED→RETIRED. 발행 시 contentHash를 고정하고 회귀검증·영향분석·SOD를 통과해야 한다.</div>
+    <div class="titlebar"><span class="tb-crumb">전체 업무 표준</span><span class="tb-sep">›</span><span class="tb-title">표준 버전·검토</span><span class="tb-star">☆</span><span class="tb-id">PF-04-04-01</span><span class="tb-right">PlatformStandardVersion</span></div>
+    <div class="qbar"><span class="qlabel">표준</span><span class="qv">K-IFRS 표준계정 <span class="lens">⌕</span></span><span class="qlabel">버전</span><span class="qv">v2.1 (IN_REVIEW) <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">회귀검증</button><button class="abtn dark">승인 요청</button></span></div>
+    <div class="flow"><span class="st done">DRAFT</span><span class="ar">→</span><span class="st on">IN_REVIEW</span><span class="ar">→</span><span class="st">APPROVED</span><span class="ar">→</span><span class="st">PUBLISHED</span><span class="ar">→</span><span class="st">RETIRED</span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>변경(diff)</th><th>이전</th><th>신규</th><th class="c">유형</th></tr>
+          <tr class="sel"><td>계정 51200 신설</td><td>-</td><td>연구개발비</td><td class="c"><span class="badge b-new">추가</span></td></tr>
+          <tr><td>계정 41100 명칭</td><td>매출액</td><td>제품매출</td><td class="c"><span class="badge b-warn">변경</span></td></tr>
+          <tr><td>계정 89900 폐지</td><td>기타비용</td><td>-</td><td class="c"><span class="badge b-block">삭제</span></td></tr>
+        </table>
+        <table class="grid">
+          <tr><th>발행 전 게이트</th><th class="c">결과</th></tr>
+          <tr><td>회귀검증</td><td class="c"><span class="badge b-ok">통과</span></td></tr>
+          <tr><td>영향분석(배포 42사)</td><td class="c"><span class="badge b-warn">검토</span></td></tr>
+          <tr><td>SOD(작성≠검토≠발행)</td><td class="c"><span class="badge b-ok">통과</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 작성/검토/발행 SOD 분리 · 회귀검증·영향분석 통과 후 승인 요청</span><span class="cnt">PlatformStandardVersion</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">발행 게이트</div><div class="rp-b"><div class="kv"><span class="k">회귀</span><span class="v">필수</span></div><div class="kv"><span class="k">영향</span><span class="v">필수</span></div><div class="kv"><span class="k">SOD</span><span class="v">필수</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/standard-versions</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">표준 버전의 초안 작성·diff·회귀검증·승인을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">표준, 버전.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">DRAFT 편집, diff 비교, 회귀검증·영향분석 실행, 승인 요청.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">DRAFT→IN_REVIEW→APPROVED 전이, 작성/검토/발행 SOD, 게이트 통과 필수.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">PlatformStandardVersion, diff·검증 리포트.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-04-05 발행·중지·롤백·폐기, PF-04-02 카탈로그.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-04-05-01">
+  <div class="page-title"><h1>발행·중지·롤백·폐기</h1><span class="chip-id">PF-04-05-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-04 정책·전체 업무 표준 › 발행·중지·롤백·폐기 · 불변 발행과 상태전이 (§5.5)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-04-05-01 — 발행본은 불변이며 contentHash를 고정한다. 긴급상태는 SUSPENDED/ROLLED_BACK. 발행/폐기 canonical ID는 재사용하지 않는다.</div>
+    <div class="titlebar"><span class="tb-crumb">전체 업무 표준</span><span class="tb-sep">›</span><span class="tb-title">발행·중지·롤백·폐기</span><span class="tb-star">☆</span><span class="tb-id">PF-04-05-01</span><span class="tb-right">PlatformStandardRelease</span></div>
+    <div class="qbar"><span class="qlabel">표준</span><span class="qv">K-IFRS 표준계정 v2.1 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">발행</button><button class="abtn ghost">중지</button><button class="abtn ghost">롤백</button><button class="abtn dark">폐기</button></span></div>
+    <div class="flow"><span class="st done">APPROVED</span><span class="ar">→</span><span class="st on">PUBLISHED</span><span class="ar">⚠</span><span class="st">SUSPENDED</span><span class="ar">↩</span><span class="st">ROLLED_BACK</span><span class="ar">→</span><span class="st">RETIRED</span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="formgrid c3 label-left">
+          <div class="ff"><label>발행ID</label><input class="fv" value="REL-KIFRS-v2.1" readonly></div>
+          <div class="ff"><label>contentHash</label><input class="fv" value="sha256:9f2c…a71e" readonly></div>
+          <div class="ff"><label>효력일</label><input class="fv" value="2026-09-01"></div>
+          <div class="ff"><label>발행자</label><input class="fv" value="박표준(요청)/정승인(승인)" readonly></div>
+          <div class="ff"><label>상태</label><input class="fv" value="PUBLISHED" readonly></div>
+          <div class="ff full"><label>발행 사유</label><textarea class="fv" rows="2">2026 회계기준 개정 반영 — 연구개발비 계정 신설</textarea></div>
+        </div>
+        <table class="grid">
+          <tr><th>이력</th><th>상태</th><th>일시</th><th class="c">불변</th></tr>
+          <tr class="sel"><td>발행</td><td><span class="badge b-ok">PUBLISHED</span></td><td>2026-08-25</td><td class="c">🔒</td></tr>
+          <tr><td>승인</td><td><span class="badge b-new">APPROVED</span></td><td>2026-08-20</td><td class="c">🔒</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 발행본 불변(contentHash 고정) · 발행/폐기 canonical ID 재사용 금지 · append-only</span><span class="cnt">PlatformStandardRelease</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">불변 원칙</div><div class="rp-b"><span class="badge b-block">발행본 수정 불가</span><br>정정은 신규 버전 발행</div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/standard-releases</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">승인된 표준을 불변 발행하고 중지·롤백·폐기 상태를 전이한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">발행ID, contentHash, 효력일, 발행자, 상태, 발행사유.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">발행(contentHash 고정), 중지(SUSPENDED), 롤백(ROLLED_BACK), 폐기(RETIRED).</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">발행본 불변, 발행/폐기 canonical ID 재사용 금지, Step-up, append-only 이력.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">PlatformStandardRelease, 발행 이력.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-04-04 버전·검토, PF-04-06 배포·채택, PF-06-01 전역 배치.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-04-06-01">
+  <div class="page-title"><h1>배포·채택 현황</h1><span class="chip-id">PF-04-06-01</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">PF-04 정책·전체 업무 표준 › 배포·채택 현황 · 관리회사 배포·테넌트 채택/매핑 (§5.5)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-04-06-01 — 관리회사 배포와 테넌트 채택·매핑 현황을 조회한다. OP는 배포, TN은 채택·매핑을 수행하며 플랫폼은 현황만 감독한다.</div>
+    <div class="titlebar"><span class="tb-crumb">전체 업무 표준</span><span class="tb-sep">›</span><span class="tb-title">배포·채택 현황</span><span class="tb-star">☆</span><span class="tb-id">PF-04-06-01</span><span class="tb-right">standard-adoptions</span></div>
+    <div class="qbar"><span class="qlabel">표준</span><span class="qv">K-IFRS 표준계정 v2.1 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">CSV 내보내기</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>관리회사</th><th class="c">배포</th><th class="c">테넌트 채택</th><th class="c">매핑</th><th class="c">지연</th></tr>
+          <tr class="sel"><td>세정회계법인</td><td class="c"><span class="badge b-ok">완료</span></td><td class="c">38/42</td><td class="c">36/42</td><td class="c"><span class="badge b-warn">4</span></td></tr>
+          <tr><td>대한세무법인</td><td class="c"><span class="badge b-ok">완료</span></td><td class="c">21/21</td><td class="c">21/21</td><td class="c"><span class="badge b-ok">0</span></td></tr>
+          <tr><td>한국회계법인</td><td class="c"><span class="badge b-warn">진행</span></td><td class="c">12/30</td><td class="c">10/30</td><td class="c"><span class="badge b-block">18</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ OP 배포·TN 채택/매핑 분리 · 플랫폼은 현황 감독만 · 원문 접근 없음</span><span class="cnt">standard-adoptions/status</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">역할 경계</div><div class="rp-b"><div class="kv"><span class="k">배포</span><span class="v">OP</span></div><div class="kv"><span class="k">채택·매핑</span><span class="v">TN</span></div><div class="kv"><span class="k">플랫폼</span><span class="v">감독</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/standard-adoptions/status</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">발행 표준의 관리회사 배포·테넌트 채택/매핑 진척을 감독한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">표준·버전.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">배포·채택·매핑 현황 조회, 지연 탐지, CSV 내보내기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">OP 배포·TN 채택 분리, 플랫폼 감독 전용(원문 접근 없음).</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">배포·채택 현황 리포트.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-04-05 발행, PF-04-02 카탈로그, PF-06-02 관측성.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-05-01-01">
+  <div class="page-title"><h1>조직 격리 현황</h1><span class="chip-id">PF-05-01-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-05 보안·감사 › 조직 격리 현황 · 교차 접근·RLS 위반 탐지 (§5.6)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-05-01-01 — RLS 위반, operatorOrgId 불일치, 비정상 교차조회, scope 누락을 변경 불가 보안 이벤트로 생성한다.</div>
+    <div class="titlebar"><span class="tb-crumb">보안·감사</span><span class="tb-sep">›</span><span class="tb-title">조직 격리 현황</span><span class="tb-star">☆</span><span class="tb-id">PF-05-01-01</span><span class="tb-right">SecurityEvent</span></div>
+    <div class="qbar"><span class="qlabel">기간</span><span class="qv">최근 24시간 <span class="lens">📅</span></span><span class="qlabel">유형</span><span class="seg"><span class="on">전체</span><span>RLS</span><span>교차조회</span><span>scope</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">사건 등록</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>일시</th><th>유형</th><th>주체</th><th>대상</th><th class="c">심각도</th></tr>
+          <tr class="sel"><td>07-14 09:12</td><td>RLS 위반</td><td>op_user_331</td><td>TN-3021 (미수임)</td><td class="c"><span class="badge b-block">High</span></td></tr>
+          <tr><td>07-14 03:40</td><td>operatorOrgId 불일치</td><td>batch_worker</td><td>OO-1002/OO-1005</td><td class="c"><span class="badge b-warn">Med</span></td></tr>
+          <tr><td>07-13 22:05</td><td>scope 누락</td><td>api_client</td><td>/operator-usage</td><td class="c"><span class="badge b-warn">Med</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 보안 이벤트 변경 불가(append-only) · 교차 접근·RLS 위반 자동 탐지</span><span class="cnt">SecurityEvent · isolation-events</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">탐지 대상</div><div class="rp-b"><div class="kv"><span class="k">RLS</span><span class="v">위반</span></div><div class="kv"><span class="k">orgId</span><span class="v">불일치</span></div><div class="kv"><span class="k">scope</span><span class="v">누락</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/security/isolation-events</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">조직 격리 위반(RLS·orgId 불일치·교차조회·scope 누락)을 탐지·관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">기간, 이벤트 유형.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">보안 이벤트 조회, 심각도 분류, 사건 등록·연계.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">이벤트 append-only 변경 불가, 자동 탐지, 심각도 기반 대응.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">SecurityEvent, 격리 위반 리포트.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-05-02 감사로그, PF-05-03 지원 접근 요청.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-05-02-01">
+  <div class="page-title"><h1>플랫폼 감사로그</h1><span class="chip-id">PF-05-02-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-05 보안·감사 › 플랫폼 감사로그 · 조직·사용자·Role·표준·이관 감사 (§5.6)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-05-02-01 — 감사로그는 전후값, 사유, 승인, traceId를 포함한다. 감사 해시체인으로 무결성을 검증한다.</div>
+    <div class="titlebar"><span class="tb-crumb">보안·감사</span><span class="tb-sep">›</span><span class="tb-title">플랫폼 감사로그</span><span class="tb-star">☆</span><span class="tb-id">PF-05-02-01</span><span class="tb-right">AuditHashChain</span></div>
+    <div class="qbar"><span class="qlabel">도메인</span><span class="qv">전체 <span class="lens">▾</span></span><span class="qlabel">기간</span><span class="qv">2026-07 <span class="lens">📅</span></span><span class="qlabel">actor</span><span class="qv">전체 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">체인 검증</button><button class="abtn ghost">내보내기</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>일시</th><th>도메인</th><th>actor</th><th>action</th><th>전→후</th><th class="c">traceId</th></tr>
+          <tr class="sel"><td>07-14 09:01</td><td>Role</td><td>김권한</td><td>Role 승격</td><td>USER→ADMIN</td><td class="c">tr-8f2a</td></tr>
+          <tr><td>07-13 15:20</td><td>표준</td><td>박표준</td><td>발행</td><td>APPROVED→PUBLISHED</td><td class="c">tr-71c9</td></tr>
+          <tr><td>07-12 11:44</td><td>이관</td><td>정승인</td><td>이관 승인</td><td>확인→승인</td><td class="c">tr-3d0e</td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ actor/scope/reason/before/after/approval/traceId 기록 · 해시체인 무결성 검증 통과</span><span class="cnt">AuditHashChain · verify OK</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">기록 항목</div><div class="rp-b"><div class="kv"><span class="k">전후값</span><span class="v">필수</span></div><div class="kv"><span class="k">사유</span><span class="v">필수</span></div><div class="kv"><span class="k">체인</span><span class="v">검증</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/audit-logs</code><br><code>/audit-chain/verify</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">사용자·조직·Role·그룹·표준·이관 등 전 도메인의 감사로그를 조회·검증한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">도메인, 기간, actor.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">감사로그 조회, 해시체인 무결성 검증, 내보내기.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">actor/scope/reason/before/after/approval/traceId 기록, append-only, 해시체인 검증.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">AuditLog, AuditHashChain 검증 결과.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-05-01 조직 격리, 전 PF 화면 감사 이벤트.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-05-03-01">
+  <div class="page-title"><h1>지원 접근 요청</h1><span class="chip-id">PF-05-03-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-05 보안·감사 › 지원 접근 요청 · 대상·목적·범위·시간 승인 (§5.6)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-05-03-01 — 플랫폼 지원은 대상 조직/테넌트, 목적, 허용 화면/API, 시간을 명시한 PlatformSupportSession으로만 수행한다. 승인 없이 테넌트 원문 접근 금지.</div>
+    <div class="titlebar"><span class="tb-crumb">보안·감사</span><span class="tb-sep">›</span><span class="tb-title">지원 접근 요청</span><span class="tb-star">☆</span><span class="tb-id">PF-05-03-01</span><span class="tb-right">PlatformSupportSession</span></div>
+    <div class="qbar"><span class="qlabel">요청ID</span><span class="qv">SUP-2026-0117 <span class="lens">⌕</span></span><span class="qright"><button class="abtn yellow">요청 생성</button><button class="abtn dark">승인 요청</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <div class="formgrid c3 label-left">
+          <div class="ff"><label>요청ID</label><input class="fv" value="SUP-2026-0117" readonly></div>
+          <div class="ff"><label>대상 관리회사</label><input class="fv" value="세정회계법인 (OO-1002)"></div>
+          <div class="ff"><label>대상 테넌트</label><input class="fv" value="(주)한빛제조 (TN-3021)"></div>
+          <div class="ff full"><label>지원 목적</label><textarea class="fv" rows="2">부가세 신고 오류 재현 지원 — 티켓 #48221</textarea></div>
+          <div class="ff"><label>허용 화면/API</label><input class="fv" value="OP-05 조회 (읽기)"></div>
+          <div class="ff"><label>허용 시간</label><input class="fv" value="2026-07-14 14:00~16:00"></div>
+          <div class="ff"><label>승인자</label><input class="fv" value="관리회사 SEC_ADMIN"></div>
+        </div>
+        <div class="statusbar"><span class="warnmsg">⚠ 관리회사 승인 + Step-up 필요 · 승인 범위·시간 밖 접근 차단 · 시작/종료 통지</span><span class="cnt">support-sessions</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">필수 명시</div><div class="rp-b"><div class="kv"><span class="k">대상</span><span class="v">조직/테넌트</span></div><div class="kv"><span class="k">목적</span><span class="v">필수</span></div><div class="kv"><span class="k">범위</span><span class="v">화면/API</span></div><div class="kv"><span class="k">시간</span><span class="v">제한</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/support-sessions</code><br><code>/{id}/approve|start</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">플랫폼 지원 접근을 대상·목적·범위·시간을 명시한 세션으로 요청·승인한다.</span></div><div class="screen-desc-item"><span class="desc-label">입력 필드</span><span class="desc-body">대상 관리회사/테넌트, 지원목적, 허용 화면/API, 허용시간, 승인자.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">지원 세션 요청 생성, 관리회사 승인 요청, Step-up.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">관리회사 승인 없이 테넌트 원문 접근 금지, 범위·시간 밖 접근 차단, 시작/종료 통지.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">PlatformSupportSession, 승인 이력.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-05-04 지원 접근 검토, PF-00-04 승인 대기함.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-05-04-01">
+  <div class="page-title"><h1>지원 접근 검토</h1><span class="chip-id">PF-05-04-01</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">PF-05 보안·감사 › 지원 접근 검토 · 통지·행위로그·만료·사후검토 (§5.6)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-05-04-01 — 지원세션은 시작/종료 통지, 전 행위 이중감사, 자동만료, 사후검토를 적용한다.</div>
+    <div class="titlebar"><span class="tb-crumb">보안·감사</span><span class="tb-sep">›</span><span class="tb-title">지원 접근 검토</span><span class="tb-star">☆</span><span class="tb-id">PF-05-04-01</span><span class="tb-right">support-sessions/review</span></div>
+    <div class="qbar"><span class="qlabel">세션ID</span><span class="qv">SUP-2026-0117 <span class="lens">⌕</span></span><span class="qlabel">상태</span><span class="seg"><span>진행</span><span class="on">만료</span><span>검토</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn dark">사후검토 확정</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>시각</th><th>행위</th><th>대상</th><th class="c">범위 내</th></tr>
+          <tr class="sel"><td>14:02</td><td>세션 시작(통지)</td><td>TN-3021</td><td class="c"><span class="badge b-ok">✓</span></td></tr>
+          <tr><td>14:15</td><td>부가세 신고서 조회</td><td>OP-05</td><td class="c"><span class="badge b-ok">✓</span></td></tr>
+          <tr><td>14:48</td><td>계정 원장 조회 시도</td><td>OP-01</td><td class="c"><span class="badge b-block">범위 외</span></td></tr>
+          <tr><td>16:00</td><td>세션 자동만료(통지)</td><td>-</td><td class="c"><span class="badge b-ok">✓</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ 전 행위 이중감사 · 자동만료 · 범위 외 접근 차단 기록 · 사후검토 대상</span><span class="cnt">support-sessions/{id}/review</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">사후 통제</div><div class="rp-b"><div class="kv"><span class="k">통지</span><span class="v">시작/종료</span></div><div class="kv"><span class="k">감사</span><span class="v">이중</span></div><div class="kv"><span class="k">만료</span><span class="v">자동</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/support-sessions/{id}/terminate|review</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">진행·종료된 지원세션의 행위로그를 검토하고 사후검토를 확정한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">세션ID, 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">시작/종료 통지 확인, 전 행위 이중감사 조회, 범위 외 접근 탐지, 사후검토 확정.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">자동만료, 범위·시간 밖 접근 차단·기록, 사후검토 필수.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">지원세션 행위로그, 사후검토 결과.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-05-03 지원 접근 요청, PF-05-02 감사로그.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-06-01-01">
+  <div class="page-title"><h1>전역 배치·큐</h1><span class="chip-id">PF-06-01-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-06 인프라·운영 › 전역 배치·큐 · 메뉴·표준·권한·관리회사 작업 (§5.7)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-06-01-01 — 전역 배치는 휴면·만료·예약발행·권한캐시 무효화·표준 배포·쿼터 점검을 수행한다. job은 idempotency key·재시도·DLQ를 가진다.</div>
+    <div class="titlebar"><span class="tb-crumb">인프라·운영</span><span class="tb-sep">›</span><span class="tb-title">전역 배치·큐</span><span class="tb-star">☆</span><span class="tb-id">PF-06-01-01</span><span class="tb-right">JobRun · DLQ</span></div>
+    <div class="qbar"><span class="qlabel">작업군</span><span class="qv">전체 <span class="lens">▾</span></span><span class="qlabel">상태</span><span class="seg"><span class="on">전체</span><span>실행중</span><span>실패</span><span>DLQ</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">재시도</button><button class="abtn dark">DLQ 처리</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>job</th><th>스케줄</th><th>최근 실행</th><th class="c">결과</th><th class="c">DLQ</th></tr>
+          <tr class="sel"><td>사용자 휴면 처리</td><td>매일 02:00</td><td>07-14 02:00</td><td class="c"><span class="badge b-ok">성공</span></td><td class="c">0</td></tr>
+          <tr><td>Membership 만료</td><td>매일 03:00</td><td>07-14 03:00</td><td class="c"><span class="badge b-ok">성공</span></td><td class="c">0</td></tr>
+          <tr><td>메뉴 예약발행</td><td>이벤트</td><td>07-13 18:00</td><td class="c"><span class="badge b-ok">성공</span></td><td class="c">0</td></tr>
+          <tr><td>권한캐시 무효화</td><td>이벤트</td><td>07-14 09:02</td><td class="c"><span class="badge b-warn">부분</span></td><td class="c"><span class="badge b-block">3</span></td></tr>
+          <tr><td>표준 배포</td><td>이벤트</td><td>07-13 15:20</td><td class="c"><span class="badge b-ok">성공</span></td><td class="c">0</td></tr>
+          <tr><td>구독·쿼터 점검</td><td>매일 06:00</td><td>07-14 06:00</td><td class="c"><span class="badge b-ok">성공</span></td><td class="c">0</td></tr>
+        </table>
+        <div class="statusbar"><span class="warnmsg">⚠ 권한캐시 무효화 DLQ 3건 — 재시도 필요 · 실행 직전 조직상태·권한 재검증 적용</span><span class="cnt">PERMISSION_CACHE_STALE 경계</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">job 불변조건</div><div class="rp-b"><div class="kv"><span class="k">멱등</span><span class="v">key</span></div><div class="kv"><span class="k">재시도</span><span class="v">+DLQ</span></div><div class="kv"><span class="k">재검증</span><span class="v">실행직전</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/jobs</code> <code>/job-runs</code> <code>/dlq</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">전역 배치 작업과 큐(DLQ 포함)를 모니터링·운영한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">작업군, 실행 상태.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">휴면·만료·예약발행·캐시무효화·표준배포·쿼터점검 job 조회, 재시도, DLQ 처리.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">ContextSnapshot·idempotency key·재시도·DLQ, 실행 직전 조직상태·권한 재검증.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">JobRun, DLQ 항목, 실행 이력.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-06-02 관측성, PF-04-05 발행, PF-02-03 쿼터.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-06-02-01">
+  <div class="page-title"><h1>관측성·SLO</h1><span class="chip-id">PF-06-02-01</span><span class="badge b-new">MVP</span></div>
+  <div class="crumb">PF-06 인프라·운영 › 관측성·SLO · 조직→관리회사→테넌트 장애 영향 (§5.7)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-06-02-01 — platformOrg→operatorOrg→tenant 경로의 metric/log/trace를 연결하고 조직별 rate limit·worker pool·circuit breaker를 제공한다.</div>
+    <div class="titlebar"><span class="tb-crumb">인프라·운영</span><span class="tb-sep">›</span><span class="tb-title">관측성·SLO</span><span class="tb-star">☆</span><span class="tb-id">PF-06-02-01</span><span class="tb-right">observability/slo</span></div>
+    <div class="qbar"><span class="qlabel">경로</span><span class="qv">platformOrg→operatorOrg→tenant <span class="lens">▾</span></span><span class="qlabel">기간</span><span class="qv">최근 1시간 <span class="lens">📅</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">사건 생성</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>SLO 지표</th><th class="c">목표</th><th class="c">현재</th><th class="c">에러버짓</th><th class="c">상태</th></tr>
+          <tr class="sel"><td>API 가용성</td><td class="c">99.9%</td><td class="c">99.94%</td><td class="c">62%</td><td class="c"><span class="badge b-ok">정상</span></td></tr>
+          <tr><td>API p95 지연</td><td class="c">&lt;300ms</td><td class="c">218ms</td><td class="c">-</td><td class="c"><span class="badge b-ok">정상</span></td></tr>
+          <tr><td>배치 성공률</td><td class="c">99.5%</td><td class="c">98.8%</td><td class="c">31%</td><td class="c"><span class="badge b-warn">주의</span></td></tr>
+          <tr><td>circuit breaker(OO-1005)</td><td class="c">closed</td><td class="c">half-open</td><td class="c">-</td><td class="c"><span class="badge b-warn">경계</span></td></tr>
+        </table>
+        <div class="flow"><span class="st on">platformOrg</span><span class="ar">→</span><span class="st">operatorOrg (OO-1005)</span><span class="ar">→</span><span class="st">tenant (영향 3사)</span></div>
+        <div class="statusbar"><span class="okmsg">✓ metric/log/trace 연결 · 조직별 rate limit·worker pool·circuit breaker · 장애 영향 추적</span><span class="cnt">observability/slo</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">통제 수단</div><div class="rp-b"><div class="kv"><span class="k">rate limit</span><span class="v">조직별</span></div><div class="kv"><span class="k">worker</span><span class="v">pool 격리</span></div><div class="kv"><span class="k">breaker</span><span class="v">circuit</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/observability/slo</code><br><code>/incidents</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">조직→관리회사→테넌트 경로의 관측성과 SLO·장애 영향을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">경로, 기간.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">SLO/에러버짓 조회, metric/log/trace 연결, 장애 영향 추적, 사건 생성.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">조직별 rate limit·worker pool·circuit breaker, 경로 기반 영향 분석.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">SLO 리포트, Incident.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-06-01 전역 배치, PF-06-03 백업·DR, PF-00-01 홈.</span></div></div></div>
+</section>
+
+<section class="section" id="PF-06-03-01">
+  <div class="page-title"><h1>백업·DR</h1><span class="chip-id">PF-06-03-01</span><span class="badge b-ref">확장</span></div>
+  <div class="crumb">PF-06 인프라·운영 › 백업·DR · 복구 우선순위·훈련·증적 (§5.7)</div>
+  <div class="mock">
+    <div class="mock-cap">PF-06-03-01 — DR은 백업정책, RPO/RTO, 복구 우선순위, RestoreTest, Runbook, 훈련 증적을 관리한다.</div>
+    <div class="titlebar"><span class="tb-crumb">인프라·운영</span><span class="tb-sep">›</span><span class="tb-title">백업·DR</span><span class="tb-star">☆</span><span class="tb-id">PF-06-03-01</span><span class="tb-right">BackupSet · RestoreTest</span></div>
+    <div class="qbar"><span class="qlabel">대상</span><span class="qv">전체 시스템 <span class="lens">▾</span></span><span class="qright"><button class="abtn yellow">🔍 조회</button><button class="abtn ghost">복구 훈련</button><button class="abtn dark">Runbook</button></span></div>
+    <div class="mock-flex">
+      <div class="mock-main">
+        <table class="grid">
+          <tr><th>대상</th><th class="c">RPO</th><th class="c">RTO</th><th class="c">우선순위</th><th class="c">최근 백업</th></tr>
+          <tr class="sel"><td>회계 원장 DB</td><td class="c">5분</td><td class="c">1시간</td><td class="c"><span class="badge b-block">P1</span></td><td class="c">07-14 09:00</td></tr>
+          <tr><td>표준·메뉴 저장소</td><td class="c">1시간</td><td class="c">2시간</td><td class="c"><span class="badge b-warn">P2</span></td><td class="c">07-14 08:00</td></tr>
+          <tr><td>감사로그·해시체인</td><td class="c">0(WORM)</td><td class="c">4시간</td><td class="c"><span class="badge b-block">P1</span></td><td class="c">실시간</td></tr>
+        </table>
+        <table class="grid">
+          <tr><th>복구 훈련(RestoreTest)</th><th>일자</th><th class="c">RTO 달성</th></tr>
+          <tr><td>2026 Q2 정기 DR 훈련</td><td>2026-05-18</td><td class="c"><span class="badge b-ok">달성(52분)</span></td></tr>
+          <tr><td>감사로그 복구 검증</td><td>2026-06-30</td><td class="c"><span class="badge b-ok">달성</span></td></tr>
+        </table>
+        <div class="statusbar"><span class="okmsg">✓ RPO/RTO·복구 우선순위·RestoreTest·Runbook·훈련 증적 관리 · P1 우선 복구</span><span class="cnt">BackupSet · DR Drill</span></div>
+      </div>
+      <div class="rpanel"><div class="rp-box"><div class="rp-t">DR 구성</div><div class="rp-b"><div class="kv"><span class="k">RPO/RTO</span><span class="v">대상별</span></div><div class="kv"><span class="k">우선</span><span class="v">P1/P2</span></div><div class="kv"><span class="k">훈련</span><span class="v">증적</span></div></div></div><div class="rp-box"><div class="rp-t">API</div><div class="rp-b"><code>/backups</code> <code>/restore-tests</code><br><code>/dr-drills</code></div></div></div>
+    </div>
+  </div>
+  <div class="screen-details"><div class="screen-desc-list"><div class="screen-desc-item"><span class="desc-label">목적</span><span class="desc-body">백업정책·RPO/RTO·복구 우선순위·DR 훈련 증적을 관리한다.</span></div><div class="screen-desc-item"><span class="desc-label">조회 조건</span><span class="desc-body">복구 대상 시스템.</span></div><div class="screen-desc-item"><span class="desc-label">기능</span><span class="desc-body">백업·RPO/RTO 조회, 복구 우선순위 설정, 복구 훈련(RestoreTest), Runbook 관리.</span></div><div class="screen-desc-item"><span class="desc-label">검증</span><span class="desc-body">P1 우선 복구, RTO 달성 검증, 훈련 증적 보존, 감사로그 WORM.</span></div><div class="screen-desc-item"><span class="desc-label">산출물</span><span class="desc-body">BackupSet, RestoreTest, DR Drill 증적.</span></div><div class="screen-desc-item"><span class="desc-label">연계</span><span class="desc-body">PF-06-02 관측성·SLO, PF-05-02 감사로그.</span></div></div></div>
+</section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <div class="beamline"></div>
+  <div>EY BK 회계 플랫폼 — 플랫폼콘솔 화면설계 v1.0 · 근거: 플렛폼콘솔_v1.0.md · 레이아웃 준거: 시스템관리자_화면_v1.0.HTML (EY 레이아웃) · 기준문서 bk_설계서_v1.1.md</div>
+</footer>
+
+<script>
+document.querySelectorAll('.mitem').forEach(function(mi){
+  mi.addEventListener('click',function(){
+    document.querySelectorAll('.mitem').forEach(function(x){x.classList.remove('active')});
+    mi.classList.add('active');
+    var sec=mi.getAttribute('data-sec');
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('visible')});
+    var el=document.getElementById(sec);
+    if(el){el.classList.add('visible');window.scrollTo({top:0});}
+  });
+});
+// 로컬 탭 전환 (mock 내부 .tabbar)
+document.querySelectorAll('.mock .tabbar').forEach(function(bar){
+  var mock=bar.closest('.mock');
+  var tabs=Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+  var panes=Array.prototype.slice.call(mock.children).filter(function(c){return c.classList&&c.classList.contains('tabpane')});
+  tabs.forEach(function(tab,i){
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('on')});
+      tab.classList.add('on');
+      if(panes.length){ panes.forEach(function(p){p.classList.remove('on')}); if(panes[i]) panes[i].classList.add('on'); }
+    });
+  });
+});
+/* ===== 마스터-디테일: 좌측 선택 → 우측 기존 세부(폼/그리드/qbar) 데이터 교체 ===== */
+(function(){
+  function clean(t){return (t||'').replace(/\s+/g,' ').trim();}
+  var B={ok:'<span class="badge b-ok">',warn:'<span class="badge b-warn">',nu:'<span class="badge b-new">',gr:'<span class="badge b-gray">'};
+  function bd(kind,txt){return '<td class="c">'+(B[kind]||B.ok)+txt+'</span></td>';}
+  function seg(on){ // on: 'INHERIT'|'ALLOW'|'DENY'
+    return '<td><span class="seg"><span'+(on==='INHERIT'?' class="on"':'')+'>INHERIT</span><span'+(on==='ALLOW'?' class="on"':'')+'>ALLOW</span><span'+(on==='DENY'?' class="on"':'')+'>DENY</span></span></td>';
+  }
+  /* 노드별 세부 데이터: form(라벨→값) · qv(qbar 선택값) · grids(그리드별 데이터행 innerHTML 배열) */
+  var DATA={
+    'PF-01-01-01':[
+      {form:{단위코드:'PO-001',국문명:'플랫폼운영본부',영문명:'Platform Operations Div.',상위단위:'- 루트',단위유형:'DIV',상태:'ACTIVE',유효시작:'2025-01-01',유효종료:'9999-12-31',책임자:'정본부',개편사유:'플랫폼 출범 시 본부 신설'},grids:[['<td>신설</td><td>플랫폼운영본부</td><td>-</td><td>루트</td><td>2025-01-01</td>'+bd('ok','유효')]]},
+      {form:{단위코드:'U-STD',국문명:'표준관리팀',영문명:'Standard Management',상위단위:'플랫폼운영본부',단위유형:'TEAM',상태:'ACTIVE',유효시작:'2026-01-01',유효종료:'9999-12-31',책임자:'박표준',개편사유:'2026년 표준 거버넌스 강화에 따른 팀 신설'},grids:[['<td>신설</td><td>표준관리팀</td><td>-</td><td>플랫폼운영본부</td><td>2026-01-01</td>'+bd('ok','유효'),'<td>이동</td><td>계약운영팀</td><td>플랫폼운영본부</td><td>사업총괄본부</td><td>2026-08-01</td>'+bd('warn','예정')]]},
+      {form:{단위코드:'U-SEC',국문명:'보안운영팀',영문명:'Security Operations',상위단위:'플랫폼운영본부',단위유형:'TEAM',상태:'ACTIVE',유효시작:'2025-03-01',유효종료:'9999-12-31',책임자:'이보안',개편사유:'보안 관제 상시 운영 체계 확립'},grids:[['<td>신설</td><td>보안운영팀</td><td>-</td><td>플랫폼운영본부</td><td>2025-03-01</td>'+bd('ok','유효')]]},
+      {form:{단위코드:'U-CS',국문명:'고객지원팀',영문명:'Customer Support',상위단위:'플랫폼운영본부',단위유형:'TEAM',상태:'ACTIVE',유효시작:'2025-01-01',유효종료:'9999-12-31',책임자:'최지원',개편사유:'고객 지원 채널 통합 운영'},grids:[['<td>신설</td><td>고객지원팀</td><td>-</td><td>플랫폼운영본부</td><td>2025-01-01</td>'+bd('ok','유효')]]},
+      {form:{단위코드:'PO-002',국문명:'사업총괄본부',영문명:'Business General Div.',상위단위:'- 루트',단위유형:'DIV',상태:'ACTIVE',유효시작:'2025-01-01',유효종료:'9999-12-31',책임자:'한사업',개편사유:'사업 총괄 기능 분리 신설'},grids:[['<td>신설</td><td>사업총괄본부</td><td>-</td><td>루트</td><td>2025-01-01</td>'+bd('ok','유효')]]},
+      {form:{단위코드:'U-CON',국문명:'계약운영팀',영문명:'Contract Operations',상위단위:'사업총괄본부',단위유형:'TEAM',상태:'ACTIVE',유효시작:'2026-08-01',유효종료:'9999-12-31',책임자:'김계약',개편사유:'계약 운영 전담 조직 신설(이동)'},grids:[['<td>이동</td><td>계약운영팀</td><td>플랫폼운영본부</td><td>사업총괄본부</td><td>2026-08-01</td>'+bd('warn','예정')]]}
+    ],
+    'PF-01-02-01':[
+      {form:{사용자ID:'PU-00031','Login ID':'std.admin@bk.io',상태:'ACTIVE',성명:'박표준',영문명:'Park Standard',사번:'BK-0031',소속조직:'표준관리팀','기본 Role':'PLATFORM_STANDARD_ADMIN',이메일:'std.admin@bk.io',휴대폰:'+82-10-0000-0031',언어:'ko-KR',저장사유:'정기 권한 점검 결과 유지'}},
+      {form:{사용자ID:'PU-00042','Login ID':'ops@bk.io',상태:'DORMANT',성명:'이운영',영문명:'Lee Operation',사번:'BK-0042',소속조직:'보안운영팀','기본 Role':'PLATFORM_SECURITY_OPERATOR',이메일:'ops@bk.io',휴대폰:'+82-10-0000-0042',언어:'ko-KR',저장사유:'90일 미접속으로 휴면 전환'}},
+      {form:{사용자ID:'PU-00058','Login ID':'support@bk.io',상태:'ACTIVE',성명:'최지원',영문명:'Choi Support',사번:'BK-0058',소속조직:'고객지원팀','기본 Role':'PLATFORM_SUPPORT_AGENT',이메일:'support@bk.io',휴대폰:'+82-10-0000-0058',언어:'ko-KR',저장사유:'신규 상담 인력 권한 부여'}}
+    ],
+    'PF-01-03-01':[
+      {form:{그룹코드:'STD-GOV',국문명:'표준거버넌스',그룹유형:'STANDARD',상위그룹:'- 루트',기본Role:'PLATFORM_STANDARD_ADMIN',상태:'ACTIVE',유효기간:'2026-01-01 ~ 9999-12-31'},grids:[['<td class="c">✓</td><td>박표준</td><td>std.admin@bk.io</td><td>PLATFORM_STANDARD_ADMIN</td><td>2026-01-01</td><td>상시</td>'+bd('ok','ACTIVE'),'<td class="c">□</td><td>정검토</td><td>review@bk.io</td><td>STANDARD_REVIEWER</td><td>2026-07-01</td><td>2026-12-31</td>'+bd('warn','TEMP')]]},
+      {form:{그룹코드:'STD-REV',국문명:'표준 검토자',그룹유형:'STANDARD',상위그룹:'표준거버넌스',기본Role:'STANDARD_REVIEWER',상태:'ACTIVE',유효기간:'2026-07-01 ~ 2026-12-31'},grids:[['<td class="c">✓</td><td>정검토</td><td>review@bk.io</td><td>STANDARD_REVIEWER</td><td>2026-07-01</td><td>2026-12-31</td>'+bd('warn','TEMP'),'<td class="c">□</td><td>한검토</td><td>review2@bk.io</td><td>STANDARD_REVIEWER</td><td>2026-07-01</td><td>2026-12-31</td>'+bd('warn','TEMP')]]},
+      {form:{그룹코드:'SEC-OPS',국문명:'보안운영',그룹유형:'SECURITY',상위그룹:'- 루트',기본Role:'PLATFORM_SECURITY_OPERATOR',상태:'ACTIVE',유효기간:'2025-03-01 ~ 9999-12-31'},grids:[['<td class="c">✓</td><td>이보안</td><td>sec@bk.io</td><td>PLATFORM_SECURITY_OPERATOR</td><td>2025-03-01</td><td>상시</td>'+bd('ok','ACTIVE'),'<td class="c">✓</td><td>김관제</td><td>soc@bk.io</td><td>SECURITY_MONITOR</td><td>2025-03-01</td><td>상시</td>'+bd('ok','ACTIVE')]]}
+    ],
+    'PF-01-04-01':[
+      {grids:[['<td>PF-04 표준·메뉴·발행</td>'+bd('ok','ALLOW').replace('<td class="c">','<td>').replace('</td>','')+'</td>'+seg('ALLOW')+'<td>보임</td><td>가능</td>']]},
+      {grids:[[]]}
+    ],
+    'PF-01-07-01':[
+      {form:{OperatorOrg:'OO-1002',법인명:'세정회계법인',사업자번호:'123-45-67890',대표관리자:'김대표 / owner@sejeong.co.kr',요금제:'PRO',상태:'ACTIVE','테넌트 수':'34','계약 시작':'2025-03-01','계약 상태':'유효','위수탁 계약':'전자계약 체결 완료 · 개인정보 위수탁 포함'},grids:[['<td>활성화</td><td>PENDING_VERIFICATION → ACTIVE</td><td>2025-03-01</td><td>정심사</td>','<td>요금제 변경</td><td>STANDARD → PRO</td><td>2026-01-15</td><td>박계약</td>']]},
+      {form:{OperatorOrg:'OO-1017',법인명:'한빛세무법인',사업자번호:'214-88-11223',대표관리자:'이한빛 / admin@hanbit.co.kr',요금제:'STANDARD',상태:'SUSPENDED','테넌트 수':'12','계약 시작':'2024-11-01','계약 상태':'정지','위수탁 계약':'위수탁 계약 갱신 필요 · 정지 사유 검토중'},grids:[['<td>활성화</td><td>PENDING_VERIFICATION → ACTIVE</td><td>2024-11-01</td><td>정심사</td>','<td>정지</td><td>ACTIVE → SUSPENDED</td><td>2026-05-20</td><td>보안관제</td>']]},
+      {form:{OperatorOrg:'OO-1041',법인명:'제일택스',사업자번호:'305-12-99887',대표관리자:'최제일 / ceo@jeiltax.co.kr',요금제:'STANDARD',상태:'PENDING','테넌트 수':'0','계약 시작':'-','계약 상태':'심사중','위수탁 계약':'전자계약 서명 대기 · 사업자 진위확인 진행'},grids:[['<td>신청</td><td>가입 신청 접수</td><td>2026-07-01</td><td>온보딩봇</td>','<td>검증대기</td><td>사업자 진위확인 요청</td><td>2026-07-02</td><td>정심사</td>']]}
+    ],
+    'PF-04-02-01':[
+      {grids:[['<td>K-IFRS 재무보고기준</td><td>회계표준실</td><td>박표준</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>일반기업회계기준</td><td>회계표준실</td><td>박표준</td><td>2025-01-01</td>'+bd('ok','PUBLISHED')]]},
+      {grids:[['<td>K-IFRS 표준계정</td><td>회계표준실</td><td>박표준</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>세무 계정매핑표</td><td>세무표준실</td><td>이세무</td><td>2026-01-01</td>'+bd('ok','PUBLISHED')]]},
+      {grids:[['<td>재무상태표 양식</td><td>회계표준실</td><td>박표준</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>손익계산서 양식</td><td>회계표준실</td><td>박표준</td><td>2026-01-01</td>'+bd('ok','PUBLISHED')]]},
+      {grids:[['<td>부가세 신고서식</td><td>세무표준실</td><td>이세무</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>원천세 세율표</td><td>세무표준실</td><td>이세무</td><td>2026-07-01</td>'+bd('nu','IN_REVIEW')]]},
+      {grids:[['<td>플랫폼 Role 표준</td><td>거버넌스실</td><td>정거버</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>운영자 Role 표준</td><td>거버넌스실</td><td>정거버</td><td>2026-01-01</td>'+bd('ok','PUBLISHED')]]},
+      {grids:[['<td>PF 메뉴 원본</td><td>플랫폼운영</td><td>한메뉴</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>OP 메뉴 원본</td><td>플랫폼운영</td><td>한메뉴</td><td>2026-03-01</td>'+bd('nu','IN_REVIEW')]]},
+      {grids:[['<td>공통코드 세트</td><td>검증팀</td><td>최검증</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>표준 검증규칙</td><td>검증팀</td><td>최검증</td><td>2026-07-01</td>'+bd('nu','IN_REVIEW')]]},
+      {grids:[['<td>증빙 유형 표준</td><td>회계표준실</td><td>박표준</td><td>2026-01-01</td>'+bd('ok','PUBLISHED'),'<td>월말 환율 고시</td><td>회계표준실</td><td>박표준</td><td>2026-07-01</td>'+bd('ok','PUBLISHED')]]},
+      {grids:[['<td>AI 분개 추천규칙</td><td>AI표준실</td><td>오에이아이</td><td>2026-05-01</td>'+bd('nu','IN_REVIEW'),'<td>AI 이상탐지 규칙</td><td>AI표준실</td><td>오에이아이</td><td>2026-05-01</td>'+bd('nu','IN_REVIEW')]]}
+    ],
+    'PF-04-03-01':[
+      {grids:[['<td>PF-00</td><td>ROOT</td><td>FOLDER</td><td>-</td><td>-</td>'+bd('ok','PUBLISHED'),'<td>PF-00-01</td><td>PF-00</td><td>SCREEN</td><td>PF-00-01-01</td><td>/pf/home</td>'+bd('ok','PUBLISHED')],['<td>고아·순환</td>'+bd('ok','통과'),'<td>중복 code/route</td>'+bd('ok','통과'),'<td>i18n(ko/en) 누락</td>'+bd('ok','통과'),'<td>화면 미등록(ScreenCatalog)</td>'+bd('ok','통과')]]},
+      {grids:[['<td>PF-00-01</td><td>PF-00</td><td>SCREEN</td><td>PF-00-01-01</td><td>/pf/home</td>'+bd('ok','PUBLISHED')],['<td>고아·순환</td>'+bd('ok','통과'),'<td>중복 code/route</td>'+bd('ok','통과'),'<td>i18n(ko/en) 누락</td>'+bd('ok','통과'),'<td>화면 미등록(ScreenCatalog)</td>'+bd('ok','통과')]]},
+      {grids:[['<td>PF-01</td><td>ROOT</td><td>FOLDER</td><td>-</td><td>-</td>'+bd('ok','PUBLISHED'),'<td>PF-01-01</td><td>PF-01</td><td>SCREEN</td><td>PF-01-01-01</td><td>/pf/org</td>'+bd('ok','PUBLISHED'),'<td>PF-01-02</td><td>PF-01</td><td>SCREEN</td><td>PF-01-02-01</td><td>/pf/users</td>'+bd('ok','PUBLISHED')],['<td>고아·순환</td>'+bd('ok','통과'),'<td>중복 code/route</td>'+bd('ok','통과'),'<td>i18n(ko/en) 누락</td>'+bd('ok','통과'),'<td>화면 미등록(ScreenCatalog)</td>'+bd('ok','통과')]]},
+      {grids:[['<td>PF-04-03</td><td>PF-04</td><td>SCREEN</td><td>PF-04-03-01</td><td>/pf/menus</td>'+bd('gr','DRAFT'),'<td>PF-04-04</td><td>PF-04</td><td>SCREEN</td><td>PF-04-04-01</td><td>/pf/std-review</td>'+bd('gr','DRAFT'),'<td>PF-01-01</td><td>PF-01</td><td>SCREEN</td><td>PF-01-01-01</td><td>/pf/org</td>'+bd('ok','PUBLISHED')],['<td>고아·순환</td>'+bd('ok','통과'),'<td>중복 code/route</td>'+bd('ok','통과'),'<td>i18n(ko/en) 누락</td>'+bd('warn','1건'),'<td>화면 미등록(ScreenCatalog)</td>'+bd('ok','통과')]]}
+    ]
+  };
+  /* PF-01-04-01 정책 그리드: seg 컨트롤 보존 위해 별도 정의(위 placeholder 대체) */
+  DATA['PF-01-04-01']=[
+    {grids:[[
+      '<td>PF-04 표준·메뉴·발행</td><td><span class="badge b-ok">ALLOW</span></td>'+seg('ALLOW')+'<td>보임</td><td>가능</td>',
+      '<td>PF-04-05 발행·폐기 🔒</td><td><span class="badge b-ok">ALLOW</span></td>'+seg('ALLOW')+'<td>숨김</td><td>불가</td>',
+      '<td>PF-05 보안·감사</td><td><span class="badge b-ok">ALLOW</span></td>'+seg('ALLOW')+'<td>보임</td><td>Step-up 후</td>',
+      '<td>PF-01 조직·사용자</td><td>-</td>'+seg('DENY')+'<td>숨김</td><td>불가</td>'
+    ]]},
+    {grids:[[
+      '<td>PF-05 보안·감사</td><td><span class="badge b-ok">ALLOW</span></td>'+seg('ALLOW')+'<td>보임</td><td>가능</td>',
+      '<td>PF-05-02 감사로그 열람</td><td><span class="badge b-ok">ALLOW</span></td>'+seg('ALLOW')+'<td>보임</td><td>가능</td>',
+      '<td>PF-01 조직·사용자</td><td><span class="badge b-ok">ALLOW</span></td>'+seg('ALLOW')+'<td>보임</td><td>Step-up 후</td>',
+      '<td>PF-04 표준·메뉴·발행</td><td>-</td>'+seg('DENY')+'<td>숨김</td><td>불가</td>'
+    ]]}
+  ];
+
+  function setForm(main,form){
+    if(!form) return;
+    main.querySelectorAll('.formgrid .ff').forEach(function(ff){
+      var l=ff.querySelector('label'); if(!l) return;
+      var key=clean(l.textContent);
+      if(!(key in form)) return;
+      var v=form[key], sel=ff.querySelector('select'), inp=ff.querySelector('input,textarea');
+      if(sel){ var hit=false; Array.prototype.forEach.call(sel.options,function(o){var m=(clean(o.textContent)===clean(v)||o.value===v); o.selected=m; if(m)hit=true;}); if(!hit&&sel.options.length){} }
+      else if(inp){ inp.value=v; }
+      else { var fv=ff.querySelector('.fv'); if(fv) fv.textContent=v; }
+    });
+  }
+  function setGrids(main,grids){
+    if(!grids) return;
+    var tables=main.querySelectorAll('table.grid');
+    grids.forEach(function(rows,gi){
+      var g=tables[gi]; if(!g||!rows) return;
+      var hr=null; g.querySelectorAll('tr').forEach(function(tr){ if(tr.querySelector('th')){ if(!hr)hr=tr; } else tr.parentNode.removeChild(tr); });
+      var parent=hr?hr.parentNode:g;
+      rows.forEach(function(html){ var tr=document.createElement('tr'); tr.innerHTML=html; parent.appendChild(tr); });
+    });
+  }
+  function setQv(main,qv){ if(qv==null) return; var q=main.querySelector('.qbar .qv'); if(q) q.textContent=qv; }
+  function apply(main,rec){ if(!rec) return; setForm(main,rec.form); setQv(main,rec.qv); setGrids(main,rec.grids); }
+
+  /* 좌측(lpane)이 있는 마스터-디테일 화면만 바인딩 */
+  document.querySelectorAll('.section').forEach(function(sec){
+    var mf=sec.querySelector('.mock-flex'); if(!mf) return;
+    var lpane=mf.querySelector(':scope > .lpane'), main=mf.querySelector(':scope > .mock-main');
+    if(!lpane||!main) return;
+    var recs=DATA[sec.id], tree=lpane.querySelector('.tree'), lg=tree?null:lpane.querySelector('table.grid'), items=[];
+    if(tree){ items=Array.prototype.slice.call(tree.querySelectorAll('.tnode')); }
+    else if(lg){ lg.querySelectorAll('tr').forEach(function(tr){ if(!tr.querySelector('th')&&!tr.classList.contains('tot')&&!tr.classList.contains('empty')) items.push(tr); }); }
+    items.forEach(function(el,idx){
+      if(lg) el.classList.add('rowsel-able');
+      el.addEventListener('click',function(){
+        if(tree){ lpane.querySelectorAll('.tnode.on').forEach(function(x){x.classList.remove('on')}); el.classList.add('on'); }
+        else { lg.querySelectorAll('tr.sel').forEach(function(r){r.classList.remove('sel')}); el.classList.add('sel'); }
+        if(recs) apply(main,recs[idx]);
+      });
+    });
+  });
+
+  /* 버튼 동작(토스트) · 세그먼트 토글 */
+  var toast;
+  function showToast(msg){
+    if(!toast){toast=document.createElement('div');toast.className='mk-toast';document.body.appendChild(toast);}
+    toast.textContent=msg; toast.classList.add('on');
+    clearTimeout(toast._t); toast._t=setTimeout(function(){toast.classList.remove('on');},1800);
+  }
+  document.addEventListener('click',function(e){
+    var seg=e.target.closest('.seg > span');
+    if(seg){ var box=seg.parentElement; box.querySelectorAll('span').forEach(function(x){x.classList.remove('on')}); seg.classList.add('on'); return; }
+    var btn=e.target.closest('.abtn');
+    if(btn){ var t=clean(btn.textContent); showToast('「'+(t||'버튼')+'」 기능을 실행합니다'); return; }
+  });
+})();
+</script>
+</body>
+</html>

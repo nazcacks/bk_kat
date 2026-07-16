@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityRepository } from '@mikro-orm/postgresql';
 import { User } from '../users/user.entity';
 import { LoginHistory } from '../security/entities/login-history.entity';
 
@@ -13,15 +13,15 @@ import { LoginHistory } from '../security/entities/login-history.entity';
 export class DashboardService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>,
+    private readonly userRepo: EntityRepository<User>,
     @InjectRepository(LoginHistory)
-    private readonly loginRepo: Repository<LoginHistory>,
+    private readonly loginRepo: EntityRepository<LoginHistory>,
   ) {}
 
   async summary() {
     const [activeUsers, recentLogins] = await Promise.all([
-      this.userRepo.countBy({ status: 'ACTIVE' }),
-      this.loginRepo.find({ order: { id: 'DESC' }, take: 5 }),
+      this.userRepo.count({ status: 'ACTIVE' }),
+      this.loginRepo.find({}, { orderBy: { id: 'DESC' }, limit: 5 }),
     ]);
 
     return {

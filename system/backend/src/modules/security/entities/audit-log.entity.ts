@@ -1,71 +1,71 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Index, Opt, PrimaryKey, Property } from '@mikro-orm/core';
 
 /**
  * 감사로그 (설계서 DataChangeLog / OperatorActivityLog 준거)
  * append-only: UPDATE/DELETE 금지, 해시체인으로 위변조 탐지.
  */
-@Entity('audit_log')
-@Index(['tenantId', 'createdAt'])
+@Entity({ tableName: 'audit_log' })
+@Index({ name: 'IDX_14bcaa576c86e805b158f293f7', properties: ['tenantId', 'createdAt'] })
 export class AuditLog {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryKey({ type: 'bigint', autoincrement: true })
   id: string;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-  createdAt: Date;
+  @Property({ fieldName: 'created_at', columnType: 'timestamptz', defaultRaw: 'now()', onCreate: () => new Date() })
+  createdAt: Date & Opt;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 32, nullable: true })
-  tenantId: string | null;
+  @Property({ fieldName: 'tenant_id', length: 32, nullable: true })
+  tenantId: string | null = null;
 
-  @Column({ name: 'user_id', type: 'varchar', length: 64, nullable: true })
-  userId: string | null;
+  @Property({ fieldName: 'user_id', length: 64, nullable: true })
+  userId: string | null = null;
 
-  @Column({ name: 'login_id', type: 'varchar', length: 64, nullable: true })
-  loginId: string | null;
+  @Property({ fieldName: 'login_id', length: 64, nullable: true })
+  loginId: string | null = null;
 
-  @Column({ name: 'user_name', type: 'varchar', length: 100, nullable: true })
-  userName: string | null;
+  @Property({ fieldName: 'user_name', length: 100, nullable: true })
+  userName: string | null = null;
 
   /** CREATE / UPDATE / DELETE / APPROVE / SUBMIT / EXPORT / LOGIN ... */
-  @Column({ type: 'varchar', length: 32 })
+  @Property({ length: 32 })
   action: string;
 
   /** 자원/화면 식별 (MENU, USER, SA-JNL-01 ...) */
-  @Column({ type: 'varchar', length: 64 })
+  @Property({ length: 64 })
   resource: string;
 
-  @Column({ name: 'menu_code', type: 'varchar', length: 32, nullable: true })
-  menuCode: string | null;
+  @Property({ fieldName: 'menu_code', length: 32, nullable: true })
+  menuCode: string | null = null;
 
-  @Column({ name: 'http_method', type: 'varchar', length: 8, nullable: true })
-  httpMethod: string | null;
+  @Property({ fieldName: 'http_method', length: 8, nullable: true })
+  httpMethod: string | null = null;
 
-  @Column({ name: 'request_path', type: 'varchar', length: 255, nullable: true })
-  requestPath: string | null;
+  @Property({ fieldName: 'request_path', length: 255, nullable: true })
+  requestPath: string | null = null;
 
   /** 변경 전 값 (JSON) */
-  @Column({ name: 'before_data', type: 'jsonb', nullable: true })
-  beforeData: Record<string, unknown> | null;
+  @Property({ fieldName: 'before_data', columnType: 'jsonb', nullable: true })
+  beforeData: Record<string, unknown> | null = null;
 
   /** 변경 후 값 (JSON) */
-  @Column({ name: 'after_data', type: 'jsonb', nullable: true })
-  afterData: Record<string, unknown> | null;
+  @Property({ fieldName: 'after_data', columnType: 'jsonb', nullable: true })
+  afterData: Record<string, unknown> | null = null;
 
-  @Column({ name: 'request_id', type: 'varchar', length: 64, nullable: true })
-  requestId: string | null;
+  @Property({ fieldName: 'request_id', length: 64, nullable: true })
+  requestId: string | null = null;
 
-  @Column({ type: 'varchar', length: 64, nullable: true })
-  ip: string | null;
+  @Property({ length: 64, nullable: true })
+  ip: string | null = null;
 
-  @Column({ name: 'user_agent', type: 'varchar', length: 255, nullable: true })
-  userAgent: string | null;
+  @Property({ fieldName: 'user_agent', length: 255, nullable: true })
+  userAgent: string | null = null;
 
-  @Column({ type: 'varchar', length: 16, default: 'SUCCESS' })
-  result: string;
+  @Property({ length: 16, default: 'SUCCESS' })
+  result: string & Opt = 'SUCCESS';
 
   /** 해시체인: sha256(prevHash + 본문) — 위변조 탐지 */
-  @Column({ name: 'prev_hash', type: 'varchar', length: 64, nullable: true })
-  prevHash: string | null;
+  @Property({ fieldName: 'prev_hash', length: 64, nullable: true })
+  prevHash: string | null = null;
 
-  @Column({ name: 'chain_hash', type: 'varchar', length: 64 })
+  @Property({ fieldName: 'chain_hash', length: 64 })
   chainHash: string;
 }

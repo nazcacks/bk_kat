@@ -1,48 +1,49 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Entity, Hidden, Opt, Property, Unique } from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
+import { SimpleArrayType } from '../../common/types/simple-array.type';
 
 /**
  * 사용자 (설계서 4장: OperatorUser/TenantUser 통합 User)
  * loginId 전역 유일. TENANT 는 tenantId 필수.
  */
-@Entity('app_user')
-@Index(['loginId'], { unique: true })
+@Entity({ tableName: 'app_user' })
+@Unique({ name: 'IDX_9743fe7b06b84cbb004af835b0', properties: ['loginId'] })
 export class User extends BaseEntity {
-  @Column({ name: 'login_id', type: 'varchar', length: 64 })
+  @Property({ fieldName: 'login_id', length: 64 })
   loginId: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Property({ length: 100 })
   name: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  email: string | null;
+  @Property({ length: 255, nullable: true })
+  email: string | null = null;
 
-  @Column({ type: 'varchar', length: 32, nullable: true })
-  phone: string | null;
+  @Property({ length: 32, nullable: true })
+  phone: string | null = null;
 
   /** OPERATOR(운영자) / TENANT(이용회사) */
-  @Column({ name: 'user_group', type: 'varchar', length: 16, default: 'TENANT' })
-  userGroup: 'OPERATOR' | 'TENANT';
+  @Property({ fieldName: 'user_group', length: 16, default: 'TENANT' })
+  userGroup: ('OPERATOR' | 'TENANT') & Opt = 'TENANT';
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 32, nullable: true })
-  tenantId: string | null;
+  @Property({ fieldName: 'tenant_id', length: 32, nullable: true })
+  tenantId: string | null = null;
 
   /** ACTIVE / LOCKED / PASSWORD_EXPIRED / SUSPENDED / DORMANT / DISABLED */
-  @Column({ type: 'varchar', length: 20, default: 'ACTIVE' })
-  status: string;
+  @Property({ length: 20, default: 'ACTIVE' })
+  status: string & Opt = 'ACTIVE';
 
   /** 역할 코드 목록 (프레임워크 단계: simple-array, 이후 RoleAssignment 로 정규화) */
-  @Column({ type: 'simple-array', default: '' })
-  roles: string[];
+  @Property({ type: SimpleArrayType, default: '' })
+  roles: string[] & Opt = [];
 
-  @Column({ name: 'password_hash', type: 'varchar', length: 255, nullable: true, select: false })
-  passwordHash: string | null;
+  @Property({ fieldName: 'password_hash', length: 255, nullable: true, hidden: true })
+  passwordHash: Hidden<string> | null = null;
 
-  @Column({ name: 'last_login_at', type: 'timestamptz', nullable: true })
-  lastLoginAt: Date | null;
+  @Property({ fieldName: 'last_login_at', columnType: 'timestamptz', nullable: true })
+  lastLoginAt: Date | null = null;
 
-  @Column({ name: 'is_external_partner', type: 'boolean', default: false })
-  isExternalPartner: boolean;
+  @Property({ fieldName: 'is_external_partner', default: false })
+  isExternalPartner: boolean & Opt = false;
 
   /**
    * 확장 프로필 (설계 OP-06A UserDetail: 영문명, 사번, 조직, 부서, 직위, 주기장,
@@ -50,6 +51,6 @@ export class User extends BaseEntity {
    * 권한만료, 저장사유, assignments[], history[] ...)
    * 정식 페이즈에서 UserDetail/RoleAssignment 테이블로 정규화한다.
    */
-  @Column({ type: 'jsonb', nullable: true })
-  detail: Record<string, unknown> | null;
+  @Property({ columnType: 'jsonb', nullable: true })
+  detail: Record<string, unknown> | null = null;
 }

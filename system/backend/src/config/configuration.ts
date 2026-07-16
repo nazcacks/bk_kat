@@ -8,6 +8,7 @@ export default () => ({
     password: process.env.DB_PASSWORD ?? 'bk_dev_password',
     database: process.env.DB_DATABASE ?? 'bk_dev',
     synchronize: (process.env.DB_SYNCHRONIZE ?? 'true') === 'true',
+    debug: (process.env.DB_DEBUG ?? 'false') === 'true',
   },
   auth: {
     bypass: (process.env.AUTH_BYPASS ?? 'false') === 'true',

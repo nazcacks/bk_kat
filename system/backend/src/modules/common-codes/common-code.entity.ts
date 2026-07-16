@@ -1,57 +1,57 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Entity, Opt, Property, Unique } from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
 
 /** 공통코드 그룹 (설계서 OP-05C CommonCodeGroup) */
-@Entity('common_code_group')
-@Index(['groupCode'], { unique: true })
+@Entity({ tableName: 'common_code_group' })
+@Unique({ name: 'IDX_3bb8d25ce2ed52649daf59053e', properties: ['groupCode'] })
 export class CommonCodeGroup extends BaseEntity {
-  @Column({ name: 'group_code', type: 'varchar', length: 32 })
+  @Property({ fieldName: 'group_code', length: 32 })
   groupCode: string;
 
-  @Column({ name: 'group_name', type: 'varchar', length: 100 })
+  @Property({ fieldName: 'group_name', length: 100 })
   groupName: string;
 
-  @Column({ name: 'name_en', type: 'varchar', length: 100, nullable: true })
-  nameEn: string | null;
+  @Property({ fieldName: 'name_en', length: 100, nullable: true })
+  nameEn: string | null = null;
 
   /** AUTH / TENANT / MENU / BATCH / SECURITY / JOURNAL ... (설계 OP-05C 도메인) */
-  @Column({ type: 'varchar', length: 32, nullable: true })
-  domain: string | null;
+  @Property({ length: 32, nullable: true })
+  domain: string | null = null;
 
   /** SYSTEM_LOCKED(예약, 변경금지) / ADMIN_MANAGED / STANDARD_MANAGED */
-  @Column({ type: 'varchar', length: 32, nullable: true })
-  policy: string | null;
+  @Property({ length: 32, nullable: true })
+  policy: string | null = null;
 
-  @Column({ type: 'varchar', length: 500, nullable: true })
-  description: string | null;
+  @Property({ length: 500, nullable: true })
+  description: string | null = null;
 
-  @Column({ name: 'is_active', type: 'boolean', default: true })
-  isActive: boolean;
+  @Property({ fieldName: 'is_active', default: true })
+  isActive: boolean & Opt = true;
 }
 
 /** 공통코드 항목 (설계서 CommonCodeItem) */
-@Entity('common_code_item')
-@Index(['groupCode', 'code'], { unique: true })
+@Entity({ tableName: 'common_code_item' })
+@Unique({ name: 'IDX_93d1eb2b23bc68913d5fddbbda', properties: ['groupCode', 'code'] })
 export class CommonCodeItem extends BaseEntity {
-  @Column({ name: 'group_code', type: 'varchar', length: 32 })
+  @Property({ fieldName: 'group_code', length: 32 })
   groupCode: string;
 
-  @Column({ type: 'varchar', length: 32 })
+  @Property({ length: 32 })
   code: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Property({ length: 100 })
   name: string;
 
-  @Column({ name: 'name_en', type: 'varchar', length: 100, nullable: true })
-  nameEn: string | null;
+  @Property({ fieldName: 'name_en', length: 100, nullable: true })
+  nameEn: string | null = null;
 
-  @Column({ name: 'sort_order', type: 'int', default: 0 })
-  sortOrder: number;
+  @Property({ fieldName: 'sort_order', columnType: 'int', default: 0 })
+  sortOrder: number & Opt = 0;
 
   /** 추가 속성 (세율 등 코드별 부가 정보) */
-  @Column({ type: 'jsonb', nullable: true })
-  attributes: Record<string, unknown> | null;
+  @Property({ columnType: 'jsonb', nullable: true })
+  attributes: Record<string, unknown> | null = null;
 
-  @Column({ name: 'is_active', type: 'boolean', default: true })
-  isActive: boolean;
+  @Property({ fieldName: 'is_active', default: true })
+  isActive: boolean & Opt = true;
 }

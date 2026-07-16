@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { AuditLog } from './entities/audit-log.entity';
 import { PersonalDataAccessLog } from './entities/personal-data-access-log.entity';
 import { LoginHistory } from './entities/login-history.entity';
@@ -15,7 +15,7 @@ import { SecurityController } from './security.controller';
 @Global()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AuditLog, PersonalDataAccessLog, LoginHistory, MaskingPolicy]),
+    MikroOrmModule.forFeature([AuditLog, PersonalDataAccessLog, LoginHistory, MaskingPolicy]),
   ],
   controllers: [SecurityController],
   providers: [SecurityService],

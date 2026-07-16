@@ -1,4 +1,4 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Entity, Index, Opt, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
 
 /**
@@ -7,16 +7,16 @@ import { BaseEntity } from '../../common/entities/base.entity';
  * 접근세션/개인정보정책 등)를 resourceType + jsonb 로 관리한다.
  * 정식 페이즈에서 개별 테이블로 승격 시 이 테이블에서 이관한다.
  */
-@Entity('admin_resource')
-@Index(['resourceType'])
+@Entity({ tableName: 'admin_resource' })
+@Index({ properties: ['resourceType'] })
 export class AdminResource extends BaseEntity {
   /** tenant / user-group / auth-policy / role / batch-job / access-session / privacy-policy ... */
-  @Column({ name: 'resource_type', type: 'varchar', length: 40 })
+  @Property({ fieldName: 'resource_type', length: 40 })
   resourceType: string;
 
-  @Column({ type: 'jsonb' })
+  @Property({ columnType: 'jsonb' })
   data: Record<string, unknown>;
 
-  @Column({ name: 'is_active', type: 'boolean', default: true })
-  isActive: boolean;
+  @Property({ fieldName: 'is_active', default: true })
+  isActive: boolean & Opt = true;
 }

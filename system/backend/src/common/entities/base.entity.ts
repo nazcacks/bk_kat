@@ -1,42 +1,47 @@
-import {
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  VersionColumn,
-  Column,
-} from 'typeorm';
+import { Opt, PrimaryKey, Property } from '@mikro-orm/core';
 
 /**
  * 공통 감사 필드 (설계서 12.3 테이블 공통 제약)
  * created_at/by, updated_at/by, version, source
  */
 export abstract class BaseEntity {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryKey({ type: 'bigint', autoincrement: true })
   id: string;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-  createdAt: Date;
+  @Property({
+    fieldName: 'created_at',
+    columnType: 'timestamptz',
+    defaultRaw: 'now()',
+    onCreate: () => new Date(),
+  })
+  createdAt: Date & Opt;
 
-  @Column({ name: 'created_by', type: 'varchar', length: 64, nullable: true })
-  createdBy: string | null;
+  @Property({ fieldName: 'created_by', length: 64, nullable: true })
+  createdBy: string | null = null;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
-  updatedAt: Date;
+  @Property({
+    fieldName: 'updated_at',
+    columnType: 'timestamptz',
+    defaultRaw: 'now()',
+    onCreate: () => new Date(),
+    onUpdate: () => new Date(),
+  })
+  updatedAt: Date & Opt;
 
-  @Column({ name: 'updated_by', type: 'varchar', length: 64, nullable: true })
-  updatedBy: string | null;
+  @Property({ fieldName: 'updated_by', length: 64, nullable: true })
+  updatedBy: string | null = null;
 
-  @VersionColumn({ name: 'version' })
-  version: number;
+  @Property({ version: true })
+  version: number & Opt = 1;
 
-  @Column({ name: 'source', type: 'varchar', length: 32, default: 'UI' })
-  source: string;
+  @Property({ length: 32, default: 'UI' })
+  source: string & Opt = 'UI';
 }
 
 /**
  * 테넌트 데이터 공통 (모든 이용회사 데이터는 tenant_id NOT NULL — 설계서 멀티테넌시 원칙)
  */
 export abstract class TenantBaseEntity extends BaseEntity {
-  @Column({ name: 'tenant_id', type: 'varchar', length: 32 })
+  @Property({ fieldName: 'tenant_id', length: 32 })
   tenantId: string;
 }

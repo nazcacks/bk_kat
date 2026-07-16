@@ -1,37 +1,37 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Index, Opt, PrimaryKey, Property } from '@mikro-orm/core';
 
 /** 로그인 이력 (설계서 LoginHistory) */
-@Entity('login_history')
-@Index(['loginId', 'createdAt'])
+@Entity({ tableName: 'login_history' })
+@Index({ name: 'IDX_c5aa4ea03e1c3930670f4c911c', properties: ['loginId', 'createdAt'] })
 export class LoginHistory {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryKey({ type: 'bigint', autoincrement: true })
   id: string;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-  createdAt: Date;
+  @Property({ fieldName: 'created_at', columnType: 'timestamptz', defaultRaw: 'now()', onCreate: () => new Date() })
+  createdAt: Date & Opt;
 
-  @Column({ name: 'user_id', type: 'varchar', length: 64, nullable: true })
-  userId: string | null;
+  @Property({ fieldName: 'user_id', length: 64, nullable: true })
+  userId: string | null = null;
 
-  @Column({ name: 'login_id', type: 'varchar', length: 64 })
+  @Property({ fieldName: 'login_id', length: 64 })
   loginId: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  name: string | null;
+  @Property({ length: 100, nullable: true })
+  name: string | null = null;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 32, nullable: true })
-  tenantId: string | null;
+  @Property({ fieldName: 'tenant_id', length: 32, nullable: true })
+  tenantId: string | null = null;
 
-  @Column({ type: 'varchar', length: 64, nullable: true })
-  ip: string | null;
+  @Property({ length: 64, nullable: true })
+  ip: string | null = null;
 
-  @Column({ name: 'user_agent', type: 'varchar', length: 255, nullable: true })
-  userAgent: string | null;
+  @Property({ fieldName: 'user_agent', length: 255, nullable: true })
+  userAgent: string | null = null;
 
   /** SUCCESS / FAILED / LOCKED / BYPASS(개발모드) */
-  @Column({ type: 'varchar', length: 16 })
+  @Property({ length: 16 })
   result: string;
 
-  @Column({ name: 'fail_reason', type: 'varchar', length: 100, nullable: true })
-  failReason: string | null;
+  @Property({ fieldName: 'fail_reason', length: 100, nullable: true })
+  failReason: string | null = null;
 }
